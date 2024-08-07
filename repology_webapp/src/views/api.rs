@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::response::Json;
-use crate::state::AppState;
 use serde::Serialize;
 use sqlx::FromRow;
 
