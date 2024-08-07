@@ -1,0 +1,3 @@
+[workspace]
+members = ["repology_common", "repology_webapp"]
+resolver = "2"
