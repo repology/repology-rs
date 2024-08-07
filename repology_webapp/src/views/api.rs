@@ -59,7 +59,7 @@ pub async fn api_v1_project(
             coalesce(maintainers, '{}'::text[]) AS maintainers,
             coalesce(licenses, '{}'::text[]) AS licenses,
             CASE WHEN category IS NULL THEN '{}'::text[] ELSE ARRAY[category] END AS categories,
-            NULL AS vulnerable
+            NULLIF((flags & (1 << 16))::boolean, false) AS vulnerable
         FROM packages
         WHERE effname = $1
         "#,
