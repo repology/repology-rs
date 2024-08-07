@@ -22,7 +22,8 @@ pub struct ApiV1Package {
     pub visiblename: String,
 
     pub version: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    //#[serde(skip_serializing_if = "Option::is_none")]  // Note: this is commented
+    // for bug-to-bug compatibility with python webapp
     pub origversion: Option<String>,
 
     pub status: PackageStatus,
