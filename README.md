@@ -1,6 +1,6 @@
 # Repology
 
-[![CI](https://github.com/repology/repology-rs/workflows/ci.yml/badge.svg)](https://github.com/repology/repology-rs/actions/workflows/ci.yml)
+[![CI](https://github.com/repology/repology-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/repology/repology-rs/actions/workflows/ci.yml)
 
 Repology is a service which monitors *a lot* of package repositories
 and other sources and aggregates data on software package versions,
