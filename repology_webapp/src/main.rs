@@ -12,7 +12,6 @@ use sqlx::PgPool;
 
 use crate::config::Config;
 use crate::state::AppState;
-use crate::views::*;
 
 use anyhow::{Context, Error};
 
@@ -27,7 +26,7 @@ async fn main() -> Result<(), Error> {
     let state = AppState::new(pool);
 
     let app = Router::new()
-        .route("/api/v1/project/:name", get(api_v1_project))
+        .route("/api/v1/project/:project_name", get(views::api_v1_project))
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind(&config.listen).await.unwrap();
