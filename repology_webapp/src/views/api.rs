@@ -1,9 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use crate::result::EndpointResult;
 use crate::state::AppState;
 use axum::extract::{Path, State};
-use axum::response::Json;
+use axum::http::{header, HeaderValue};
+use axum::response::IntoResponse;
 use serde::Serialize;
 use sqlx::FromRow;
 
@@ -43,7 +45,7 @@ pub struct ApiV1Package {
 pub async fn api_v1_project(
     Path(project_name): Path<String>,
     State(state): State<AppState>,
-) -> Json<Vec<ApiV1Package>> {
+) -> EndpointResult {
     let packages: Vec<ApiV1Package> = sqlx::query_as(
         r#"
         SELECT
@@ -66,8 +68,16 @@ pub async fn api_v1_project(
     )
     .bind(project_name)
     .fetch_all(&state.pool)
-    .await
-    .unwrap();
+    .await?;
 
-    Json(packages)
+    let body = serde_json::to_string(&packages)?;
+
+    Ok((
+        [(
+            header::CONTENT_TYPE,
+            HeaderValue::from_static(mime::APPLICATION_JSON.as_ref()),
+        )],
+        body,
+    )
+        .into_response())
 }

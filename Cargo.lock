@@ -1140,6 +1140,7 @@ dependencies = [
  "anyhow",
  "axum",
  "clap",
+ "mime",
  "repology_common",
  "serde",
  "serde_json",
