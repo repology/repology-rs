@@ -40,7 +40,6 @@ pub struct ApiV1Package {
     pub vulnerable: Option<bool>,
 }
 
-#[axum::debug_handler]
 pub async fn api_v1_project(
     Path(project_name): Path<String>,
     State(state): State<AppState>,
