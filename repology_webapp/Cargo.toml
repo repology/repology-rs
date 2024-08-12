@@ -13,3 +13,4 @@ sqlx = { version = "0.8.0", features = ["runtime-tokio", "postgres"] }
 anyhow = "1.0.86"
 clap = { version = "4.5.13", features = ["derive"] }
 mime = "0.3.17"
+ttf-parser = "0.24.1"

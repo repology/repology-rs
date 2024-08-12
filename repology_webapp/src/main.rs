@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 mod config;
+mod font;
 mod result;
 mod state;
 mod views;
@@ -12,6 +13,7 @@ use clap::Parser;
 use sqlx::PgPool;
 
 use crate::config::Config;
+use crate::font::FontMeasurer;
 use crate::state::AppState;
 
 use anyhow::{Context, Error};
@@ -24,7 +26,9 @@ async fn main() -> Result<(), Error> {
         .await
         .context("error creating PostgreSQL connection pool")?;
 
-    let state = AppState::new(pool);
+    let font_measurer = FontMeasurer::new();
+
+    let state = AppState::new(pool, font_measurer);
 
     let app = Router::new()
         .route("/api/v1/project/:project_name", get(views::api_v1_project))
