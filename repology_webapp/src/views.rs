@@ -2,5 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 mod api;
+mod badges;
 
-pub use crate::views::api::*;
+pub use api::*;
+pub use badges::*;

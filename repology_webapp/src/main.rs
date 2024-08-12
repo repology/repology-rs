@@ -34,6 +34,10 @@ async fn main() -> Result<(), Error> {
 
     let app = Router::new()
         .route("/api/v1/project/:project_name", get(views::api_v1_project))
+        .route(
+            "/badge/tiny-repos/:project_name",
+            get(views::badge_tiny_repos),
+        )
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind(&config.listen).await.unwrap();
