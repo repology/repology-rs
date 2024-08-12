@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: cargo build ${{ matrix.cargo_args }}
         env:
-          RUSTFLAGS: -Dwarnings
+          RUSTFLAGS: -Dwarnings -Adead_code
       - name: Test
         run: cargo test ${{ matrix.cargo_args }}
       - name: Format check
