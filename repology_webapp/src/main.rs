@@ -1,11 +1,13 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+mod badges;
 mod config;
 mod font;
 mod result;
 mod state;
 mod views;
+mod xmlwriter;
 
 use axum::routing::get;
 use axum::Router;
