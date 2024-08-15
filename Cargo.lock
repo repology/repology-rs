@@ -791,6 +791,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "libversion"
+version = "0.2.0"
+dependencies = [
+ "bitflags 2.6.0",
+]
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.4.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
