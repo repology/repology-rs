@@ -5,7 +5,7 @@ use bitflags::bitflags;
 use serde::Serialize;
 use strum_macros::FromRepr;
 
-#[derive(Debug, PartialEq, Serialize, FromRepr, sqlx::Type)]
+#[derive(Debug, PartialEq, Serialize, FromRepr, sqlx::Type, Clone, Copy)]
 #[serde(rename_all = "lowercase")]
 #[repr(i16)]
 pub enum PackageStatus {
