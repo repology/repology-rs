@@ -16,6 +16,6 @@ pub enum PackageStatus {
     Legacy = 6,
     Incorrect = 7,
     Untrusted = 8,
-    Noscheme = 9,
+    NoScheme = 9,
     Rolling = 10,
 }
