@@ -62,6 +62,11 @@ impl Cell {
         self.min_width = Some(width);
         self
     }
+
+    pub fn collapsible(mut self, collapsible: bool) -> Self {
+        self.collapsible = collapsible;
+        self
+    }
 }
 
 #[derive(Clone)]

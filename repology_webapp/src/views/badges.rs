@@ -34,13 +34,13 @@ pub async fn badge_tiny_repos(
 
     let body = render_generic_badge(
         &[vec![
-            //Cell::new(query.header.map_or("in repositories", |header| &header)),
             Cell::new(
                 query
                     .header
                     .as_ref()
                     .map_or("in repositories", |header| header),
-            ),
+            )
+            .collapsible(true),
             Cell::new(&format!("{}", num_families)).color("#007ec6"),
         ]],
         None,
