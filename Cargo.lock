@@ -1148,6 +1148,7 @@ dependencies = [
  "anyhow",
  "axum",
  "clap",
+ "libversion",
  "mime",
  "repology_common",
  "serde",
