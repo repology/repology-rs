@@ -42,8 +42,12 @@ async fn main() -> Result<(), Error> {
     let app = Router::new()
         .route("/api/v1/project/:project_name", get(views::api_v1_project))
         .route(
-            "/badge/tiny-repos/:project_name",
+            "/badge/tiny-repos/:project_name.svg",
             get(views::badge_tiny_repos),
+        )
+        .route(
+            "/badge/version-for-repo/:repository_name/:project_name.svg",
+            get(views::badge_version_for_repo),
         )
         .with_state(state);
 

@@ -240,17 +240,28 @@ pub fn render_generic_badge(
     Ok(doc.to_string())
 }
 
+#[derive(PartialEq)]
+pub enum SpecialVersionStatus {
+    LowerThanUserGivenThreshold,
+}
+
 #[allow(unused)]
 pub fn badge_color_for_package_status(
     package_status: PackageStatus,
-    unsatisfying: bool,
+    special_status: Option<SpecialVersionStatus>,
 ) -> &'static str {
-    if unsatisfying {
-        "#e00000"
+    if let Some(special_status) = special_status {
+        use SpecialVersionStatus::*;
+        match special_status {
+            LowerThanUserGivenThreshold => {
+                return "#e00000";
+            }
+        };
     } else {
+        use PackageStatus::*;
         match package_status {
-            PackageStatus::Outdated | PackageStatus::Legacy => "#e05d44",
-            PackageStatus::Newest | PackageStatus::Unique | PackageStatus::Devel => "#4c1",
+            Outdated | Legacy => "#e05d44",
+            Newest | Unique | Devel => "#4c1",
             _ => "#9f9f9f",
         }
     }
