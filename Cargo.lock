@@ -1134,6 +1134,7 @@ dependencies = [
 name = "repology_common"
 version = "0.1.0"
 dependencies = [
+ "bitflags 2.6.0",
  "serde",
  "sqlx",
  "strum",
