@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::result::EndpointResult;
-use crate::state::AppState;
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
@@ -10,6 +8,9 @@ use serde::Serialize;
 use sqlx::FromRow;
 
 use repology_common::PackageStatus;
+
+use crate::result::EndpointResult;
+use crate::state::AppState;
 
 #[derive(Serialize, FromRow)]
 pub struct ApiV1Package {

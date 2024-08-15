@@ -1,14 +1,14 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use crate::result::EndpointResult;
-use crate::state::AppState;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
 use serde::Deserialize;
 
 use crate::badges::{render_generic_badge, Cell};
+use crate::result::EndpointResult;
+use crate::state::AppState;
 
 #[derive(Deserialize)]
 pub struct BadgeTinyReposQueryParams {

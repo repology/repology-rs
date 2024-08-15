@@ -1,8 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::Error;
 use std::path::Path;
+
+use anyhow::Error;
 
 #[allow(unused)]
 pub enum FontStyle {

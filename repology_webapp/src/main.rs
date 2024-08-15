@@ -10,8 +10,8 @@ mod state;
 mod views;
 mod xmlwriter;
 
-use axum::routing::get;
-use axum::Router;
+use anyhow::{Context, Error};
+use axum::{routing::get, Router};
 use clap::Parser;
 use sqlx::PgPool;
 
@@ -19,8 +19,6 @@ use crate::config::Config;
 use crate::font::FontMeasurer;
 use crate::repometadata::RepositoryMetadataCache;
 use crate::state::AppState;
-
-use anyhow::{Context, Error};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {

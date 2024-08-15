@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use anyhow::Error;
+
 use repology_common::PackageStatus;
 
 use crate::font::{FontMeasurer, FontStyle};
