@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 axum = { version = "0.7.5", features = ["macros"] }
-serde = { version = "1.0.204", features = ["derive"] }
+serde = { version = "1.0.209", features = ["derive"] }
 serde_json = "1.0.122"
 tokio = { version = "1.39.2", features = ["macros", "rt-multi-thread"] }
 repology_common = { path = "../repology_common" }
