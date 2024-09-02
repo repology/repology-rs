@@ -33,6 +33,9 @@ pub struct RepositoryMetadata {
 #[derive(Default)]
 struct CachedData {
     last_update: Option<Instant>,
+    // XXX: Wrap RepositoryMetadata into Arc<>, which would allow to
+    // avoid data duplication both when storing metadata here, and when
+    // returning it from get_* methods
     repositories: Vec<RepositoryMetadata>,
     repositories_by_name: HashMap<String, RepositoryMetadata>,
 }
@@ -118,5 +121,17 @@ impl RepositoryMetadataCache {
             .get(repository_name)
             .filter(|metadata| metadata.status == RepositoryStatus::Active)
             .cloned()
+    }
+
+    pub async fn get_all_active(&self) -> Vec<RepositoryMetadata> {
+        self.try_update_if_needed().await;
+        self.cached_data
+            .lock()
+            .unwrap()
+            .repositories
+            .iter()
+            .filter(|metadata| metadata.status == RepositoryStatus::Active)
+            .cloned()
+            .collect()
     }
 }
