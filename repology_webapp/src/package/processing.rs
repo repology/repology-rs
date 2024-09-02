@@ -1,10 +1,14 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::collections::HashMap;
+
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::package::ordering::by_version_descending;
-use crate::package::traits::{PackageWithFlags, PackageWithStatus, PackageWithVersion};
+use crate::package::traits::{
+    PackageWithFlags, PackageWithRepositoryName, PackageWithStatus, PackageWithVersion,
+};
 
 fn is_representative_package<T>(package: &T, allow_ignored: bool) -> bool
 where
@@ -34,22 +38,73 @@ where
     *target = Some(next);
 }
 
+struct RepresentativePackageChooser<'a, T> {
+    fallback: Option<&'a T>,
+    representative: Option<&'a T>,
+}
+
+impl<'a, T> Default for RepresentativePackageChooser<'a, T> {
+    fn default() -> Self {
+        Self {
+            fallback: None,
+            representative: None,
+        }
+    }
+}
+
+impl<'a, T> RepresentativePackageChooser<'a, T>
+where
+    T: PackageWithVersion + PackageWithFlags + PackageWithStatus,
+{
+    pub fn push(&mut self, package: &'a T, allow_ignored: bool) {
+        if is_representative_package(package, allow_ignored) {
+            update_optional_max(&mut self.representative, package);
+        }
+
+        update_optional_max(&mut self.fallback, package);
+    }
+
+    pub fn get(&self) -> Option<&'a T> {
+        self.representative.or(self.fallback)
+    }
+}
+
 pub fn pick_representative_package<T>(packages: &[T], allow_ignored: bool) -> Option<&T>
 where
     T: PackageWithVersion + PackageWithFlags + PackageWithStatus,
 {
-    let mut fallback: Option<&T> = None;
-    let mut representative: Option<&T> = None;
+    let mut chooser: RepresentativePackageChooser<T> = Default::default();
+    packages
+        .iter()
+        .for_each(|package| chooser.push(package, allow_ignored));
+    chooser.get()
+}
 
+pub fn pick_representative_package_per_repository<T>(
+    packages: &[T],
+    allow_ignored: bool,
+) -> HashMap<String, &T>
+where
+    T: PackageWithVersion + PackageWithFlags + PackageWithStatus + PackageWithRepositoryName,
+{
+    let mut choosers: HashMap<&str, RepresentativePackageChooser<T>> = Default::default();
     packages.iter().for_each(|package| {
-        if is_representative_package(package, allow_ignored) {
-            update_optional_max(&mut representative, package);
-        }
-
-        update_optional_max(&mut fallback, package);
+        choosers
+            .entry(package.repository_name())
+            .or_default()
+            .push(package, allow_ignored)
     });
-
-    representative.or(fallback)
+    choosers
+        .into_iter()
+        .map(|(repository_name, chooser)| {
+            (
+                String::from(repository_name),
+                chooser
+                    .get()
+                    .expect("per-repository chooser is expected to contain at least one package"),
+            )
+        })
+        .collect()
 }
 
 #[cfg(test)]

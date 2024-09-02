@@ -14,3 +14,7 @@ pub trait PackageWithFlags {
 pub trait PackageWithStatus {
     fn status(&self) -> PackageStatus;
 }
+
+pub trait PackageWithRepositoryName {
+    fn repository_name(&self) -> &str;
+}
