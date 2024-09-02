@@ -3,6 +3,8 @@
 
 pub mod tiny_repos;
 pub mod version_for_repo;
+pub mod vertical_allrepos;
 
 pub use tiny_repos::*;
 pub use version_for_repo::*;
+pub use vertical_allrepos::*;

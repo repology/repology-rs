@@ -22,7 +22,6 @@ pub enum RepositoryStatus {
 #[derive(Debug, Clone, FromRow)]
 pub struct RepositoryMetadata {
     pub name: String,
-    #[allow(dead_code)]
     pub title: String,
     pub singular: String,
     #[allow(dead_code)]

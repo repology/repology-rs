@@ -49,6 +49,10 @@ async fn main() -> Result<(), Error> {
             "/badge/version-for-repo/:repository_name/:project_name.svg",
             get(views::badge_version_for_repo),
         )
+        .route(
+            "/badge/vertical-allrepos/:project_name.svg",
+            get(views::badge_vertical_allrepos),
+        )
         .with_state(state);
 
     let listener = tokio::net::TcpListener::bind(&config.listen).await.unwrap();
