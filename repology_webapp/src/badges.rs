@@ -119,7 +119,7 @@ pub fn render_generic_badge(
         .for_each(|column| column.width = 0);
 
     // add header if specified
-    let (header_height, min_width) = if let Some(header) = header {
+    let (min_width, header_height) = if let Some(header) = header {
         (
             min_width.max(font_measurer.get_text_width(
                 header,
