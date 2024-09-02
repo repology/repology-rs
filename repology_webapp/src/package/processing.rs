@@ -12,14 +12,14 @@ where
 {
     !package.flags().contains(PackageFlags::Recalled)
         && (allow_ignored
-            || match package.status() {
+            || !matches!(
+                package.status(),
                 PackageStatus::Ignored
-                | PackageStatus::Incorrect
-                | PackageStatus::Untrusted
-                | PackageStatus::NoScheme
-                | PackageStatus::Rolling => false,
-                _ => true,
-            })
+                    | PackageStatus::Incorrect
+                    | PackageStatus::Untrusted
+                    | PackageStatus::NoScheme
+                    | PackageStatus::Rolling
+            ))
 }
 
 fn update_optional_max<'a, T>(target: &mut Option<&'a T>, next: &'a T)

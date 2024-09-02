@@ -253,10 +253,8 @@ pub fn badge_color_for_package_status(
     if let Some(special_status) = special_status {
         use SpecialVersionStatus::*;
         match special_status {
-            LowerThanUserGivenThreshold => {
-                return "#e00000";
-            }
-        };
+            LowerThanUserGivenThreshold => "#e00000",
+        }
     } else {
         use PackageStatus::*;
         match package_status {

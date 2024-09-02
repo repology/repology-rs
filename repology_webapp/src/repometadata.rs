@@ -106,7 +106,7 @@ impl RepositoryMetadataCache {
             .unwrap()
             .repositories_by_name
             .get(repository_name)
-            .map(|metadata| metadata.clone())
+            .cloned()
     }
 
     pub async fn get_active(&self, repository_name: &str) -> Option<RepositoryMetadata> {
@@ -117,6 +117,6 @@ impl RepositoryMetadataCache {
             .repositories_by_name
             .get(repository_name)
             .filter(|metadata| metadata.status == RepositoryStatus::Active)
-            .map(|metadata| metadata.clone())
+            .cloned()
     }
 }
