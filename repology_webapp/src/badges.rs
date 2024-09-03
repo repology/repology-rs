@@ -124,13 +124,13 @@ pub fn render_generic_badge(
         .for_each(|column| column.width = 0);
 
     // add header if specified
-    let (min_width, header_height) = if let Some(header) = header {
+    let (min_width, header_height) = if let Some(header) = header.filter(|header| !header.is_empty()) {
         (
             min_width.max(font_measurer.get_text_width(
                 header,
                 HEADER_FONT_SIZE,
                 FontStyle::Bold,
-            )?),
+            )? + CELL_HORIZONTAL_PADDING * 2),
             HEADER_HEIGHT,
         )
     } else {
