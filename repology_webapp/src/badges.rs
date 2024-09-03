@@ -139,11 +139,14 @@ pub fn render_generic_badge(
 
     // calculate total sizes
     let total_height = header_height + CELL_HEIGHT * num_rows;
-    let total_width = columns.iter().map(|column| column.width).sum::<usize>();
+    let mut total_width = columns.iter().map(|column| column.width).sum::<usize>();
 
     // force minimal width by expanding leftmost column
     if total_width < min_width {
-        columns[0].width += min_width - total_width
+        if let Some(first_column) = columns.first_mut() {
+            first_column.width += min_width - total_width;
+        }
+        total_width = min_width;
     }
 
     // calculate column offsets
