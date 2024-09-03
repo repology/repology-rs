@@ -47,8 +47,13 @@ impl Cell {
     }
 
     pub fn truncate(mut self, length: usize) -> Self {
+        // XXX: copied from python impl, but change to 2 as it's
+        // visual width is much closer to 2 chars
+        const ELLIPSIS_LENGTH_CHARS: usize = 3;
         if self.text.len() > length {
-            self.text.truncate(length);
+            // this takes appended elipsis length into account
+            self.text
+                .truncate(length.max(ELLIPSIS_LENGTH_CHARS) - ELLIPSIS_LENGTH_CHARS);
             self.text += "…";
         }
         self
