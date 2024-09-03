@@ -24,7 +24,9 @@ pub struct QueryParams {
     pub caption: Option<String>,
     #[serde(rename = "minversion")]
     pub min_version: Option<String>,
-    pub allow_ignored: Option<bool>,
+    #[serde(default)]
+    #[serde(deserialize_with = "crate::query::deserialize_bool_flag")]
+    pub allow_ignored: bool,
 }
 
 #[derive(FromRow)]
@@ -88,20 +90,19 @@ pub async fn badge_version_for_repo(
 
     let caption_cell =
         Cell::new(query.caption.as_ref().map_or(&singular, |caption| caption)).collapsible(true);
-    let version_cell = if let Some(package) =
-        pick_representative_package(&packages, query.allow_ignored.unwrap_or_default())
-    {
-        let extra_status = query
-            .min_version
-            .as_ref()
-            .is_some_and(|min_version| package_version(package) < min_version)
-            .then_some(SpecialVersionStatus::LowerThanUserGivenThreshold);
-        let color = badge_color_for_package_status(package.status, extra_status);
+    let version_cell =
+        if let Some(package) = pick_representative_package(&packages, query.allow_ignored) {
+            let extra_status = query
+                .min_version
+                .as_ref()
+                .is_some_and(|min_version| package_version(package) < min_version)
+                .then_some(SpecialVersionStatus::LowerThanUserGivenThreshold);
+            let color = badge_color_for_package_status(package.status, extra_status);
 
-        Cell::new(&package.version).color(color).truncate(20)
-    } else {
-        Cell::new("-")
-    };
+            Cell::new(&package.version).color(color).truncate(20)
+        } else {
+            Cell::new("-")
+        };
 
     let body = render_generic_badge(
         &[vec![caption_cell, version_cell]],

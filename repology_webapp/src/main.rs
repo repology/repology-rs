@@ -5,6 +5,7 @@ mod badges;
 mod config;
 mod font;
 mod package;
+mod query;
 mod repometadata;
 mod result;
 mod state;

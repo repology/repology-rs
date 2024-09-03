@@ -26,7 +26,9 @@ pub struct QueryParams {
     pub caption: Option<String>,
     #[serde(rename = "minversion")]
     pub min_version: Option<String>,
-    pub allow_ignored: Option<bool>,
+    #[serde(default)]
+    #[serde(deserialize_with = "crate::query::deserialize_bool_flag")]
+    pub allow_ignored: bool,
 }
 
 #[derive(FromRow)]
@@ -84,10 +86,8 @@ pub async fn badge_vertical_allrepos(
     .fetch_all(&state.pool)
     .await?;
 
-    let package_per_repository = pick_representative_package_per_repository(
-        &packages,
-        query.allow_ignored.unwrap_or_default(),
-    );
+    let package_per_repository =
+        pick_representative_package_per_repository(&packages, query.allow_ignored);
 
     let mut cells = vec![];
 
