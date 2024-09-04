@@ -13,6 +13,18 @@ where
     Ok(!<&str>::deserialize(deserializer)?.is_empty())
 }
 
+pub fn deserialize_seq<'de, D, C, I>(deserializer: D) -> Result<C, D::Error>
+where
+    D: Deserializer<'de>,
+    C: FromIterator<I>,
+    I: Deserialize<'de>,
+{
+    <&str>::deserialize(deserializer)?
+        .split(',')
+        .map(|s| I::deserialize(s.into_deserializer()))
+        .try_collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -47,5 +59,39 @@ mod tests {
         assert_eq!(params.b, false);
         assert_eq!(params.c, false);
         assert_eq!(params.d, true);
+    }
+
+    #[test]
+    fn test_seq() {
+        #[derive(Debug, PartialEq, Eq, Hash, Deserialize)]
+        enum Test {
+            Foo,
+            Bar,
+            Baz,
+        }
+
+        #[derive(Debug, PartialEq, Deserialize)]
+        struct Params {
+            #[serde(default)]
+            #[serde(deserialize_with = "deserialize_seq")]
+            a: Vec<Test>,
+
+            #[serde(default)]
+            #[serde(deserialize_with = "deserialize_seq")]
+            b: Vec<Test>,
+
+            #[serde(default)]
+            #[serde(deserialize_with = "deserialize_seq")]
+            c: HashSet<Test>,
+        }
+
+        let uri: Uri = "https://example.com/foo?b=Foo,Bar&c=Bar,Baz"
+            .parse()
+            .unwrap();
+        let params = Query::<Params>::try_from_uri(&uri).unwrap().0;
+
+        assert_eq!(params.a, vec![]);
+        assert_eq!(params.b, vec![Test::Foo, Test::Bar]);
+        assert_eq!(params.c, HashSet::from([Test::Bar, Test::Baz]));
     }
 }
