@@ -25,7 +25,7 @@ pub struct RepositoryMetadata {
     pub title: String,
     pub singular: String,
     #[allow(dead_code)]
-    pub eol_date: Option<String>, // TODO: convert to chrono
+    pub eol_date: Option<chrono::NaiveDate>, // TODO: convert to chrono
     pub status: RepositoryStatus,
 }
 
@@ -62,7 +62,7 @@ impl RepositoryMetadataCache {
                 name,
                 "desc" AS title,
                 metadata->>'singular' AS singular,
-                metadata->>'valid_till' AS eol_date,
+                (metadata->>'valid_till')::DATE AS eol_date,
                 state AS status
             FROM repositories
             ORDER BY sortname
