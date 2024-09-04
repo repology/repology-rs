@@ -6,6 +6,7 @@ use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
 use serde::Deserialize;
 use sqlx::FromRow;
+use std::collections::HashSet;
 
 use repology_common::{PackageFlags, PackageStatus};
 
@@ -17,6 +18,7 @@ use crate::package::traits::{
     PackageWithFlags, PackageWithRepositoryName, PackageWithStatus, PackageWithVersion,
 };
 use crate::package::version::package_version;
+use crate::repometadata::{RepositoryMetadata, SourceType};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
@@ -31,6 +33,14 @@ pub struct QueryParams {
     pub allow_ignored: bool,
     #[serde(default)]
     pub columns_count: usize,
+
+    #[serde(default)]
+    #[serde(deserialize_with = "crate::query::deserialize_bool_flag")]
+    pub exclude_unsupported: bool,
+
+    #[serde(default)]
+    #[serde(deserialize_with = "crate::query::deserialize_seq")]
+    pub exclude_sources: HashSet<SourceType>,
 }
 
 #[derive(FromRow)]
@@ -60,6 +70,26 @@ impl PackageWithRepositoryName for Package {
     fn repository_name(&self) -> &str {
         &self.repository_name
     }
+}
+
+fn is_repository_filtered(repository_metadata: &RepositoryMetadata, query: &QueryParams) -> bool {
+    if query.exclude_unsupported
+        && repository_metadata
+            .eol_date
+            .is_some_and(|eol_date| eol_date < chrono::Utc::now().date_naive())
+    {
+        return true;
+    }
+
+    if !query.exclude_sources.is_empty()
+        && query
+            .exclude_sources
+            .contains(&repository_metadata.source_type)
+    {
+        return true;
+    }
+
+    false
 }
 
 pub async fn badge_vertical_allrepos(
@@ -93,11 +123,13 @@ pub async fn badge_vertical_allrepos(
 
     let mut cells: Vec<Vec<Cell>> = vec![];
 
-    for repository_metadata in state.repository_metadata_cache.get_all_active().await {
-        if false {
-            continue;
-        }
-
+    for repository_metadata in state
+        .repository_metadata_cache
+        .get_all_active()
+        .await
+        .into_iter()
+        .filter(|repository_metadata| !is_repository_filtered(repository_metadata, &query))
+    {
         if let Some(&package) = package_per_repository.get(&repository_metadata.name) {
             let extra_status = query
                 .min_version
