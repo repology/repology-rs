@@ -6,6 +6,7 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use anyhow::Error;
+use serde::Deserialize;
 use sqlx::{FromRow, PgPool};
 use strum_macros::EnumString;
 
@@ -19,6 +20,16 @@ pub enum RepositoryStatus {
     Readded,
 }
 
+#[derive(Clone, Debug, PartialEq, sqlx::Type, Deserialize, Eq, Hash)]
+#[sqlx(rename_all = "snake_case")]
+#[sqlx(type_name = "TEXT")]
+#[serde(rename_all = "snake_case")]
+pub enum SourceType {
+    Repository,
+    Modules,
+    Site,
+}
+
 #[derive(Debug, Clone, FromRow)]
 pub struct RepositoryMetadata {
     pub name: String,
@@ -27,6 +38,7 @@ pub struct RepositoryMetadata {
     #[allow(dead_code)]
     pub eol_date: Option<chrono::NaiveDate>, // TODO: convert to chrono
     pub status: RepositoryStatus,
+    pub source_type: SourceType,
 }
 
 #[derive(Default)]
@@ -63,7 +75,8 @@ impl RepositoryMetadataCache {
                 "desc" AS title,
                 metadata->>'singular' AS singular,
                 (metadata->>'valid_till')::DATE AS eol_date,
-                state AS status
+                state AS status,
+                metadata->>'type' AS source_type
             FROM repositories
             ORDER BY sortname
             "#,
