@@ -29,6 +29,8 @@ pub struct QueryParams {
     #[serde(default)]
     #[serde(deserialize_with = "crate::query::deserialize_bool_flag")]
     pub allow_ignored: bool,
+    #[serde(default)]
+    pub columns_count: usize,
 }
 
 #[derive(FromRow)]
@@ -89,7 +91,7 @@ pub async fn badge_vertical_allrepos(
     let package_per_repository =
         pick_representative_package_per_repository(&packages, query.allow_ignored);
 
-    let mut cells = vec![];
+    let mut cells: Vec<Vec<Cell>> = vec![];
 
     for repository_metadata in state.repository_metadata_cache.get_all_active().await {
         if false {
@@ -123,6 +125,21 @@ pub async fn badge_vertical_allrepos(
         },
         |caption| caption,
     );
+
+    let num_columns = query.columns_count.min(cells.len());
+
+    if num_columns > 1 {
+        let num_rows = cells.len().div_ceil(num_columns);
+
+        let mut input_iter = cells.into_iter();
+        cells = (0..num_rows)
+            .map(|_| Vec::<Cell>::with_capacity(num_columns * 2))
+            .collect();
+
+        for i in 0..num_columns * num_rows {
+            cells[i % num_rows].extend(input_iter.next().unwrap_or_default().into_iter());
+        }
+    };
 
     let body = render_generic_badge(&cells, Some(caption), 0, &state.font_measurer)?;
 
