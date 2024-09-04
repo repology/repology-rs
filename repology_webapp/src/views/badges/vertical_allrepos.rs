@@ -155,7 +155,7 @@ pub async fn badge_vertical_allrepos(
         } else {
             "Packaging status"
         },
-        |caption| caption,
+        String::as_str,
     );
 
     let num_columns = query.columns_count.min(cells.len());

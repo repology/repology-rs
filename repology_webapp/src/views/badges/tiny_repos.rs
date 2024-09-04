@@ -38,7 +38,7 @@ pub async fn badge_tiny_repos(
                 query
                     .header
                     .as_ref()
-                    .map_or("in repositories", |header| header),
+                    .map_or("in repositories", String::as_str),
             )
             .collapsible(true),
             Cell::new(&format!("{}", num_families)).color("#007ec6"),

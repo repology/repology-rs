@@ -89,7 +89,7 @@ pub async fn badge_version_for_repo(
     .await?;
 
     let caption_cell =
-        Cell::new(query.caption.as_ref().map_or(&singular, |caption| caption)).collapsible(true);
+        Cell::new(query.caption.as_ref().map_or(&singular, String::as_str)).collapsible(true);
     let version_cell =
         if let Some(package) = pick_representative_package(&packages, query.allow_ignored) {
             let extra_status = query
