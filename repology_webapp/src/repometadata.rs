@@ -45,8 +45,6 @@ pub struct RepositoryMetadataCache {
     cached_data: Arc<Mutex<CachedData>>,
 }
 
-unsafe impl Send for RepositoryMetadataCache {}
-
 const CACHE_DURATION: Duration = Duration::from_secs(300);
 
 impl RepositoryMetadataCache {
