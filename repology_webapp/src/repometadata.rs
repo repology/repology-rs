@@ -83,7 +83,7 @@ impl RepositoryMetadataCache {
         )
         .fetch_all(&self.pool)
         .await
-        .and_then(|repositories: Vec<RepositoryMetadata>| {
+        .map(|repositories: Vec<RepositoryMetadata>| {
             let cached_data = &mut self.cached_data.lock().unwrap();
             cached_data.repositories_by_name = repositories
                 .iter()
@@ -92,7 +92,6 @@ impl RepositoryMetadataCache {
                 .collect();
             cached_data.repositories = repositories;
             cached_data.last_update = Some(Instant::now());
-            Ok(())
         })?;
         Ok(())
     }
