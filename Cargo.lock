@@ -1202,7 +1202,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "repology_common"
+name = "repology-common"
 version = "0.1.0"
 dependencies = [
  "bitflags 2.6.0",
@@ -1213,7 +1213,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "repology_webapp"
+name = "repology-webapp"
 version = "0.1.0"
 dependencies = [
  "anyhow",
@@ -1222,7 +1222,7 @@ dependencies = [
  "clap",
  "libversion",
  "mime",
- "repology_common",
+ "repology-common",
  "serde",
  "serde_json",
  "sqlx",
