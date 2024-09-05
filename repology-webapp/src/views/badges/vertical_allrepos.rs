@@ -18,7 +18,7 @@ use crate::package::traits::{
     PackageWithFlags, PackageWithRepositoryName, PackageWithStatus, PackageWithVersion,
 };
 use crate::package::version::package_version;
-use crate::repometadata::{RepositoryMetadata, SourceType};
+use crate::repository_data::{RepositoryData, SourceType};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
@@ -72,9 +72,9 @@ impl PackageWithRepositoryName for Package {
     }
 }
 
-fn is_repository_filtered(repository_metadata: &RepositoryMetadata, query: &QueryParams) -> bool {
+fn is_repository_filtered(repository_data: &RepositoryData, query: &QueryParams) -> bool {
     if query.exclude_unsupported
-        && repository_metadata
+        && repository_data
             .eol_date
             .is_some_and(|eol_date| eol_date < chrono::Utc::now().date_naive())
     {
@@ -84,7 +84,7 @@ fn is_repository_filtered(repository_metadata: &RepositoryMetadata, query: &Quer
     if !query.exclude_sources.is_empty()
         && query
             .exclude_sources
-            .contains(&repository_metadata.source_type)
+            .contains(&repository_data.source_type)
     {
         return true;
     }
@@ -123,14 +123,14 @@ pub async fn badge_vertical_allrepos(
 
     let mut cells: Vec<Vec<Cell>> = vec![];
 
-    for repository_metadata in state
-        .repository_metadata_cache
+    for repository_data in state
+        .repository_data_cache
         .get_all_active()
         .await
         .into_iter()
-        .filter(|repository_metadata| !is_repository_filtered(repository_metadata, &query))
+        .filter(|repository_data| !is_repository_filtered(repository_data, &query))
     {
-        if let Some(&package) = package_per_repository.get(&repository_metadata.name) {
+        if let Some(&package) = package_per_repository.get(&repository_data.name) {
             let extra_status = query
                 .min_version
                 .as_ref()
@@ -140,7 +140,7 @@ pub async fn badge_vertical_allrepos(
             let color = badge_color_for_package_status(package.status, extra_status);
 
             cells.push(vec![
-                Cell::new(&repository_metadata.title).align(CellAlignment::Right),
+                Cell::new(&repository_data.title).align(CellAlignment::Right),
                 Cell::new(&package.version)
                     .color(color)
                     .truncate(13)

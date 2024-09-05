@@ -8,7 +8,7 @@ mod config;
 mod font;
 mod package;
 mod query;
-mod repometadata;
+mod repository_data;
 mod result;
 mod state;
 mod views;
@@ -21,7 +21,7 @@ use sqlx::PgPool;
 
 use crate::config::Config;
 use crate::font::FontMeasurer;
-use crate::repometadata::RepositoryMetadataCache;
+use crate::repository_data::RepositoryDataCache;
 use crate::state::AppState;
 
 #[tokio::main]
@@ -34,13 +34,13 @@ async fn main() -> Result<(), Error> {
 
     let font_measurer = FontMeasurer::new();
 
-    let repository_metadata_cache = RepositoryMetadataCache::new(pool.clone());
-    repository_metadata_cache
+    let repository_data_cache = RepositoryDataCache::new(pool.clone());
+    repository_data_cache
         .update()
         .await
         .context("error getting repository metadata")?;
 
-    let state = AppState::new(pool, font_measurer, repository_metadata_cache);
+    let state = AppState::new(pool, font_measurer, repository_data_cache);
 
     let app = Router::new()
         .route("/api/v1/project/:project_name", get(views::api_v1_project))

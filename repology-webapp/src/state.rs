@@ -6,25 +6,25 @@ use std::sync::Arc;
 use sqlx::PgPool;
 
 use crate::font::FontMeasurer;
-use crate::repometadata::RepositoryMetadataCache;
+use crate::repository_data::RepositoryDataCache;
 
 #[derive(Clone)]
 pub struct AppState {
     pub pool: PgPool,
     pub font_measurer: Arc<FontMeasurer>,
-    pub repository_metadata_cache: RepositoryMetadataCache,
+    pub repository_data_cache: RepositoryDataCache,
 }
 
 impl AppState {
     pub fn new(
         pool: PgPool,
         font_measurer: FontMeasurer,
-        repository_metadata_cache: RepositoryMetadataCache,
+        repository_data_cache: RepositoryDataCache,
     ) -> AppState {
         Self {
             pool,
             font_measurer: Arc::new(font_measurer),
-            repository_metadata_cache,
+            repository_data_cache,
         }
     }
 }

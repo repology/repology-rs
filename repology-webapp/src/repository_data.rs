@@ -31,7 +31,7 @@ pub enum SourceType {
 }
 
 #[derive(Debug, Clone, FromRow)]
-pub struct RepositoryMetadata {
+pub struct RepositoryData {
     pub name: String,
     pub title: String,
     pub singular: String,
@@ -44,22 +44,22 @@ pub struct RepositoryMetadata {
 #[derive(Default)]
 struct CachedData {
     last_update: Option<Instant>,
-    // XXX: Wrap RepositoryMetadata into Arc<>, which would allow to
+    // XXX: Wrap RepositoryData into Arc<>, which would allow to
     // avoid data duplication both when storing metadata here, and when
     // returning it from get_* methods
-    repositories: Vec<RepositoryMetadata>,
-    repositories_by_name: HashMap<String, RepositoryMetadata>,
+    repositories: Vec<RepositoryData>,
+    repositories_by_name: HashMap<String, RepositoryData>,
 }
 
 #[derive(Clone)]
-pub struct RepositoryMetadataCache {
+pub struct RepositoryDataCache {
     pool: PgPool,
     cached_data: Arc<Mutex<CachedData>>,
 }
 
 const CACHE_DURATION: Duration = Duration::from_secs(300);
 
-impl RepositoryMetadataCache {
+impl RepositoryDataCache {
     pub fn new(pool: PgPool) -> Self {
         Self {
             pool,
@@ -83,7 +83,7 @@ impl RepositoryMetadataCache {
         )
         .fetch_all(&self.pool)
         .await
-        .map(|repositories: Vec<RepositoryMetadata>| {
+        .map(|repositories: Vec<RepositoryData>| {
             let cached_data = &mut self.cached_data.lock().unwrap();
             cached_data.repositories_by_name = repositories
                 .iter()
@@ -111,7 +111,7 @@ impl RepositoryMetadataCache {
         }
     }
 
-    pub async fn get(&self, repository_name: &str) -> Option<RepositoryMetadata> {
+    pub async fn get(&self, repository_name: &str) -> Option<RepositoryData> {
         self.try_update_if_needed().await;
         self.cached_data
             .lock()
@@ -121,7 +121,7 @@ impl RepositoryMetadataCache {
             .cloned()
     }
 
-    pub async fn get_active(&self, repository_name: &str) -> Option<RepositoryMetadata> {
+    pub async fn get_active(&self, repository_name: &str) -> Option<RepositoryData> {
         self.try_update_if_needed().await;
         self.cached_data
             .lock()
@@ -132,7 +132,7 @@ impl RepositoryMetadataCache {
             .cloned()
     }
 
-    pub async fn get_all_active(&self) -> Vec<RepositoryMetadata> {
+    pub async fn get_all_active(&self) -> Vec<RepositoryData> {
         self.try_update_if_needed().await;
         self.cached_data
             .lock()
