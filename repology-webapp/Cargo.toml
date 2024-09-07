@@ -18,3 +18,7 @@ ttf-parser = "0.24.1"
 strum_macros = "0.26.4"
 strum = { version = "0.26.3", features = ["strum_macros", "derive"] }
 chrono = { version = "0.4.38", default-features = false, features = ["std", "now"] }
+
+[dev-dependencies]
+tower-service = "0.3.3"
+sxd-document = "0.3.2"
