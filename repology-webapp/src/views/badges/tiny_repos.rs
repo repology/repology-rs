@@ -11,14 +11,15 @@ use crate::result::EndpointResult;
 use crate::state::AppState;
 
 #[derive(Deserialize)]
-pub struct BadgeTinyReposQueryParams {
-    pub header: Option<String>,
+pub struct QueryParams {
+    #[serde(rename = "header")]
+    pub caption: Option<String>,
 }
 
 pub async fn badge_tiny_repos(
     Path(project_name): Path<String>,
     State(state): State<AppState>,
-    Query(query): Query<BadgeTinyReposQueryParams>,
+    Query(query): Query<QueryParams>,
 ) -> EndpointResult {
     let project_name = if let Some(project_name) = project_name.strip_suffix(".svg") {
         project_name
@@ -36,7 +37,7 @@ pub async fn badge_tiny_repos(
         &[vec![
             Cell::new(
                 query
-                    .header
+                    .caption
                     .as_ref()
                     .map_or("in repositories", String::as_str),
             )
