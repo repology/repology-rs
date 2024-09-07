@@ -82,9 +82,7 @@ fn is_repository_filtered(repository_data: &RepositoryData, query: &QueryParams)
     }
 
     if !query.exclude_sources.is_empty()
-        && query
-            .exclude_sources
-            .contains(&repository_data.source_type)
+        && query.exclude_sources.contains(&repository_data.source_type)
     {
         return true;
     }
