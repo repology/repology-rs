@@ -1,0 +1,3 @@
+[build]
+# https://docs.rs/sqlx/latest/sqlx/macro.migrate.html#nightly-rust-cfg-flag
+rustflags = ["--cfg=sqlx_macros_unstable"]

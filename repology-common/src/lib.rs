@@ -1,9 +1,13 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+pub mod migrations;
+
 use bitflags::bitflags;
 use serde::Serialize;
 use strum_macros::FromRepr;
+
+pub use migrations::*;
 
 #[derive(Debug, PartialEq, Serialize, FromRepr, sqlx::Type, Clone, Copy)]
 #[serde(rename_all = "lowercase")]
