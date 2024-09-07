@@ -16,7 +16,7 @@ const CELL_HORIZONTAL_PADDING: usize = 5;
 const FONT_FAMILY: &str = "DejaVu Sans,Verdana,Geneva,sans-serif";
 
 #[derive(Default)]
-#[allow(dead_code)]
+#[expect(dead_code)]
 pub enum CellAlignment {
     Left,
     #[default]

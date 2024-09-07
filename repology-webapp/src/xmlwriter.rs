@@ -61,6 +61,7 @@ impl XmlTag {
         }
     }
 
+    #[expect(dead_code)]
     pub fn add_text(&mut self, text: &str) -> &mut Self {
         self.content += &text
             .replace("&", "&amp;")
@@ -87,6 +88,7 @@ impl XmlTag {
         self
     }
 
+    #[expect(dead_code)]
     pub fn add_attrs<A: ToAttrs>(&mut self, attrs: A) -> &mut Self {
         self.attrs += &attrs.to_attrs();
         self

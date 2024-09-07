@@ -35,7 +35,6 @@ pub struct RepositoryData {
     pub name: String,
     pub title: String,
     pub singular: String,
-    #[allow(dead_code)]
     pub eol_date: Option<chrono::NaiveDate>, // TODO: convert to chrono
     pub status: RepositoryStatus,
     pub source_type: SourceType,
@@ -111,6 +110,7 @@ impl RepositoryDataCache {
         }
     }
 
+    #[expect(dead_code)]
     pub async fn get(&self, repository_name: &str) -> Option<RepositoryData> {
         self.try_update_if_needed().await;
         self.cached_data
