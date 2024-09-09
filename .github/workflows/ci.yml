@@ -45,7 +45,7 @@ jobs:
           #./grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --keep-only 'repology-*/*' --ignore '**/tests.rs' --ignore '*/tests/*.rs' -o coverage.lcov
           ./grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --keep-only 'repology-*/*' -o coverage.lcov
       - name: Submit coverage
-        if: ${{ github.actor != 'dependabot[bot]' }}
+        if: ${{ github.actor != 'dependabot[bot]' && github.event_name != 'pull_request' }}
         uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
