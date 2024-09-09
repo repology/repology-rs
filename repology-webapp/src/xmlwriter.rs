@@ -128,6 +128,7 @@ macro_rules! xml {
 pub(crate) use xml;
 
 #[cfg(test)]
+#[coverage(off)]
 mod test {
     use super::*;
 

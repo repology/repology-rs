@@ -11,7 +11,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
-          components: rustfmt
+          components: rustfmt,llvm-tools-preview
       - name: Install dependencies
         run: |
           curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
@@ -30,9 +30,24 @@ jobs:
             target/
           key: cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: cargo-
+      - name: Format check
+        run: cargo fmt --check
       - name: Test
         run: cargo test
         env:
           DATABASE_URL: postgres://postgres@localhost:5433/
-      - name: Format check
-        run: cargo fmt --check
+          RUSTFLAGS: "-Cinstrument-coverage"
+          RUSTDOCFLAGS: "-Cinstrument-coverage"
+          LLVM_PROFILE_FILE: "${{ github.workspace }}/default_%m_%p.profraw"
+      - name: Collect coverage
+        run: |
+          curl -sL https://github.com/mozilla/grcov/releases/download/v0.8.19/grcov-x86_64-unknown-linux-gnu.tar.bz2 | tar -xjf-
+          #./grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --keep-only 'repology-*/*' --ignore '**/tests.rs' --ignore '*/tests/*.rs' -o coverage.lcov
+          ./grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --keep-only 'repology-*/*' -o coverage.lcov
+      - name: Submit coverage
+        if: ${{ github.actor != 'dependabot[bot]' }}
+        uses: codecov/codecov-action@v4
+        with:
+          fail_ci_if_error: true
+          files: ./coverage.lcov
+          token: ${{ secrets.CODECOV_TOKEN }}

@@ -1,3 +1,6 @@
+#![feature(coverage_attribute)]
+#![coverage(off)]
+
 use anyhow::Error;
 use axum::http::{header, Request, StatusCode};
 use sqlx::PgPool;

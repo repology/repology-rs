@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![feature(iterator_try_collect)]
+#![feature(coverage_attribute)]
 
 mod badges;
 mod font;

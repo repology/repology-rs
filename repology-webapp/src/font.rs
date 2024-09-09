@@ -82,6 +82,7 @@ impl FontMeasurer {
 }
 
 #[cfg(test)]
+#[coverage(off)]
 mod test {
     use super::*;
 
