@@ -17,6 +17,18 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
           components: rustfmt
+      - name: Install dependencies
+        run: |
+          curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main $POSTGRESQL" > /etc/apt/sources.list.d/pgdg.list'
+          sudo apt-get update
+          sudo apt-get install postgresql-$POSTGRESQL postgresql-server-dev-$POSTGRESQL
+        env:
+          POSTGRESQL: 16
+      - name: Prepare postgresql
+        run: |
+          sudo sed -i -e 's|peer|trust|' /etc/postgresql/$POSTGRESQL/main/pg_hba.conf
+          sudo pg_ctlcluster $POSTGRESQL main restart
       - uses: actions/cache@v4
         with:
           path: |
@@ -33,5 +45,7 @@ jobs:
           RUSTFLAGS: -Dwarnings -Adead_code
       - name: Test
         run: cargo test ${{ matrix.cargo_args }}
+        env:
+          DATABASE_URL: postgres://postgres@localhost:5433/
       - name: Format check
         run: cargo fmt --check
