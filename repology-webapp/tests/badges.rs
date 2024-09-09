@@ -84,11 +84,42 @@ async fn test_badge_tiny_repos(pool: PgPool) {
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_data"))]
 async fn test_badge_version_for_repo(pool: PgPool) {
     check_code!(pool, "/badge/version_for_repo/freebsd/zsh", NOT_FOUND);
+    check_code!(pool, "/badge/version_for_repo/badrepo/zsh", NOT_FOUND);
     check_svg!(
         pool,
         "/badge/version-for-repo/freebsd/zsh.svg",
         "FreeBSD port",
         ">1.1<",
         "#4c1",
+    );
+    check_svg!(
+        pool,
+        "/badge/version-for-repo/freebsd/zsh.svg?minversion=1.2",
+        "FreeBSD port",
+        ">1.1<",
+        "#e00000",
+    );
+    check_svg!(
+        pool,
+        "/badge/version-for-repo/freebsd/zsh.svg?header=fbsd+ver",
+        !"FreeBSD port",
+        "fbsd ver",
+    );
+    check_svg!(
+        pool,
+        "/badge/version-for-repo/freebsd/unpackaged.svg",
+        ">-<",
+    );
+    check_svg!(
+        pool,
+        "/badge/version-for-repo/ubuntu/zsh.svg",
+        ">1.0<",
+        "#e05d44",
+    );
+    check_svg!(
+        pool,
+        "/badge/version-for-repo/ubuntu/zsh.svg?allow_ignored=1",
+        ">1.2<",
+        "#9f9f9f",
     );
 }
