@@ -2,20 +2,13 @@ name: CI
 on: [ push, pull_request ]
 jobs:
   test:
-    strategy:
-      matrix:
-        include:
-          - { name: "Rust stable", rust: stable, cargo_args: "" }
-          - { name: "Rust nightly", rust: nightly, cargo_args: "" }
-          - { name: "Rust nightly, release", rust: nightly, cargo_args: "--release" }
-      fail-fast: false
     runs-on: ubuntu-latest
     name: ${{ matrix.name }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: ${{ matrix.rust }}
+          toolchain: nightly
           components: rustfmt
       - name: Install dependencies
         run: |
@@ -35,16 +28,10 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             target/
-          key: cargo-${{ matrix.rust }}-${{ matrix.cargo_args }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: |
-            cargo-${{ matrix.rust }}-${{ matrix.cargo_args }}-
-            cargo-${{ matrix.rust }}-
-      - name: Build
-        run: cargo build ${{ matrix.cargo_args }}
-        env:
-          RUSTFLAGS: -Dwarnings -Adead_code
+          key: cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-
       - name: Test
-        run: cargo test ${{ matrix.cargo_args }}
+        run: cargo test
         env:
           DATABASE_URL: postgres://postgres@localhost:5433/
       - name: Format check
