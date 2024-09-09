@@ -14,6 +14,10 @@ This repository is a gradual rewrite of Repology components to Rust.
   data classes and database queries.
 - **repology-webapp** - backend of Repology web site.
 
+## Requirements
+
+This code requires rust nightly.
+
 ## Status
 
 To start with, we're rewriting most loaded Replogy website backend
