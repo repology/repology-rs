@@ -1,0 +1,13 @@
+[package]
+name = "libversion"
+description = "Advanced version string comparison algorithm"
+version = "0.2.0"
+authors = ["Dmitry Marakasov <amdmi3@amdmi3.ru>"]
+repository = "https://github.com/repology/libversion-rs"
+readme = "README.md"
+categories = ["algorithms", "version", "comparison"]
+license = "MIT"
+edition = "2021"
+
+[dependencies]
+bitflags = "2.6.0"
