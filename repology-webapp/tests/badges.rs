@@ -71,20 +71,20 @@ async fn test_badge_tiny_repos(pool: PgPool) {
         "in repositories",
         ">0<"
     );
-    check_svg!(pool, "/badge/tiny-repos/zsh.svg", "in repositories", ">2<");
+    check_svg!(pool, "/badge/tiny-repos/zsh.svg", "in repositories", ">3<");
     check_svg!(
         pool,
         "/badge/tiny-repos/zsh.svg?header=Repository+Count",
         !"in repositories",
         "Repository Count",
-        ">2<"
+        ">3<"
     );
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_data"))]
 async fn test_badge_version_for_repo(pool: PgPool) {
-    check_code!(pool, "/badge/version_for_repo/freebsd/zsh", NOT_FOUND);
-    check_code!(pool, "/badge/version_for_repo/badrepo/zsh", NOT_FOUND);
+    check_code!(pool, "/badge/version-for-repo/freebsd/zsh", NOT_FOUND);
+    check_code!(pool, "/badge/version-for-repo/badrepo/zsh", NOT_FOUND);
     check_svg!(
         pool,
         "/badge/version-for-repo/freebsd/zsh.svg",
@@ -121,5 +121,32 @@ async fn test_badge_version_for_repo(pool: PgPool) {
         "/badge/version-for-repo/ubuntu/zsh.svg?allow_ignored=1",
         ">1.2<",
         "#9f9f9f",
+    );
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_data"))]
+async fn test_badge_vertical_allrepos(pool: PgPool) {
+    check_code!(pool, "/badge/vertical-allrepos/zsh", NOT_FOUND);
+    check_svg!(
+        pool,
+        "/badge/vertical-allrepos/unpackaged.svg",
+        "No known packages",
+        !"FreeBSD",
+        !"Ubuntu",
+        !"freshcode.club",
+    );
+    check_svg!(
+        pool,
+        "/badge/vertical-allrepos/zsh.svg",
+        "Packaging status",
+        "FreeBSD",
+        "Ubuntu",
+        "freshcode.club",
+    );
+    check_svg!(
+        pool,
+        "/badge/vertical-allrepos/zsh.svg?header=PACKAGES",
+        !"Packaging status",
+        "PACKAGES",
     );
 }
