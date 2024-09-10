@@ -147,13 +147,21 @@ pub async fn badge_vertical_allrepos(
         }
     }
 
-    let caption = query.caption.as_ref().map_or(
-        if cells.is_empty() {
-            "No known packages"
-        } else {
-            "Packaging status"
+    let caption = query.caption.as_ref().map_or_else(
+        || {
+            if cells.is_empty() {
+                Some("No known packages")
+            } else {
+                Some("Packaging status")
+            }
         },
-        String::as_str,
+        |caption| {
+            if caption.is_empty() {
+                None
+            } else {
+                Some(&caption)
+            }
+        },
     );
 
     let num_columns = query.columns_count.min(cells.len());
@@ -171,7 +179,7 @@ pub async fn badge_vertical_allrepos(
         }
     };
 
-    let body = render_generic_badge(&cells, Some(caption), 0, &state.font_measurer)?;
+    let body = render_generic_badge(&cells, caption, 0, &state.font_measurer)?;
 
     Ok((
         [(
