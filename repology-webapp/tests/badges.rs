@@ -103,7 +103,7 @@ macro_rules! check_svg {
                     context.set_namespace("svg", "http://www.w3.org/2000/svg");
 
                     let xpath_res = xpath.evaluate(&context, _document.root()).unwrap();
-                    assert!($xpath_value.equals_to_xpath_value(&xpath_res), "unexpected xpath value {:?} while expected {}", xpath_res, $xpath_value);
+                    assert!($xpath_value.equals_to_xpath_value(&xpath_res), "unexpected xpath value {:?} while expected \"{}\"", xpath_res, $xpath_value);
                 }
             )?
         )*
