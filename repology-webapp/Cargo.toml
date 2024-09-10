@@ -11,7 +11,7 @@ tokio = { version = "1.40.0", features = ["macros", "rt-multi-thread"] }
 repology-common = { path = "../repology-common" }
 libversion = { path = "../libversion" }
 sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres", "chrono"] }
-anyhow = "1.0.86"
+anyhow = "1.0.87"
 clap = { version = "4.5.17", features = ["derive"] }
 mime = "0.3.17"
 ttf-parser = "0.24.1"
@@ -20,8 +20,4 @@ strum = { version = "0.26.3", features = ["strum_macros", "derive"] }
 chrono = { version = "0.4.38", default-features = false, features = ["std", "now"] }
 
 [dev-dependencies]
-tower-service = "0.3.3"
-sxd-document = "0.3.2"
-sxd-xpath = "0.4.2"
-json = "0.12.4"
-pretty_assertions = "1.4.0"
+repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }
