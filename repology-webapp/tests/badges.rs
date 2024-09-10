@@ -144,7 +144,7 @@ async fn test_badge_tiny_repos(pool: PgPool) {
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_data"))]
 async fn test_badge_version_for_repo(pool: PgPool) {
     check_code!(pool, "/badge/version-for-repo/freebsd/zsh", NOT_FOUND);
-    check_code!(pool, "/badge/version-for-repo/badrepo/zsh", NOT_FOUND);
+    check_code!(pool, "/badge/version-for-repo/badrepo/zsh.svg", NOT_FOUND);
     check_svg!(
         pool,
         "/badge/version-for-repo/freebsd/zsh.svg",
