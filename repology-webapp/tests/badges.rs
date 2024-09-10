@@ -202,15 +202,38 @@ async fn test_badge_version_for_repo(pool: PgPool) {
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_data"))]
 async fn test_badge_vertical_allrepos(pool: PgPool) {
     check_code!(pool, "/badge/vertical-allrepos/zsh", NOT_FOUND);
+
+    // caption
     check_svg!(
         pool,
         "/badge/vertical-allrepos/unpackaged.svg",
         @"string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" == "No known packages",
+        @"count(//svg:g[1]/svg:g[@font-size=11]/svg:text)" == 0_f64,
     );
     check_svg!(
         pool,
         "/badge/vertical-allrepos/unpackaged.svg?header=Packages",
         @"string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" == "Packages",
+    );
+    check_svg!(
+        pool,
+        "/badge/vertical-allrepos/unpackaged.svg?header=",
+        @"count(//svg:g[1]/svg:g[@font-size=15]/svg:text)" == 0_f64,
+    );
+    check_svg!(
+        pool,
+        "/badge/vertical-allrepos/zsh.svg",
+        @"string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" == "Packaging status",
+    );
+    check_svg!(
+        pool,
+        "/badge/vertical-allrepos/zsh.svg?header=Packages",
+        @"string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" == "Packages",
+    );
+    check_svg!(
+        pool,
+        "/badge/vertical-allrepos/zsh.svg?header=",
+        @"count(//svg:g[1]/svg:g[@font-size=15]/svg:text)" == 0_f64,
     );
 
     // version flags
@@ -278,5 +301,19 @@ async fn test_badge_vertical_allrepos(pool: PgPool) {
         pool,
         "/badge/vertical-allrepos/zsh.svg?exclude_sources=repository,site",
         @"count(//svg:g[1]/svg:g[@font-size=11]/svg:text)" == 0_f64,
+    );
+
+    // columns
+    check_svg!(
+        pool,
+        "/badge/vertical-allrepos/zsh.svg?columns_count=4",
+        @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[1])" == "FreeBSD",
+        @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[3])" == "1.1",
+        @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[5])" == "freshcode.club",
+        @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[7])" == "1.0",
+        @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[9])" == "Ubuntu 12",
+        @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[11])" == "0.9",
+        @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[13])" == "Ubuntu 24",
+        @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[15])" == "1.0",
     );
 }
