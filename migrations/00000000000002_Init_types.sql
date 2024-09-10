@@ -15,8 +15,6 @@
 -- You should have received a copy of the GNU General Public License
 -- along with repology.  If not, see <http://www.gnu.org/licenses/>.
 
-DROP TYPE IF EXISTS metapackage_event_type CASCADE;
-
 CREATE TYPE metapackage_event_type AS enum(
 	'history_start',
 	'repos_update',
@@ -24,8 +22,6 @@ CREATE TYPE metapackage_event_type AS enum(
 	'catch_up',
 	'history_end'
 );
-
-DROP TYPE IF EXISTS maintainer_repo_metapackages_event_type CASCADE;
 
 CREATE TYPE maintainer_repo_metapackages_event_type AS enum(
 	'added',
@@ -35,14 +31,10 @@ CREATE TYPE maintainer_repo_metapackages_event_type AS enum(
 	'removed'
 );
 
-DROP TYPE IF EXISTS global_version_event_type CASCADE;
-
 CREATE TYPE global_version_event_type AS enum(
 	'newest_update',
 	'devel_update'
 );
-
-DROP TYPE IF EXISTS repository_state CASCADE;
 
 CREATE TYPE repository_state AS enum(
 	'new',
@@ -51,16 +43,12 @@ CREATE TYPE repository_state AS enum(
 	'readded'
 );
 
-DROP TYPE IF EXISTS run_type CASCADE;
-
 CREATE TYPE run_type AS enum(
 	'fetch',
 	'parse',
 	'database_push',
 	'database_postprocess'
 );
-
-DROP TYPE IF EXISTS run_status CASCADE;
 
 CREATE TYPE run_status AS enum(
 	'running',
@@ -69,23 +57,17 @@ CREATE TYPE run_status AS enum(
 	'interrupted'
 );
 
-DROP TYPE IF EXISTS log_severity CASCADE;
-
 CREATE TYPE log_severity AS enum(
 	'notice',
 	'warning',
 	'error'
 );
 
-DROP TYPE IF EXISTS project_name_type CASCADE;
-
 CREATE TYPE project_name_type AS enum(
 	'name',
 	'srcname',
 	'binname'
 );
-
-DROP TYPE IF EXISTS problem_type CASCADE;
 
 CREATE TYPE problem_type AS enum(
 	'homepage_dead',
