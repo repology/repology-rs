@@ -23,3 +23,5 @@ chrono = { version = "0.4.38", default-features = false, features = ["std", "now
 tower-service = "0.3.3"
 sxd-document = "0.3.2"
 sxd-xpath = "0.4.2"
+json = "0.12.4"
+pretty_assertions = "1.4.0"
