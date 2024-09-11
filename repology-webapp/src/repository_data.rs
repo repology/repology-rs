@@ -68,6 +68,8 @@ impl RepositoryDataCache {
 
     pub async fn update(&self) -> Result<(), Error> {
         sqlx::query_as(
+            // XXX: COALESCE for singular and source_type are meant for
+            // legacy repositories which don't have meta properly filled
             r#"
             SELECT
                 name,
@@ -75,7 +77,7 @@ impl RepositoryDataCache {
                 COALESCE(metadata->>'singular', name || ' package') AS singular,
                 (metadata->>'valid_till')::DATE AS eol_date,
                 state AS status,
-                metadata->>'type' AS source_type
+                COALESCE(metadata->>'type', 'repository') AS source_type
             FROM repositories
             ORDER BY sortname
             "#,
