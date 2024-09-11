@@ -92,7 +92,7 @@ impl Default for Column {
     }
 }
 
-#[rustfmt::skip]
+#[rustfmt::skip::macros(xml)]
 pub fn render_generic_badge(
     cells: &[Vec<Cell>],
     header: Option<&str>,
@@ -107,10 +107,13 @@ pub fn render_generic_badge(
     // calculate column widths
     for row in cells {
         for (cell, column) in row.iter().zip(columns.iter_mut()) {
-            column.width = column.width.max(
-                font_measurer.get_text_width(&cell.text, CELL_FONT_SIZE, FontStyle::Regular)?
-                    + CELL_HORIZONTAL_PADDING * 2,
-            ).max(cell.min_width);
+            column.width = column
+                .width
+                .max(
+                    font_measurer.get_text_width(&cell.text, CELL_FONT_SIZE, FontStyle::Regular)?
+                        + CELL_HORIZONTAL_PADDING * 2,
+                )
+                .max(cell.min_width);
             if !cell.text.is_empty() || !cell.collapsible {
                 column.is_collapsed = false;
             }
@@ -124,18 +127,18 @@ pub fn render_generic_badge(
         .for_each(|column| column.width = 0);
 
     // add header if specified
-    let (min_width, header_height) = if let Some(header) = header.filter(|header| !header.is_empty()) {
-        (
-            min_width.max(font_measurer.get_text_width(
-                header,
-                HEADER_FONT_SIZE,
-                FontStyle::Bold,
-            )? + CELL_HORIZONTAL_PADDING * 2),
-            HEADER_HEIGHT,
-        )
-    } else {
-        (min_width, 0)
-    };
+    let (min_width, header_height) =
+        if let Some(header) = header.filter(|header| !header.is_empty()) {
+            (
+                min_width.max(
+                    font_measurer.get_text_width(header, HEADER_FONT_SIZE, FontStyle::Bold)?
+                        + CELL_HORIZONTAL_PADDING * 2,
+                ),
+                HEADER_HEIGHT,
+            )
+        } else {
+            (min_width, 0)
+        };
 
     // calculate total sizes
     let total_height = header_height + CELL_HEIGHT * num_rows;
@@ -161,8 +164,9 @@ pub fn render_generic_badge(
 
     // define clip path for rounded corners
     doc.add_child(
-        xml!("clipPath", "id" = "clip")
-            .with_child(xml!("rect", "rx" = 3, "width" = "100%", "height" = "100%", "fill" = "#000"))
+        xml!("clipPath", "id" = "clip").with_child(
+            xml!("rect", "rx" = 3, "width" = "100%", "height" = "100%", "fill" = "#000"),
+        ),
     );
 
     // define linear gradient for bevel effect
@@ -212,7 +216,8 @@ pub fn render_generic_badge(
         );
 
         // cell texts
-        let mut cell_text_g = xml!("g", "fill" = "#fff", "font-family" = FONT_FAMILY, "font-size" = CELL_FONT_SIZE);
+        let mut cell_text_g =
+            xml!("g", "fill" = "#fff", "font-family" = FONT_FAMILY, "font-size" = CELL_FONT_SIZE);
 
         for (cell, column) in row.iter().zip(columns.iter()) {
             if cell.text.is_empty() || column.is_collapsed {
@@ -233,7 +238,7 @@ pub fn render_generic_badge(
                 xml!("text", "x" = text_x, "y" = text_y + 1, "text-anchor" = text_anchor, "dominant-baseline" = "central", "fill" = "#010101", "fill-opacity" = ".3")
                     .with_text(&cell.text)
             );
-            
+
             cell_text_g.add_child(
                 xml!("text", "x" = text_x, "y" = text_y, "text-anchor" = text_anchor, "dominant-baseline" = "central")
                     .with_text(&cell.text)
