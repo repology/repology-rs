@@ -204,7 +204,7 @@ async fn test_badge_vertical_allrepos(pool: PgPool) {
     // columns
     check_svg!(
         pool,
-        "/badge/vertical-allrepos/zsh.svg?columns_count=4",
+        "/badge/vertical-allrepos/zsh.svg?columns=4",
         @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[1])" == "FreeBSD",
         @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[3])" == "1.1",
         @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[5])" == "freshcode.club",

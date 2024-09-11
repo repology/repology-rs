@@ -32,6 +32,7 @@ pub struct QueryParams {
     #[serde(deserialize_with = "crate::query::deserialize_bool_flag")]
     pub allow_ignored: bool,
     #[serde(default)]
+    #[serde(rename = "columns")]
     pub columns_count: usize,
 
     #[serde(default)]
