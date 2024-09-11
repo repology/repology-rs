@@ -28,7 +28,7 @@ pub enum CellAlignment {
 pub struct Cell {
     pub text: String,
     pub color: Option<String>,
-    pub min_width: Option<usize>,
+    pub min_width: usize,
     pub collapsible: bool,
     pub alignment: CellAlignment,
 }
@@ -65,7 +65,7 @@ impl Cell {
     }
 
     pub fn min_width(mut self, width: usize) -> Self {
-        self.min_width = Some(width);
+        self.min_width = width;
         self
     }
 
@@ -110,7 +110,7 @@ pub fn render_generic_badge(
             column.width = column.width.max(
                 font_measurer.get_text_width(&cell.text, CELL_FONT_SIZE, FontStyle::Regular)?
                     + CELL_HORIZONTAL_PADDING * 2,
-            );
+            ).max(cell.min_width);
             if !cell.text.is_empty() || !cell.collapsible {
                 column.is_collapsed = false;
             }
