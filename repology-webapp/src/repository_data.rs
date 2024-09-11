@@ -72,7 +72,7 @@ impl RepositoryDataCache {
             SELECT
                 name,
                 "desc" AS title,
-                metadata->>'singular' AS singular,
+                COALESCE(metadata->>'singular', name || ' package') AS singular,
                 (metadata->>'valid_till')::DATE AS eol_date,
                 state AS status,
                 metadata->>'type' AS source_type
