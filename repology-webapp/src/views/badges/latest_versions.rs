@@ -75,7 +75,7 @@ pub async fn badge_latest_versions(
             a.cmp(b)
                 .then_with(|| a.version().len().cmp(&b.version().len()))
                 .reverse()
-                .then_with(|| a.version().cmp(&b.version()))
+                .then_with(|| a.version().cmp(b.version()))
         })
         .dedup_by(|a, b| a.version() == b.version())
         .collect::<Vec<_>>();

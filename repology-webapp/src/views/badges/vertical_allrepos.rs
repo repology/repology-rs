@@ -160,7 +160,7 @@ pub async fn badge_vertical_allrepos(
             if caption.is_empty() {
                 None
             } else {
-                Some(&caption)
+                Some(caption)
             }
         },
     );
