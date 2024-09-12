@@ -4,4 +4,5 @@ INSERT INTO packages(effname, version, versionclass, flags, repo, family, trackn
 	('zsh', '1.0.0', 1, 0, '', '', '', '', '', '', '', false),
 	('zsh', '1.0', 1, 0, '', '', '', '', '', '', '', false),
 	('zsh', '2024', 2, 1 << 8, '', '', '', '', '', '', '', false),  -- sink
-	('zsh', '2025', 3, 0, '', '', '', '', '', '', '', false);  -- ignored
+	('zsh', '2025', 3, 0, '', '', '', '', '', '', '', false),  -- ignored
+	('bash', '1.0', 4, 0, '', '', '', '', '', '', '', false);  -- unique

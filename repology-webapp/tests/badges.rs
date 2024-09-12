@@ -236,6 +236,13 @@ async fn test_badge_latest_versions(pool: PgPool) {
         @"string(//svg:g[1]/svg:g[1]/svg:text[1])" == "latest packaged versions",
         @"string(//svg:g[1]/svg:g[1]/svg:text[3])" == "3.0, 1.0.0, 1_0_0, 1.0",
     );
+    check_svg!(
+        pool,
+        "/badge/latest-versions/bash.svg",
+        @"count(//svg:g[1]/svg:g[1]/svg:text)" == 4_f64,
+        @"string(//svg:g[1]/svg:g[1]/svg:text[1])" == "latest packaged version",
+        @"string(//svg:g[1]/svg:g[1]/svg:text[3])" == "1.0",
+    );
 
     // caption flags
     check_svg!(

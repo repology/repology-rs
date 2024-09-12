@@ -12,10 +12,10 @@ use sqlx::FromRow;
 
 use libversion::AsVersionWithFlags;
 
-use repology_common::{PackageFlags, PackageStatus};
+use repology_common::PackageFlags;
 
 use crate::badges::{render_generic_badge, Cell};
-use crate::package::traits::{PackageWithFlags, PackageWithStatus, PackageWithVersion};
+use crate::package::traits::{PackageWithFlags, PackageWithVersion};
 use crate::package::version::package_version;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -29,7 +29,6 @@ pub struct QueryParams {
 #[derive(FromRow)]
 pub struct Package {
     pub version: String,
-    pub status: PackageStatus,
     pub flags: i32,
 }
 
@@ -41,11 +40,6 @@ impl PackageWithVersion for Package {
 impl PackageWithFlags for Package {
     fn flags(&self) -> PackageFlags {
         PackageFlags::from_bits(self.flags as u32).expect("flags must be deserializable")
-    }
-}
-impl PackageWithStatus for Package {
-    fn status(&self) -> PackageStatus {
-        self.status
     }
 }
 
@@ -64,7 +58,6 @@ pub async fn badge_latest_versions(
         r#"
         SELECT
             version,
-            versionclass AS status,
             flags
         FROM packages
         WHERE effname = $1 AND versionclass IN (1, 4, 5)  -- Newest, Unique, Devel
