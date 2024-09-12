@@ -47,5 +47,9 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
             "/badge/vertical-allrepos/:project_name.svg",
             get(views::badge_vertical_allrepos),
         )
+        .route(
+            "/badge/latest-versions/:project_name.svg",
+            get(views::badge_latest_versions),
+        )
         .with_state(state))
 }

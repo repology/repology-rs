@@ -215,3 +215,37 @@ async fn test_badge_vertical_allrepos(pool: PgPool) {
         @"string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[15])" == "1.0",
     );
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("badge_versions_data")
+)]
+async fn test_badge_latest_versions(pool: PgPool) {
+    check_code!(pool, "/badge/latest-versions/nonexistent", NOT_FOUND);
+    check_svg!(
+        pool,
+        "/badge/latest-versions/nonexistent.svg",
+        @"count(//svg:g[1]/svg:g[1]/svg:text)" == 4_f64,
+        @"string(//svg:g[1]/svg:g[1]/svg:text[1])" == "latest packaged version",
+        @"string(//svg:g[1]/svg:g[1]/svg:text[3])" == "-",
+    );
+    check_svg!(
+        pool,
+        "/badge/latest-versions/zsh.svg",
+        @"count(//svg:g[1]/svg:g[1]/svg:text)" == 4_f64,
+        @"string(//svg:g[1]/svg:g[1]/svg:text[1])" == "latest packaged versions",
+        @"string(//svg:g[1]/svg:g[1]/svg:text[3])" == "3.0, 1.0.0, 1_0_0, 1.0",
+    );
+
+    // caption flags
+    check_svg!(
+        pool,
+        "/badge/latest-versions/zsh.svg?header=VERSIONS",
+        @"string(//svg:g[1]/svg:g[1]/svg:text[1])" == "VERSIONS",
+    );
+    check_svg!(
+        pool,
+        "/badge/latest-versions/zsh.svg?header=",
+        @"count(//svg:g[1]/svg:g[1]/svg:text)" == 2_f64,
+    );
+}

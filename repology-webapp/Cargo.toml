@@ -18,6 +18,7 @@ ttf-parser = "0.24.1"
 strum_macros = "0.26.4"
 strum = { version = "0.26.3", features = ["strum_macros", "derive"] }
 chrono = { version = "0.4.38", default-features = false, features = ["std", "now"] }
+itertools = "0.13.0"
 
 [dev-dependencies]
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }
