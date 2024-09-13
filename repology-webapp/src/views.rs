@@ -3,6 +3,8 @@
 
 mod api;
 mod badges;
+mod static_files;
 
 pub use api::*;
 pub use badges::*;
+pub use static_files::*;

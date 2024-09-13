@@ -19,6 +19,9 @@ strum_macros = "0.26.4"
 strum = { version = "0.26.3", features = ["strum_macros", "derive"] }
 chrono = { version = "0.4.38", default-features = false, features = ["std", "now"] }
 itertools = "0.13.0"
+include_dir = { version = "0.7.4", features = ["glob", "nightly"] }
+flate2 = "1.0.33"
+cityhasher = "0.1.0"
 
 [dev-dependencies]
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }

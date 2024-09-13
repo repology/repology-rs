@@ -11,6 +11,7 @@ mod query;
 mod repository_data;
 mod result;
 mod state;
+mod static_files;
 mod views;
 mod xmlwriter;
 
@@ -21,6 +22,7 @@ use sqlx::PgPool;
 use crate::font::FontMeasurer;
 use crate::repository_data::RepositoryDataCache;
 use crate::state::AppState;
+use crate::static_files::StaticFiles;
 
 pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
     let font_measurer = FontMeasurer::new();
@@ -31,7 +33,14 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .await
         .context("error getting repository metadata")?;
 
-    let state = AppState::new(pool, font_measurer, repository_data_cache);
+    let static_files = StaticFiles::new();
+
+    let state = AppState::new(
+        pool,
+        font_measurer,
+        repository_data_cache,
+        static_files,
+    );
 
     Ok(Router::new()
         .route("/api/v1/project/:project_name", get(views::api_v1_project))
@@ -51,5 +60,6 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
             "/badge/latest-versions/:project_name.svg",
             get(views::badge_latest_versions),
         )
+        .route("/static/:file_name", get(views::static_file))
         .with_state(state))
 }
