@@ -3,8 +3,10 @@
 
 #![feature(iterator_try_collect)]
 #![feature(coverage_attribute)]
+#![feature(stmt_expr_attributes)]
 
 mod badges;
+mod endpoints;
 mod font;
 mod package;
 mod query;
@@ -42,24 +44,14 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         static_files,
     );
 
+    use crate::endpoints::Endpoint::*;
+    #[rustfmt::skip]
     Ok(Router::new()
-        .route("/api/v1/project/:project_name", get(views::api_v1_project))
-        .route(
-            "/badge/tiny-repos/:project_name.svg",
-            get(views::badge_tiny_repos),
-        )
-        .route(
-            "/badge/version-for-repo/:repository_name/:project_name.svg",
-            get(views::badge_version_for_repo),
-        )
-        .route(
-            "/badge/vertical-allrepos/:project_name.svg",
-            get(views::badge_vertical_allrepos),
-        )
-        .route(
-            "/badge/latest-versions/:project_name.svg",
-            get(views::badge_latest_versions),
-        )
-        .route("/static/:file_name", get(views::static_file))
+        .route(ApiV1Project.path(), get(views::api_v1_project))
+        .route(BadgeTinyRepos.path(), get(views::badge_tiny_repos))
+        .route(BadgeVersionForRepo.path(), get(views::badge_version_for_repo))
+        .route(BadgeVerticalAllRepos.path(), get(views::badge_vertical_allrepos))
+        .route(BadgeLatestVersions.path(), get(views::badge_latest_versions))
+        .route(StaticFile.path(), get(views::static_file))
         .with_state(state))
 }
