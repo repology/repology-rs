@@ -11,7 +11,7 @@ tokio = { version = "1.40.0", features = ["macros", "rt-multi-thread"] }
 repology-common = { path = "../repology-common" }
 libversion = { path = "../libversion" }
 sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres", "chrono"] }
-anyhow = "1.0.88"
+anyhow = "1.0.89"
 clap = { version = "4.5.17", features = ["derive"] }
 mime = "0.3.17"
 ttf-parser = "0.24.1"
