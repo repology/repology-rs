@@ -1,3 +1,3 @@
 [workspace]
-members = ["repology-common", "repology-webapp", "libversion", "repology-webapp-test-utils"]
+members = ["repology-common", "repology-webapp", "libversion", "repology-webapp-test-utils", "repology-vulnupdater"]
 resolver = "2"

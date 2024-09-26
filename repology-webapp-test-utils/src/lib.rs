@@ -144,3 +144,23 @@ macro_rules! check_svg {
         )*
     };
 }
+
+#[macro_export]
+macro_rules! check_html {
+    ($pool:ident, $uri:literal $(, $($has:literal)? $(!$hasnt:literal)?)*) => {
+        let resp = $crate::__private::get($pool.clone(), $uri)
+            .await
+            .unwrap();
+        assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
+        assert_eq!(resp.content_type, Some($crate::__private::mime::TEXT_HTML.as_ref().into()));
+
+        $(
+            $(
+                assert!(resp.body.contains($has));
+            )?
+            $(
+                assert!(!resp.body.contains($hasnt));
+            )?
+        )*
+    };
+}
