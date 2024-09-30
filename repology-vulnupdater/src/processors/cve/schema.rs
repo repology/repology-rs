@@ -6,37 +6,31 @@ use std::borrow::Cow;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
-pub struct Feed<'a> {
-    #[serde(rename = "CVE_Items", borrow)]
-    pub cve_items: Vec<CveItem<'a>>,
+pub struct Root<'a> {
+    #[serde(borrow)]
+    pub vulnerabilities: Vec<Vulnerability<'a>>,
 }
 
 #[derive(Deserialize, Debug)]
-pub struct CveItem<'a> {
+pub struct Vulnerability<'a> {
     #[serde(borrow)]
     pub cve: Cve<'a>,
-    #[serde(rename = "publishedDate", borrow)]
-    pub published_date: &'a str,
-    #[serde(rename = "lastModifiedDate", borrow)]
-    pub last_modified_date: &'a str,
-    #[serde(borrow)]
-    pub configurations: Configurations<'a>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Cve<'a> {
-    #[serde(rename = "CVE_data_meta", borrow)]
-    pub cve_meta_data: CveMetaData<'a>,
-}
-
-#[derive(Deserialize, Debug)]
-pub struct CveMetaData<'a> {
-    #[serde(rename = "ID", borrow)]
+    #[serde(rename = "id", borrow)]
     pub id: &'a str,
+    #[serde(rename = "published", borrow)]
+    pub published: &'a str,
+    #[serde(rename = "lastModified", borrow)]
+    pub last_modified: &'a str,
+    #[serde(borrow, default)]
+    pub configurations: Vec<Configuration<'a>>,
 }
 
 #[derive(Deserialize, Debug)]
-pub struct Configurations<'a> {
+pub struct Configuration<'a> {
     #[serde(borrow)]
     pub nodes: Vec<Node<'a>>,
 }
@@ -45,15 +39,15 @@ pub struct Configurations<'a> {
 pub struct Node<'a> {
     #[serde(borrow)]
     pub operator: &'a str,
-    #[serde(borrow)]
+    pub negate: bool,
+    #[serde(rename = "cpeMatch", borrow)]
     pub cpe_match: Vec<CpeMatch<'a>>,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct CpeMatch<'a> {
     pub vulnerable: bool,
-    #[serde(rename = "cpe23Uri", borrow)]
-    pub cpe: Cow<'a, str>,
+    pub criteria: Cow<'a, str>,
     #[serde(rename = "versionStartIncluding", borrow)]
     pub version_start_including: Option<Cow<'a, str>>,
     #[serde(rename = "versionStartExcluding", borrow)]

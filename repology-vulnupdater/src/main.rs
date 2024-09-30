@@ -2,57 +2,98 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![feature(duration_constructors)]
-#![feature(try_blocks)]
-#![feature(iterator_try_collect)]
 
 mod args;
 mod cpe;
-mod datasources;
+mod datetime;
+mod fetcher;
 mod processors;
-mod update;
+mod status_tracker;
+mod vulnupdater;
+
+use std::cell::LazyCell;
 
 use anyhow::{Context, Error};
-use clap::Parser;
-use sqlx::PgPool;
-use std::time::Duration;
+use clap::Parser as _;
+use sqlx::postgres::PgPoolOptions;
+use sqlx::Executor;
+use tracing::info;
 
 use args::Args;
-use datasources::generate_datasources;
-use processors::DatasourceUpdateResult;
-use update::Updater;
+use fetcher::NvdFetcher;
+use processors::cpe::CpeProcessor;
+use processors::cve::CveProcessor;
+use status_tracker::SourceUpdateStatusTracker;
+
+use vulnupdater::{Datasource, VulnUpdater};
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
     let args = Args::parse();
 
-    let pool = PgPool::connect(&args.dsn)
+    tracing_subscriber::fmt::init();
+
+    info!("creating PostgreSQL pool");
+    let pool = PgPoolOptions::new()
+        .after_connect(|conn, _meta| {
+            Box::pin(async move {
+                conn.execute("SET application_name = 'repology-vulnupdater'")
+                    .await?;
+                conn.execute("SET search_path = vulnupdater").await?;
+                Ok(())
+            })
+        })
+        .connect(&args.dsn)
         .await
-        .context("error creating PostgreSQL connection pool")?;
+        .context("postgres connection failed")?;
 
-    let updater = Updater::new(pool.clone()).context("error creating updater")?;
+    // make sure schema exist before migrations, so
+    // _sqlx_migrations table can be placed within it
+    info!("creating PostgreSQL schema");
+    sqlx::query("CREATE SCHEMA IF NOT EXISTS vulnupdater")
+        .execute(&pool)
+        .await
+        .context("schema creation failed")?;
+    info!("running migrations");
+    sqlx::migrate!("./migrations")
+        .run(&pool)
+        .await
+        .context("migrations failed")?;
 
-    loop {
-        let mut to_next_update = Duration::from_hours(1);
+    info!("initializing datasources");
+    let cve_processor =
+        LazyCell::new(|| CveProcessor::new(&pool).skip_finalization(args.no_update_repology));
+    let cpe_processor =
+        LazyCell::new(|| CpeProcessor::new(&pool).skip_finalization(args.no_update_repology));
 
-        for datasource in generate_datasources(&args, pool.clone()) {
-            let sleep_duration = match updater.update_source(&datasource).await {
-                Ok(res) => match res {
-                    DatasourceUpdateResult::NoUpdateNeededFor(dur) => dur,
-                    _ => datasource.update_period,
-                },
-                Err(_) => {
-                    const RETRY_TIMEOUT: Duration = Duration::from_mins(5);
-                    RETRY_TIMEOUT
-                }
-            };
-            to_next_update = to_next_update.min(sleep_duration);
-        }
+    let mut datasources: Vec<Datasource> = vec![];
 
-        if args.once_only {
-            return Ok(());
-        }
-
-        eprintln!("sleeping for {:?} before next iteration", to_next_update);
-        tokio::time::sleep(to_next_update).await;
+    if args.should_update_all() || args.should_update_cve {
+        datasources.push(Datasource {
+            name: "CVE",
+            url: "https://services.nvd.nist.gov/rest/json/cves/2.0",
+            processor: &*cve_processor,
+        });
     }
+    if args.should_update_all() || args.should_update_cpe {
+        datasources.push(Datasource {
+            name: "CPE",
+            url: "https://services.nvd.nist.gov/rest/json/cpes/2.0",
+            processor: &*cpe_processor,
+        });
+    }
+
+    info!("initializing vulnupdater");
+    let status_tracker = SourceUpdateStatusTracker::new(&pool);
+    let fetcher = NvdFetcher::new()?;
+    let vulnupdater = VulnUpdater::new(&status_tracker, &fetcher);
+
+    info!("running");
+    if args.once_only {
+        vulnupdater.process_datasources_once(&datasources).await?;
+    } else {
+        vulnupdater.run_loop(&datasources, args.update_period).await;
+    }
+
+    Ok(())
 }

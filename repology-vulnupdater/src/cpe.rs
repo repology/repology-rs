@@ -59,10 +59,11 @@ impl Display for Cpe {
 
 impl Debug for Cpe {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "Cpe{{{}}}", self.to_string())
+        write!(f, "Cpe{{{}}}", self)
     }
 }
 
+#[allow(clippy::enum_variant_names)]
 #[derive(Debug, PartialEq, Eq)]
 pub enum CpeParseError {
     InvalidPrefix,
