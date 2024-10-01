@@ -17,6 +17,7 @@ fn cpe_to_json(cpe: Cpe) -> serde_json::Value {
         serde_json::to_value(cpe.vendor).unwrap(),
         serde_json::to_value(cpe.product).unwrap(),
         serde_json::to_value(cpe.version).unwrap(),
+        serde_json::to_value(cpe.update).unwrap(),
         serde_json::to_value(cpe.edition).unwrap(),
         serde_json::to_value(cpe.lang).unwrap(),
         serde_json::to_value(cpe.sw_edition).unwrap(),
@@ -83,6 +84,7 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
                     cpe_vendor,
                     cpe_product,
                     cpe_version,
+                    cpe_update,
                     cpe_edition,
                     cpe_lang,
                     cpe_sw_edition,
@@ -99,7 +101,8 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
                     jsonb_array_elements($1)->>5,
                     jsonb_array_elements($1)->>6,
                     jsonb_array_elements($1)->>7,
-                    jsonb_array_elements($1)->>8
+                    jsonb_array_elements($1)->>8,
+                    jsonb_array_elements($1)->>9
                 ON CONFLICT DO NOTHING
                 "#,
         )
@@ -119,17 +122,19 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
                         jsonb_array_elements($1)->>0 AS cpe_vendor,
                         jsonb_array_elements($1)->>1 AS cpe_product,
                         jsonb_array_elements($1)->>2 AS cpe_version,
-                        jsonb_array_elements($1)->>3 AS cpe_edition,
-                        jsonb_array_elements($1)->>4 AS cpe_lang,
-                        jsonb_array_elements($1)->>5 AS cpe_sw_edition,
-                        jsonb_array_elements($1)->>6 AS cpe_target_sw,
-                        jsonb_array_elements($1)->>7 AS cpe_target_hw,
-                        jsonb_array_elements($1)->>8 AS cpe_other
+                        jsonb_array_elements($1)->>3 AS cpe_update,
+                        jsonb_array_elements($1)->>4 AS cpe_edition,
+                        jsonb_array_elements($1)->>5 AS cpe_lang,
+                        jsonb_array_elements($1)->>6 AS cpe_sw_edition,
+                        jsonb_array_elements($1)->>7 AS cpe_target_sw,
+                        jsonb_array_elements($1)->>8 AS cpe_target_hw,
+                        jsonb_array_elements($1)->>9 AS cpe_other
                 )
                 DELETE FROM cpes AS t USING delete_batch AS d WHERE
                     t.cpe_vendor = d.cpe_vendor AND
                     t.cpe_product = d.cpe_product AND
                     t.cpe_version = d.cpe_version AND
+                    t.cpe_update = d.cpe_update AND
                     t.cpe_edition = d.cpe_edition AND
                     t.cpe_lang = d.cpe_lang AND
                     t.cpe_sw_edition = d.cpe_sw_edition AND

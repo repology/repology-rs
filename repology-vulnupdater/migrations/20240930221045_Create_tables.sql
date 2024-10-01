@@ -23,6 +23,7 @@ CREATE TABLE cpes (
 	cpe_vendor text NOT NULL,
 	cpe_product text NOT NULL,
 	cpe_version text NOT NULL,
+	cpe_update text NOT NULL,
 	cpe_edition text NOT NULL,
 	cpe_lang text NOT NULL,
 	cpe_sw_edition text NOT NULL,
@@ -31,4 +32,4 @@ CREATE TABLE cpes (
 	cpe_other text NOT NULL
 );
 
-CREATE UNIQUE INDEX cpes_pkey ON cpes(cpe_vendor, cpe_product, cpe_version, cpe_edition, cpe_lang, cpe_sw_edition, cpe_target_sw, cpe_target_hw, cpe_other);
+CREATE UNIQUE INDEX cpes_pkey ON cpes(cpe_vendor, cpe_product, cpe_version, cpe_update, cpe_edition, cpe_lang, cpe_sw_edition, cpe_target_sw, cpe_target_hw, cpe_other);
