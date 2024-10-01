@@ -223,6 +223,23 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
         .execute(&mut *tx)
         .await?;
 
+        sqlx::query(
+            r#"
+            DELETE FROM public.cves
+            "#,
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        sqlx::query(
+            r#"
+            INSERT INTO public.cves
+            SELECT * FROM cves
+            "#,
+        )
+        .execute(&mut *tx)
+        .await?;
+
         tx.commit().await?;
 
         Ok(())
