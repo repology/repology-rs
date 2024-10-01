@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![feature(duration_constructors)]
+#![feature(coverage_attribute)]
 
 mod args;
 mod cpe;

@@ -15,6 +15,9 @@ mod tests {
 
     #[test]
     fn test_parse_utc_datetime() {
-        assert_eq!(parse_utc_datetime("2024-01-02T03:04:05.006", DateTime<Utc>()));
+        assert_eq!(
+            parse_utc_datetime("2024-01-02T03:04:05.006").unwrap(),
+            DateTime::<Utc>::from_timestamp(1704164645, 6000000).unwrap()
+        );
     }
 }
