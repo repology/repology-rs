@@ -32,6 +32,8 @@ pub struct Cve<'a> {
 #[derive(Deserialize, Debug)]
 pub struct Configuration<'a> {
     #[serde(borrow)]
+    pub operator: Option<&'a str>,
+    #[serde(borrow)]
     pub nodes: Vec<Node<'a>>,
 }
 

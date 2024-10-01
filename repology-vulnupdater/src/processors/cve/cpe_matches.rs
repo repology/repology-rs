@@ -144,6 +144,13 @@ impl<'a> CpeMatches<'a> {
     pub fn from_cve(cve: &'a schema::Cve<'a>) -> Self {
         let mut res: Self = Default::default();
         for configuration in &cve.configurations {
+            if configuration
+                .operator
+                .is_some_and(|operator| operator == "AND")
+            {
+                // TODO: complex node trees are not supported yet
+                continue;
+            }
             for node in &configuration.nodes {
                 res.collect_from_node(node)
             }
