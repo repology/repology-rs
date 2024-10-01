@@ -160,9 +160,10 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
 
         let mut tx = self.pool.begin().await?;
 
+        // XXX: switch to MERGE
         sqlx::query(
             r#"
-            DELETE FROM public.cpe_dictionary;
+            DELETE FROM public.cpe_dictionary_test;
             "#,
         )
         .execute(&mut *tx)
@@ -170,7 +171,7 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
 
         sqlx::query(
             r#"
-            INSERT INTO public.cpe_dictionary (
+            INSERT INTO public.cpe_dictionary_test (
                 cpe_vendor,
                 cpe_product,
                 cpe_edition,

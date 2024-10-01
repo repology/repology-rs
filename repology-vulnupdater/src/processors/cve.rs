@@ -123,9 +123,10 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
 
         let mut tx = self.pool.begin().await?;
 
+        // XXX: switch to MERGE
         sqlx::query(
             r#"
-            DELETE FROM public.vulnerable_cpes
+            DELETE FROM public.vulnerable_cpes_test
             "#,
         )
         .execute(&mut *tx)
@@ -176,7 +177,7 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
                     ) AS covering_end_version
                 FROM expanded_matches
             )
-            INSERT INTO public.vulnerable_cpes (
+            INSERT INTO public.vulnerable_cpes_test (
                 cpe_vendor,
                 cpe_product,
                 cpe_edition,
@@ -217,7 +218,16 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
         sqlx::query(
             r#"
             WITH deleted AS (DELETE FROM cve_updates RETURNING cpe_vendor, cpe_product)
-            INSERT INTO public.cpe_updates(cpe_vendor, cpe_product) SELECT * FROM deleted;
+            INSERT INTO public.cpe_updates_test(cpe_vendor, cpe_product) SELECT * FROM deleted;
+            "#,
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        // XXX: switch to MERGE
+        sqlx::query(
+            r#"
+            DELETE FROM public.cves_test
             "#,
         )
         .execute(&mut *tx)
@@ -225,15 +235,7 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
 
         sqlx::query(
             r#"
-            DELETE FROM public.cves
-            "#,
-        )
-        .execute(&mut *tx)
-        .await?;
-
-        sqlx::query(
-            r#"
-            INSERT INTO public.cves
+            INSERT INTO public.cves_test
             SELECT * FROM cves
             "#,
         )
