@@ -128,14 +128,14 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
                 )
                 DELETE FROM cpes AS t USING delete_batch AS d WHERE
                     t.cpe_vendor = d.cpe_vendor AND
-                    t.cpe_product = t.cpe_product AND
-                    t.cpe_version = t.cpe_version AND
-                    t.cpe_edition = t.cpe_edition AND
-                    t.cpe_lang = t.cpe_lang AND
-                    t.cpe_sw_edition = t.cpe_sw_edition AND
-                    t.cpe_target_sw = t.cpe_target_sw AND
-                    t.cpe_target_hw = t.cpe_target_hw AND
-                    t.cpe_other = t.cpe_other
+                    t.cpe_product = d.cpe_product AND
+                    t.cpe_version = d.cpe_version AND
+                    t.cpe_edition = d.cpe_edition AND
+                    t.cpe_lang = d.cpe_lang AND
+                    t.cpe_sw_edition = d.cpe_sw_edition AND
+                    t.cpe_target_sw = d.cpe_target_sw AND
+                    t.cpe_target_hw = d.cpe_target_hw AND
+                    t.cpe_other = d.cpe_other
                 "#,
             )
             .bind(
