@@ -4,13 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-tower-service = "0.3.3"
+anyhow = "1.0.89"
+axum = "0.7.7"
+json = "0.12.4"
+mime = "0.3.17"
+pretty_assertions = "1.4.1"
+repology-webapp = { path = "../repology-webapp" }
+sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres", "chrono"] }
 sxd-document = "0.3.2"
 sxd-xpath = "0.4.2"
-json = "0.12.4"
-pretty_assertions = "1.4.1"
-axum = "0.7.7"
-anyhow = "1.0.89"
-sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres", "chrono"] }
-repology-webapp = { path = "../repology-webapp" }
-mime = "0.3.17"
+tower-service = "0.3.3"
