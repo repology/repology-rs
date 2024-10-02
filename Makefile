@@ -6,7 +6,7 @@ grcov:
 	rm -rf target/coverage-profile
 	mkdir -p target/coverage-output-grcov
 	env RUSTFLAGS="${COVERAGE_FLAGS}" LLVM_PROFILE_FILE=$$(pwd)/target/coverage-profile/profile_%10m_%p.profraw cargo test
-	grcov target/coverage-profile --binary-path ./target/debug/ -s . -t html --ignore-not-existing --branch --keep-only 'repology-webapp/*' --keep-only 'repology-common/*' -o target/coverage-output-grcov
+	grcov target/coverage-profile --binary-path ./target/debug/ -s . -t html --ignore-not-existing --branch --keep-only 'repology-webapp/*' --keep-only 'repology-common/*' --keep-only 'repology-vulnupdater/*' -o target/coverage-output-grcov
 	xdg-open "file://$$(pwd)/target/coverage-output-grcov/html/index.html"
 
 llvm-cov:
