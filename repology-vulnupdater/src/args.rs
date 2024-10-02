@@ -61,3 +61,20 @@ impl Args {
         !(self.should_update_cve || self.should_update_cpe)
     }
 }
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_duration() {
+        assert_eq!(parse_duration("123"), Ok(Duration::from_secs(123)));
+        assert_eq!(parse_duration("123s"), Ok(Duration::from_secs(123)));
+        assert_eq!(parse_duration("1m"), Ok(Duration::from_secs(60)));
+        assert_eq!(parse_duration("1h"), Ok(Duration::from_secs(3600)));
+        assert_eq!(parse_duration("1d"), Ok(Duration::from_secs(86400)));
+        assert_eq!(parse_duration("1w"), Ok(Duration::from_secs(604800)));
+        assert!(parse_duration("1x").is_err());
+    }
+}

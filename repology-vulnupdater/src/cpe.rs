@@ -127,6 +127,7 @@ impl FromStr for Cpe {
 }
 
 #[cfg(test)]
+#[coverage(off)]
 mod tests {
     use super::*;
 
