@@ -32,7 +32,18 @@ use vulnupdater::{Datasource, VulnUpdater};
 async fn main() -> Result<(), Error> {
     let args = Args::parse();
 
-    tracing_subscriber::fmt::init();
+    if let Some(log_directory) = &args.log_directory {
+        use tracing_appender::rolling::{RollingFileAppender, Rotation};
+        let logfile = RollingFileAppender::builder()
+            .rotation(Rotation::DAILY)
+            .filename_prefix("repology-vulnupdater.log")
+            .max_log_files(14)
+            .build(log_directory)
+            .context("logging initialization failed")?;
+        tracing_subscriber::fmt().with_writer(logfile).init();
+    } else {
+        tracing_subscriber::fmt::init();
+    }
 
     info!("creating PostgreSQL pool");
     let pool = PgPoolOptions::new()

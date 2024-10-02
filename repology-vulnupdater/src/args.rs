@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::path::PathBuf;
 use std::time::Duration;
 
 fn parse_duration(arg: &str) -> Result<std::time::Duration, std::num::ParseIntError> {
@@ -54,6 +55,13 @@ pub struct Args {
     /// Don't update repology tables after updating NVD data
     #[arg(long)]
     pub no_update_repology: bool,
+
+    /// Path to log directory
+    ///
+    /// When specified, output is redirected to a log file in the
+    /// given directory with daily rotation and 14 kept rotated files.
+    #[arg(short = 'l', long)]
+    pub log_directory: Option<PathBuf>,
 }
 
 impl Args {
