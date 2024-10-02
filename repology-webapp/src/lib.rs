@@ -37,12 +37,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
 
     let static_files = StaticFiles::new();
 
-    let state = AppState::new(
-        pool,
-        font_measurer,
-        repository_data_cache,
-        static_files,
-    );
+    let state = AppState::new(pool, font_measurer, repository_data_cache, static_files);
 
     use crate::endpoints::Endpoint::*;
     #[rustfmt::skip]
