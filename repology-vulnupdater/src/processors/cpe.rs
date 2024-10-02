@@ -7,6 +7,7 @@ use std::str::FromStr as _;
 
 use anyhow::Error;
 use async_trait::async_trait;
+use metrics::counter;
 use sqlx::PgPool;
 
 use crate::cpe::{Cpe, Part};
@@ -51,6 +52,10 @@ impl<'a> CpeProcessor<'a> {
 #[async_trait]
 impl<'a> DatasourceProcessor for CpeProcessor<'a> {
     async fn process(&self, data: &str) -> Result<DatasourceProcessStatus, Error> {
+        counter!("repology_vulnupdater_processor_runs_total", "processor" => "cpe", "stage" => "processing").increment(1);
+        counter!("repology_vulnupdater_processor_data_bytes_total", "processor" => "cpe")
+            .increment(data.len() as u64);
+
         let root = serde_json::from_str::<self::schema::Root>(data)?;
 
         let mut add_batch: Vec<Cpe> = vec![];
@@ -61,24 +66,30 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
                 Ok(cpe) => cpe,
                 Err(_) => {
                     // XXX: log these cases
+                    counter!("repology_vulnupdater_processor_products_total", "status" => "skipped", "skip_reason" => "unparsable CPE").increment(1);
                     continue;
                 }
             };
 
             if cpe.part != Part::Applications {
+                counter!("repology_vulnupdater_processor_products_total", "status" => "skipped", "skip_reason" => "not applications").increment(1);
                 continue;
             }
 
             if product.cpe.deprecated {
+                counter!("repology_vulnupdater_processor_products_total", "status" => "deprecated")
+                    .increment(1);
                 delete_batch.push(cpe);
             } else {
+                counter!("repology_vulnupdater_processor_products_total", "status" => "active")
+                    .increment(1);
                 add_batch.push(cpe);
             }
         }
 
         let mut tx = self.pool.begin().await?;
 
-        let num_changes = sqlx::query(
+        let num_rows_inserted = sqlx::query(
             r#"
                 INSERT INTO cpes (
                     cpe_vendor,
@@ -114,9 +125,12 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
         )
         .execute(&mut *tx)
         .await?
-        .rows_affected()
-            + sqlx::query(
-                r#"
+        .rows_affected();
+
+        counter!("repology_vulnupdater_processor_sql_rows_total_total", "processor" => "cpe", "operation" => "INSERT", "stage" => "processing").increment(num_rows_inserted);
+
+        let num_rows_deleted = sqlx::query(
+            r#"
                 WITH delete_batch AS (
                     SELECT
                         jsonb_array_elements($1)->>0 AS cpe_vendor,
@@ -142,20 +156,25 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
                     t.cpe_target_hw = d.cpe_target_hw AND
                     t.cpe_other = d.cpe_other
                 "#,
-            )
-            .bind(
-                delete_batch
-                    .into_iter()
-                    .map(cpe_to_json)
-                    .collect::<serde_json::Value>(),
-            )
-            .execute(&mut *tx)
-            .await?
-            .rows_affected();
+        )
+        .bind(
+            delete_batch
+                .into_iter()
+                .map(cpe_to_json)
+                .collect::<serde_json::Value>(),
+        )
+        .execute(&mut *tx)
+        .await?
+        .rows_affected();
+
+        counter!("repology_vulnupdater_processor_sql_rows_total_total", "processor" => "cpe", "operation" => "DELETE", "stage" => "processing").increment(num_rows_deleted);
 
         tx.commit().await?;
 
-        Ok(DatasourceProcessStatus { num_changes })
+        counter!("repology_vulnupdater_processor_runs_succeeded_total", "processor" => "cpe", "stage" => "processing").increment(1);
+        Ok(DatasourceProcessStatus {
+            num_changes: num_rows_inserted + num_rows_deleted,
+        })
     }
 
     async fn finalize(&self) -> Result<(), Error> {
@@ -163,16 +182,21 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
             return Ok(());
         }
 
+        counter!("repology_vulnupdater_processor_runs_total", "processor" => "cpe", "stage" => "finalization").increment(1);
+
         let mut tx = self.pool.begin().await?;
 
         // XXX: switch to MERGE
-        sqlx::query(
+        let num_rows = sqlx::query(
             r#"
             DELETE FROM public.cpe_dictionary_test;
             "#,
         )
         .execute(&mut *tx)
-        .await?;
+        .await?
+        .rows_affected();
+
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cpe", "operation" => "DELETE", "stage" => "finalization").increment(num_rows);
 
         sqlx::query(
             r#"
@@ -200,10 +224,14 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
             "#,
         )
         .execute(&mut *tx)
-        .await?;
+        .await?
+        .rows_affected();
+
+        counter!("repology_vulnupdater_processor_sql_rows_total_total", "processor" => "cpe", "operation" => "INSERT", "stage" => "finalization").increment(num_rows);
 
         tx.commit().await?;
 
+        counter!("repology_vulnupdater_processor_runs_succeeded_total", "processor" => "cpe", "stage" => "finalization").increment(1);
         Ok(())
     }
 }

@@ -6,6 +6,7 @@ use std::time::{Duration, Instant};
 
 use anyhow::{bail, Error};
 use chrono::{TimeDelta, Utc};
+use metrics::counter;
 use serde::Deserialize;
 use tokio::sync::Mutex;
 
@@ -110,7 +111,14 @@ impl<'a> Paginator<'a> {
             }
         }
 
-        let text = self.fetcher.fetch(&self.construct_page_url()).await?;
+        counter!("repology_vulnupdater_fetcher_requests_total").increment(1);
+        let text = self
+            .fetcher
+            .fetch(&self.construct_page_url())
+            .await
+            .inspect_err(|_| {
+                counter!("repology_vulnupdater_fetcher_requests_failed_total").increment(1)
+            })?;
         let pagination: Pagination = serde_json::from_str(&text)?;
         if (parse_utc_datetime(&pagination.timestamp)? - Utc::now()).abs() > MAX_TIME_OFFSET {
             bail!("too big time offset between client and server");

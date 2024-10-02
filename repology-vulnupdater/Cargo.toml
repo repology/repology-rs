@@ -8,6 +8,9 @@ anyhow = "1.0.89"
 async-trait = "0.1.83"
 chrono = { version = "0.4.38", default-features = false, features = ["now"] }
 clap = { version = "4.5.18", features = ["derive"] }
+metrics = "0.23.0"
+metrics-exporter-prometheus = { version = "0.15.3", default-features = false, features = ["http-listener"] }
+metrics-process = "2.1.0"
 reqwest = { version = "0.12.7", features = ["stream"] }
 serde = { version = "1.0.210", features = ["derive"] }
 serde_json = "1.0.128"

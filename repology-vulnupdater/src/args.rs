@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::time::Duration;
 
@@ -60,8 +61,12 @@ pub struct Args {
     ///
     /// When specified, output is redirected to a log file in the
     /// given directory with daily rotation and 14 kept rotated files.
-    #[arg(short = 'l', long)]
+    #[arg(short = 'l', long, value_name = "PATH")]
     pub log_directory: Option<PathBuf>,
+
+    /// Host/port for Prometheus metrics export endpoint
+    #[arg(long, value_name = "HOST:PORT")]
+    pub prometheus_export: Option<SocketAddr>,
 }
 
 impl Args {

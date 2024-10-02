@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use metrics::counter;
+
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::str::FromStr as _;
@@ -73,17 +75,25 @@ impl<'a> CpeMatches<'a> {
     fn collect_from_node(&mut self, node: &'a schema::Node<'a>) {
         if node.operator != "OR" {
             // TODO: complex node trees are not supported yet
+            counter!("repology_vulnupdater_processor_cve_nodes_total", "status" => "skipped", "skip_reason" => "operator other than OR").increment(1);
             return;
         }
 
         if node.negate {
             // TODO: complex node trees are not supported yet
+            counter!("repology_vulnupdater_processor_cve_nodes_total", "status" => "skipped", "skip_reason" => "negate").increment(1);
             return;
         }
 
+        counter!("repology_vulnupdater_processor_cve_nodes_total", "status" => "processed")
+            .increment(1);
+
         for cpe_match in &node.cpe_match {
+            counter!("repology_vulnupdater_processor_cve_cpes_total_total").increment(1);
+
             if !cpe_match.vulnerable {
                 // TODO: investigate if vulnerability exclusions are relevant
+                counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "skipped", "skip_reason" => "not vulnerable").increment(1);
                 continue;
             }
 
@@ -91,16 +101,18 @@ impl<'a> CpeMatches<'a> {
                 cpe
             } else {
                 // TODO: log or fix these cases
+                counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "skipped", "skip_reason" => "unparsable CPE").increment(1);
                 continue;
             };
 
             if !is_good_cpe(&cpe) {
                 // TODO: recheck if we need os matches
+                counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "skipped", "skip_reason" => "uninteresting CPE").increment(1);
                 continue;
             }
 
             if cpe.version == "-" {
-                // TODO: log ?
+                counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "skipped", "skip_reason" => "version is -").increment(1);
                 continue;
             }
 
@@ -115,6 +127,7 @@ impl<'a> CpeMatches<'a> {
                     cpe_match.version_end_excluding.clone(),
                 );
 
+                counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "accepted", "type" => "range").increment(1);
                 self.matches
                     .entry(cpe)
                     .or_default()
@@ -130,6 +143,7 @@ impl<'a> CpeMatches<'a> {
                     cpe.version.clone()
                 };
 
+                counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "accepted", "type" => "single version").increment(1);
                 self.matches
                     .entry(cpe)
                     .or_default()
@@ -149,8 +163,11 @@ impl<'a> CpeMatches<'a> {
                 .is_some_and(|operator| operator == "AND")
             {
                 // TODO: complex node trees are not supported yet
+                counter!("repology_vulnupdater_processor_cve_configurations_total", "status" => "skipped", "skip_reason" => "AND operator").increment(1);
                 continue;
             }
+            counter!("repology_vulnupdater_processor_cve_configurations_total", "status" => "processed").increment(1);
+
             for node in &configuration.nodes {
                 res.collect_from_node(node)
             }

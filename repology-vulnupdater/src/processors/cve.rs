@@ -6,6 +6,7 @@ mod schema;
 
 use anyhow::Error;
 use async_trait::async_trait;
+use metrics::counter;
 use sqlx::PgPool;
 
 use crate::datetime::parse_utc_datetime;
@@ -35,6 +36,10 @@ impl<'a> CveProcessor<'a> {
 #[async_trait]
 impl<'a> DatasourceProcessor for CveProcessor<'a> {
     async fn process(&self, data: &str) -> Result<DatasourceProcessStatus, Error> {
+        counter!("repology_vulnupdater_processor_runs_total", "processor" => "cve", "stage" => "processing").increment(1);
+        counter!("repology_vulnupdater_processor_data_bytes_total", "processor" => "cve")
+            .increment(data.len() as u64);
+
         let root = serde_json::from_str::<self::schema::Root>(data)?;
 
         let mut num_changes = 0;
@@ -53,7 +58,7 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
             let vendor_product_pairs = matches.vendor_product_pairs_for_sql();
             let matches_as_json = matches.into_matches_for_sql();
 
-            num_changes += sqlx::query(
+            let num_rows = sqlx::query(
                 r#"
                 WITH updated_cves AS (
                     INSERT INTO cves (
@@ -109,10 +114,14 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
             .execute(&mut *tx)
             .await?
             .rows_affected();
+
+            counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "UPSERT", "stage" => "processing").increment(num_rows);
+            num_changes += num_rows;
         }
 
         tx.commit().await?;
 
+        counter!("repology_vulnupdater_processor_runs_succeeded_total", "processor" => "cve", "stage" => "processing").increment(1);
         Ok(DatasourceProcessStatus { num_changes })
     }
 
@@ -121,18 +130,23 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
             return Ok(());
         }
 
+        counter!("repology_vulnupdater_processor_runs_total", "processor" => "cve", "stage" => "finalization").increment(1);
+
         let mut tx = self.pool.begin().await?;
 
         // XXX: switch to MERGE
-        sqlx::query(
+        let num_rows = sqlx::query(
             r#"
             DELETE FROM public.vulnerable_cpes_test
             "#,
         )
         .execute(&mut *tx)
-        .await?;
+        .await?
+        .rows_affected();
 
-        sqlx::query(
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "DELETE", "stage" => "finalization", "table" => "vulnerable_cpes").increment(num_rows);
+
+        let num_rows = sqlx::query(
             r#"
             WITH expanded_matches AS (
                 SELECT
@@ -213,37 +227,51 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
             "#,
         )
         .execute(&mut *tx)
-        .await?;
+        .await?
+        .rows_affected();
 
-        sqlx::query(
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "INSERT", "stage" => "finalization", "table" => "vulnerable_cpes").increment(num_rows);
+
+        let num_rows = sqlx::query(
             r#"
             WITH deleted AS (DELETE FROM cve_updates RETURNING cpe_vendor, cpe_product)
             INSERT INTO public.cpe_updates_test(cpe_vendor, cpe_product) SELECT * FROM deleted;
             "#,
         )
         .execute(&mut *tx)
-        .await?;
+        .await?
+        .rows_affected();
+
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "DELETE", "stage" => "finalization", "table" => "cve_updates").increment(num_rows);
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "INSERT", "stage" => "finalization", "table" => "cpe_updates").increment(num_rows);
 
         // XXX: switch to MERGE
-        sqlx::query(
+        let num_rows = sqlx::query(
             r#"
             DELETE FROM public.cves_test
             "#,
         )
         .execute(&mut *tx)
-        .await?;
+        .await?
+        .rows_affected();
 
-        sqlx::query(
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "DELETE", "stage" => "finalization", "table" => "cves").increment(num_rows);
+
+        let num_rows = sqlx::query(
             r#"
             INSERT INTO public.cves_test
             SELECT * FROM cves
             "#,
         )
         .execute(&mut *tx)
-        .await?;
+        .await?
+        .rows_affected();
+
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "INSERT", "stage" => "finalization", "table" => "cves").increment(num_rows);
 
         tx.commit().await?;
 
+        counter!("repology_vulnupdater_processor_runs_succeeded_total", "processor" => "cve", "stage" => "finalization").increment(1);
         Ok(())
     }
 }

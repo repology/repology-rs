@@ -14,7 +14,7 @@ mod vulnupdater;
 
 use std::cell::LazyCell;
 
-use anyhow::{Context, Error};
+use anyhow::{bail, Context, Error};
 use clap::Parser as _;
 use sqlx::postgres::PgPoolOptions;
 use sqlx::Executor;
@@ -43,6 +43,25 @@ async fn main() -> Result<(), Error> {
         tracing_subscriber::fmt().with_writer(logfile).init();
     } else {
         tracing_subscriber::fmt::init();
+    }
+
+    if let Some(socket_addr) = &args.prometheus_export {
+        if args.once_only {
+            bail!("prometheus export is not supported in --once-only mode");
+        }
+        info!("initializing metrics");
+        metrics_exporter_prometheus::PrometheusBuilder::new()
+            .with_http_listener(*socket_addr)
+            .install()
+            .context("prometheus exporter initialization failed")?;
+
+        let collector = metrics_process::Collector::default();
+        collector.describe();
+
+        tokio::spawn(async move {
+            collector.collect();
+            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        });
     }
 
     info!("creating PostgreSQL pool");
