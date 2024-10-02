@@ -6,6 +6,7 @@ mod schema;
 
 use anyhow::Error;
 use async_trait::async_trait;
+use indoc::indoc;
 use metrics::counter;
 use sqlx::PgPool;
 
@@ -58,8 +59,7 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
             let vendor_product_pairs = matches.vendor_product_pairs_for_sql();
             let matches_as_json = matches.into_matches_for_sql();
 
-            let num_rows = sqlx::query(
-                r#"
+            let num_rows = sqlx::query(indoc! {"
                 WITH updated_cves AS (
                     INSERT INTO cves (
                         cve_id,
@@ -94,8 +94,7 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
                     split_part(unnest(cpe_pairs), ':', 2) AS cpe_product
                 FROM
                     updated_cves
-                "#,
-            )
+            "})
             .bind(cve_id)
             .bind(published)
             .bind(last_modified)
@@ -135,19 +134,16 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
         let mut tx = self.pool.begin().await?;
 
         // XXX: switch to MERGE
-        let num_rows = sqlx::query(
-            r#"
+        let num_rows = sqlx::query(indoc! {"
             DELETE FROM public.vulnerable_cpes_test
-            "#,
-        )
+        "})
         .execute(&mut *tx)
         .await?
         .rows_affected();
 
         counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "DELETE", "stage" => "finalization", "table" => "vulnerable_cpes").increment(num_rows);
 
-        let num_rows = sqlx::query(
-            r#"
+        let num_rows = sqlx::query(indoc! {"
             WITH expanded_matches AS (
                 SELECT
                     jsonb_array_elements(matches)->>0 AS cpe_vendor,
@@ -224,20 +220,17 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
             WHERE
                 coalesce(public.version_compare2(end_version, covering_end_version) >= 0, true) AND
                 end_version IS NOT NULL
-            "#,
-        )
+        "})
         .execute(&mut *tx)
         .await?
         .rows_affected();
 
         counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "INSERT", "stage" => "finalization", "table" => "vulnerable_cpes").increment(num_rows);
 
-        let num_rows = sqlx::query(
-            r#"
+        let num_rows = sqlx::query(indoc! {"
             WITH deleted AS (DELETE FROM cve_updates RETURNING cpe_vendor, cpe_product)
             INSERT INTO public.cpe_updates_test(cpe_vendor, cpe_product) SELECT * FROM deleted;
-            "#,
-        )
+        "})
         .execute(&mut *tx)
         .await?
         .rows_affected();
@@ -246,23 +239,19 @@ impl<'a> DatasourceProcessor for CveProcessor<'a> {
         counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "INSERT", "stage" => "finalization", "table" => "cpe_updates").increment(num_rows);
 
         // XXX: switch to MERGE
-        let num_rows = sqlx::query(
-            r#"
+        let num_rows = sqlx::query(indoc! {"
             DELETE FROM public.cves_test
-            "#,
-        )
+        "})
         .execute(&mut *tx)
         .await?
         .rows_affected();
 
         counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cve", "operation" => "DELETE", "stage" => "finalization", "table" => "cves").increment(num_rows);
 
-        let num_rows = sqlx::query(
-            r#"
+        let num_rows = sqlx::query(indoc! {"
             INSERT INTO public.cves_test
             SELECT * FROM cves
-            "#,
-        )
+        "})
         .execute(&mut *tx)
         .await?
         .rows_affected();

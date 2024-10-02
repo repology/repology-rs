@@ -7,6 +7,7 @@ use std::str::FromStr as _;
 
 use anyhow::Error;
 use async_trait::async_trait;
+use indoc::indoc;
 use metrics::counter;
 use sqlx::PgPool;
 
@@ -89,34 +90,32 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
 
         let mut tx = self.pool.begin().await?;
 
-        let num_rows_inserted = sqlx::query(
-            r#"
-                INSERT INTO cpes (
-                    cpe_vendor,
-                    cpe_product,
-                    cpe_version,
-                    cpe_update,
-                    cpe_edition,
-                    cpe_lang,
-                    cpe_sw_edition,
-                    cpe_target_sw,
-                    cpe_target_hw,
-                    cpe_other
-                )
-                SELECT
-                    jsonb_array_elements($1)->>0,
-                    jsonb_array_elements($1)->>1,
-                    jsonb_array_elements($1)->>2,
-                    jsonb_array_elements($1)->>3,
-                    jsonb_array_elements($1)->>4,
-                    jsonb_array_elements($1)->>5,
-                    jsonb_array_elements($1)->>6,
-                    jsonb_array_elements($1)->>7,
-                    jsonb_array_elements($1)->>8,
-                    jsonb_array_elements($1)->>9
-                ON CONFLICT DO NOTHING
-                "#,
-        )
+        let num_rows_inserted = sqlx::query(indoc! {"
+            INSERT INTO cpes (
+                cpe_vendor,
+                cpe_product,
+                cpe_version,
+                cpe_update,
+                cpe_edition,
+                cpe_lang,
+                cpe_sw_edition,
+                cpe_target_sw,
+                cpe_target_hw,
+                cpe_other
+            )
+            SELECT
+                jsonb_array_elements($1)->>0,
+                jsonb_array_elements($1)->>1,
+                jsonb_array_elements($1)->>2,
+                jsonb_array_elements($1)->>3,
+                jsonb_array_elements($1)->>4,
+                jsonb_array_elements($1)->>5,
+                jsonb_array_elements($1)->>6,
+                jsonb_array_elements($1)->>7,
+                jsonb_array_elements($1)->>8,
+                jsonb_array_elements($1)->>9
+            ON CONFLICT DO NOTHING
+        "})
         .bind(
             add_batch
                 .into_iter()
@@ -129,34 +128,32 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
 
         counter!("repology_vulnupdater_processor_sql_rows_total_total", "processor" => "cpe", "operation" => "INSERT", "stage" => "processing").increment(num_rows_inserted);
 
-        let num_rows_deleted = sqlx::query(
-            r#"
-                WITH delete_batch AS (
-                    SELECT
-                        jsonb_array_elements($1)->>0 AS cpe_vendor,
-                        jsonb_array_elements($1)->>1 AS cpe_product,
-                        jsonb_array_elements($1)->>2 AS cpe_version,
-                        jsonb_array_elements($1)->>3 AS cpe_update,
-                        jsonb_array_elements($1)->>4 AS cpe_edition,
-                        jsonb_array_elements($1)->>5 AS cpe_lang,
-                        jsonb_array_elements($1)->>6 AS cpe_sw_edition,
-                        jsonb_array_elements($1)->>7 AS cpe_target_sw,
-                        jsonb_array_elements($1)->>8 AS cpe_target_hw,
-                        jsonb_array_elements($1)->>9 AS cpe_other
-                )
-                DELETE FROM cpes AS t USING delete_batch AS d WHERE
-                    t.cpe_vendor = d.cpe_vendor AND
-                    t.cpe_product = d.cpe_product AND
-                    t.cpe_version = d.cpe_version AND
-                    t.cpe_update = d.cpe_update AND
-                    t.cpe_edition = d.cpe_edition AND
-                    t.cpe_lang = d.cpe_lang AND
-                    t.cpe_sw_edition = d.cpe_sw_edition AND
-                    t.cpe_target_sw = d.cpe_target_sw AND
-                    t.cpe_target_hw = d.cpe_target_hw AND
-                    t.cpe_other = d.cpe_other
-                "#,
-        )
+        let num_rows_deleted = sqlx::query(indoc! {"
+            WITH delete_batch AS (
+                SELECT
+                    jsonb_array_elements($1)->>0 AS cpe_vendor,
+                    jsonb_array_elements($1)->>1 AS cpe_product,
+                    jsonb_array_elements($1)->>2 AS cpe_version,
+                    jsonb_array_elements($1)->>3 AS cpe_update,
+                    jsonb_array_elements($1)->>4 AS cpe_edition,
+                    jsonb_array_elements($1)->>5 AS cpe_lang,
+                    jsonb_array_elements($1)->>6 AS cpe_sw_edition,
+                    jsonb_array_elements($1)->>7 AS cpe_target_sw,
+                    jsonb_array_elements($1)->>8 AS cpe_target_hw,
+                    jsonb_array_elements($1)->>9 AS cpe_other
+            )
+            DELETE FROM cpes AS t USING delete_batch AS d WHERE
+                t.cpe_vendor = d.cpe_vendor AND
+                t.cpe_product = d.cpe_product AND
+                t.cpe_version = d.cpe_version AND
+                t.cpe_update = d.cpe_update AND
+                t.cpe_edition = d.cpe_edition AND
+                t.cpe_lang = d.cpe_lang AND
+                t.cpe_sw_edition = d.cpe_sw_edition AND
+                t.cpe_target_sw = d.cpe_target_sw AND
+                t.cpe_target_hw = d.cpe_target_hw AND
+                t.cpe_other = d.cpe_other
+        "})
         .bind(
             delete_batch
                 .into_iter()
@@ -187,19 +184,16 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
         let mut tx = self.pool.begin().await?;
 
         // XXX: switch to MERGE
-        let num_rows = sqlx::query(
-            r#"
+        let num_rows = sqlx::query(indoc! {"
             DELETE FROM public.cpe_dictionary_test;
-            "#,
-        )
+        "})
         .execute(&mut *tx)
         .await?
         .rows_affected();
 
         counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cpe", "operation" => "DELETE", "stage" => "finalization").increment(num_rows);
 
-        sqlx::query(
-            r#"
+        sqlx::query(indoc! {"
             INSERT INTO public.cpe_dictionary_test (
                 cpe_vendor,
                 cpe_product,
@@ -221,8 +215,7 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
                 cpe_other
             FROM
                 cpes
-            "#,
-        )
+        "})
         .execute(&mut *tx)
         .await?
         .rows_affected();
