@@ -7,7 +7,12 @@ use std::net::SocketAddr;
 #[command(version, about, long_about = None)]
 pub struct Config {
     /// PostgreSQL database DSN
-    #[arg(short = 'd', long = "dsn", value_name = "DSN")]
+    #[arg(
+        short = 'd',
+        long = "dsn",
+        value_name = "DSN",
+        default_value = "postgresql://repology@localhost/repology"
+    )]
     pub dsn: String,
 
     /// Ignore rules tagged with these values
