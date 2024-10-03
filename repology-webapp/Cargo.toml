@@ -11,6 +11,7 @@ cityhasher = "0.1.0"
 clap = { version = "4.5.18", features = ["derive"] }
 flate2 = "1.0.33"
 include_dir = { version = "0.7.4", features = ["glob", "nightly"] }
+indoc = "2.0.5"
 itertools = "0.13.0"
 libversion = { path = "../libversion" }
 metrics = "0.23.0"

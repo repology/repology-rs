@@ -6,6 +6,7 @@ use std::collections::HashSet;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
+use indoc::indoc;
 use metrics::counter;
 use serde::Deserialize;
 use sqlx::FromRow;
@@ -107,8 +108,7 @@ pub async fn badge_vertical_allrepos(
         return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
     };
 
-    let packages: Vec<Package> = sqlx::query_as(
-        r#"
+    let packages: Vec<Package> = sqlx::query_as(indoc! {"
         SELECT
             version,
             versionclass AS status,
@@ -116,8 +116,7 @@ pub async fn badge_vertical_allrepos(
             repo AS repository_name
         FROM packages
         WHERE effname = $1;
-        "#,
-    )
+    "})
     .bind(project_name)
     .fetch_all(&state.pool)
     .await?;

@@ -6,6 +6,7 @@ use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use anyhow::Error;
+use indoc::indoc;
 use serde::Deserialize;
 use sqlx::{FromRow, PgPool};
 use strum_macros::EnumString;
@@ -67,10 +68,9 @@ impl RepositoryDataCache {
     }
 
     pub async fn update(&self) -> Result<(), Error> {
-        sqlx::query_as(
-            // XXX: COALESCE for singular and source_type are meant for
-            // legacy repositories which don't have meta properly filled
-            r#"
+        // XXX: COALESCE for singular and source_type are meant for
+        // legacy repositories which don't have meta properly filled
+        sqlx::query_as(indoc! {r#"
             SELECT
                 name,
                 "desc" AS title,
@@ -80,8 +80,7 @@ impl RepositoryDataCache {
                 COALESCE(metadata->>'type', 'repository') AS source_type
             FROM repositories
             ORDER BY sortname
-            "#,
-        )
+        "#})
         .fetch_all(&self.pool)
         .await
         .map(|repositories: Vec<RepositoryData>| {

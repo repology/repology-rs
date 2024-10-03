@@ -4,6 +4,7 @@
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
+use indoc::indoc;
 use metrics::counter;
 use serde::Deserialize;
 use sqlx::FromRow;
@@ -77,16 +78,14 @@ pub async fn badge_version_for_repo(
         return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
     };
 
-    let packages: Vec<Package> = sqlx::query_as(
-        r#"
+    let packages: Vec<Package> = sqlx::query_as(indoc! {"
         SELECT
             version,
             versionclass AS status,
             flags
         FROM packages
         WHERE repo = $1 AND effname = $2;
-        "#,
-    )
+    "})
     .bind(repository_name)
     .bind(project_name)
     .fetch_all(&state.pool)

@@ -4,6 +4,7 @@
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
+use indoc::indoc;
 use metrics::counter;
 use serde::Serialize;
 use sqlx::FromRow;
@@ -51,8 +52,7 @@ pub async fn api_v1_project(
     counter!("repology_webapp.endpoints.requests_total", "endpoint" => "api_v1_project")
         .increment(1);
 
-    let packages: Vec<ApiV1Package> = sqlx::query_as(
-        r#"
+    let packages: Vec<ApiV1Package> = sqlx::query_as(indoc! {"
         SELECT
             repo,
             subrepo,
@@ -69,8 +69,7 @@ pub async fn api_v1_project(
             NULLIF((flags & (1 << 16))::boolean, false) AS vulnerable
         FROM packages
         WHERE effname = $1
-        "#,
-    )
+    "})
     .bind(project_name)
     .fetch_all(&state.pool)
     .await?;

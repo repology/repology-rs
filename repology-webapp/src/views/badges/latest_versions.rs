@@ -6,6 +6,7 @@ use std::borrow::Cow;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
+use indoc::indoc;
 use itertools::Itertools;
 use metrics::counter;
 use serde::Deserialize;
@@ -58,15 +59,13 @@ pub async fn badge_latest_versions(
         return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
     };
 
-    let packages: Vec<Package> = sqlx::query_as(
-        r#"
+    let packages: Vec<Package> = sqlx::query_as(indoc! {"
         SELECT
             version,
             flags
         FROM packages
         WHERE effname = $1 AND versionclass IN (1, 4, 5)  -- Newest, Unique, Devel
-        "#,
-    )
+    "})
     .bind(project_name)
     .fetch_all(&state.pool)
     .await?;

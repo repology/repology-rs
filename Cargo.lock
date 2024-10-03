@@ -1793,6 +1793,7 @@ dependencies = [
  "clap",
  "flate2",
  "include_dir",
+ "indoc",
  "itertools 0.13.0",
  "libversion",
  "metrics",
