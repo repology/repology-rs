@@ -6,6 +6,7 @@ use std::collections::HashSet;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
+use metrics::counter;
 use serde::Deserialize;
 use sqlx::FromRow;
 
@@ -97,6 +98,9 @@ pub async fn badge_vertical_allrepos(
     State(state): State<AppState>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
+    counter!("repology_webapp.endpoints.requests_total", "endpoint" => "badge_vertical_allrepos")
+        .increment(1);
+
     let project_name = if let Some(project_name) = project_name.strip_suffix(".svg") {
         project_name
     } else {

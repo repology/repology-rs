@@ -14,6 +14,21 @@ use repology_webapp::create_app;
 async fn main() -> Result<(), Error> {
     let config = Config::parse();
 
+    if let Some(socket_addr) = &config.prometheus_export {
+        metrics_exporter_prometheus::PrometheusBuilder::new()
+            .with_http_listener(*socket_addr)
+            .install()
+            .context("prometheus exporter initialization failed")?;
+
+        let collector = metrics_process::Collector::default();
+        collector.describe();
+
+        tokio::spawn(async move {
+            collector.collect();
+            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        });
+    }
+
     let pool = PgPool::connect(&config.dsn)
         .await
         .context("error creating PostgreSQL connection pool")?;

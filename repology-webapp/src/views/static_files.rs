@@ -4,6 +4,7 @@
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderMap, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
+use metrics::counter;
 
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -13,6 +14,8 @@ pub async fn static_file(
     headers: HeaderMap,
     State(state): State<AppState>,
 ) -> EndpointResult {
+    counter!("repology_webapp.endpoints.requests_total", "endpoint" => "static_files").increment(1);
+
     let file = if let Some(file) = state.static_files.by_hashed_name(&file_name) {
         file
     } else {

@@ -4,6 +4,7 @@
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
+use metrics::counter;
 use serde::Serialize;
 use sqlx::FromRow;
 
@@ -47,6 +48,9 @@ pub async fn api_v1_project(
     Path(project_name): Path<String>,
     State(state): State<AppState>,
 ) -> EndpointResult {
+    counter!("repology_webapp.endpoints.requests_total", "endpoint" => "api_v1_project")
+        .increment(1);
+
     let packages: Vec<ApiV1Package> = sqlx::query_as(
         r#"
         SELECT

@@ -13,6 +13,9 @@ flate2 = "1.0.33"
 include_dir = { version = "0.7.4", features = ["glob", "nightly"] }
 itertools = "0.13.0"
 libversion = { path = "../libversion" }
+metrics = "0.23.0"
+metrics-exporter-prometheus = { version = "0.15.3", default-features = false, features = ["http-listener"] }
+metrics-process = "2.1.0"
 mime = "0.3.17"
 repology-common = { path = "../repology-common" }
 serde = { version = "1.0.210", features = ["derive"] }
