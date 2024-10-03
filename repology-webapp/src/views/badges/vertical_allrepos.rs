@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::collections::HashSet;
+
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
 use serde::Deserialize;
 use sqlx::FromRow;
-use std::collections::HashSet;
 
 use repology_common::{PackageFlags, PackageStatus};
 
