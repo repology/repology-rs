@@ -20,7 +20,7 @@ use crate::package::version::package_version;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct QueryParams {
     #[serde(rename = "header")]
     pub caption: Option<String>,
@@ -54,6 +54,7 @@ impl PackageWithStatus for Package {
     }
 }
 
+#[tracing::instrument(skip(state))]
 pub async fn badge_version_for_repo(
     Path((repository_name, project_name)): Path<(String, String)>,
     State(state): State<AppState>,

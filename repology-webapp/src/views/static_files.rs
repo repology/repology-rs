@@ -9,6 +9,7 @@ use metrics::counter;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
+#[tracing::instrument(skip(state))]
 pub async fn static_file(
     Path(file_name): Path<String>,
     headers: HeaderMap,

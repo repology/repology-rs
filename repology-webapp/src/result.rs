@@ -3,6 +3,7 @@
 
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
+use tracing::error;
 
 pub struct EndpointError(anyhow::Error);
 
@@ -10,7 +11,11 @@ impl IntoResponse for EndpointError {
     fn into_response(self) -> Response {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
-            format!("Internal server error: {}", self.0),
+            if cfg!(debug_assertions) {
+                format!("Internal server error:\n{:#?}", self.0)
+            } else {
+                format!("Internal server error")
+            },
         )
             .into_response()
     }
@@ -21,7 +26,9 @@ where
     E: Into<anyhow::Error>,
 {
     fn from(err: E) -> Self {
-        Self(err.into())
+        let err = err.into();
+        error!("{:#?}", err);
+        Self(err)
     }
 }
 

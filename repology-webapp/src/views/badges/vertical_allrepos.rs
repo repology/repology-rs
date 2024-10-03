@@ -7,7 +7,7 @@ use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
 use indoc::indoc;
-use metrics::counter;
+use metrics::{counter, histogram};
 use serde::Deserialize;
 use sqlx::FromRow;
 
@@ -25,7 +25,7 @@ use crate::repository_data::{RepositoryData, SourceType};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 pub struct QueryParams {
     #[serde(rename = "header")]
     pub caption: Option<String>,
@@ -94,6 +94,7 @@ fn is_repository_filtered(repository_data: &RepositoryData, query: &QueryParams)
     false
 }
 
+#[tracing::instrument(skip(state))]
 pub async fn badge_vertical_allrepos(
     Path(project_name): Path<String>,
     State(state): State<AppState>,

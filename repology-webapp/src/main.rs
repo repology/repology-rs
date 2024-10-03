@@ -14,6 +14,19 @@ use repology_webapp::create_app;
 async fn main() -> Result<(), Error> {
     let config = Config::parse();
 
+    if let Some(log_directory) = &config.log_directory {
+        use tracing_appender::rolling::{RollingFileAppender, Rotation};
+        let logfile = RollingFileAppender::builder()
+            .rotation(Rotation::DAILY)
+            .filename_prefix("repology-vulnupdater.log")
+            .max_log_files(14)
+            .build(log_directory)
+            .context("logging initialization failed")?;
+        tracing_subscriber::fmt().with_writer(logfile).init();
+    } else {
+        tracing_subscriber::fmt::init();
+    }
+
     if let Some(socket_addr) = &config.prometheus_export {
         metrics_exporter_prometheus::PrometheusBuilder::new()
             .with_http_listener(*socket_addr)
