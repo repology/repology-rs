@@ -17,14 +17,44 @@ mod static_files;
 mod views;
 mod xmlwriter;
 
+use std::time::Instant;
+
 use anyhow::{Context, Error};
-use axum::{routing::get, Router};
+use axum::{
+    extract::{MatchedPath, Request},
+    middleware::{self, Next},
+    response::IntoResponse,
+    routing::get,
+    Router,
+};
+use metrics::{counter, histogram};
 use sqlx::PgPool;
 
 use crate::font::FontMeasurer;
 use crate::repository_data::RepositoryDataCache;
 use crate::state::AppState;
 use crate::static_files::StaticFiles;
+
+async fn track_metrics(req: Request, next: Next) -> impl IntoResponse {
+    let start = Instant::now();
+    let path = if let Some(matched_path) = req.extensions().get::<MatchedPath>() {
+        matched_path.as_str().to_owned()
+    } else {
+        req.uri().path().to_owned()
+    };
+
+    let response = next.run(req).await;
+
+    let latency = start.elapsed().as_secs_f64();
+    let status = response.status().as_u16().to_string();
+
+    counter!("repology_webapp_http_requests_total", "path" => path.clone(), "status" => status)
+        .increment(1);
+    histogram!("repology_webapp_http_requests_duration_seconds", "path" => path)
+        .record(latency);
+
+    response
+}
 
 pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
     let font_measurer = FontMeasurer::new();
@@ -48,5 +78,6 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(BadgeVerticalAllRepos.path(), get(views::badge_vertical_allrepos))
         .route(BadgeLatestVersions.path(), get(views::badge_latest_versions))
         .route(StaticFile.path(), get(views::static_file))
+        .route_layer(middleware::from_fn(track_metrics))
         .with_state(state))
 }

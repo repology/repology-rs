@@ -4,7 +4,6 @@
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
-use metrics::counter;
 use serde::Deserialize;
 
 use crate::badges::{render_generic_badge, Cell};
@@ -23,9 +22,6 @@ pub async fn badge_tiny_repos(
     State(state): State<AppState>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
-    counter!("repology_webapp.endpoints.requests_total", "endpoint" => "badge_tiny_repos")
-        .increment(1);
-
     let project_name = if let Some(project_name) = project_name.strip_suffix(".svg") {
         project_name
     } else {
