@@ -126,7 +126,7 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
         .await?
         .rows_affected();
 
-        counter!("repology_vulnupdater_processor_sql_rows_total_total", "processor" => "cpe", "operation" => "INSERT", "stage" => "processing").increment(num_rows_inserted);
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cpe", "operation" => "INSERT", "stage" => "processing").increment(num_rows_inserted);
 
         let num_rows_deleted = sqlx::query(indoc! {"
             WITH delete_batch AS (
@@ -164,7 +164,7 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
         .await?
         .rows_affected();
 
-        counter!("repology_vulnupdater_processor_sql_rows_total_total", "processor" => "cpe", "operation" => "DELETE", "stage" => "processing").increment(num_rows_deleted);
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cpe", "operation" => "DELETE", "stage" => "processing").increment(num_rows_deleted);
 
         tx.commit().await?;
 
@@ -220,7 +220,7 @@ impl<'a> DatasourceProcessor for CpeProcessor<'a> {
         .await?
         .rows_affected();
 
-        counter!("repology_vulnupdater_processor_sql_rows_total_total", "processor" => "cpe", "operation" => "INSERT", "stage" => "finalization").increment(num_rows);
+        counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cpe", "operation" => "INSERT", "stage" => "finalization").increment(num_rows);
 
         tx.commit().await?;
 

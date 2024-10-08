@@ -89,7 +89,7 @@ impl<'a> CpeMatches<'a> {
             .increment(1);
 
         for cpe_match in &node.cpe_match {
-            counter!("repology_vulnupdater_processor_cve_cpes_total_total").increment(1);
+            counter!("repology_vulnupdater_processor_cve_cpes_total").increment(1);
 
             if !cpe_match.vulnerable {
                 // TODO: investigate if vulnerability exclusions are relevant
