@@ -59,8 +59,10 @@ async fn main() -> Result<(), Error> {
         collector.describe();
 
         tokio::spawn(async move {
-            collector.collect();
-            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+            loop {
+                collector.collect();
+                tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+            }
         });
     }
 
