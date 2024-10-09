@@ -50,8 +50,7 @@ async fn track_metrics(req: Request, next: Next) -> impl IntoResponse {
 
     counter!("repology_webapp_http_requests_total", "path" => path.clone(), "status" => status)
         .increment(1);
-    histogram!("repology_webapp_http_requests_duration_seconds", "path" => path)
-        .record(latency);
+    histogram!("repology_webapp_http_requests_duration_seconds", "path" => path).record(latency);
 
     response
 }
