@@ -1256,9 +1256,9 @@ dependencies = [
 [[package]]
 name = "metrics-process"
 version = "2.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cb524e5438255eaa8aa74214d5a62713b77b2c3c6e3c0bbeee65cfd9a58948ba"
+source = "git+https://github.com/amdmi3/rs-metrics-process.git?branch=freebsd#223e07575d09a1d2eac7f061a0e0a42e0e142561"
 dependencies = [
+ "libc",
  "libproc",
  "mach2",
  "metrics",
