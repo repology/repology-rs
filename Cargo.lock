@@ -1256,7 +1256,7 @@ dependencies = [
 [[package]]
 name = "metrics-process"
 version = "2.1.0"
-source = "git+https://github.com/amdmi3/rs-metrics-process.git?branch=freebsd#223e07575d09a1d2eac7f061a0e0a42e0e142561"
+source = "git+https://github.com/amdmi3/rs-metrics-process.git?branch=freebsd#693d12740ed8fde0fe17d0ef74e444fd29e4d726"
 dependencies = [
  "libc",
  "libproc",
