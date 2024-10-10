@@ -16,7 +16,7 @@ itertools = "0.13.0"
 libversion = { path = "../libversion" }
 metrics = "0.23.0"
 metrics-exporter-prometheus = { version = "0.15.3", default-features = false, features = ["http-listener"] }
-metrics-process = { git = "https://github.com/amdmi3/rs-metrics-process.git", branch = "freebsd", features = ["use-gauge-on-cpu-seconds-total"] }
+metrics-process = { version = "2.2.0", features = ["use-gauge-on-cpu-seconds-total"] }
 mime = "0.3.17"
 repology-common = { path = "../repology-common" }
 serde = { version = "1.0.210", features = ["derive"] }
