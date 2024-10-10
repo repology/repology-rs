@@ -9,7 +9,7 @@ use sqlx::PgPool;
 use repology_webapp_test_utils::check_json;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
-async fn test_badge_tiny_repos(pool: PgPool) {
+async fn test_api_v1_project(pool: PgPool) {
     check_json!(pool, "/api/v1/project/nonexistent", "[]");
     check_json!(
         pool,
