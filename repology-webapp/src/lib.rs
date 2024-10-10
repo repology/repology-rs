@@ -35,13 +35,9 @@ use crate::repository_data::RepositoryDataCache;
 use crate::state::AppState;
 use crate::static_files::StaticFiles;
 
-async fn track_metrics(req: Request, next: Next) -> impl IntoResponse {
+async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> impl IntoResponse {
     let start = Instant::now();
-    let path = if let Some(matched_path) = req.extensions().get::<MatchedPath>() {
-        matched_path.as_str().to_owned()
-    } else {
-        req.uri().path().to_owned()
-    };
+    let path = matched_path.as_str().to_owned();
 
     let response = next.run(req).await;
 
