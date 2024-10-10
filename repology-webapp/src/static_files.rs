@@ -77,6 +77,7 @@ impl StaticFiles {
         self.by_hashed_name.get(name)
     }
 
+    #[expect(dead_code)]
     pub fn name_to_hashed_name_map(&self) -> HashMap<String, String> {
         self.by_hashed_name
             .values()
