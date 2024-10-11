@@ -54,11 +54,26 @@ impl TemplateContext {
             .construct()?)
     }
 
+    pub fn external_url_for<'a>(
+        &self,
+        endpoint: Endpoint,
+        fields: &[(&'a str, &'a str)],
+    ) -> Result<String, Error> {
+        Ok(crate::constants::REPOLOGY_HOSTNAME.to_string() + &self.url_for(endpoint, fields)?)
+    }
+
     pub fn url_for_self<'a>(&self, fields: &[(&'a str, &'a str)]) -> Result<String, Error> {
         Ok(UrlConstructor::new(self.endpoint.path())
             .with_fields(self.params.iter().map(|(k, v)| (k.as_ref(), v.as_ref())))
             .with_fields(fields.iter().cloned())
             .construct()?)
+    }
+
+    pub fn external_url_for_self<'a>(
+        &self,
+        fields: &[(&'a str, &'a str)],
+    ) -> Result<String, Error> {
+        Ok(crate::constants::REPOLOGY_HOSTNAME.to_string() + &self.url_for_self(fields)?)
     }
 
     pub fn is_section(&self, section: Section) -> bool {
