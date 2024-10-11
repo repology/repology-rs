@@ -194,9 +194,9 @@ pub enum Endpoint {
     Favicon,
 
     // API
-    #[strum(props(path = "/api/v1/projects"))]
+    #[strum(props(path = "/api/v1/projects/"))]
     ApiV1Projects,
-    #[strum(props(path = "/api/v1/projects/:bound"))]
+    #[strum(props(path = "/api/v1/projects/:bound/"))]
     ApiV1ProjectsBounded,
     #[strum(props(path = "/api/v1/repository/:repository_name/problems"))]
     ApiV1RepositoryProblems,
