@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::{anyhow, Error};
 use askama::Template;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
@@ -11,12 +10,11 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::{Endpoint, Section};
+use crate::endpoints::Endpoint;
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::static_files::STATIC_FILES;
-use crate::url_for::UrlConstructor;
+use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -28,69 +26,12 @@ pub struct QueryParams {
 #[derive(Template)]
 #[template(path = "log.html")]
 struct TemplateParams {
-    endpoint: Endpoint,
-    gen_path: Vec<(String, String)>,
-    gen_query: Vec<(String, String)>,
+    ctx: TemplateContext,
 
     run: Run,
     repometadata: RepositoryData,
     lines: Vec<LogLine>,
     autorefresh: bool,
-}
-
-impl TemplateParams {
-    pub fn url_for_static(&self, file_name: &str) -> Result<String, Error> {
-        let hashed_file_name = STATIC_FILES
-            .hashed_name_by_orig_name(file_name)
-            .ok_or_else(|| anyhow!("unknown static file \"{}\"", file_name))?;
-
-        Ok(UrlConstructor::new(Endpoint::StaticFile.path())
-            .with_field("file_name", hashed_file_name)
-            .construct()?)
-    }
-
-    pub fn url_for<'a>(
-        &self,
-        endpoint: Endpoint,
-        fields: &[(&'a str, &'a str)],
-    ) -> Result<String, Error> {
-        Ok(UrlConstructor::new(endpoint.path())
-            .with_fields(fields.iter().cloned())
-            .construct()?)
-    }
-
-    pub fn url_for_self<'a>(&self, fields: &[(&'a str, &'a str)]) -> Result<String, Error> {
-        Ok(UrlConstructor::new(self.endpoint.path())
-            .with_fields(self.gen_path.iter().map(|(k, v)| (k.as_ref(), v.as_ref())))
-            .with_fields(self.gen_query.iter().map(|(k, v)| (k.as_ref(), v.as_ref())))
-            .with_fields(fields.iter().cloned())
-            .construct()?)
-    }
-
-    pub fn is_section(&self, section: Section) -> bool {
-        self.endpoint.is_section(section)
-    }
-
-    pub fn needs_ipv6_notice(&self) -> bool {
-        false
-    }
-
-    pub fn admin(&self) -> bool {
-        false
-    }
-
-    pub fn experimental_enabled(&self) -> bool {
-        false
-    }
-
-    pub fn is_repology_rs(&self) -> bool {
-        true
-    }
-
-    // TODO: hack before askama 12.2 with built-in deref filter is released
-    pub fn deref<T: Copy>(&self, r: &&T) -> T {
-        **r
-    }
 }
 
 #[derive(FromRow)]
@@ -127,6 +68,8 @@ pub async fn log(
     Query(query): Query<QueryParams>,
     State(state): State<AppState>,
 ) -> EndpointResult {
+    let ctx = TemplateContext::new(Endpoint::Log, gen_path, gen_query);
+
     // num_lines, num_warnings, num_errors is nullable and NULL for ongoing runs
     // to avoid using Option and extra if let in the template, we use coalesce
     // here to make these always defined; makes sense to refactor this
@@ -182,9 +125,8 @@ pub async fn log(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            endpoint: Endpoint::Log,
-            gen_path,
-            gen_query,
+            ctx,
+
             run,
             repometadata: repository_data,
             lines,

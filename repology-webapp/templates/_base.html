@@ -10,18 +10,18 @@
 {% block extrameta %}
 {% endblock %}
 	<title>{% block title %}Repology{% endblock %}</title>
-	<link rel="stylesheet" href="{{ self.url_for_static("bootstrap.min.v3.3.7.css")? }}">
-	<link rel="stylesheet" href="{{ self.url_for_static("repology.v21.css")? }}">
-	<link rel="icon" href="{{ self.url_for_static("repology.v1.ico")? }}" sizes="16x16 32x32 64x64" type="image/x-icon">
-	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ self.url_for(crate::endpoints::Endpoint::OpensearchProject, [])? }}">
-	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ self.url_for(crate::endpoints::Endpoint::OpensearchMaintainer, [])? }}">
+	<link rel="stylesheet" href="{{ ctx.url_for_static("bootstrap.min.v3.3.7.css")? }}">
+	<link rel="stylesheet" href="{{ ctx.url_for_static("repology.v21.css")? }}">
+	<link rel="icon" href="{{ ctx.url_for_static("repology.v1.ico")? }}" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ ctx.url_for(crate::endpoints::Endpoint::OpensearchProject, [])? }}">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ ctx.url_for(crate::endpoints::Endpoint::OpensearchMaintainer, [])? }}">
 </head>
 <body>
 
-{% if self.needs_ipv6_notice() %}
+{% if ctx.needs_ipv6_notice() %}
 <div class="site-alert-outer">
 	<div class="container site-alert-inner">
-		<img src="{{ self.url_for_static("ipv6.v1.svg")? }}" alt="IPv6 logo" height="64">
+		<img src="{{ ctx.url_for_static("ipv6.v1.svg")? }}" alt="IPv6 logo" height="64">
 		<p>You are connected to Repology using legacy IPv4 protocol.
 		Due to <a href="https://en.wikipedia.org/wiki/IPv6#IPv4_address_exhaustion">IPv4 address exhaustion</a>
 		it may become too expensive or impossible for Repology to support IPv4 in the nearest future.
@@ -39,26 +39,26 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="{{ self.url_for(crate::endpoints::Endpoint::Index, [])? }}">
-				<img alt="Repology" src="{{ self.url_for_static("repology40x40.v1.png")? }}" width="40" height="40">
+			<a class="navbar-brand" href="{{ ctx.url_for(crate::endpoints::Endpoint::Index, [])? }}">
+				<img alt="Repology" src="{{ ctx.url_for_static("repology40x40.v1.png")? }}" width="40" height="40">
 			</a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li{% if self.is_section(crate::endpoints::Section::Projects) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Projects, [])? }}">Projects</a></li>
-				<li{% if self.is_section(crate::endpoints::Section::Maintainers) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Maintainers, [])? }}">Maintainers</a></li>
-				<li{% if self.is_section(crate::endpoints::Section::Repositories) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}">Repositories</a></li>
-				<li{% if self.is_section(crate::endpoints::Section::Tools) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Tools, [])? }}">Tools</a></li>
-				<li{% if self.is_section(crate::endpoints::Section::Security) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::SecurityRecentCves, [])? }}">Security</a></li>
-				{% if self.admin() %}<li{% if self.is_section(crate::endpoints::Section::Admin) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Admin, [])? }}">Admin</a></li>{% endif %}
+				<li{% if ctx.is_section(crate::endpoints::Section::Projects) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [])? }}">Projects</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Maintainers) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainers, [])? }}">Maintainers</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Repositories) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}">Repositories</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Tools) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Tools, [])? }}">Tools</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Security) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::SecurityRecentCves, [])? }}">Security</a></li>
+				{% if ctx.admin() %}<li{% if ctx.is_section(crate::endpoints::Section::Admin) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Admin, [])? }}">Admin</a></li>{% endif %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				{% if self.experimental_enabled() %}
-				<li{% if self.is_section(crate::endpoints::Section::Experimental) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Experimental, [])? }}">Experimental</a></li>
+				{% if ctx.experimental_enabled() %}
+				<li{% if ctx.is_section(crate::endpoints::Section::Experimental) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Experimental, [])? }}">Experimental</a></li>
 				{% endif %}
-				<li{% if self.is_section(crate::endpoints::Section::News) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::News, [])? }}">News</a></li>
-				<li{% if self.is_section(crate::endpoints::Section::Docs) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Docs, [])? }}">Docs</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::News) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::News, [])? }}">News</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Docs) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Docs, [])? }}">Docs</a></li>
 			</ul>
 		</div>
 	</div>
@@ -72,7 +72,7 @@
 {% endblock %}
 
 {#
-{% let flashed_messages = self.get_flashed_messages_with_categories() %}
+{% let flashed_messages = ctx.get_flashed_messages_with_categories() %}
 {% if flashed_messages || messages %}
 <div class="container">
 {% for (category, message) in flashed_messages %}
@@ -92,7 +92,7 @@
 	<div class="container">
 		<p class="pull-right footer-links">
 			GitHub repositories:
-			{% if self.is_repology_rs() %}
+			{% if ctx.is_repology_rs() %}
 			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
 			{% else %}
 			<a href="https://github.com/repology/repology-webapp">webapp</a>,
@@ -108,10 +108,10 @@
 	</div>
 </footer>
 
-<script src="{{ self.url_for_static("jquery-3.7.1.min.js")? }}"></script>
-<script src="{{ self.url_for_static("bootstrap.min.v3.3.7.js")? }}"></script>
-<script src="{{ self.url_for_static("moment.min.v2.29.2.js")? }}"></script>
-<script src="{{ self.url_for_static("repology.v2.js")? }}"></script>
+<script src="{{ ctx.url_for_static("jquery-3.7.1.min.js")? }}"></script>
+<script src="{{ ctx.url_for_static("bootstrap.min.v3.3.7.js")? }}"></script>
+<script src="{{ ctx.url_for_static("moment.min.v2.29.2.js")? }}"></script>
+<script src="{{ ctx.url_for_static("repology.v2.js")? }}"></script>
 
 </body>
 </html>
