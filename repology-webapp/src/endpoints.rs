@@ -71,23 +71,23 @@ pub enum Endpoint {
     ProjectsBounded,
 
     // Project
-    #[strum(props(path = "/project/:project/versions", section = "Projects"))]
+    #[strum(props(path = "/project/:project_name/versions", section = "Projects"))]
     ProjectVersions,
-    #[strum(props(path = "/project/:name/versions-compact", section = "Projects"))]
+    #[strum(props(path = "/project/:project_name/versions-compact", section = "Projects"))]
     ProjectVersionsCompact,
-    #[strum(props(path = "/project/:name/packages", section = "Projects"))]
+    #[strum(props(path = "/project/:project_name/packages", section = "Projects"))]
     ProjectPackages,
-    #[strum(props(path = "/project/:name/information", section = "Projects"))]
+    #[strum(props(path = "/project/:project_name/information", section = "Projects"))]
     ProjectInformation,
-    #[strum(props(path = "/project/:name/history", section = "Projects"))]
+    #[strum(props(path = "/project/:project_name/history", section = "Projects"))]
     ProjectHistory,
-    #[strum(props(path = "/project/:name/related", section = "Projects"))]
+    #[strum(props(path = "/project/:project_name/related", section = "Projects"))]
     ProjectRelated,
-    #[strum(props(path = "/project/:name/badges", section = "Projects"))]
+    #[strum(props(path = "/project/:project_name/badges", section = "Projects"))]
     ProjectBadges,
-    #[strum(props(path = "/project/:name/report", section = "Projects"))] // GET + POST
+    #[strum(props(path = "/project/:project_name/report", section = "Projects"))] // GET + POST
     ProjectReport,
-    #[strum(props(path = "/project/:name/cves", section = "Projects"))]
+    #[strum(props(path = "/project/:project_name/cves", section = "Projects"))]
     ProjectCves,
 
     // Maintainers
@@ -97,20 +97,20 @@ pub enum Endpoint {
     MaintainersBounted,
 
     // Maintainer
-    #[strum(props(path = "/maintainer/:maintainer", section = "Maintainers"))]
+    #[strum(props(path = "/maintainer/:maintainer_name", section = "Maintainers"))]
     Maintainer,
     #[strum(props(
-        path = "/maintainer/:maintainer/problems-for-repo/:repo",
+        path = "/maintainer/:maintainer_name/problems-for-repo/:repository_name",
         section = "Maintainers"
     ))]
     MaintainerProblems,
     #[strum(props(
-        path = "/maintainer/:maintainer/feed-for-repo/:repo",
+        path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name",
         section = "Maintainers"
     ))]
     MaintainerRepoFeed,
     #[strum(props(
-        path = "/maintainer/:maintainer/feed-for-repo/:repo/atom",
+        path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name/atom",
         section = "Maintainers"
     ))]
     MaintainerRepoFeedAtom,
@@ -130,13 +130,19 @@ pub enum Endpoint {
     RepositoriesFields,
 
     // Repository
-    #[strum(props(path = "/repository/:repo", section = "Repositories"))]
+    #[strum(props(path = "/repository/:repository_name", section = "Repositories"))]
     Repository,
-    #[strum(props(path = "/repository/:repo/problems", section = "Repositories"))]
+    #[strum(props(
+        path = "/repository/:repository_name/problems",
+        section = "Repositories"
+    ))]
     RepositoryProblems,
-    #[strum(props(path = "/repository/:repo/feed", section = "Repositories"))]
+    #[strum(props(path = "/repository/:repository_name/feed", section = "Repositories"))]
     RepositoryFeed,
-    #[strum(props(path = "/repository/:repo/feed/atom", section = "Repositories"))]
+    #[strum(props(
+        path = "/repository/:repository_name/feed/atom",
+        section = "Repositories"
+    ))]
     RepositoryFeedAtom,
 
     // Tools
@@ -192,9 +198,11 @@ pub enum Endpoint {
     ApiV1Projects,
     #[strum(props(path = "/api/v1/projects/:bound"))]
     ApiV1ProjectsBounded,
-    #[strum(props(path = "/api/v1/repository/:repo/problems"))]
+    #[strum(props(path = "/api/v1/repository/:repository_name/problems"))]
     ApiV1RepositoryProblems,
-    #[strum(props(path = "/api/v1/maintainer/:maintainer/problems-for-repo/:repository_name"))]
+    #[strum(props(
+        path = "/api/v1/maintainer/:maintainer_name/problems-for-repo/:repository_name"
+    ))]
     ApiV1MaintainerProblems,
     #[strum(props(path = "/api/experimental/distromap"))]
     ApiExperimentalDistromap,
@@ -202,7 +210,7 @@ pub enum Endpoint {
     ApiExperimentalUpdates,
 
     // Graphs
-    #[strum(props(path = "/graph/project/:project/releases.svg"))]
+    #[strum(props(path = "/graph/project/:project_name/releases.svg"))]
     GraphReleases,
     #[strum(props(path = "/graph/map_repo_size_fresh.svg"))]
     GraphMapRepoSizeFresh,
@@ -210,35 +218,35 @@ pub enum Endpoint {
     GraphMapRepoSizeFreshNonunique,
     #[strum(props(path = "/graph/map_repo_size_freshness.svg"))]
     GraphMapRepoSizeFreshness,
-    #[strum(props(path = "/graph/repo/:repo/projects_total.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_total.svg"))]
     GraphRepoProjectsTotal,
-    #[strum(props(path = "/graph/repo/:repo/projects_newest.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_newest.svg"))]
     GraphRepoProjectsNewest,
-    #[strum(props(path = "/graph/repo/:repo/projects_newest_percent.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_newest_percent.svg"))]
     GraphRepoProjectsNewestPercent,
-    #[strum(props(path = "/graph/repo/:repo/projects_outdated.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_outdated.svg"))]
     GraphRepoProjectsOutdated,
-    #[strum(props(path = "/graph/repo/:repo/projects_outdated_percent.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_outdated_percent.svg"))]
     GraphRepoProjectsOutdatedPercent,
-    #[strum(props(path = "/graph/repo/:repo/projects_unique.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_unique.svg"))]
     GraphRepoProjectsUnique,
-    #[strum(props(path = "/graph/repo/:repo/projects_unique_percent.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_unique_percent.svg"))]
     GraphRepoProjectsUniquePercent,
-    #[strum(props(path = "/graph/repo/:repo/projects_problematic.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_problematic.svg"))]
     GraphRepoProjectsProblematic,
-    #[strum(props(path = "/graph/repo/:repo/projects_problematic_percent.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_problematic_percent.svg"))]
     GraphRepoProjectsProblematicPercent,
-    #[strum(props(path = "/graph/repo/:repo/projects_vulnerable.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable.svg"))]
     GraphRepoProjectsVulnerable,
-    #[strum(props(path = "/graph/repo/:repo/projects_vulnerable_percent.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable_percent.svg"))]
     GraphRepoProjectsVulnerablePercent,
-    #[strum(props(path = "/graph/repo/:repo/problems.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/problems.svg"))]
     GraphRepoProblems,
-    #[strum(props(path = "/graph/repo/:repo/problems_per_metapackage.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/problems_per_metapackage.svg"))]
     GraphRepoProblemsPerMetapackage,
-    #[strum(props(path = "/graph/repo/:repo/maintainers.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/maintainers.svg"))]
     GraphRepoMaintainers,
-    #[strum(props(path = "/graph/repo/:repo/packages_per_maintainer.svg"))]
+    #[strum(props(path = "/graph/repo/:repository_name/packages_per_maintainer.svg"))]
     GraphRepoPackagesPerMaintainer,
     #[strum(props(path = "/graph/total/packages.svg"))]
     GraphTotalPackages,
@@ -258,7 +266,7 @@ pub enum Endpoint {
     // Badges
     #[strum(props(path = "/badge/versions-matrix.svg"))]
     BadgeVersionsMatrix,
-    #[strum(props(path = "/badge/repository-big/:repo.svg"))]
+    #[strum(props(path = "/badge/repository-big/:repository_name.svg"))]
     BadgeRepositoryBig,
 
     // Sitemaps
@@ -270,7 +278,8 @@ pub enum Endpoint {
     SitemapRepositories,
     #[strum(props(path = "/sitemaps/maintainers.xml"))]
     SitemapMaintainers,
-    #[strum(props(path = "/sitemaps/projects_:int:page.xml"))]
+    // XXX: this path from flask is not compatible with axum, replace
+    #[strum(props(path = "/sitemaps/projects_:page.xml"))]
     SitemapProjects,
 }
 
