@@ -36,7 +36,7 @@ pub mod __private {
                 .headers()
                 .get(axum::http::header::CONTENT_TYPE)
                 .and_then(|value| value.to_str().ok().map(|value| value.into())),
-            body: std::str::from_utf8(&axum::body::to_bytes(response.into_body(), 10000).await?)?
+            body: std::str::from_utf8(&axum::body::to_bytes(response.into_body(), 1000000).await?)?
                 .into(),
         })
     }
