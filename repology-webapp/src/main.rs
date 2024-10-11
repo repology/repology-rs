@@ -6,6 +6,7 @@ mod config;
 use anyhow::{Context, Error};
 use clap::Parser;
 use sqlx::PgPool;
+use tracing::info;
 
 use crate::config::Config;
 use repology_webapp::create_app;
@@ -28,6 +29,7 @@ async fn main() -> Result<(), Error> {
     }
 
     if let Some(socket_addr) = &config.prometheus_export {
+        info!("initializing prometheus exporter");
         use metrics_exporter_prometheus::{Matcher, PrometheusBuilder};
 
         const DURATION_SECONDS_BUCKETS: &[f64] = &[
@@ -55,12 +57,15 @@ async fn main() -> Result<(), Error> {
         });
     }
 
+    info!("initializing database pool");
     let pool = PgPool::connect(&config.dsn)
         .await
         .context("error creating PostgreSQL connection pool")?;
 
+    info!("initializing application");
     let app = create_app(pool).await?;
 
+    info!("listening");
     let listener = tokio::net::TcpListener::bind(&config.listen).await.unwrap();
     axum::serve(listener, app)
         .await

@@ -10,6 +10,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::{FromRow, PgPool};
 use strum_macros::EnumString;
+use tracing::info;
 
 #[derive(Clone, Debug, PartialEq, EnumString, sqlx::Type)]
 #[sqlx(type_name = "repository_state", rename_all = "snake_case")]
@@ -92,6 +93,10 @@ impl RepositoryDataCache {
                 .collect();
             cached_data.repositories = repositories;
             cached_data.last_update = Some(Instant::now());
+            info!(
+                "updated repository data cache, {} entries",
+                cached_data.repositories.len()
+            );
         })?;
         Ok(())
     }

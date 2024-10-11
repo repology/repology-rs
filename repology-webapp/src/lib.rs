@@ -32,10 +32,12 @@ use axum::{
 };
 use metrics::{counter, histogram};
 use sqlx::PgPool;
+use tracing::info;
 
 use crate::font::FontMeasurer;
 use crate::repository_data::RepositoryDataCache;
 use crate::state::AppState;
+use crate::static_files::STATIC_FILES;
 
 async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> impl IntoResponse {
     let start = Instant::now();
@@ -53,9 +55,12 @@ async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> i
     response
 }
 
+#[tracing::instrument(name = "app init", skip_all)]
 pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
+    info!("initializing font measurer");
     let font_measurer = FontMeasurer::new();
 
+    info!("initializing repository data cache");
     let repository_data_cache = RepositoryDataCache::new(pool.clone());
     repository_data_cache
         .update()
@@ -64,6 +69,10 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
 
     let state = AppState::new(pool, font_measurer, repository_data_cache);
 
+    info!("initializing static files");
+    let _ = &*STATIC_FILES;
+
+    info!("initializing routes");
     use crate::endpoints::Endpoint::*;
     #[rustfmt::skip]
     Ok(Router::new()

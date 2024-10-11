@@ -4,6 +4,7 @@
 use std::path::Path;
 
 use anyhow::Error;
+use tracing::{error, info};
 
 #[allow(unused)]
 pub enum FontStyle {
@@ -19,22 +20,24 @@ struct Font {
 // we count include these into binary with include_bytes!
 // Alternatively, we could precalculate advances for all expected glyphs
 // (ASCII + …?) and shore these instead of a font
-const FONT_PATHS: &[&str] = &[
+const FONT_DIRS: &[&str] = &[
     "/usr/share/fonts/truetype/dejavu", // Ubuntu
     "/usr/local/share/fonts/dejavu",    // FreeBSD
 ];
 
 impl Font {
-    pub fn new(filename: &str) -> Self {
-        for path in FONT_PATHS {
-            if let Ok(ttf_data) = std::fs::read(Path::new(path).join(filename)) {
+    pub fn new(file_name: &str) -> Self {
+        for dir in FONT_DIRS {
+            let path = Path::new(dir).join(file_name);
+            if let Ok(ttf_data) = std::fs::read(&path) {
+                info!(file_name, ?path, "discovered true type font {}", file_name);
                 return Self { ttf_data };
             }
         }
+        error!(file_name, dirs_tried = ?FONT_DIRS, "failed to find font {}", file_name);
         panic!(
-            "Font {} not found in any of {} hardcoded font paths",
-            filename,
-            FONT_PATHS.len()
+            "Font {} not found in known font directories {:?}",
+            file_name, FONT_DIRS
         );
     }
 }

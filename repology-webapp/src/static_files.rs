@@ -6,6 +6,7 @@ use std::sync::LazyLock;
 
 use flate2::{write::GzEncoder, Compression};
 use include_dir::{include_dir, Dir, DirEntry};
+use tracing::info;
 
 static STATIC_FILES_RAW: Dir = include_dir!("$CARGO_MANIFEST_DIR/static");
 
@@ -68,6 +69,15 @@ impl StaticFiles {
                     original_content: content,
                     compressed_content,
                 };
+
+                info!(
+                    orig_name = file.name,
+                    hashed_name = file.hashed_name,
+                    orig_size = file.original_content.len(),
+                    compressed_size = file.compressed_content.len(),
+                    "adding static file {}",
+                    file.name,
+                );
 
                 (hashed_name, file)
             })
