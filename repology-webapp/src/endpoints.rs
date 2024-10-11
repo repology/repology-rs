@@ -24,6 +24,19 @@ pub enum Endpoint {
     StaticFile,
 }
 
+#[derive(EnumString, Clone, Copy, PartialEq, Eq)]
+pub enum Section {
+    Admin,
+    Docs,
+    Experimental,
+    Maintainers,
+    News,
+    Projects,
+    Repositories,
+    Security,
+    Tools,
+}
+
 impl Endpoint {
     pub fn path(&self) -> &'static str {
         self.get_str("path")
@@ -32,6 +45,12 @@ impl Endpoint {
 
     pub fn name(&self) -> &'static str {
         self.into()
+    }
+
+    pub fn is_section(&self, section: Section) -> bool {
+        use std::str::FromStr as _;
+        self.get_str("section")
+            .is_some_and(|endpoint_section| Section::from_str(endpoint_section).unwrap() == section)
     }
 
     pub fn construct_url(&self, values: &HashMap<String, Value>) -> Result<String, Error> {
