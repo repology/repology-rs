@@ -2,29 +2,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashMap;
+use std::sync::LazyLock;
 
 use flate2::{write::GzEncoder, Compression};
 use include_dir::{include_dir, Dir, DirEntry};
 
-static STATIC_FILES: Dir = include_dir!("$CARGO_MANIFEST_DIR/static");
+static STATIC_FILES_RAW: Dir = include_dir!("$CARGO_MANIFEST_DIR/static");
 
-fn iterate_static_files() -> impl Iterator<Item = (&'static str, &'static [u8])> {
-    STATIC_FILES
-        .find("**/*")
-        .expect("file glob should be valid")
-        .filter_map(|entry| {
-            if let DirEntry::File(file) = entry {
-                Some((
-                    file.path()
-                        .to_str()
-                        .expect("static file names should be utf8"),
-                    file.contents(),
-                ))
-            } else {
-                None
-            }
-        })
-}
+pub static STATIC_FILES: LazyLock<StaticFiles> =
+    LazyLock::new(|| StaticFiles::new(&STATIC_FILES_RAW));
 
 pub struct StaticFile {
     pub name: &'static str,
@@ -40,9 +26,28 @@ pub struct StaticFiles {
 unsafe impl Send for StaticFiles {}
 
 impl StaticFiles {
-    pub fn new() -> Self {
+    fn iterate_static_files(
+        dir: &'static Dir,
+    ) -> impl Iterator<Item = (&'static str, &'static [u8])> {
+        dir.find("**/*")
+            .expect("file glob should be valid")
+            .filter_map(|entry| {
+                if let DirEntry::File(file) = entry {
+                    Some((
+                        file.path()
+                            .to_str()
+                            .expect("static file names should be utf8"),
+                        file.contents(),
+                    ))
+                } else {
+                    None
+                }
+            })
+    }
+
+    pub fn new(dir: &'static Dir) -> Self {
         Self {
-            by_hashed_name: iterate_static_files()
+            by_hashed_name: Self::iterate_static_files(dir)
                 .map(|(name, content)| {
                     let compressed_content = {
                         use std::io::Write;

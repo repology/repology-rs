@@ -1,20 +1,16 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use axum::extract::{Path, State};
+use axum::extract::Path;
 use axum::http::{header, HeaderMap, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
 
 use crate::result::EndpointResult;
-use crate::state::AppState;
+use crate::static_files::STATIC_FILES;
 
-#[tracing::instrument(skip(state))]
-pub async fn static_file(
-    Path(file_name): Path<String>,
-    headers: HeaderMap,
-    State(state): State<AppState>,
-) -> EndpointResult {
-    let file = if let Some(file) = state.static_files.by_hashed_name(&file_name) {
+#[tracing::instrument]
+pub async fn static_file(Path(file_name): Path<String>, headers: HeaderMap) -> EndpointResult {
+    let file = if let Some(file) = STATIC_FILES.by_hashed_name(&file_name) {
         file
     } else {
         return Ok((StatusCode::NOT_FOUND, "not found".to_owned()).into_response());

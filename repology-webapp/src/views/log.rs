@@ -15,7 +15,7 @@ use crate::endpoints::{Endpoint, Section};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::static_files::StaticFiles;
+use crate::static_files::STATIC_FILES;
 use crate::url_for::UrlConstructor;
 
 #[derive(Deserialize, Debug)]
@@ -40,7 +40,7 @@ struct TemplateParams {
 
 impl TemplateParams {
     pub fn url_for_static(&self, file_name: &str) -> Result<String, Error> {
-        let name_map = StaticFiles::new().name_to_hashed_name_map();
+        let name_map = STATIC_FILES.name_to_hashed_name_map();
 
         let hashed_file_name = name_map
             .get(file_name)

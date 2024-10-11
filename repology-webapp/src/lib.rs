@@ -36,7 +36,6 @@ use sqlx::PgPool;
 use crate::font::FontMeasurer;
 use crate::repository_data::RepositoryDataCache;
 use crate::state::AppState;
-use crate::static_files::StaticFiles;
 
 async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> impl IntoResponse {
     let start = Instant::now();
@@ -63,9 +62,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .await
         .context("error getting repository metadata")?;
 
-    let static_files = StaticFiles::new();
-
-    let state = AppState::new(pool, font_measurer, repository_data_cache, static_files);
+    let state = AppState::new(pool, font_measurer, repository_data_cache);
 
     use crate::endpoints::Endpoint::*;
     #[rustfmt::skip]
