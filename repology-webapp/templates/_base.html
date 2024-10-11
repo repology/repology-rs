@@ -10,18 +10,18 @@
 {% block extrameta %}
 {% endblock %}
 	<title>{% block title %}Repology{% endblock %}</title>
-	<link rel="stylesheet" href="{{ url_for_static("bootstrap.min.v3.3.7.css") }}">
-	<link rel="stylesheet" href="{{ url_for_static("repology.v21.css") }}">
-	<link rel="icon" href="{{ url_for_static("repology.v1.ico") }}" sizes="16x16 32x32 64x64" type="image/x-icon">
-	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ url_for(endpoint="opensearch_project") }}">
-	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ url_for(endpoint="opensearch_maintainer") }}">
+	<link rel="stylesheet" href="{{ self.url_for_static("bootstrap.min.v3.3.7.css")? }}">
+	<link rel="stylesheet" href="{{ self.url_for_static("repology.v21.css")? }}">
+	<link rel="icon" href="{{ self.url_for_static("repology.v1.ico")? }}" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ self.url_for(crate::endpoints::Endpoint::OpensearchProject, [])? }}">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ self.url_for(crate::endpoints::Endpoint::OpensearchMaintainer, [])? }}">
 </head>
 <body>
 
-{% if needs_ipv6_notice() %}
+{% if self.needs_ipv6_notice() %}
 <div class="site-alert-outer">
 	<div class="container site-alert-inner">
-		<img src="{{ url_for_static("ipv6.v1.svg") }}" alt="IPv6 logo" height="64">
+		<img src="{{ self.url_for_static("ipv6.v1.svg")? }}" alt="IPv6 logo" height="64">
 		<p>You are connected to Repology using legacy IPv4 protocol.
 		Due to <a href="https://en.wikipedia.org/wiki/IPv6#IPv4_address_exhaustion">IPv4 address exhaustion</a>
 		it may become too expensive or impossible for Repology to support IPv4 in the nearest future.
@@ -39,26 +39,26 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="{{ url_for(endpoint="index") }}">
-				<img alt="Repology" src="{{ url_for_static("repology40x40.v1.png") }}" width="40" height="40">
+			<a class="navbar-brand" href="{{ self.url_for(crate::endpoints::Endpoint::Index, [])? }}">
+				<img alt="Repology" src="{{ self.url_for_static("repology40x40.v1.png")? }}" width="40" height="40">
 			</a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li{% if current_endpoint_group_in(groups=['Projects']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='projects') }}">Projects</a></li>
-				<li{% if current_endpoint_group_in(groups=['Maintainers']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='maintainers') }}">Maintainers</a></li>
-				<li{% if current_endpoint_group_in(groups=['Repositories']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='repositories_statistics') }}">Repositories</a></li>
-				<li{% if current_endpoint_group_in(groups=['Tools']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='tools') }}">Tools</a></li>
-				<li{% if current_endpoint_group_in(groups=['Security']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='security_recent_cves') }}">Security</a></li>
-				{% if session.admin %}<li{% if current_endpoint_group_in(groups=['Admin']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='admin') }}">Admin</a></li>{% endif %}
+				<li{% if self.is_section(crate::endpoints::Section::Projects) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Projects, [])? }}">Projects</a></li>
+				<li{% if self.is_section(crate::endpoints::Section::Maintainers) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Maintainers, [])? }}">Maintainers</a></li>
+				<li{% if self.is_section(crate::endpoints::Section::Repositories) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}">Repositories</a></li>
+				<li{% if self.is_section(crate::endpoints::Section::Tools) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Tools, [])? }}">Tools</a></li>
+				<li{% if self.is_section(crate::endpoints::Section::Security) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::SecurityRecentCves, [])? }}">Security</a></li>
+				{% if self.admin() %}<li{% if self.is_section(crate::endpoints::Section::Admin) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Admin, [])? }}">Admin</a></li>{% endif %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				{% if session.experimental %}
-				<li{% if current_endpoint_group_in(groups=['Experimental']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='experimental') }}">Experimental</a></li>
+				{% if self.experimental_enabled() %}
+				<li{% if self.is_section(crate::endpoints::Section::Experimental) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Experimental, [])? }}">Experimental</a></li>
 				{% endif %}
-				<li{% if current_endpoint_group_in(groups=['News']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='news') }}">News</a></li>
-				<li{% if current_endpoint_group_in(groups=['Docs']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='docs') }}">Docs</a></li>
+				<li{% if self.is_section(crate::endpoints::Section::News) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::News, [])? }}">News</a></li>
+				<li{% if self.is_section(crate::endpoints::Section::Docs) %} class="active"{% endif %}><a href="{{ self.url_for(crate::endpoints::Endpoint::Docs, [])? }}">Docs</a></li>
 			</ul>
 		</div>
 	</div>
@@ -71,17 +71,19 @@
 </div>
 {% endblock %}
 
-{% set flashed_messages = get_flashed_messages(with_categories=true) %}
-{% if flashed_messages or messages %}
+{#
+{% let flashed_messages = self.get_flashed_messages_with_categories() %}
+{% if flashed_messages || messages %}
 <div class="container">
-{% for category, message in flashed_messages %}
+{% for (category, message) in flashed_messages %}
 	<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
 {% endfor %}
-{% for category, message in messages %}
+{% for (category, message) in messages %}
 	<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
 {% endfor %}
 </div>
 {% endif %}
+#}
 
 {% block content %}
 {% endblock %}
@@ -90,7 +92,7 @@
 	<div class="container">
 		<p class="pull-right footer-links">
 			GitHub repositories:
-			{% if is_repology_rs() %}
+			{% if self.is_repology_rs() %}
 			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
 			{% else %}
 			<a href="https://github.com/repology/repology-webapp">webapp</a>,
@@ -105,10 +107,10 @@
 	</div>
 </footer>
 
-<script src="{{ url_for_static("jquery-3.7.1.min.js") }}"></script>
-<script src="{{ url_for_static("bootstrap.min.v3.3.7.js") }}"></script>
-<script src="{{ url_for_static("moment.min.v2.29.2.js") }}"></script>
-<script src="{{ url_for_static("repology.v2.js") }}"></script>
+<script src="{{ self.url_for_static("jquery-3.7.1.min.js")? }}"></script>
+<script src="{{ self.url_for_static("bootstrap.min.v3.3.7.js")? }}"></script>
+<script src="{{ self.url_for_static("moment.min.v2.29.2.js")? }}"></script>
+<script src="{{ self.url_for_static("repology.v2.js")? }}"></script>
 
 </body>
 </html>

@@ -111,7 +111,6 @@ impl RepositoryDataCache {
         }
     }
 
-    #[expect(dead_code)]
     pub async fn get(&self, repository_name: &str) -> Option<RepositoryData> {
         self.try_update_if_needed().await;
         self.cached_data

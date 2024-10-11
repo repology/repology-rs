@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.89"
+askama = "0.12.1"
 axum = { version = "0.7.7", features = ["macros"] }
 chrono = { version = "0.4.38", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
@@ -29,6 +30,7 @@ tracing = "0.1.40"
 tracing-appender = "0.2.3"
 tracing-subscriber = "0.3.18"
 ttf-parser = "0.25.0"
+url-escape = "0.1.1"
 
 [dev-dependencies]
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }

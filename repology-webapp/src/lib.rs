@@ -4,8 +4,10 @@
 #![feature(iterator_try_collect)]
 #![feature(coverage_attribute)]
 #![feature(stmt_expr_attributes)]
+#![feature(assert_matches)]
 
 mod badges;
+mod constants;
 mod endpoints;
 mod font;
 mod package;
@@ -14,6 +16,7 @@ mod repository_data;
 mod result;
 mod state;
 mod static_files;
+mod url_for;
 mod views;
 mod xmlwriter;
 
@@ -73,6 +76,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(BadgeVerticalAllRepos.path(), get(views::badge_vertical_allrepos))
         .route(BadgeLatestVersions.path(), get(views::badge_latest_versions))
         .route(StaticFile.path(), get(views::static_file))
+        .route(Log.path(), get(views::log))
         .route_layer(middleware::from_fn(track_metrics))
         .with_state(state))
 }

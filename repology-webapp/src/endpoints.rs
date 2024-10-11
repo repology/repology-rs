@@ -8,7 +8,7 @@ use serde_json::Value;
 use strum::EnumProperty;
 use strum_macros::{EnumString, IntoStaticStr};
 
-#[derive(EnumProperty, IntoStaticStr, EnumString)]
+#[derive(EnumProperty, IntoStaticStr, EnumString, Clone, Copy, Debug)]
 pub enum Endpoint {
     // API
     #[strum(props(path = "/api/v1/project/:project_name"))]
