@@ -1,0 +1,98 @@
+{% extends "_base.html" %}
+
+{% block title %}About Repology{% endblock %}
+{% block header %}About{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<article>
+
+<p>Repology is a service which tracks and compares package versions in more than 120 package repositories.</p>
+
+<h3>Purpose</h3>
+
+<ul>
+	<li>For package/port maintainers:
+		<ul>
+			<li>Discover new releases of software you maintain packages for</li>
+			<li>Find new projects to package</li>
+			<li>Get in touch with fellow maintainers to improve packages together</li>
+			<li>Keep package naming and versioning schemes in sync to other repos for your and your user's convenience</li>
+			<li>Fix problems detected by repology, such as broken links</li>
+		</ul>
+	</li>
+	<li>For software authors:
+		<ul>
+			<li>Keep track of where and how well your project is packaged</li>
+			<li>Keep in touch with your product package maintainers</li>
+		</ul>
+	</li>
+	<li>For users:
+		<ul>
+			<li>Discover new releases of software you use</li>
+			<li>Pick distribution most suitable for you, in terms of package quantity, freshness or stability</li>
+			<li>Keep in touch with maintainers of software you use</li>
+		</ul>
+	</li>
+</ul>
+
+<h3>Supported repositories</h3>
+
+{% include "_includes/supported_repos.html" %}
+
+<h3>How does it work?</h3>
+
+<p>First, repology fetches and parses available sources of data on
+packages. There is a built-in set of fetchers and parsers for many
+types of sources, such as text index files, git repositories, web
+pages and JSON API output.</p>
+
+<p>After raw package data is obtained from all available sources,
+it is aggregated per upstream project. By default, package names
+are used to aggregate packages, and though it works fine for most
+cases, real world data contains inconsistencies, so first an elaborate
+ruleset is used to handle inconsistencies specially. For instance,
+rules allow merging packages with different names into a single
+project (for example, <b>firefox</b>, <b>firefox-lts</b> and
+<b>firefox43</b> into a single <b>firefox</b>), or, instead, split
+packages with a same name into multiple project (for example,
+<b>clementine</b> may be either a player or window manager, which
+are unrelated projects).</p>
+
+<p>Last, for each project versions are compared with a custom
+general algorithm, and each package is classified by its version.</p>
+
+{% include "_includes/versionclass/list.html" %}
+
+<p>Ruleset is also used to mark ignored and devel versions</p>
+
+<h3>Updates</h3>
+
+<p>The repository data and the website are updated hourly.</p>
+
+<h3>Development</h3>
+
+<p>Repology is developed on GitHub.</p>
+
+<ul>
+	<li>Web application (the one you're currently browsing) <a href="https://github.com/repology/repology-webapp">code</a>, <a href="https://github.com/repology/repology-webapp/issues">issues</a> and <a href="https://github.com/repology/repology-webapp/pulls">pull requests</a>.</li>
+	<li>Updater backend (responsible for fetching and processing package data) <a href="https://github.com/repology/repology-updater">code</a>, <a href="https://github.com/repology/repology-updater/issues">issues</a> and <a href="https://github.com/repology/repology-updater/pulls">pull requests</a>.</li>
+	<li>Ruleset <a href="https://github.com/repology/repology-rules">code</a>, <a href="https://github.com/repology/repology-rules/issues">issues</a> and <a href="https://github.com/repology/repology-rules/pulls">pull requests</a>.</li>
+</ul>
+
+<p>Junior tasks include proofreading English texts (README, html templates), finding more mismatched packages and adding name transformation rules for them.</p>
+
+<h3>Alternatives</h3>
+
+<p>Some alternatives to Repology, and related projects:</p>
+
+<ul>
+	<li><a href="https://pkgs.org/">pkgs.org</a> - packages search for Linux and Unix</li>
+	<li><a href="https://release-monitoring.org/">release-monitoring.org</a> - upstream release monitoring</li>
+</ul>
+
+</article>
+
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+
+{% block title %}Repology documentation{% endblock %}
+{% block header %}Documentation{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<ul>
+	<li><a href="{{ url_for(endpoint='docs_about') }}">What is Repology?</a></li>
+	<li><a href="{{ url_for(endpoint='docs_requirements') }}">Requirements for new repositories</a></li>
+	<li><a href="{{ url_for(endpoint='docs_not_supported') }}">Not supported repositories</a></li>
+	<li><a href="{{ url_for(endpoint='docs_bots') }}">Repology bots</a></li>
+	<li><a href="{{ url_for(endpoint='api_v1') }}">API documentation</a></li>
+</ul>
+
+</div>
+{% endblock %}
