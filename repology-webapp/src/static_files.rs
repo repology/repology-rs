@@ -21,15 +21,15 @@ pub struct StaticFile {
 
 pub struct StaticFiles {
     by_hashed_name: HashMap<String, StaticFile>,
+    hashed_name_by_original_name: HashMap<&'static str, String>,
 }
 
 unsafe impl Send for StaticFiles {}
 
 impl StaticFiles {
-    fn iterate_static_files(
-        dir: &'static Dir,
-    ) -> impl Iterator<Item = (&'static str, &'static [u8])> {
-        dir.find("**/*")
+    pub fn new(dir: &'static Dir) -> Self {
+        let static_files_iterator = dir
+            .find("**/*")
             .expect("file glob should be valid")
             .filter_map(|entry| {
                 if let DirEntry::File(file) = entry {
@@ -42,50 +42,55 @@ impl StaticFiles {
                 } else {
                     None
                 }
+            });
+
+        let by_hashed_name: HashMap<_, _> = static_files_iterator
+            .map(|(name, content)| {
+                let compressed_content = {
+                    use std::io::Write;
+                    let mut encoder = GzEncoder::new(Vec::new(), Compression::best());
+                    encoder
+                        .write_all(content)
+                        .expect("compression into memory is not expected to fail");
+                    encoder
+                        .finish()
+                        .expect("compression into memory is not expected to fail")
+                };
+                let hash: u64 = cityhasher::hash(content);
+                let (base, ext) = name
+                    .rsplit_once('.')
+                    .expect("static files should have extensions");
+                let hashed_name = format!("{}.{:016x}.{}", base, hash, ext);
+
+                let file = StaticFile {
+                    name,
+                    hashed_name: hashed_name.clone(),
+                    original_content: content,
+                    compressed_content,
+                };
+
+                (hashed_name, file)
             })
-    }
+            .collect();
 
-    pub fn new(dir: &'static Dir) -> Self {
+        let hashed_name_by_original_name = by_hashed_name
+            .values()
+            .map(|file| (file.name, file.hashed_name.clone()))
+            .collect();
+
         Self {
-            by_hashed_name: Self::iterate_static_files(dir)
-                .map(|(name, content)| {
-                    let compressed_content = {
-                        use std::io::Write;
-                        let mut encoder = GzEncoder::new(Vec::new(), Compression::best());
-                        encoder
-                            .write_all(content)
-                            .expect("compression into memory is not expected to fail");
-                        encoder
-                            .finish()
-                            .expect("compression into memory is not expected to fail")
-                    };
-                    let hash: u64 = cityhasher::hash(content);
-                    let (base, ext) = name
-                        .rsplit_once('.')
-                        .expect("static files should have extensions");
-                    let hashed_name = format!("{}.{:016x}.{}", base, hash, ext);
-
-                    let file = StaticFile {
-                        name,
-                        hashed_name: hashed_name.clone(),
-                        original_content: content,
-                        compressed_content,
-                    };
-
-                    (hashed_name, file)
-                })
-                .collect(),
+            by_hashed_name,
+            hashed_name_by_original_name,
         }
     }
 
-    pub fn by_hashed_name(&self, name: &str) -> Option<&StaticFile> {
-        self.by_hashed_name.get(name)
+    pub fn by_hashed_name(&self, hashed_name: &str) -> Option<&StaticFile> {
+        self.by_hashed_name.get(hashed_name)
     }
 
-    pub fn name_to_hashed_name_map(&self) -> HashMap<String, String> {
-        self.by_hashed_name
-            .values()
-            .map(|file| (file.name.to_owned(), file.hashed_name.clone()))
-            .collect()
+    pub fn hashed_name_by_orig_name(&self, orig_name: &str) -> Option<&str> {
+        self.hashed_name_by_original_name
+            .get(orig_name)
+            .map(|name| name.as_ref())
     }
 }

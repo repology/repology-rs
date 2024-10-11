@@ -40,15 +40,12 @@ struct TemplateParams {
 
 impl TemplateParams {
     pub fn url_for_static(&self, file_name: &str) -> Result<String, Error> {
-        let name_map = STATIC_FILES.name_to_hashed_name_map();
-
-        let hashed_file_name = name_map
-            .get(file_name)
-            .ok_or_else(|| anyhow!("unknown static file \"{}\"", file_name))?
-            .to_string();
+        let hashed_file_name = STATIC_FILES
+            .hashed_name_by_orig_name(file_name)
+            .ok_or_else(|| anyhow!("unknown static file \"{}\"", file_name))?;
 
         Ok(UrlConstructor::new(Endpoint::StaticFile.path())
-            .with_field("file_name", &hashed_file_name)
+            .with_field("file_name", hashed_file_name)
             .construct()?)
     }
 
