@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="{% block description %}Multiple package repositories analyzer{% endblock %}">
+	<meta name="keywords" content="{% block keywords %}repository, package, packages, version{% endblock %}">
+	<meta name="author" content="Dmitry Marakasov">
+{% block extrameta %}
+{% endblock %}
+	<title>{% block title %}Repology{% endblock %}</title>
+	<link rel="stylesheet" href="{{ url_for_static("bootstrap.min.v3.3.7.css") }}">
+	<link rel="stylesheet" href="{{ url_for_static("repology.v21.css") }}">
+	<link rel="icon" href="{{ url_for_static("repology.v1.ico") }}" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ url_for(endpoint="opensearch_project") }}">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ url_for(endpoint="opensearch_maintainer") }}">
+</head>
+<body>
+
+{% if needs_ipv6_notice() %}
+<div class="site-alert-outer">
+	<div class="container site-alert-inner">
+		<img src="{{ url_for_static("ipv6.v1.svg") }}" alt="IPv6 logo" height="64">
+		<p>You are connected to Repology using legacy IPv4 protocol.
+		Due to <a href="https://en.wikipedia.org/wiki/IPv6#IPv4_address_exhaustion">IPv4 address exhaustion</a>
+		it may become too expensive or impossible for Repology to support IPv4 in the nearest future.
+		Time to switch to <a href="https://en.wikipedia.org/wiki/IPv6">IPv6</a>!</p>
+	</div>
+</div>
+{% endif %}
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="{{ url_for(endpoint="index") }}">
+				<img alt="Repology" src="{{ url_for_static("repology40x40.v1.png") }}" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li{% if current_endpoint_group_in(groups=['Projects']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='projects') }}">Projects</a></li>
+				<li{% if current_endpoint_group_in(groups=['Maintainers']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='maintainers') }}">Maintainers</a></li>
+				<li{% if current_endpoint_group_in(groups=['Repositories']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='repositories_statistics') }}">Repositories</a></li>
+				<li{% if current_endpoint_group_in(groups=['Tools']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='tools') }}">Tools</a></li>
+				<li{% if current_endpoint_group_in(groups=['Security']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='security_recent_cves') }}">Security</a></li>
+				{% if session.admin %}<li{% if current_endpoint_group_in(groups=['Admin']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='admin') }}">Admin</a></li>{% endif %}
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				{% if session.experimental %}
+				<li{% if current_endpoint_group_in(groups=['Experimental']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='experimental') }}">Experimental</a></li>
+				{% endif %}
+				<li{% if current_endpoint_group_in(groups=['News']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='news') }}">News</a></li>
+				<li{% if current_endpoint_group_in(groups=['Docs']) %} class="active"{% endif %}><a href="{{ url_for(endpoint='docs') }}">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+{% block pageheader %}
+<div class="container">
+	{% block preheader %}{% endblock %}
+	<h1 class="page-header">{% block header %}{% endblock %}</h1>
+</div>
+{% endblock %}
+
+{% set flashed_messages = get_flashed_messages(with_categories=true) %}
+{% if flashed_messages or messages %}
+<div class="container">
+{% for category, message in flashed_messages %}
+	<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
+{% endfor %}
+{% for category, message in messages %}
+	<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% block content %}
+{% endblock %}
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			{% if is_repology_rs() %}
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			{% else %}
+			<a href="https://github.com/repology/repology-webapp">webapp</a>,
+			{% endif %}
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2024 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+		</p>
+	</div>
+</footer>
+
+<script src="{{ url_for_static("jquery-3.7.1.min.js") }}"></script>
+<script src="{{ url_for_static("bootstrap.min.v3.3.7.js") }}"></script>
+<script src="{{ url_for_static("moment.min.v2.29.2.js") }}"></script>
+<script src="{{ url_for_static("repology.v2.js") }}"></script>
+
+</body>
+</html>
