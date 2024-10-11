@@ -5,8 +5,10 @@ mod api;
 mod badges;
 mod log;
 mod static_files;
+mod trivial_pages;
 
 pub use api::*;
 pub use badges::*;
 pub use log::*;
 pub use static_files::*;
+pub use trivial_pages::*;
