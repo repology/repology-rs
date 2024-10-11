@@ -13,6 +13,7 @@ pub mod __private {
 
     use repology_webapp::create_app;
 
+    #[derive(Debug)]
     pub struct Response {
         pub status: axum::http::StatusCode,
         pub content_type: Option<String>,
@@ -76,6 +77,7 @@ pub mod __private {
 macro_rules! check_code {
     ($pool:ident, $uri:literal, $code:ident) => {
         let resp = $crate::__private::get($pool.clone(), $uri).await.unwrap();
+        dbg!(&resp);
         assert_eq!(
             resp.status,
             $crate::__private::axum::http::StatusCode::$code
@@ -87,6 +89,7 @@ macro_rules! check_code {
 macro_rules! check_json {
     ($pool:ident, $uri:literal, $expected_json:literal) => {
         let resp = $crate::__private::get($pool.clone(), $uri).await.unwrap();
+        dbg!(&resp);
         assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
         assert_eq!(
             resp.content_type,
@@ -111,6 +114,7 @@ macro_rules! check_svg {
         let resp = $crate::__private::get($pool.clone(), $uri)
             .await
             .unwrap();
+        dbg!(&resp);
         assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
         assert_eq!(resp.content_type, Some($crate::__private::mime::IMAGE_SVG.as_ref().into()));
 
@@ -151,6 +155,7 @@ macro_rules! check_html {
         let resp = $crate::__private::get($pool.clone(), $uri)
             .await
             .unwrap();
+        dbg!(&resp);
         assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
         assert_eq!(resp.content_type, Some($crate::__private::mime::TEXT_HTML.as_ref().into()));
 
