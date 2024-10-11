@@ -69,6 +69,7 @@ impl TemplateContext {
             .construct()?)
     }
 
+    #[expect(dead_code)]
     pub fn external_url_for_self<'a>(
         &self,
         fields: &[(&'a str, &'a str)],

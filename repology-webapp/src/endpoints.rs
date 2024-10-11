@@ -8,8 +8,40 @@ use serde_json::Value;
 use strum::EnumProperty;
 use strum_macros::{EnumString, IntoStaticStr};
 
+// endpoint ordering:
+// static -> index -> pages according to navbar -> supplementary pages -> supplementary endpoints
 #[derive(EnumProperty, IntoStaticStr, EnumString, Clone, Copy, Debug)]
 pub enum Endpoint {
+    // Static
+    #[strum(props(path = "/static/:file_name"))]
+    StaticFile,
+
+    // Tools
+    #[strum(props(path = "/tools", section = "Tools"))]
+    Tools,
+
+    // News/Docs
+    #[strum(props(path = "/news", section = "News"))]
+    News,
+    #[strum(props(path = "/docs", section = "Docs"))]
+    Docs,
+    #[strum(props(path = "/docs/about", section = "Docs"))]
+    DocsAbout,
+    #[strum(props(path = "/docs/bots", section = "Docs"))]
+    DocsBots,
+    #[strum(props(path = "/docs/not_supported", section = "Docs"))]
+    DocsNotSupported,
+    #[strum(props(path = "/docs/requirements", section = "Docs"))]
+    DocsRequirements,
+    #[strum(props(path = "/api", section = "Docs"))]
+    Api, // XXX: do we need this duplicate endpoints
+    #[strum(props(path = "/api/v1", section = "Docs"))]
+    ApiV1,
+
+    // Misc
+    #[strum(props(path = "/log/:run_id"))]
+    Log,
+
     // API
     #[strum(props(path = "/api/v1/project/:project_name"))]
     ApiV1Project,
@@ -24,13 +56,11 @@ pub enum Endpoint {
     #[strum(props(path = "/badge/latest-versions/:project_name.svg"))]
     BadgeLatestVersions,
 
-    // Misc
-    #[strum(props(path = "/static/:file_name"))]
-    StaticFile,
-
     //
     // not implemented yet
     //
+
+    // Index
     #[strum(props(path = "/"))]
     Index,
 
@@ -85,21 +115,6 @@ pub enum Endpoint {
     ))]
     MaintainerRepoFeedAtom,
 
-    // Misc
-    #[strum(props(path = "/link/*url"))]
-    Link,
-    #[strum(props(path = "/log/:run_id"))]
-    Log,
-    #[strum(props(path = "/favicon.ico"))]
-    Favicon,
-
-    #[strum(props(path = "/experimental/", section = "Experimental"))] // GET + POST
-    Experimental,
-    #[strum(props(path = "/experimental/turnover/maintainers", section = "Experimental"))]
-    MaintainersTurnover,
-    #[strum(props(path = "/experimental/distromap", section = "Experimental"))]
-    Distromap,
-
     // Repositories
     #[strum(props(path = "/repositories/statistics", section = "Repositories"))]
     RepositoriesStatistics,
@@ -125,8 +140,6 @@ pub enum Endpoint {
     RepositoryFeedAtom,
 
     // Tools
-    #[strum(props(path = "/tools", section = "Tools"))]
-    Tools,
     #[strum(props(path = "/tools/project-by", section = "Tools"))]
     ToolProjectBy,
     #[strum(props(path = "/tools/trending", section = "Tools"))]
@@ -160,25 +173,21 @@ pub enum Endpoint {
     #[strum(props(path = "/admin/omni_cves", section = "Admin"))]
     AdminOmniCves,
 
-    // News/Docs
-    #[strum(props(path = "/news", section = "News"))]
-    News,
-    #[strum(props(path = "/docs", section = "Docs"))]
-    Docs,
-    #[strum(props(path = "/docs/about", section = "Docs"))]
-    DocsAbout,
-    #[strum(props(path = "/docs/bots", section = "Docs"))]
-    DocsBots,
-    #[strum(props(path = "/docs/not_supported", section = "Docs"))]
-    DocsNotSupported,
-    #[strum(props(path = "/docs/requirements", section = "Docs"))]
-    DocsRequirements,
+    // Experimental
+    #[strum(props(path = "/experimental/", section = "Experimental"))] // GET + POST
+    Experimental,
+    #[strum(props(path = "/experimental/turnover/maintainers", section = "Experimental"))]
+    MaintainersTurnover,
+    #[strum(props(path = "/experimental/distromap", section = "Experimental"))]
+    Distromap,
+
+    // Misc
+    #[strum(props(path = "/link/*url"))]
+    Link,
+    #[strum(props(path = "/favicon.ico"))]
+    Favicon,
 
     // API
-    #[strum(props(path = "/api", section = "Docs"))]
-    Api,
-    #[strum(props(path = "/api/v1", section = "Docs"))]
-    ApiV1,
     #[strum(props(path = "/api/v1/projects"))]
     ApiV1Projects,
     #[strum(props(path = "/api/v1/projects/:bound"))]

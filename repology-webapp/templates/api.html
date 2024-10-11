@@ -61,7 +61,7 @@ Mandatory fields are <b>repo</b> and <b>version</b>, all other fields are option
 
 <p>Get list of <em>packages</em> for specific <em>project</em> (here, firefox):</p>
 <pre>
-{{ url_for(endpoint='api_v1_project', name='firefox') }}
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1Project, [("project_name", "firefox")])? }}
 </pre>
 
 <h3>Multiple projects</h3>
@@ -74,34 +74,34 @@ range to request.</p>
 
 <p>Get first {{ per_page }} projects:</p>
 <pre>
-{{ url_for(endpoint='api_v1_projects') }}
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1Projects, [])? }}
 </pre>
 
 <p>Get first {{ per_page }} projects starting with <b>firefox</b> (inclusive):</p>
 <pre>
-{{ url_for(endpoint='api_v1_projects', bound='firefox') }}
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1ProjectsBounded, [("bound", "firefox")])? }}
 </pre>
 
 <p>Get last {{ per_page }} projects up to <b>firefox</b> (inclusive):</p>
 <pre>
-{{ url_for(endpoint='api_v1_projects', bound='..firefox') }}
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1ProjectsBounded, [("bound", "..firefox")])? }}
 </pre>
 
 <p>You may iterate through all projects by using the last project name in the next
 request</p>
 <pre>
-{{ url_for(endpoint='api_v1_projects') }}  # returns '010editor' ... 'aaut'
-{{ url_for(endpoint='api_v1_projects', bound='aaut') }}  # returns 'aaut' ... 'acf-snort'
-{{ url_for(endpoint='api_v1_projects', bound='acf-snort') }}  # returns 'acf-snort' ... 'adinatha-fonts'
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1Projects, [])? }}  # returns '010editor' ... 'aaut'
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1ProjectsBounded, [("bound", "aaut")])? }}  # returns 'aaut' ... 'acf-snort'
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1ProjectsBounded, [("bound", "acf-snort")])? }}  # returns 'acf-snort' ... 'adinatha-fonts'
 # ...
 </pre>
 
 <h3>Filtered projects</h3>
 
 <p>API supports all the filters available on the website, so you can just
-play with filters in the <a href="{{ url_for(endpoint='projects') }}">website</a>
-and then replace <code>{{ url_for(endpoint='projects') }}</code> URL prefix with
-<code>{{ url_for(endpoint='api_v1_projects') }}</code> to get API output.</p>
+play with filters in the <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [])? }}">website</a>
+and then replace <code>{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [])? }}</code> URL prefix with
+<code>{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1Projects, [])? }}</code> to get API output.</p>
 
 <p>Supported filters are:</p>
 <dl class="dl-horizontal">
@@ -121,15 +121,15 @@ and then replace <code>{{ url_for(endpoint='projects') }}</code> URL prefix with
 
 <p>Example: get unique outdated projects not present in FreeBSD maintainer by foo@bar.com</p>
 <pre>
-{{ url_for(endpoint='api_v1_projects', notinrepo='freebsd', maintainer='foo@bar.com', families=1, outdated=1) }}
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1Projects, [("notinrepo", "freebsd"), ("maintainer", "foo@bar.com"), ("families", "1"), ("outdated", "1")])? }}
 </pre>
 
 <h3>Problems</h3>
 
 <p>Get problems for specific repository or maintainer:</p>
 <pre>
-{{ url_for(endpoint='api_v1_repository_problems', repo='freebsd') }}
-{{ url_for(endpoint='api_v1_maintainer_problems', maintainer='ports@freebsd.org', repo='freebsd')|replace('%40', '@') }}
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1RepositoryProblems, [("repository_name", "freebsd")])? }}
+{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1MaintainerProblems, [("maintainer_name", "ports@freebsd.org"), ("repository_name", "freebsd")])? }}
 </pre>
 
 Output is an array of entries of the following format:

@@ -3,3 +3,5 @@
 
 // TODO: make this configurable
 pub const REPOLOGY_HOSTNAME: &str = "https://repology.org";
+
+pub const PROJECTS_PER_PAGE: u32 = 200;
