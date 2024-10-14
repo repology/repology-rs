@@ -30,7 +30,7 @@
 	<ul class="list-unstyled">
 		<li>Started: <b>{% call time::format_absolute_time_sec(run.start_ts) %}</b> (<b>{% call time::format_time_interval(chrono::Utc::now() - run.start_ts) %} ago</b>)</li>
 		<li>Finished: <b>{% call time::format_absolute_time_sec(finish_ts) %}</b> (<b>{% call time::format_time_interval(chrono::Utc::now() - finish_ts) %} ago</b>)</li>
-		<li>Run time: <b>{% call time::format_time_interval_short(ctx.deref(finish_ts) - run.start_ts) %}</b></li>
+		<li>Run time: <b>{% call time::format_time_interval_short(ctx.deref(ctx.deref(finish_ts)) - run.start_ts) %}</b></li>
 		<li>Lines: <b>{{ run.num_lines }}</b></li>
 		<li{% if run.num_warnings > 0 %} class="text-warning"{% endif %}>Warnings: <b>{{ run.num_warnings }}</b></li>
 		<li{% if run.num_errors > 0 %} class="text-danger"{% endif %}>Errors: <b>{{ run.num_errors }}</b></li>
