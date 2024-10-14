@@ -3,6 +3,7 @@
 
 pub mod __private {
     pub use axum;
+    pub use bytes;
     pub use json;
     pub use mime;
     pub use pretty_assertions;
@@ -17,7 +18,15 @@ pub mod __private {
     pub struct Response {
         pub status: axum::http::StatusCode,
         pub content_type: Option<String>,
-        pub body: String,
+        pub body: bytes::Bytes,
+    }
+
+    impl Response {
+        pub fn text(self) -> String {
+            std::str::from_utf8(&self.body)
+                .expect("response should be valid utf-8 text")
+                .into()
+        }
     }
 
     pub async fn get(pool: sqlx::PgPool, uri: &str) -> Result<Response, anyhow::Error> {
@@ -36,8 +45,7 @@ pub mod __private {
                 .headers()
                 .get(axum::http::header::CONTENT_TYPE)
                 .and_then(|value| value.to_str().ok().map(|value| value.into())),
-            body: std::str::from_utf8(&axum::body::to_bytes(response.into_body(), 1000000).await?)?
-                .into(),
+            body: axum::body::to_bytes(response.into_body(), 1000000).await?,
         })
     }
 
@@ -95,9 +103,10 @@ macro_rules! check_json {
             resp.content_type,
             Some($crate::__private::mime::APPLICATION_JSON.as_ref().into())
         );
+        let text = resp.text();
 
         let returned = $crate::__private::json::stringify_pretty(
-            $crate::__private::json::parse(&resp.body).unwrap(),
+            $crate::__private::json::parse(&text).unwrap(),
             4,
         );
         let expected = $crate::__private::json::stringify_pretty(
@@ -117,18 +126,19 @@ macro_rules! check_svg {
         dbg!(&resp);
         assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
         assert_eq!(resp.content_type, Some($crate::__private::mime::IMAGE_SVG.as_ref().into()));
+        let text = resp.text();
 
-        let parsed = $crate::__private::sxd_document::parser::parse(&resp.body);
+        let parsed = $crate::__private::sxd_document::parser::parse(&text);
         assert!(parsed.is_ok(), "failed to parse XML document");
         let parsed = parsed.unwrap();
         let _document = parsed.as_document();
 
         $(
             $(
-                assert!(resp.body.contains($has));
+                assert!(text.contains($has));
             )?
             $(
-                assert!(!resp.body.contains($hasnt));
+                assert!(!text.contains($hasnt));
             )?
             $(
                 {
@@ -158,13 +168,14 @@ macro_rules! check_html {
         dbg!(&resp);
         assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
         assert_eq!(resp.content_type, Some($crate::__private::mime::TEXT_HTML.as_ref().into()));
+        let text = resp.text();
 
         $(
             $(
-                assert!(resp.body.contains($has));
+                assert!(text.contains($has));
             )?
             $(
-                assert!(!resp.body.contains($hasnt));
+                assert!(!text.contains($hasnt));
             )?
         )*
     };

@@ -1895,6 +1895,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "axum",
+ "bytes",
  "json",
  "mime",
  "pretty_assertions",
