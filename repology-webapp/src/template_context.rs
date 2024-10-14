@@ -8,7 +8,7 @@ use crate::static_files::STATIC_FILES;
 use crate::url_for::UrlConstructor;
 
 pub struct TemplateContext {
-    endpoint: Endpoint,
+    pub endpoint: Endpoint,
     params: Vec<(String, String)>,
 }
 
