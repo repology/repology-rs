@@ -39,7 +39,6 @@ pub mod by_version_descending {
             .reverse()
     }
 
-    #[expect(dead_code)]
     pub fn sort<T>(packages: &mut [T])
     where
         T: PackageWithVersion + PackageWithFlags,

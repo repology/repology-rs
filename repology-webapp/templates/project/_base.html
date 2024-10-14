@@ -1,22 +1,22 @@
-{% extends "_base.html" %}
+{% extends "../_base.html" %}
 
-{% block keywords %}{{ super() }}, {{ name }}{% endblock %}
+{% block keywords %}{% call super() %}, {{ project_name }}{% endblock %}
 
 {% block preheader %}
-{% if metapackage and metapackage.num_repos > 0 %}
+{% if let Some(project) = project %}{% if project.num_repos > 0 %}
 <div class="btn-group pageheader-right">
-	<a href="{{ url_for(endpoint="project_versions", name=name) }}" class="btn btn-default{% if request.endpoint == "project_versions" %} active{% endif %}">Versions</a>
-	<a href="{{ url_for(endpoint="project_packages", name=name) }}" class="btn btn-default{% if request.endpoint == "project_packages" %} active{% endif %}">Packages</a>
-	<a href="{{ url_for(endpoint="project_information", name=name) }}" class="btn btn-default{% if request.endpoint == "project_information" %} active{% endif %}">Information</a>
-	<a href="{{ url_for(endpoint="project_history", name=name) }}" class="btn btn-default{% if request.endpoint == "project_history" %} active{% endif %}">History</a>
-	{% if metapackage.has_cves %}
-	<a href="{{ url_for(endpoint="project_cves", name=name) }}" class="btn btn-default{% if request.endpoint == "project_cves" %} active{% endif %}">CVEs</a>
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectVersions) %} active{% endif %}">Versions</a>
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectPackages, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectPackages) %} active{% endif %}">Packages</a>
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectInformation, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectInformation) %} active{% endif %}">Information</a>
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectHistory, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectHistory) %} active{% endif %}">History</a>
+	{% if project.has_cves %}
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectCves) %} active{% endif %}">CVEs</a>
 	{% endif %}
-	{% if metapackage.has_related %}
-	<a href="{{ url_for(endpoint="project_related", name=name) }}" class="btn btn-default{% if request.endpoint == "project_related" %} active{% endif %}">Related</a>
+	{% if project.has_related %}
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectRelated) %} active{% endif %}">Related</a>
 	{% endif %}
-	<a href="{{ url_for(endpoint="project_badges", name=name) }}" class="btn btn-default{% if request.endpoint == "project_badges" %} active{% endif %}">Badges</a>
-	<a href="{{ url_for(endpoint="project_report", name=name) }}" class="btn btn-default{% if request.endpoint == "project_report" %} active{% endif %}"><span class="text-danger">Report</span></a>
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectBadges, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectBadges) %} active{% endif %}">Badges</a>
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectReport, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectReport) %} active{% endif %}"><span class="text-danger">Report</span></a>
 </div>
-{% endif %}
+{% endif %}{% endif %}
 {% endblock %}

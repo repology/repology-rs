@@ -10,11 +10,15 @@ use strum_macros::{EnumString, IntoStaticStr};
 
 // endpoint ordering:
 // static -> index -> pages according to navbar -> supplementary pages -> supplementary endpoints
-#[derive(EnumProperty, IntoStaticStr, EnumString, Clone, Copy, Debug)]
+#[derive(EnumProperty, IntoStaticStr, EnumString, Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Endpoint {
     // Static
     #[strum(props(path = "/static/:file_name"))]
     StaticFile,
+
+    // Project
+    #[strum(props(path = "/project/:project_name/versions", section = "Projects"))]
+    ProjectVersions,
 
     // Tools
     #[strum(props(path = "/tools", section = "Tools"))]
@@ -71,8 +75,6 @@ pub enum Endpoint {
     ProjectsBounded,
 
     // Project
-    #[strum(props(path = "/project/:project_name/versions", section = "Projects"))]
-    ProjectVersions,
     #[strum(props(path = "/project/:project_name/versions-compact", section = "Projects"))]
     ProjectVersionsCompact,
     #[strum(props(path = "/project/:project_name/packages", section = "Projects"))]

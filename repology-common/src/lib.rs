@@ -5,12 +5,13 @@ pub mod migrations;
 
 use bitflags::bitflags;
 use serde::Serialize;
-use strum_macros::FromRepr;
+use strum_macros::{AsRefStr, FromRepr};
 
 pub use migrations::*;
 
-#[derive(Debug, PartialEq, Serialize, FromRepr, sqlx::Type, Clone, Copy)]
+#[derive(Debug, PartialEq, Serialize, FromRepr, sqlx::Type, Clone, Copy, AsRefStr)]
 #[serde(rename_all = "lowercase")]
+#[strum(serialize_all = "lowercase")]
 #[repr(i16)]
 pub enum PackageStatus {
     Newest = 1,

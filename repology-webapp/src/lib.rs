@@ -91,6 +91,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(DocsRequirements.path(), get(views::docs_requirements))
         .route(Log.path(), get(views::log))
         .route(News.path(), get(views::news))
+        .route(ProjectVersions.path(), get(views::project_versions))
         .route(StaticFile.path(), get(views::static_file))
         .route(Tools.path(), get(views::tools))
         .route_layer(middleware::from_fn(track_metrics))
