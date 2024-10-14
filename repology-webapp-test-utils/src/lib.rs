@@ -29,16 +29,19 @@ pub mod __private {
         }
     }
 
-    pub async fn get(pool: sqlx::PgPool, uri: &str) -> Result<Response, anyhow::Error> {
+    pub async fn get(
+        pool: sqlx::PgPool,
+        uri: &str,
+        headers: &[(&str, &str)],
+    ) -> Result<Response, anyhow::Error> {
+        let mut request = axum::http::Request::builder().uri(uri).method("GET");
+        for &(k, v) in headers {
+            request = request.header(k, v);
+        }
+        let request = request.body("".to_owned())?;
+
         let mut app = create_app(pool).await?;
-        let response = app
-            .call(
-                axum::http::Request::builder()
-                    .uri(uri)
-                    .method("GET")
-                    .body("".to_owned())?,
-            )
-            .await?;
+        let response = app.call(request).await?;
         Ok(Response {
             status: response.status(),
             content_type: response
@@ -84,7 +87,9 @@ pub mod __private {
 #[macro_export]
 macro_rules! check_code {
     ($pool:ident, $uri:literal, $code:ident) => {
-        let resp = $crate::__private::get($pool.clone(), $uri).await.unwrap();
+        let resp = $crate::__private::get($pool.clone(), $uri, &[])
+            .await
+            .unwrap();
         dbg!(&resp);
         assert_eq!(
             resp.status,
@@ -96,7 +101,9 @@ macro_rules! check_code {
 #[macro_export]
 macro_rules! check_json {
     ($pool:ident, $uri:literal, $expected_json:literal) => {
-        let resp = $crate::__private::get($pool.clone(), $uri).await.unwrap();
+        let resp = $crate::__private::get($pool.clone(), $uri, &[])
+            .await
+            .unwrap();
         dbg!(&resp);
         assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
         assert_eq!(
@@ -120,7 +127,7 @@ macro_rules! check_json {
 #[macro_export]
 macro_rules! check_svg {
     ($pool:ident, $uri:literal $(, $($has:literal)? $(!$hasnt:literal)? $(@$xpath_expr:literal==$xpath_value:literal)?)*) => {
-        let resp = $crate::__private::get($pool.clone(), $uri)
+        let resp = $crate::__private::get($pool.clone(), $uri, &[])
             .await
             .unwrap();
         dbg!(&resp);
@@ -162,7 +169,7 @@ macro_rules! check_svg {
 #[macro_export]
 macro_rules! check_html {
     ($pool:ident, $uri:literal $(, $($has:literal)? $(!$hasnt:literal)?)*) => {
-        let resp = $crate::__private::get($pool.clone(), $uri)
+        let resp = $crate::__private::get($pool.clone(), $uri, &[])
             .await
             .unwrap();
         dbg!(&resp);
@@ -183,8 +190,12 @@ macro_rules! check_html {
 
 #[macro_export]
 macro_rules! check_binary {
-    ($pool:ident, $uri:literal, $content_type:literal $(, $size:literal $(, $hash:literal )?)?) => {
-        let resp = $crate::__private::get($pool.clone(), $uri).await.unwrap();
+    ($pool:ident, $uri:literal, $(header $header_name:literal: $header_value:literal, )* $content_type:literal $(, $size:literal $(, $hash:literal )?)?) => {
+        let resp = $crate::__private::get($pool.clone(), $uri, &[
+            $(
+                ($header_name, $header_value)
+            )*
+        ]).await.unwrap();
         dbg!(&resp);
         assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
         assert_eq!(
