@@ -27,7 +27,7 @@ pub enum PackageStatus {
 }
 
 bitflags! {
-    #[derive(Debug, PartialEq, Clone, Copy)] // XXX: Serialize
+    #[derive(Default, Debug, PartialEq, Clone, Copy, Eq)] // XXX: Serialize
     pub struct PackageFlags: u32 {
         const Remove     = 1 << 0;
         const Devel      = 1 << 1;

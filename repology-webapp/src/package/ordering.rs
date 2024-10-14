@@ -14,7 +14,7 @@ where
 {
     if package.flags().contains(PackageFlags::Rolling) {
         1
-    } else if package.flags().contains(PackageFlags::Outdated) {
+    } else if package.flags().contains(PackageFlags::Sink) {
         -1
     } else {
         0
@@ -44,5 +44,88 @@ pub mod by_version_descending {
         T: PackageWithVersion + PackageWithFlags,
     {
         packages.sort_by(compare);
+    }
+}
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[derive(Clone, Debug, PartialEq, Eq)]
+    struct Package {
+        version: &'static str,
+        flags: PackageFlags,
+    }
+
+    impl PackageWithVersion for Package {
+        fn version(&self) -> &str {
+            self.version
+        }
+    }
+
+    impl PackageWithFlags for Package {
+        fn flags(&self) -> PackageFlags {
+            self.flags
+        }
+    }
+
+    #[test]
+    fn test_sorting() {
+        let expected = vec![
+            Package {
+                version: "2.0",
+                flags: PackageFlags::Rolling,
+            },
+            Package {
+                version: "1.0p1",
+                flags: PackageFlags::Rolling | PackageFlags::PIsPatch,
+            },
+            Package {
+                version: "1.0",
+                flags: PackageFlags::Rolling,
+            },
+            Package {
+                version: "1.0p1",
+                flags: PackageFlags::Rolling,
+            },
+            Package {
+                version: "2.0",
+                flags: Default::default(),
+            },
+            Package {
+                version: "1.0p1",
+                flags: PackageFlags::PIsPatch,
+            },
+            Package {
+                version: "1.0",
+                flags: Default::default(),
+            },
+            Package {
+                version: "1.0p1",
+                flags: Default::default(),
+            },
+            Package {
+                version: "2.0",
+                flags: PackageFlags::Sink,
+            },
+            Package {
+                version: "1.0p1",
+                flags: PackageFlags::Sink | PackageFlags::PIsPatch,
+            },
+            Package {
+                version: "1.0",
+                flags: PackageFlags::Sink,
+            },
+            Package {
+                version: "1.0p1",
+                flags: PackageFlags::Sink,
+            },
+        ];
+
+        let mut packages = expected.clone();
+        packages.reverse();
+        by_version_descending::sort(&mut packages);
+        assert_eq!(packages, expected);
     }
 }
