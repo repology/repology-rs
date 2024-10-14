@@ -180,3 +180,28 @@ macro_rules! check_html {
         )*
     };
 }
+
+#[macro_export]
+macro_rules! check_binary {
+    ($pool:ident, $uri:literal, $content_type:literal $(, $size:literal $(, $hash:literal )?)?) => {
+        let resp = $crate::__private::get($pool.clone(), $uri).await.unwrap();
+        dbg!(&resp);
+        assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
+        assert_eq!(
+            resp.content_type.as_ref().map(|s| &s[..]),
+            Some($content_type)
+        );
+        $(
+            assert_eq!(
+                resp.body.len(),
+                $size
+            );
+            $(
+                assert_eq!(
+                    cityhasher::hash::<u64>(&resp.body),
+                    $hash
+                );
+            )?
+        )?
+    };
+}
