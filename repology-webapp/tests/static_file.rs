@@ -28,4 +28,12 @@ async fn test_log(pool: PgPool) {
         3117,
         10174067632225889947
     );
+    check_binary!(
+        pool,
+        "/static/repology.v1.6108dff405ea1a42.ico",
+        header "accept-encoding": "br;q=1.0, gzip;q=0.8, *;q=0.1",
+        "application/x-icon",
+        3117,
+        10174067632225889947
+    );
 }
