@@ -35,7 +35,7 @@ jobs:
       - name: Test
         run: cargo test
         env:
-          DATABASE_URL: postgres://postgres@localhost:5433/
+          DATABASE_URL: postgres://postgres@localhost:5432/
           RUSTFLAGS: "-Cinstrument-coverage"
           RUSTDOCFLAGS: "-Cinstrument-coverage"
           LLVM_PROFILE_FILE: "${{ github.workspace }}/default_%m_%p.profraw"
