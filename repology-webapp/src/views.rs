@@ -5,6 +5,7 @@ mod api;
 mod badges;
 mod log;
 mod project;
+mod projects;
 mod static_files;
 mod trivial_pages;
 

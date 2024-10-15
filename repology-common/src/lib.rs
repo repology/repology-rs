@@ -9,7 +9,20 @@ use strum_macros::{AsRefStr, FromRepr};
 
 pub use migrations::*;
 
-#[derive(Debug, PartialEq, Serialize, FromRepr, sqlx::Type, Clone, Copy, AsRefStr)]
+#[derive(
+    Debug,
+    PartialEq,
+    Serialize,
+    FromRepr,
+    sqlx::Type,
+    Clone,
+    Copy,
+    AsRefStr,
+    Eq,
+    PartialOrd,
+    Ord,
+    Hash,
+)]
 #[serde(rename_all = "lowercase")]
 #[strum(serialize_all = "lowercase")]
 #[repr(i16)]
