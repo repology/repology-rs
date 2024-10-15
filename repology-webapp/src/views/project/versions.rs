@@ -21,13 +21,8 @@ use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
 
-#[derive(FromRow)]
-pub struct Project {
-    #[sqlx(try_from = "i16")]
-    pub num_repos: u32,
-    pub has_cves: bool,
-    pub has_related: bool,
-}
+use super::common::Project;
+use super::nonexistent::nonexisting_project;
 
 #[derive(FromRow)]
 pub struct Package {
@@ -65,13 +60,6 @@ struct TemplateParams {
     repositories_data: Vec<RepositoryData>,
 }
 
-pub async fn handle_nonexisting_project(
-    _project_name: String,
-    _project: Option<Project>,
-) -> EndpointResult {
-    todo!();
-}
-
 #[tracing::instrument(skip(state))]
 pub async fn project_versions(
     Path(project_name): Path<String>,
@@ -83,7 +71,8 @@ pub async fn project_versions(
         SELECT
             num_repos,
             has_cves,
-            has_related
+            has_related,
+            orphaned_at
         FROM metapackages
         WHERE effname = $1
     "})
@@ -95,7 +84,7 @@ pub async fn project_versions(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return handle_nonexisting_project(project_name, project).await;
+        return nonexisting_project(state, ctx, project_name, project).await;
     }
 
     // TODO: try fetching project and packages in parallel tasks, see

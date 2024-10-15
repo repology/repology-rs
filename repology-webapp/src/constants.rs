@@ -13,7 +13,6 @@ pub const MAINTAINERS_PER_PAGE: u32 = 200;
 #[expect(unused)]
 pub const PROBLEMS_PER_PAGE: u32 = 200;
 pub const PROJECTS_PER_PAGE: u32 = 200;
-#[expect(unused)]
 pub const REDIRECTS_PER_PAGE: u32 = 200;
 #[expect(unused)]
 pub const REPORTS_PER_PAGE: u32 = 100;
