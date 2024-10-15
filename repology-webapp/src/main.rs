@@ -19,7 +19,7 @@ async fn main() -> Result<(), Error> {
         use tracing_appender::rolling::{RollingFileAppender, Rotation};
         let logfile = RollingFileAppender::builder()
             .rotation(Rotation::DAILY)
-            .filename_prefix("repology-vulnupdater.log")
+            .filename_prefix("repology-webapp.log")
             .max_log_files(14)
             .build(log_directory)
             .context("logging initialization failed")?;
