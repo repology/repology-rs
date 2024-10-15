@@ -16,7 +16,7 @@ indoc = "2.0.5"
 itertools = "0.13.0"
 libversion = { path = "../libversion" }
 metrics = "0.24.0"
-metrics-exporter-prometheus = { version = "0.15.3", default-features = false, features = ["http-listener"] }
+metrics-exporter-prometheus = { version = "0.16.0", default-features = false, features = ["http-listener"] }
 metrics-process = { version = "2.3.0", features = ["use-gauge-on-cpu-seconds-total"] }
 mime = "0.3.17"
 repology-common = { path = "../repology-common" }
