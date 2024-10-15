@@ -87,6 +87,9 @@ pub async fn nonexisting_project(
     let (projects, packages) = match redirect_project_names.len() {
         1 => {
             // single redirect - follow it right away
+            // TODO: we check redirect count here, however
+            // we should instead check number of projects fetched
+            // by redirect to exclude gone projects
             let project_name = &redirect_project_names[0][..];
             return Ok((
                 StatusCode::MOVED_PERMANENTLY,
