@@ -9,7 +9,7 @@ askama = "0.12.1"
 axum = { version = "0.7.7", features = ["macros"] }
 chrono = { version = "0.4.38", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
-clap = { version = "4.5.18", features = ["derive"] }
+clap = { version = "4.5.20", features = ["derive"] }
 flate2 = "1.0.33"
 include_dir = { version = "0.7.4", features = ["glob", "nightly"] }
 indoc = "2.0.5"
