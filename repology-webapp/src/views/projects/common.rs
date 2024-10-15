@@ -112,20 +112,26 @@ pub fn packages_to_categorized_display_versions_per_project(
                     .any(|maintainer| maintainer == selected_maintainer)
             });
 
+        let mut display_version = DisplayVersion::from_package(package);
+
         let category_entry = {
             use PackageStatus::*;
             match package.status {
                 _ if focused => &mut project_entry.focused,
-                Outdated | Legacy => &mut project_entry.outdated,
+                Outdated | Legacy => {
+                    // we don't need to differentiate Legacy here
+                    // XXX: move this into DisplayVersion::from_package?
+                    display_version.status = Outdated;
+                    &mut project_entry.outdated
+                }
                 Devel | Newest | Unique => &mut project_entry.newest,
                 _ => &mut project_entry.ignored,
             }
         };
 
-        let display_version = DisplayVersion::from_package(package);
         let key = (
             package.version.as_ref(),
-            package.status,
+            display_version.status,
             display_version.metaorder,
         );
 
@@ -153,4 +159,16 @@ pub fn packages_to_categorized_display_versions_per_project(
             )
         })
         .collect()
+}
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[ignore]
+    fn test_packages_to_categorized_display_versions_per_project() {
+        assert!(false);
+    }
 }
