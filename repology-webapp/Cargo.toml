@@ -15,7 +15,7 @@ include_dir = { version = "0.7.4", features = ["glob", "nightly"] }
 indoc = "2.0.5"
 itertools = "0.13.0"
 libversion = { path = "../libversion" }
-metrics = "0.23.0"
+metrics = "0.24.0"
 metrics-exporter-prometheus = { version = "0.15.3", default-features = false, features = ["http-listener"] }
 metrics-process = { version = "2.3.0", features = ["use-gauge-on-cpu-seconds-total"] }
 mime = "0.3.17"
