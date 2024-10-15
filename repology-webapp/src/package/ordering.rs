@@ -8,7 +8,7 @@ use repology_common::PackageFlags;
 use crate::package::traits::{PackageWithFlags, PackageWithVersion};
 use crate::package::version::package_version_flags;
 
-fn package_metaorder<T>(package: &T) -> i32
+pub fn package_metaorder<T>(package: &T) -> i32
 where
     T: PackageWithVersion + PackageWithFlags,
 {

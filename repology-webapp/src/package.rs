@@ -3,5 +3,6 @@
 
 pub mod ordering;
 pub mod processing;
+pub mod summarization;
 pub mod traits;
 pub mod version;
