@@ -1,0 +1,69 @@
+{%- macro projects_table(metapackages, metapackagedata, repo=None, maintainer=None, target_project_endpoint='project_versions') -%}
+
+{%- macro versions_list(versioninfos, explicit_empty=False) %}
+{% for versioninfo in versioninfos %}
+	<span class="version version-{{ versioninfo.versionclass|css_for_versionclass }}{% if versioninfo.recalled %} version-property-recalled{% endif %}">
+		{{- versioninfo.version -}}
+		{%- if versioninfo.vulnerable %}<span class="vulnerable">▲</span>{% endif -%}
+	</span>
+	{%- if versioninfo.spread > 1 %}<sup>{{ versioninfo.spread }}</sup>{% endif %}
+{%- else -%}
+	{%- if explicit_empty -%}-{% endif -%} {#- XXX: can the explicit column even be empty -#}
+{%- endfor -%}
+{%- endmacro -%}
+
+{% if metapackagedata %}
+<p><b>{{ metapackagedata|length }}</b> project(s) on this page</p>
+
+<table class="table table-striped table-condensed">
+	<thead>
+	{% for metapackagename, metapackage in metapackages.items() %}
+	{% set headerevery = 50 %}
+	{% set data = metapackagedata[metapackagename] %}
+	{% if loop.first or (headerevery != 0 and loop.index0 % headerevery == 0) %}
+		<tr>
+			<th>Project</th>
+			{% if repo or maintainer %}
+			<th class="text-nowrap" title="Packages
+				{%- if repo %} in {{ repometadata[repo].desc }}{% endif -%}
+				{%- if repo and maintainer %} and{% endif -%}
+				{%- if maintainer %} maintained by {{ maintainer }}{% endif -%}
+			">Selected</th>
+			{% endif %}
+			<th class="text-center" title="Spread - number of repository families a project is present in">Spr</th>
+			<th title="Versions considered newest">Newest</th>
+			<th title="Versions considered outdated">Outdated</th>
+			<th title="Versions excluded from comparison">Ignored</th>
+			{% if 'rank' in metapackage %}
+			<th title="Versions excluded from comparison">Rank</th>
+			{% endif %}
+		</tr>
+	{% if loop.first %}</thead><tbody>{% endif %}
+	{% endif %}
+		<tr>
+			<td class="text-nowrap">
+				<a href="{{ url_for(endpoint=target_project_endpoint, name=metapackagename) }}">{{ metapackagename }}</a>
+				{%- if metapackage.has_related -%}
+				<a class="non-selectable" href="{{ url_for(endpoint="project_related", name=metapackagename) }}">∗</a>
+				{% endif %}
+			</td>
+
+			{% if repo or maintainer %}
+			<td>{{ versions_list(data.explicit, explicit_empty=True) }}</td>
+			{% endif %}
+			<td class="text-center"><b>{{ metapackage.num_families }}</b></td>
+			<td>{{ versions_list(data.newest) }}</td>
+			<td>{{ versions_list(data.outdated) }}</td>
+			<td>{{ versions_list(data.ignored) }}</td>
+			{% if 'rank' in metapackage %}
+			<td>{{ metapackage.rank|round(2) }}</td>
+			{% endif %}
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% else %}
+<div class="alert alert-warning" role="alert">No projects found matching the criteria</div>
+{% endif %}
+
+{%- endmacro -%}
