@@ -1,20 +1,18 @@
-{% extends "_base.html" %}
+{% extends "../../_base.html" %}
 
 {% block title %}Ambiguous project - Repology{% endblock %}
 {% block header %}Ambiguous project{% endblock %}
 
 {% block content %}
 <div class="container">
-
 <div class="alert alert-warning" role="alert">
-	<p>Someone has tried to point you to Repology data for <b>{{ request.args.name }}</b> in <a href="{{ url_for(endpoint='repository', repo=request.args.repo) }}">{{ repometadata[request.args.repo].desc }}</a>, however Repology has multiple entries matching these criteria. Please pick one:</p>
+	<p>Someone has tried to point you to Repology data for <b>{{ query.name.as_ref().unwrap() }}</b> in <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_data.name.as_str())])? }}">{{ repository_data.title }}</a>, however Repology has multiple entries matching these criteria. Please pick one:</p>
 	<ul>
-	{% for target in targets %}
-		<li><a href="{{ target[1] }}">{{ target[0] }}</a></li>
+	{% for (project_name, url) in targets %}
+		<li><a href="{{ url }}">{{ project_name }}</a></li>
 	{% endfor %}
 	</ul>
 </div>
-
-</div> {#- container #}
+</div>
 {% endblock %}
 

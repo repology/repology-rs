@@ -66,6 +66,8 @@ pub enum Endpoint {
     // Tools
     #[strum(props(path = "/tools", section = "Tools"))]
     Tools,
+    #[strum(props(path = "/tools/project-by", section = "Tools"))]
+    ToolProjectBy,
 
     // News/Docs
     #[strum(props(path = "/news", section = "News"))]
@@ -166,8 +168,6 @@ pub enum Endpoint {
     Repository,
 
     // Tools
-    #[strum(props(path = "/tools/project-by", section = "Tools"))]
-    ToolProjectBy,
     #[strum(props(path = "/tools/trending", section = "Tools"))]
     Trending,
     #[strum(props(path = "/tools/important_updates", section = "Experimental"))]
