@@ -189,6 +189,31 @@ macro_rules! check_html {
 }
 
 #[macro_export]
+macro_rules! check_html2 {
+    ($pool:ident, $uri:literal $(, status $status_ident:ident)? $(, status $status_literal:literal)? $(, contains $contains:literal )* $(, !contains $contains_not:literal )* ) => {
+        let resp = $crate::__private::get($pool.clone(), $uri, &[])
+            .await
+            .unwrap();
+        dbg!(&resp);
+        $(
+            assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::$status_ident);
+        )?
+        $(
+            assert_eq!(resp.status, $status_literal);
+        )?
+        assert_eq!(resp.content_type, Some($crate::__private::mime::TEXT_HTML.as_ref().into()));
+        let text = resp.text();
+
+        $(
+            assert!(text.contains($contains));
+        )*
+        $(
+            assert!(!text.contains($contains_not));
+        )*
+    };
+}
+
+#[macro_export]
 macro_rules! check_binary {
     ($pool:ident, $uri:literal, $(header $header_name:literal: $header_value:literal, )* $content_type:literal $(, $size:literal $(, $hash:literal )?)?) => {
         let resp = $crate::__private::get($pool.clone(), $uri, &[
