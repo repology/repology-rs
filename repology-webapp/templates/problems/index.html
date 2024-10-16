@@ -91,26 +91,26 @@
 				{%- let cpe = problem.data.get("cpe").ok_or("cpe is not an object")? %}
 				CPE information defined for the package:<div>{% call cpes::cpe_components(cpe, true) %}</div>was not found neither among known CVEs nor in NVD CPE dictionary, so it may be invalid.
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
+				{% if let Some(suggestions) = suggestions.as_array() %}
 				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|as_ref)])? }}">CVEs</a>):
 				<ul class="list-unstyled">
-				{% if let Some(suggestions) = suggestions.as_array() %}
 				{% for suggestion in suggestions %}
 					<li>{% call cpes::cpe_components(suggestion, true) %}</li>
 				{% endfor %}
-				{% endif %}
 				</ul>
+				{% endif %}
 				{% endif %}
 			{% else if problem.kind == "cpe_missing" %}
 				CPE information is missing for this package, while repository defines it for other packages.
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
+				{% if let Some(suggestions) = suggestions.as_array() %}
 				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|as_ref)])? }}">CVEs</a>):
 				<ul class="list-unstyled">
-				{% if let Some(suggestions) = suggestions.as_array() %}
 				{% for suggestion in suggestions %}
 					<li>{% call cpes::cpe_components(suggestion, true) %}</li>
 				{% endfor %}
-				{% endif %}
 				</ul>
+				{% endif %}
 				{% endif %}
 			{% else if problem.kind == "download_dead" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
