@@ -10,18 +10,18 @@
 
 {% if let Some(pagination) = pagination %}
 <nav>
-        <div class="form-group">
-                <form class="form-inline" action="{{ ctx.url_for_self([("start", ""), ("end", "")])? }}" method="GET">
-                        <div class="btn-group">
-                                <a href="{{ ctx.url_for_self([("start", ""), ("end", "")])? }}" class="btn btn-default {% if pagination.is_first_page() %} disabled{% endif %}">&laquo;&laquo;</a>
-                                {% if let Some(page_range) = pagination.page_range %}
-                                <a href="{{ ctx.url_for_self([("start", ""), ("end", page_range.first|as_ref)])? }}" class="btn btn-default{% if pagination.is_first_page() %} disabled{% endif %}" rel="prev">&laquo;</a>
-                                <a href="{{ ctx.url_for_self([("start", page_range.last|as_ref), ("end", "")])? }}" class="btn btn-default{% if pagination.is_last_page() %} disabled{% endif %}" rel="next">&raquo;</a>
-                                {% endif %}
-                                <a href="{{ ctx.url_for_self([("start", ""), ("end", pagination.whole_range.last)])? }}" class="btn btn-default {% if pagination.is_last_page() %} disabled{% endif %}">&raquo;&raquo;</a>
-                        </div>
-                </form>
-        </div>
+	<div class="form-group">
+		<form class="form-inline" action="{{ ctx.url_for_self([("start", ""), ("end", "")])? }}" method="GET">
+			<div class="btn-group">
+				<a href="{{ ctx.url_for_self([("start", ""), ("end", "")])? }}" class="btn btn-default {% if pagination.is_first_page() %} disabled{% endif %}">&laquo;&laquo;</a>
+				{% if let Some(page_range) = pagination.page_range %}
+				<a href="{{ ctx.url_for_self([("start", ""), ("end", page_range.first|as_ref)])? }}" class="btn btn-default{% if pagination.is_first_page() %} disabled{% endif %}" rel="prev">&laquo;</a>
+				<a href="{{ ctx.url_for_self([("start", page_range.last|as_ref), ("end", "")])? }}" class="btn btn-default{% if pagination.is_last_page() %} disabled{% endif %}" rel="next">&raquo;</a>
+				{% endif %}
+				<a href="{{ ctx.url_for_self([("start", ""), ("end", pagination.whole_range.last)])? }}" class="btn btn-default {% if pagination.is_last_page() %} disabled{% endif %}">&raquo;&raquo;</a>
+			</div>
+		</form>
+	</div>
 </nav>
 {% endif %}
 
