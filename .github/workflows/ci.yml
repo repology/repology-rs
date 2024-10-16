@@ -27,9 +27,12 @@ jobs:
           path: |
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
+          key: ${{ runner.os }}-cargo
+      - uses: actions/cache@v4
+        with:
+          path: |
             target/
-          key: cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: cargo-
+          key: ${{ runner.os }}-target-${{ hashFiles('**/Cargo.lock') }}
       - name: Format check
         run: cargo fmt --check
       - name: Test
