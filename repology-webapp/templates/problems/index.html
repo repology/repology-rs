@@ -61,65 +61,64 @@
 			{%- endif -%}
 			<td class="text-left">
 			{% if problem.kind == "homepage_dead" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
-				{%- let code = problem.data.get("code").unwrap().as_i64().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
+				{%- let code = problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? %}
 				Homepage link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|as_ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status_code(code) %}</b>)
 				for more than a month and should be replaced by alive link (see other packages for hints, or link to <a href="https://archive.org/">archive.org</a> as a last resort).
 			{% else if problem.kind == "homepage_permanent_https_redirect" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
-				{%- let target = problem.data.get("target").unwrap().as_str().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
+				{%- let target = problem.data.get("target").ok_or("target is missing")?.as_str().ok_or("target is not a string")? %}
 				Homepage link <code>{{ url }}</code> is a permanent redirect to its HTTPS counterpart <code>{{ target }}</code> and should be updated.
 			{% else if problem.kind == "homepage_discontinued_google" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				Homepage link <code>{{ url }}</code> points to Google Code which was discontinued.
 				The link should be updated (probably along with download URLs).
 				If this link is still alive, it may point to a new project homepage.
 			{% else if problem.kind == "homepage_discontinued_codeplex" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				Homepage link <code>{{ url }}</code> points to codeplex which was discontinued.
 				The link should be updated (probably along with download URLs).
 			{% else if problem.kind == "homepage_discontinued_gna" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				Homepage link <code>{{ url }}</code> points to Gna which was discontinued.
 				The link should be updated (probably along with download URLs).
 			{% else if problem.kind == "homepage_discontinued_cpan" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				Homepage link <code>{{ url }}</code> points to CPAN which was discontinued.
 				The link should be updated to <a href="https://metacpan.org/">MetaCPAN</a> (probably along with download URLs).
 				See <a href="https://www.perl.com/article/saying-goodbye-to-search-cpan-org/">https://www.perl.com/article/saying-goodbye-to-search-cpan-org/</a> for details.
 			{% else if problem.kind == "cpe_unreferenced" %}
-				{%- let cpe = problem.data.get("cpe").unwrap() %}
+				{%- let cpe = problem.data.get("cpe").ok_or("cpe is not an object")? %}
 				CPE information defined for the package:<div>{% call cpes::cpe_components(cpe, true) %}</div>was not found neither among known CVEs nor in NVD CPE dictionary, so it may be invalid.
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
 				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|as_ref)])? }}">CVEs</a>):
 				<ul class="list-unstyled">
-				{% for suggestion in suggestions.as_array().unwrap() %}
+				{% for suggestion in suggestions.as_array().ok_or("suggestions is not an array")? %}
 					<li>{% call cpes::cpe_components(suggestion, true) %}</li>
 				{% endfor %}
 				</ul>
 				{% endif %}
 			{% else if problem.kind == "cpe_missing" %}
-				{%- let cpe = problem.data.get("cpe").unwrap() %}
 				CPE information is missing for this package, while repository defines it for other packages.
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
 				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|as_ref)])? }}">CVEs</a>):
 				<ul class="list-unstyled">
-				{% for suggestion in suggestions.as_array().unwrap() %}
+				{% for suggestion in suggestions.as_array().ok_or("suggestions is not an array")? %}
 					<li>{% call cpes::cpe_components(suggestion, true) %}</li>
 				{% endfor %}
 				</ul>
 				{% endif %}
 			{% else if problem.kind == "download_dead" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
-				{%- let code = problem.data.get("code").unwrap().as_i64().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
+				{%- let code = problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? %}
 				Download link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|as_ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status_code(code) %}</b>)
 				for more than a month and should be replaced by alive link (see other packages for hints).
 			{% else if problem.kind == "download_permanent_https_redirect" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
-				{%- let target = problem.data.get("target").unwrap().as_str().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
+				{%- let target = problem.data.get("target").ok_or("target is missing")?.as_str().ok_or("target is not a string")? %}
 				Download link <code>{{ url }}</code> is a permanent redirect to its HTTPS counterpart <code>{{ target }}</code> and should be updated.
 			{% else if problem.kind == "homepage_sourceforge_missing_trailing_slash" %}
-				{%- let url = problem.data.get("url").unwrap().as_str().unwrap() %}
+				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				Homepage link <code>{{ url }}</code> needs a trailing slash added, otherwise there"s a javascript redirect.
 			{% else %}
 				Unformatted problem of type <code>{{ problem.kind }}</code>, data=<code>{{ problem.data }}</code>. The template should be updated, please report this.

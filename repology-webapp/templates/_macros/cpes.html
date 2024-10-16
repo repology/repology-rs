@@ -8,33 +8,33 @@
 {%- endmacro -%}
 
 {%- macro cpe_components(fields_json, hide_asterisks) -%}
-  {%- let vendor = fields_json.get("cpe_vendor").unwrap().as_str().unwrap() -%}
-  {%- let product = fields_json.get("cpe_product").unwrap().as_str().unwrap() -%}
-  {%- let edition = fields_json.get("cpe_edition").unwrap().as_str().unwrap() -%}
-  {%- let lang = fields_json.get("cpe_lang").unwrap().as_str().unwrap() -%}
-  {%- let sw_edition = fields_json.get("sw_edition").unwrap().as_str().unwrap() -%}
-  {%- let target_sw = fields_json.get("cpe_target_sw").unwrap().as_str().unwrap() -%}
-  {%- let target_hw = fields_json.get("cpe_target_hw").unwrap().as_str().unwrap() -%}
-  {%- let other = fields_json.get("cpe_other").unwrap().as_str().unwrap() -%}
-  {% call panel("vendor", vendor, hide_asterisks) %}
-  {% call panel("product", product, hide_asterisks) %}
-  {% call panel("edition", edition, hide_asterisks) %}
-  {% call panel("lang", lang, hide_asterisks) %}
-  {% call panel("sw_edition", sw_edition, hide_asterisks) %}
-  {% call panel("target_sw", target_sw, hide_asterisks) %}
-  {% call panel("target_hw", target_hw, hide_asterisks) %}
-  {% call panel("other", other, hide_asterisks) %}
+	{%- let vendor = fields_json.get("cpe_vendor").ok_or("cpe_vendor missing")?.as_str().ok_or("cpe_vendor is not a string")? -%}
+	{%- let product = fields_json.get("cpe_product").ok_or("cpe_product missing")?.as_str().ok_or("cpe_product is not a string")? -%}
+	{%- let edition = fields_json.get("cpe_edition").ok_or("cpe_edition missing")?.as_str().ok_or("cpe_edition is not a string")? -%}
+	{%- let lang = fields_json.get("cpe_lang").ok_or("cpe_lang missing")?.as_str().ok_or("cpe_lang is not a string")? -%}
+	{%- let sw_edition = fields_json.get("cpe_sw_edition").ok_or("cpe_sw_edition missing")?.as_str().ok_or("cpe_sw_edition is not a string")? -%}
+	{%- let target_sw = fields_json.get("cpe_target_sw").ok_or("cpe_target_sw missing")?.as_str().ok_or("cpe_target_sw is not a string")? -%}
+	{%- let target_hw = fields_json.get("cpe_target_hw").ok_or("cpe_target_hw missing")?.as_str().ok_or("cpe_target_hw is not a string")? -%}
+	{%- let other = fields_json.get("cpe_other").ok_or("cpe_other missing")?.as_str().ok_or("cpe_other is not a string")? -%}
+	{% call panel("vendor", vendor, hide_asterisks) %}
+	{% call panel("product", product, hide_asterisks) %}
+	{% call panel("edition", edition, hide_asterisks) %}
+	{% call panel("lang", lang, hide_asterisks) %}
+	{% call panel("sw_edition", sw_edition, hide_asterisks) %}
+	{% call panel("target_sw", target_sw, hide_asterisks) %}
+	{% call panel("target_hw", target_hw, hide_asterisks) %}
+	{% call panel("other", other, hide_asterisks) %}
 {%- endmacro -%}
 
 {%- macro str(fields_json) -%}
-  {%- let vendor = fields_json.get("cpe_vendor").unwrap().as_str().unwrap() -%}
-  {%- let product = fields_json.get("cpe_product").unwrap().as_str().unwrap() -%}
-  {%- let edition = fields_json.get("cpe_edition").unwrap().as_str().unwrap() -%}
-  {%- let lang = fields_json.get("cpe_lang").unwrap().as_str().unwrap() -%}
-  {%- let sw_edition = fields_json.get("sw_edition").unwrap().as_str().unwrap() -%}
-  {%- let target_sw = fields_json.get("cpe_target_sw").unwrap().as_str().unwrap() -%}
-  {%- let target_hw = fields_json.get("cpe_target_hw").unwrap().as_str().unwrap() -%}
-  {%- let other = fields_json.get("cpe_other").unwrap().as_str().unwrap() -%}
+	{%- let vendor = fields_json.get("cpe_vendor").ok_or("cpe_vendor missing")?.as_str().ok_or("cpe_vendor is not a string")? -%}
+	{%- let product = fields_json.get("cpe_product").ok_or("cpe_product missing")?.as_str().ok_or("cpe_product is not a string")? -%}
+	{%- let edition = fields_json.get("cpe_edition").ok_or("cpe_edition missing")?.as_str().ok_or("cpe_edition is not a string")? -%}
+	{%- let lang = fields_json.get("cpe_lang").ok_or("cpe_lang missing")?.as_str().ok_or("cpe_lang is not a string")? -%}
+	{%- let sw_edition = fields_json.get("cpe_sw_edition").ok_or("cpe_sw_edition missing")?.as_str().ok_or("cpe_sw_edition is not a string")? -%}
+	{%- let target_sw = fields_json.get("cpe_target_sw").ok_or("cpe_target_sw missing")?.as_str().ok_or("cpe_target_sw is not a string")? -%}
+	{%- let target_hw = fields_json.get("cpe_target_hw").ok_or("cpe_target_hw missing")?.as_str().ok_or("cpe_target_hw is not a string")? -%}
+	{%- let other = fields_json.get("cpe_other").ok_or("cpe_other missing")?.as_str().ok_or("cpe_other is not a string")? -%}
 	cpe:2.3:a:{{ vendor }}:{{ product }}:{{ edition }}:{{ lang }}:{{ sw_edition }}:{{ target_sw }}:{{ target_hw }}:{{ other }}
 	{#                                  ^ should we add :*:* here to form a correct CPE? #}
 {%- endmacro -%}
