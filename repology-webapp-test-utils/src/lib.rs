@@ -25,17 +25,19 @@ pub mod __private {
 
     impl Response {
         pub fn text(&self) -> &String {
-            self.text.get_or_init(||
+            self.text.get_or_init(|| {
                 std::str::from_utf8(&self.body)
                     .expect("response should be valid utf-8 text")
                     .into()
-            )
+            })
         }
 
         pub fn xml(&self) -> sxd_document::dom::Document {
-            self.xml.get_or_init(||
-                sxd_document::parser::parse(self.text()).expect("response should be a parsable XML document")
-            )
+            self.xml
+                .get_or_init(|| {
+                    sxd_document::parser::parse(self.text())
+                        .expect("response should be a parsable XML document")
+                })
                 .as_document()
         }
     }
@@ -103,13 +105,22 @@ macro_rules! check_condition {
         assert_eq!($resp.status, $status);
     };
     ($resp:ident, status, $status:ident) => {
-        assert_eq!($resp.status, $crate::__private::axum::http::StatusCode::$status);
+        assert_eq!(
+            $resp.status,
+            $crate::__private::axum::http::StatusCode::$status
+        );
     };
     ($resp:ident, content_type, $content_type:literal) => {
-        assert_eq!($resp.content_type.as_ref().map(|s| s.as_str()), Some($content_type));
+        assert_eq!(
+            $resp.content_type.as_ref().map(|s| s.as_str()),
+            Some($content_type)
+        );
     };
     ($resp:ident, content_type, $content_type:ident) => {
-        assert_eq!($resp.content_type.as_ref().map(|s| s.as_str()), Some($crate::__private::mime::$content_type.as_ref().into()));
+        assert_eq!(
+            $resp.content_type.as_ref().map(|s| s.as_str()),
+            Some($crate::__private::mime::$content_type.as_ref().into())
+        );
     };
     ($resp:ident, contains, $text:literal) => {
         assert!($resp.text().contains($text));
@@ -125,7 +136,8 @@ macro_rules! check_condition {
     };
     ($resp:ident, json, $json:literal) => {
         let returned = $crate::__private::json::stringify_pretty(
-            $crate::__private::json::parse($resp.text()).expect("failed to parse json from response"),
+            $crate::__private::json::parse($resp.text())
+                .expect("failed to parse json from response"),
             4,
         );
         let expected = $crate::__private::json::stringify_pretty(
@@ -138,14 +150,24 @@ macro_rules! check_condition {
         use $crate::__private::EqualsToXpathValue;
 
         let factory = $crate::__private::sxd_xpath::Factory::new();
-        let xpath = factory.build($xpath).expect("failed to parse xpath").expect("no xpath");
+        let xpath = factory
+            .build($xpath)
+            .expect("failed to parse xpath")
+            .expect("no xpath");
 
         let mut context = $crate::__private::sxd_xpath::Context::new();
         context.set_namespace("svg", "http://www.w3.org/2000/svg");
 
-        let xpath_res = xpath.evaluate(&context, $resp.xml().root()).expect("failed to evaluate xpath");
-        assert!($value.equals_to_xpath_value(&xpath_res), "unexpected xpath value {:?} while expected \"{}\"", xpath_res, $value);
-    }}
+        let xpath_res = xpath
+            .evaluate(&context, $resp.xml().root())
+            .expect("failed to evaluate xpath");
+        assert!(
+            $value.equals_to_xpath_value(&xpath_res),
+            "unexpected xpath value {:?} while expected \"{}\"",
+            xpath_res,
+            $value
+        );
+    }};
 }
 
 #[macro_export]
