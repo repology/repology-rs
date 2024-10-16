@@ -1,3 +1,6 @@
 [workspace]
 members = ["repology-common", "repology-webapp", "libversion", "repology-webapp-test-utils", "repology-vulnupdater"]
 resolver = "2"
+
+[patch.crates-io]
+metrics-process = { git = "https://github.com/AMDmi3/rs-metrics-process", rev = "90094cb7e54ee98408c842f7e56334305569c875" }
