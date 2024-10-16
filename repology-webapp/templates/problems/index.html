@@ -93,9 +93,11 @@
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
 				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|as_ref)])? }}">CVEs</a>):
 				<ul class="list-unstyled">
-				{% for suggestion in suggestions.as_array().ok_or("suggestions is not an array")? %}
+				{% if let Some(suggestions) = suggestions.as_array() %}
+				{% for suggestion in suggestions %}
 					<li>{% call cpes::cpe_components(suggestion, true) %}</li>
 				{% endfor %}
+				{% endif %}
 				</ul>
 				{% endif %}
 			{% else if problem.kind == "cpe_missing" %}
@@ -103,9 +105,11 @@
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
 				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|as_ref)])? }}">CVEs</a>):
 				<ul class="list-unstyled">
-				{% for suggestion in suggestions.as_array().ok_or("suggestions is not an array")? %}
+				{% if let Some(suggestions) = suggestions.as_array() %}
+				{% for suggestion in suggestions %}
 					<li>{% call cpes::cpe_components(suggestion, true) %}</li>
 				{% endfor %}
+				{% endif %}
 				</ul>
 				{% endif %}
 			{% else if problem.kind == "download_dead" %}

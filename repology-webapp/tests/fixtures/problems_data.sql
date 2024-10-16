@@ -65,4 +65,5 @@ INSERT INTO problems(package_id, repo, name, effname, maintainer, "type", data) 
 				"cpe_other":"*"
 			}
 		]
-	}'::jsonb);
+	}'::jsonb),
+	(1, 'freebsd', 'shells/zsh', 'zsh', 'johndoe@example.com', 'cpe_missing', '{"suggestions":null}'::jsonb);
