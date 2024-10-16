@@ -6,6 +6,6 @@
 {%- macro enable_autorefresh(period) -%}
 {% if autorefresh %}
 	<meta http-equiv="refresh" content="{{ period }}">
-	<link rel="canonical" href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for_self([("autorefresh", "")])? }}">
+	<link rel="canonical" href="{{ ctx.external_url_for_self([("autorefresh", "")])? }}">
 {% endif %}
 {%- endmacro -%}
