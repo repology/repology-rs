@@ -1,24 +1,40 @@
-{%- macro cpe_components(values, hide_any=True) -%}
-{{ panel('vendor', values.cpe_vendor, hide_any) }}
-{{ panel('product', values.cpe_product, hide_any) }}
-{{ panel('edition', values.cpe_edition, hide_any) }}
-{{ panel('lang', values.cpe_lang, hide_any) }}
-{{ panel('sw_edition', values.cpe_sw_edition, hide_any) }}
-{{ panel('target_sw', values.cpe_target_sw, hide_any) }}
-{{ panel('target_hw', values.cpe_target_hw, hide_any) }}
-{{ panel('other', values.cpe_other, hide_any) }}
-{%- endmacro -%}
-
-{%- macro panel(type, value, hide_any=True) -%}
-	{%- if not hide_any or value != '*' -%}
+{%- macro panel(field_name, field_value, hide_asterisks) -%}
+	{%- if field_value != "*" || !hide_asterisks -%}
 		<div class="cpe-component">
-			<div class="cpe-component-header non-selectable">{{ type }}</div>
-			<div class="cpe-component-value">{% if value == '' %}∅{% else %}{{ value }}{% endif %}</div>
+			<div class="cpe-component-header non-selectable">{{ field_name }}</div>
+			<div class="cpe-component-value">{% if field_value == "" %}∅{% else %}{{ field_value }}{% endif %}</div>
 		</div>
 	{%- endif -%}
 {%- endmacro -%}
 
-{%- macro str(values, other) -%}
-	cpe:2.3:a:{{ values.cpe_vendor }}:{{ values.cpe_product }}:{{ values.cpe_edition }}:{{ values.cpe_lang }}:
-	{{ values.cpe_sw_edition }}:{{ values.cpe_target_sw }}:{{ values.cpe_target_hw }}:{{ values.cpe_other }}
+{%- macro cpe_components(fields_json, hide_asterisks) -%}
+  {%- let vendor = fields_json.get("cpe_vendor").unwrap().as_str().unwrap() -%}
+  {%- let product = fields_json.get("cpe_product").unwrap().as_str().unwrap() -%}
+  {%- let edition = fields_json.get("cpe_edition").unwrap().as_str().unwrap() -%}
+  {%- let lang = fields_json.get("cpe_lang").unwrap().as_str().unwrap() -%}
+  {%- let sw_edition = fields_json.get("sw_edition").unwrap().as_str().unwrap() -%}
+  {%- let target_sw = fields_json.get("cpe_target_sw").unwrap().as_str().unwrap() -%}
+  {%- let target_hw = fields_json.get("cpe_target_hw").unwrap().as_str().unwrap() -%}
+  {%- let other = fields_json.get("cpe_other").unwrap().as_str().unwrap() -%}
+  {% call panel("vendor", vendor, hide_asterisks) %}
+  {% call panel("product", product, hide_asterisks) %}
+  {% call panel("edition", edition, hide_asterisks) %}
+  {% call panel("lang", lang, hide_asterisks) %}
+  {% call panel("sw_edition", sw_edition, hide_asterisks) %}
+  {% call panel("target_sw", target_sw, hide_asterisks) %}
+  {% call panel("target_hw", target_hw, hide_asterisks) %}
+  {% call panel("other", other, hide_asterisks) %}
+{%- endmacro -%}
+
+{%- macro str(fields_json) -%}
+  {%- let vendor = fields_json.get("cpe_vendor").unwrap().as_str().unwrap() -%}
+  {%- let product = fields_json.get("cpe_product").unwrap().as_str().unwrap() -%}
+  {%- let edition = fields_json.get("cpe_edition").unwrap().as_str().unwrap() -%}
+  {%- let lang = fields_json.get("cpe_lang").unwrap().as_str().unwrap() -%}
+  {%- let sw_edition = fields_json.get("sw_edition").unwrap().as_str().unwrap() -%}
+  {%- let target_sw = fields_json.get("cpe_target_sw").unwrap().as_str().unwrap() -%}
+  {%- let target_hw = fields_json.get("cpe_target_hw").unwrap().as_str().unwrap() -%}
+  {%- let other = fields_json.get("cpe_other").unwrap().as_str().unwrap() -%}
+	cpe:2.3:a:{{ vendor }}:{{ product }}:{{ edition }}:{{ lang }}:{{ sw_edition }}:{{ target_sw }}:{{ target_hw }}:{{ other }}
+	{#                                  ^ should we add :*:* here to form a correct CPE? #}
 {%- endmacro -%}

@@ -20,6 +20,20 @@ pub enum Endpoint {
     #[strum(props(path = "/project/:project_name/versions", section = "Projects"))]
     ProjectVersions,
 
+    // Maintainer
+    #[strum(props(
+        path = "/maintainer/:maintainer_name/problems-for-repo/:repository_name",
+        section = "Maintainers"
+    ))]
+    MaintainerProblems,
+
+    // Repository
+    #[strum(props(
+        path = "/repository/:repository_name/problems",
+        section = "Repositories"
+    ))]
+    RepositoryProblems,
+
     // Tools
     #[strum(props(path = "/tools", section = "Tools"))]
     Tools,
@@ -102,11 +116,6 @@ pub enum Endpoint {
     #[strum(props(path = "/maintainer/:maintainer_name", section = "Maintainers"))]
     Maintainer,
     #[strum(props(
-        path = "/maintainer/:maintainer_name/problems-for-repo/:repository_name",
-        section = "Maintainers"
-    ))]
-    MaintainerProblems,
-    #[strum(props(
         path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name",
         section = "Maintainers"
     ))]
@@ -134,11 +143,6 @@ pub enum Endpoint {
     // Repository
     #[strum(props(path = "/repository/:repository_name", section = "Repositories"))]
     Repository,
-    #[strum(props(
-        path = "/repository/:repository_name/problems",
-        section = "Repositories"
-    ))]
-    RepositoryProblems,
     #[strum(props(path = "/repository/:repository_name/feed", section = "Repositories"))]
     RepositoryFeed,
     #[strum(props(

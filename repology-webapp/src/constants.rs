@@ -10,7 +10,6 @@ pub const CVES_PER_PAGE: u32 = 200;
 pub const HISTORY_PER_PAGE: u32 = 500;
 #[expect(unused)]
 pub const MAINTAINERS_PER_PAGE: u32 = 200;
-#[expect(unused)]
 pub const PROBLEMS_PER_PAGE: u32 = 200;
 pub const PROJECTS_PER_PAGE: u32 = 200;
 pub const REDIRECTS_PER_PAGE: u32 = 200;
