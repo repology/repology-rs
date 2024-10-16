@@ -1,6 +1,3 @@
-INSERT INTO repositories(id, name, sortname, "desc", state, first_seen, last_seen, metadata) VALUES
-	(1, 'freebsd', 'freebsd', 'FreeBSD', 'active', now(), now(), '{"singular": "FreeBSD port", "type": "repository"}'::json);
-
 INSERT INTO runs(id, type, repository_id, status, start_ts, finish_ts, num_lines, num_warnings, num_errors) VALUES
 	(1, 'fetch', 1, 'running', now() - interval '1h', NULL, NULL, NULL, NULL),
 	(2, 'fetch', 1, 'successful', now() - interval '1h', now(), 1, 2, 3);
