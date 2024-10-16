@@ -119,7 +119,7 @@
 				Download link <code>{{ url }}</code> is a permanent redirect to its HTTPS counterpart <code>{{ target }}</code> and should be updated.
 			{% else if problem.kind == "homepage_sourceforge_missing_trailing_slash" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
-				Homepage link <code>{{ url }}</code> needs a trailing slash added, otherwise there"s a javascript redirect.
+				Homepage link <code>{{ url }}</code> needs a trailing slash added, otherwise there's a javascript redirect.
 			{% else %}
 				Unformatted problem of type <code>{{ problem.kind }}</code>, data=<code>{{ problem.data }}</code>. The template should be updated, please report this.
 			{% endif %}
