@@ -2,6 +2,10 @@
 {% import "_macros/cpes.html" as cpes %}
 {% import "_macros/links.html" as links %}
 
+{% block extrameta %}
+	<link rel="canonical" href="{{ ctx.external_url_for_self([("start", ""), ("end", "")])?}}"/>
+{% endblock %}
+
 {% block title %}Problems{% if let Some(maintainer_name) = maintainer_name %} for {{ maintainer_name }}{% endif %} in {{ repository_data.title }} - Repology{% endblock %}
 {% block header %}Problems{% if let Some(maintainer_name) = maintainer_name %} for <strong>{{ maintainer_name }}</strong>{% endif %} in <strong>{{ repository_data.title }}</strong>{% endblock %}
 
