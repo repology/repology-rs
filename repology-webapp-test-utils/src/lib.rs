@@ -241,3 +241,43 @@ macro_rules! check_binary {
         )?
     };
 }
+
+#[macro_export]
+macro_rules! check_response {
+    (
+        $pool:ident,
+        $uri:literal
+        $(, status $status_ident:ident)?
+        $(, status $status_literal:literal)?
+        $(, content-type $content_type_ident:ident)?
+        $(, content-type $content_type_literal:literal)?
+        $(, contains $contains:literal)*
+        $(, !contains $contains_not:literal)*
+        $(,)?
+    ) => {
+        let resp = $crate::__private::get($pool.clone(), $uri, &[])
+            .await
+            .unwrap();
+        dbg!(&resp);
+        $(
+            assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::$status_ident);
+        )?
+        $(
+            assert_eq!(resp.status, $status_literal);
+        )?
+        $(
+            assert_eq!(resp.content_type.as_ref().map(|s| s.as_str()), Some($crate::__private::mime::$content_type_ident.as_ref().into()));
+        )?
+        $(
+            assert_eq!(resp.content_type.as_ref().map(|s| s.as_str()), Some($content_type_literal));
+        )?
+
+        let text = std::cell::LazyCell::new(|| resp.text());
+        $(
+            assert!(text.contains($contains));
+        )*
+        $(
+            assert!(!text.contains($contains_not));
+        )*
+    };
+}
