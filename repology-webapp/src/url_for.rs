@@ -34,7 +34,12 @@ impl<'a> UrlConstructor<'a> {
                 if let Some(field_value) = fields.remove(&field_name) {
                     res += &url_escape::encode_component(field_value);
                 } else {
-                    bail!("missing required field {}", field_name);
+                    bail!(
+                        "missing required field {} when trying to construct url for {} with {:?}",
+                        field_name,
+                        self.pattern,
+                        self.fields
+                    );
                 }
             } else {
                 // since this comes from path, assumed to be valid path part
