@@ -33,7 +33,7 @@
 		<tr>
 			<th class="text-center">Project</th>
 			<th class="text-center">Package name</th>
-			{% if maintainer_name.is_some() %}
+			{% if maintainer_name.is_none() %}
 			<th class="text-center">Maintainer</th>
 			{% endif %}
 			<th class="text-left">Problem</th>
@@ -50,7 +50,7 @@
 				{{ problem.visiblename }}
 				{%- endif -%}
 			</td>
-			{%- if maintainer_name.is_some() -%}
+			{%- if maintainer_name.is_none() -%}
 			<td class="text-center">
 			{%- if let Some(problem_maintainer_name) = problem.maintainer -%}
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", problem_maintainer_name)])? }}">{{ problem_maintainer_name }}</a>

@@ -23,7 +23,11 @@ async fn test_problems(pool: PgPool) {
         "/repository/freebsd/problems",
         status OK,
         content_type "text/html",
-        // each error is present
+
+        // contains maintainer column
+        contains r#"<td class="text-center"><a href="/maintainer/johndoe"#,
+
+        // each error kind is present
         contains "Homepage link <code>https://example.com/</code> is <",
         contains "Homepage link <code>https://example.com/</code> is a permanent redirect",
         contains "points to Google Code which was discontinued",
@@ -49,6 +53,23 @@ async fn test_problems(pool: PgPool) {
         "/maintainer/johndoe@example.com/problems-for-repo/freebsd",
         status OK,
         content_type "text/html",
-        contains "Homepage link <code>https://example.com/</code> is"
+
+        // does not contain maintainer column, because maintainer is fixed
+        contains_not r#"<td class="text-center"><a href="/maintainer/johndoe"#,
+
+        // each error kind is present
+        contains "Homepage link <code>https://example.com/</code> is <",
+        contains "Homepage link <code>https://example.com/</code> is a permanent redirect",
+        contains "points to Google Code which was discontinued",
+        contains "points to codeplex which was discontinued",
+        contains "points to Gna which was discontinued",
+        contains "points to CPAN which was discontinued",
+        contains "was not found neither among known CVEs nor in NVD CPE dictionary",
+        contains "CPE information is missing for this package",
+        contains "Download link <code>https://example.com/</code> is <",
+        contains "Download link <code>https://example.com/</code> is a permanent redirect",
+        contains "needs a trailing slash added",
+
+        contains_not "Unformatted problem of type",
     );
 }
