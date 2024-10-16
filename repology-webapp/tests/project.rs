@@ -6,27 +6,41 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::{check_code, check_html, check_html2};
+use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("project_data"))]
 async fn test_project_versions(pool: PgPool) {
-    check_html2!(pool, "/project/nonexistent/versions", status NOT_FOUND, contains "Unknown project");
-    check_html2!(pool, "/project/orphaned/versions", status NOT_FOUND, contains "Gone project");
+    check_response!(
+        pool,
+        "/project/nonexistent/versions",
+        status NOT_FOUND,
+        content_type "text/html",
+        contains "Unknown project"
+    );
+    check_response!(
+        pool,
+        "/project/orphaned/versions",
+        status NOT_FOUND,
+        content_type "text/html",
+        contains "Gone project"
+    );
 
-    check_html2!(
+    check_response!(
         pool,
         "/project/zsh/versions",
         status OK,
+        content_type "text/html",
         contains "Versions for <strong>zsh",
         contains "FreeBSD",
         contains "1.1"
     );
 
     // XSS test
-    check_html2!(
+    check_response!(
         pool,
         "/project/%3Cmarquee%3E%26nbsp%3B/versions",
-        !contains "<marquee>",
-        !contains "&nbsp;"
+        content_type "text/html",
+        contains_not "<marquee>",
+        contains_not "&nbsp;"
     );
 }

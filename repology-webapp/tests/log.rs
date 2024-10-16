@@ -6,13 +6,13 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::{check_code, check_html};
+use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("log_data"))]
 async fn test_log(pool: PgPool) {
-    check_code!(pool, "/log/10", NOT_FOUND);
-    check_code!(pool, "/log/foo", BAD_REQUEST);
+    check_response!(pool, "/log/10", status NOT_FOUND);
+    check_response!(pool, "/log/foo", status BAD_REQUEST);
 
-    check_html!(pool, "/log/1", "ongoing");
-    check_html!(pool, "/log/2", "successful");
+    check_response!(pool, "/log/1", status OK, contains "ongoing");
+    check_response!(pool, "/log/2", status OK, contains "successful");
 }

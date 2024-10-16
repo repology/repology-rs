@@ -6,17 +6,17 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_html;
+use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_trivial_pages(pool: PgPool) {
-    check_html!(pool, "/api", "Terms of use");
-    check_html!(pool, "/api/v1", "Terms of use");
-    check_html!(pool, "/docs/about", "About");
-    check_html!(pool, "/docs/bots", "+https://repology.org/docs/bots");
-    check_html!(pool, "/docs", "Documentation");
-    check_html!(pool, "/docs/not_supported", "Hyperbola");
-    check_html!(pool, "/docs/requirements", "Rational");
-    check_html!(pool, "/news", "Added");
-    check_html!(pool, "/tools", "Project by package name");
+    check_response!(pool, "/api", status OK, content_type "text/html", contains "Terms of use");
+    check_response!(pool, "/api/v1", status OK, content_type "text/html", contains "Terms of use");
+    check_response!(pool, "/docs/about", status OK, content_type "text/html", contains "About");
+    check_response!(pool, "/docs/bots", status OK, content_type "text/html", contains "+https://repology.org/docs/bots");
+    check_response!(pool, "/docs", status OK, content_type "text/html", contains "Documentation");
+    check_response!(pool, "/docs/not_supported", status OK, content_type "text/html", contains "Hyperbola");
+    check_response!(pool, "/docs/requirements", status OK, content_type "text/html", contains "Rational");
+    check_response!(pool, "/news", status OK, content_type "text/html", contains "Added");
+    check_response!(pool, "/tools", status OK, content_type "text/html", contains "Project by package name");
 }

@@ -6,15 +6,20 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_json;
+use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_api_v1_project(pool: PgPool) {
-    check_json!(pool, "/api/v1/project/nonexistent", "[]");
-    check_json!(
+    check_response!(pool,
+        "/api/v1/project/nonexistent",
+        content_type "application/json",
+        json "[]"
+    );
+    check_response!(
         pool,
         "/api/v1/project/full",
-        r#"
+        content_type "application/json",
+        json r#"
         [
             {
                 "repo": "repo",
@@ -41,10 +46,11 @@ async fn test_api_v1_project(pool: PgPool) {
         ]
         "#
     );
-    check_json!(
+    check_response!(
         pool,
         "/api/v1/project/minimal",
-        r#"
+        content_type "application/json",
+        json r#"
         [
             {
                 "repo": "repo",
@@ -56,10 +62,11 @@ async fn test_api_v1_project(pool: PgPool) {
         ]
         "#
     );
-    check_json!(
+    check_response!(
         pool,
         "/api/v1/project/vulnerable",
-        r#"
+        content_type "application/json",
+        json r#"
         [
             {
                 "repo": "repo",

@@ -19,13 +19,24 @@ pub mod __private {
         pub status: axum::http::StatusCode,
         pub content_type: Option<String>,
         pub body: bytes::Bytes,
+        pub text: std::cell::OnceCell<String>,
+        pub xml: std::cell::OnceCell<sxd_document::Package>,
     }
 
     impl Response {
-        pub fn text(self) -> String {
-            std::str::from_utf8(&self.body)
-                .expect("response should be valid utf-8 text")
-                .into()
+        pub fn text(&self) -> &String {
+            self.text.get_or_init(||
+                std::str::from_utf8(&self.body)
+                    .expect("response should be valid utf-8 text")
+                    .into()
+            )
+        }
+
+        pub fn xml(&self) -> sxd_document::dom::Document {
+            self.xml.get_or_init(||
+                sxd_document::parser::parse(self.text()).expect("response should be a parsable XML document")
+            )
+                .as_document()
         }
     }
 
@@ -49,6 +60,8 @@ pub mod __private {
                 .get(axum::http::header::CONTENT_TYPE)
                 .and_then(|value| value.to_str().ok().map(|value| value.into())),
             body: axum::body::to_bytes(response.into_body(), 1000000).await?,
+            text: std::cell::OnceCell::new(),
+            xml: std::cell::OnceCell::new(),
         })
     }
 
@@ -85,199 +98,73 @@ pub mod __private {
 }
 
 #[macro_export]
-macro_rules! check_code {
-    ($pool:ident, $uri:literal, $code:ident) => {
-        let resp = $crate::__private::get($pool.clone(), $uri, &[])
-            .await
-            .unwrap();
-        dbg!(&resp);
-        assert_eq!(
-            resp.status,
-            $crate::__private::axum::http::StatusCode::$code
-        );
+macro_rules! check_condition {
+    ($resp:ident, status, $status:literal) => {
+        assert_eq!($resp.status, $status);
     };
-}
-
-#[macro_export]
-macro_rules! check_json {
-    ($pool:ident, $uri:literal, $expected_json:literal) => {
-        let resp = $crate::__private::get($pool.clone(), $uri, &[])
-            .await
-            .unwrap();
-        dbg!(&resp);
-        assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
-        assert_eq!(
-            resp.content_type,
-            Some($crate::__private::mime::APPLICATION_JSON.as_ref().into())
-        );
-        let text = resp.text();
-
+    ($resp:ident, status, $status:ident) => {
+        assert_eq!($resp.status, $crate::__private::axum::http::StatusCode::$status);
+    };
+    ($resp:ident, content_type, $content_type:literal) => {
+        assert_eq!($resp.content_type.as_ref().map(|s| s.as_str()), Some($content_type));
+    };
+    ($resp:ident, content_type, $content_type:ident) => {
+        assert_eq!($resp.content_type.as_ref().map(|s| s.as_str()), Some($crate::__private::mime::$content_type.as_ref().into()));
+    };
+    ($resp:ident, contains, $text:literal) => {
+        assert!($resp.text().contains($text));
+    };
+    ($resp:ident, contains_not, $text:literal) => {
+        assert!(!$resp.text().contains($text));
+    };
+    ($resp:ident, body_length, $length:literal) => {
+        assert_eq!($resp.body.len(), $length);
+    };
+    ($resp:ident, body_cityhash64, $hash:literal) => {
+        assert_eq!(cityhasher::hash::<u64>(&$resp.body), $hash);
+    };
+    ($resp:ident, json, $json:literal) => {
         let returned = $crate::__private::json::stringify_pretty(
-            $crate::__private::json::parse(&text).unwrap(),
+            $crate::__private::json::parse($resp.text()).expect("failed to parse json from response"),
             4,
         );
         let expected = $crate::__private::json::stringify_pretty(
-            $crate::__private::json::parse($expected_json).unwrap(),
+            $crate::__private::json::parse($json).expect("failed to parse expeted json"),
             4,
         );
         $crate::__private::pretty_assertions::assert_eq!(returned, expected);
     };
-}
+    ($resp:ident, svg_xpath, $xpath:literal, $value:literal) => {{
+        use $crate::__private::EqualsToXpathValue;
 
-#[macro_export]
-macro_rules! check_svg {
-    ($pool:ident, $uri:literal $(, $($has:literal)? $(!$hasnt:literal)? $(@$xpath_expr:literal==$xpath_value:literal)?)*) => {
-        let resp = $crate::__private::get($pool.clone(), $uri, &[])
-            .await
-            .unwrap();
-        dbg!(&resp);
-        assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
-        assert_eq!(resp.content_type, Some($crate::__private::mime::IMAGE_SVG.as_ref().into()));
-        let text = resp.text();
+        let factory = $crate::__private::sxd_xpath::Factory::new();
+        let xpath = factory.build($xpath).expect("failed to parse xpath").expect("no xpath");
 
-        let parsed = $crate::__private::sxd_document::parser::parse(&text);
-        assert!(parsed.is_ok(), "failed to parse XML document");
-        let parsed = parsed.unwrap();
-        let _document = parsed.as_document();
+        let mut context = $crate::__private::sxd_xpath::Context::new();
+        context.set_namespace("svg", "http://www.w3.org/2000/svg");
 
-        $(
-            $(
-                assert!(text.contains($has));
-            )?
-            $(
-                assert!(!text.contains($hasnt));
-            )?
-            $(
-                {
-                    use $crate::__private::EqualsToXpathValue;
-
-                    let factory = $crate::__private::sxd_xpath::Factory::new();
-                    let xpath = factory.build($xpath_expr).unwrap();
-                    let xpath = xpath.unwrap();
-
-                    let mut context = $crate::__private::sxd_xpath::Context::new();
-                    context.set_namespace("svg", "http://www.w3.org/2000/svg");
-
-                    let xpath_res = xpath.evaluate(&context, _document.root()).unwrap();
-                    assert!($xpath_value.equals_to_xpath_value(&xpath_res), "unexpected xpath value {:?} while expected \"{}\"", xpath_res, $xpath_value);
-                }
-            )?
-        )*
-    };
-}
-
-#[macro_export]
-macro_rules! check_html {
-    ($pool:ident, $uri:literal $(, $($has:literal)? $(!$hasnt:literal)?)*) => {
-        let resp = $crate::__private::get($pool.clone(), $uri, &[])
-            .await
-            .unwrap();
-        dbg!(&resp);
-        assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
-        assert_eq!(resp.content_type, Some($crate::__private::mime::TEXT_HTML.as_ref().into()));
-        let text = resp.text();
-
-        $(
-            $(
-                assert!(text.contains($has));
-            )?
-            $(
-                assert!(!text.contains($hasnt));
-            )?
-        )*
-    };
-}
-
-#[macro_export]
-macro_rules! check_html2 {
-    ($pool:ident, $uri:literal $(, status $status_ident:ident)? $(, status $status_literal:literal)? $(, contains $contains:literal )* $(, !contains $contains_not:literal )* ) => {
-        let resp = $crate::__private::get($pool.clone(), $uri, &[])
-            .await
-            .unwrap();
-        dbg!(&resp);
-        $(
-            assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::$status_ident);
-        )?
-        $(
-            assert_eq!(resp.status, $status_literal);
-        )?
-        assert_eq!(resp.content_type, Some($crate::__private::mime::TEXT_HTML.as_ref().into()));
-        let text = resp.text();
-
-        $(
-            assert!(text.contains($contains));
-        )*
-        $(
-            assert!(!text.contains($contains_not));
-        )*
-    };
-}
-
-#[macro_export]
-macro_rules! check_binary {
-    ($pool:ident, $uri:literal, $(header $header_name:literal: $header_value:literal, )* $content_type:literal $(, $size:literal $(, $hash:literal )?)?) => {
-        let resp = $crate::__private::get($pool.clone(), $uri, &[
-            $(
-                ($header_name, $header_value)
-            )*
-        ]).await.unwrap();
-        dbg!(&resp);
-        assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::OK);
-        assert_eq!(
-            resp.content_type.as_ref().map(|s| &s[..]),
-            Some($content_type)
-        );
-        $(
-            assert_eq!(
-                resp.body.len(),
-                $size
-            );
-            $(
-                assert_eq!(
-                    cityhasher::hash::<u64>(&resp.body),
-                    $hash
-                );
-            )?
-        )?
-    };
+        let xpath_res = xpath.evaluate(&context, $resp.xml().root()).expect("failed to evaluate xpath");
+        assert!($value.equals_to_xpath_value(&xpath_res), "unexpected xpath value {:?} while expected \"{}\"", xpath_res, $value);
+    }}
 }
 
 #[macro_export]
 macro_rules! check_response {
     (
         $pool:ident,
+        $(add_header $header_name:literal $header_value:literal, )*
         $uri:literal
-        $(, status $status_ident:ident)?
-        $(, status $status_literal:literal)?
-        $(, content-type $content_type_ident:ident)?
-        $(, content-type $content_type_literal:literal)?
-        $(, contains $contains:literal)*
-        $(, !contains $contains_not:literal)*
+        $(, $cond:tt $value:tt $($extra_value:literal)?)*
         $(,)?
     ) => {
-        let resp = $crate::__private::get($pool.clone(), $uri, &[])
-            .await
-            .unwrap();
+        let resp = $crate::__private::get($pool.clone(), $uri, &[
+            $(
+                ($header_name, $header_value),
+            )*
+        ]).await.expect("request to web application failed");
         dbg!(&resp);
         $(
-            assert_eq!(resp.status, $crate::__private::axum::http::StatusCode::$status_ident);
-        )?
-        $(
-            assert_eq!(resp.status, $status_literal);
-        )?
-        $(
-            assert_eq!(resp.content_type.as_ref().map(|s| s.as_str()), Some($crate::__private::mime::$content_type_ident.as_ref().into()));
-        )?
-        $(
-            assert_eq!(resp.content_type.as_ref().map(|s| s.as_str()), Some($content_type_literal));
-        )?
-
-        let text = std::cell::LazyCell::new(|| resp.text());
-        $(
-            assert!(text.contains($contains));
-        )*
-        $(
-            assert!(!text.contains($contains_not));
+            $crate::check_condition!(resp, $cond, $value $(, $extra_value)?);
         )*
     };
 }
