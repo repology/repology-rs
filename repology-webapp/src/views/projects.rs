@@ -2,3 +2,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 pub mod common;
+pub mod query;
+
+pub mod projects;
+
+pub use projects::*;

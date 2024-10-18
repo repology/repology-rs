@@ -17,6 +17,7 @@ pub use badges::*;
 pub use log::*;
 pub use maintainer::*;
 pub use project::*;
+pub use projects::*;
 pub use repository::*;
 pub use static_files::*;
 pub use trivial_pages::*;
