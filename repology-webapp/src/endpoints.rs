@@ -110,7 +110,7 @@ pub enum Endpoint {
     #[strum(props(path = "/maintainers/", section = "Maintainers"))]
     Maintainers,
     #[strum(props(path = "/maintainers/:bound/", section = "Maintainers"))]
-    MaintainersBounted,
+    MaintainersBounded,
 
     // Maintainer
     #[strum(props(path = "/maintainer/:maintainer_name", section = "Maintainers"))]
