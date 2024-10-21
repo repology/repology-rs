@@ -141,7 +141,7 @@ macro_rules! check_condition {
             4,
         );
         let expected = $crate::__private::json::stringify_pretty(
-            $crate::__private::json::parse($json).expect("failed to parse expeted json"),
+            $crate::__private::json::parse($json).expect("failed to parse expected json"),
             4,
         );
         $crate::__private::pretty_assertions::assert_eq!(returned, expected);
