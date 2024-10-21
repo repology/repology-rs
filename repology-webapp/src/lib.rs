@@ -80,6 +80,8 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(Api.path(), get(views::api_v1))
         .route(ApiV1.path(), get(views::api_v1))
         .route(ApiV1Project.path(), get(views::api_v1_project))
+        .route(ApiV1Projects.path(), get(views::api_v1_projects))
+        .route(ApiV1ProjectsBounded.path(), get(views::api_v1_projects_bounded))
         .route(BadgeLatestVersions.path(), get(views::badge_latest_versions))
         .route(BadgeTinyRepos.path(), get(views::badge_tiny_repos))
         .route(BadgeVersionForRepo.path(), get(views::badge_version_for_repo))

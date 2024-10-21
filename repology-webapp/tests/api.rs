@@ -80,3 +80,47 @@ async fn test_api_v1_project(pool: PgPool) {
         "#
     );
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "projects_data")
+)]
+async fn test_api_v1_projects(pool: PgPool) {
+    // just a small subset of conditions tested, see more tests in tests/projects.rs
+    check_response!(
+        pool,
+        "/api/v1/projects/pkg_foo/",
+        content_type "application/json",
+        json r#"
+            {
+                "pkg_foofoo_": [
+                    {
+                        "repo": "ubuntu_12",
+                        "visiblename": "",
+                        "version": "",
+                        "origversion": null,
+                        "status": "newest"
+                    }
+                ]
+            }
+        "#
+    );
+    check_response!(
+        pool,
+        "/api/v1/projects/?search=bar",
+        content_type "application/json",
+        json r#"
+            {
+                "pkg_barbar_": [
+                    {
+                        "repo": "ubuntu_12",
+                        "visiblename": "",
+                        "version": "",
+                        "origversion": null,
+                        "status": "newest"
+                    }
+                ]
+            }
+        "#
+    );
+}

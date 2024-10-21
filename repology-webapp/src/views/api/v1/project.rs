@@ -5,44 +5,11 @@ use axum::extract::{Path, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
 use indoc::indoc;
-use serde::Serialize;
-use sqlx::FromRow;
-
-use repology_common::PackageStatus;
 
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
-#[derive(Serialize, FromRow)]
-pub struct ApiV1Package {
-    pub repo: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub subrepo: Option<String>,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub srcname: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub binname: Option<String>,
-    pub visiblename: String,
-
-    pub version: String,
-    //#[serde(skip_serializing_if = "Option::is_none")]  // Note: this is commented
-    // for bug-to-bug compatibility with python webapp
-    pub origversion: Option<String>,
-
-    pub status: PackageStatus,
-
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub summary: Option<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub maintainers: Vec<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub licenses: Vec<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    pub categories: Vec<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub vulnerable: Option<bool>,
-}
+use super::common::ApiV1Package;
 
 #[tracing::instrument(skip(state))]
 pub async fn api_v1_project(
