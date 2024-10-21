@@ -6,7 +6,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.89"
 axum = "0.7.7"
-bytes = "1.7.2"
+bytes = "1.8.0"
 json = "0.12.4"
 mime = "0.3.17"
 pretty_assertions = "1.4.1"
