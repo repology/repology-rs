@@ -1875,6 +1875,7 @@ dependencies = [
  "json",
  "mime",
  "pretty_assertions",
+ "regex",
  "repology-webapp",
  "sqlx",
  "sxd-document",

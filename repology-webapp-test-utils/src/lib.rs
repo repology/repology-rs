@@ -7,6 +7,7 @@ pub mod __private {
     pub use json;
     pub use mime;
     pub use pretty_assertions;
+    pub use regex;
     pub use sxd_document;
     pub use sxd_xpath;
 
@@ -168,6 +169,24 @@ macro_rules! check_condition {
             $value
         );
     }};
+    ($resp:ident, matches, $regexp:literal) => {
+        assert!($crate::__private::regex::Regex::new($regexp)
+            .expect("failed to parse regex")
+            .is_match($resp.text()));
+    };
+    ($resp:ident, matches_not, $regexp:literal) => {
+        assert!(!$crate::__private::regex::Regex::new($regexp)
+            .expect("failed to parse regex")
+            .is_match($resp.text()));
+    };
+    ($resp:ident, line_matches, $regexp:literal) => {
+        let re = $crate::__private::regex::Regex::new($regexp).expect("failed to parse regex");
+        assert!($resp.text().lines().any(|line| re.is_match(line)));
+    };
+    ($resp:ident, line_matches_not, $regexp:literal) => {
+        let re = $crate::__private::regex::Regex::new($regexp).expect("failed to parse regex");
+        assert!(!$resp.text().lines().any(|line| re.is_match(line)));
+    };
 }
 
 #[macro_export]
