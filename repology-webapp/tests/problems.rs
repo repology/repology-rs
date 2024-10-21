@@ -10,7 +10,7 @@ use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(
     migrator = "repology_common::MIGRATOR",
-    fixtures("common_data", "problems_data")
+    fixtures("common_repositories", "common_packages", "problems_data")
 )]
 async fn test_problems(pool: PgPool) {
     check_response!(

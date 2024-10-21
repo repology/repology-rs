@@ -8,7 +8,10 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_data"))]
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages")
+)]
 async fn test_project_versions(pool: PgPool) {
     check_response!(
         pool,

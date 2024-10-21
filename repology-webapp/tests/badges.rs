@@ -8,7 +8,10 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_data"))]
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages")
+)]
 async fn test_badge_tiny_repos(pool: PgPool) {
     check_response!(pool, "/badge/tiny-repos/nonexistent", status NOT_FOUND);
 
@@ -50,7 +53,10 @@ async fn test_badge_tiny_repos(pool: PgPool) {
     );
 }
 
-#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_data"))]
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages")
+)]
 async fn test_badge_version_for_repo(pool: PgPool) {
     check_response!(pool, "/badge/version-for-repo/freebsd/zsh", status NOT_FOUND);
     check_response!(pool, "/badge/version-for-repo/badrepo/zsh.svg", status NOT_FOUND);
@@ -122,7 +128,10 @@ async fn test_badge_version_for_repo(pool: PgPool) {
     );
 }
 
-#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_data"))]
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages")
+)]
 async fn test_badge_vertical_allrepos(pool: PgPool) {
     check_response!(pool, "/badge/vertical-allrepos/zsh", status NOT_FOUND);
 
