@@ -65,3 +65,82 @@ async fn test_projects_params_retained_by_the_form(pool: PgPool) {
         );
     }
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "projects_data")
+)]
+async fn test_projects_pagination(pool: PgPool) {
+    check_response!(pool,
+        "/projects/",
+        contains "pkg_barbar_",
+        contains "pkg_foofoo_"
+    );
+    check_response!(pool,
+        "/projects/pkg_foo/",
+        contains_not "pkg_barbar_",
+        contains "pkg_foofoo_"
+    );
+    check_response!(pool,
+        "/projects/..pkg_foo/",
+        contains "pkg_barbar_",
+        contains_not "pkg_foofoo_"
+    );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "projects_data")
+)]
+async fn test_projects_search(pool: PgPool) {
+    check_response!(pool,
+        "/projects/",
+        contains "pkg_barbar_",
+        contains "pkg_foofoo_"
+    );
+    check_response!(pool,
+        "/projects/?search=bar",
+        contains "pkg_barbar_",
+        contains_not "pkg_foofoo_"
+    );
+    check_response!(pool,
+        "/projects/?search=foo",
+        contains_not "pkg_barbar_",
+        contains "pkg_foofoo_"
+    );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "projects_data")
+)]
+async fn test_projects_inrepo(pool: PgPool) {
+    check_response!(pool,
+        "/projects/",
+        contains "pkg_12e",
+        contains "pkg_24e",
+        contains "pkg_1224e",
+    );
+    check_response!(pool,
+        "/projects/?inrepo=ubuntu_12",
+        contains "pkg_12e",
+        contains_not "pkg_24e",
+        contains "pkg_1224e",
+    );
+    check_response!(pool,
+        "/projects/?notinrepo=ubuntu_12",
+        contains_not "pkg_12e",
+        contains "pkg_24e",
+        contains_not "pkg_1224e",
+    );
+    check_response!(pool,
+        "/projects/?inrepo=ubuntu_12&newest=1",
+        contains "pkg_1224_newest_12",
+        contains_not "pkg_1224_newest_24"
+    );
+    check_response!(pool,
+        "/projects/?inrepo=ubuntu_12&outdated=1",
+        contains_not "pkg_1224_newest_12",
+        contains "pkg_1224_newest_24"
+    );
+}
