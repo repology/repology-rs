@@ -224,4 +224,17 @@ macro_rules! check_response {
             $crate::check_condition!(resp, $cond, $value $(, $extra_value)?);
         )*
     };
+    (
+        $pool:ident,
+        $uri:expr
+        $(, $cond:tt $value:tt $($extra_value:literal)?)*
+        $(,)?
+    ) => {
+        let resp = $crate::__private::get($pool.clone(), $uri, &[])
+            .await.expect("request to web application failed");
+        dbg!(&resp);
+        $(
+            $crate::check_condition!(resp, $cond, $value $(, $extra_value)?);
+        )*
+    };
 }
