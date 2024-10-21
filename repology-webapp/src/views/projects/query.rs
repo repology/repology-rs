@@ -4,7 +4,7 @@
 #![allow(warnings, unused)]
 
 use anyhow::Result;
-use indoc::indoc;
+use indoc::{formatdoc, indoc};
 use sqlx::query;
 
 use super::common::ProjectForListing;
@@ -34,12 +34,169 @@ pub struct ProjectsFilter<'a> {
     pub limit: i32,
 }
 
+struct QueryAndJoiner {
+    query: String,
+}
+
+impl QueryAndJoiner {
+    fn new() -> Self {
+        Self { query: "(".into() }
+    }
+
+    fn push(&mut self, operand: &str) {
+        if self.query.len() > 1 {
+            self.query += " AND ";
+        }
+        self.query += "(";
+        self.query += operand;
+        self.query += ")";
+    }
+
+    fn finish(mut self) -> String {
+        if self.query.len() == 1 {
+            self.query += "TRUE";
+        }
+        self.query += ")";
+        self.query
+    }
+}
+
 #[tracing::instrument(skip_all)]
 pub async fn query_listing_projects(
     pool: &sqlx::PgPool,
     filter: &ProjectsFilter<'_>,
 ) -> Result<Vec<ProjectForListing>> {
-    Ok(sqlx::query_as(indoc! {"
+    let mut query_conditions = QueryAndJoiner::new();
+
+    // pagination
+    if filter.start_project_name.is_some() {
+        query_conditions.push("effname >= $1");
+    }
+    if filter.end_project_name.is_some() {
+        query_conditions.push("effname <= $2");
+    }
+
+    // substring
+    if filter.project_name_substring.is_some() {
+        query_conditions.push("effname ILIKE ('%%' || $3 || '%%')");
+    }
+
+    // count ranges
+    if filter.min_repositories.is_some() {
+        query_conditions.push("num_repos >= $7");
+    }
+    if filter.max_repositories.is_some() {
+        query_conditions.push("num_repos <= $8");
+    }
+    if filter.min_families.is_some() {
+        query_conditions.push("num_families >= $9");
+    }
+    if filter.max_families.is_some() {
+        query_conditions.push("num_families <= $10");
+    }
+    if filter.min_repositories_newest.is_some() {
+        query_conditions.push("num_repos_newest >= $11");
+    }
+    if filter.max_repositories_newest.is_some() {
+        query_conditions.push("num_repos_newest <= $12");
+    }
+    if filter.min_families_newest.is_some() {
+        query_conditions.push("num_families_newest >= $13");
+    }
+    if filter.max_families_newest.is_some() {
+        query_conditions.push("num_families_newest <= $14");
+    }
+
+    // category
+    if filter.category.is_some() {
+        query_conditions
+            .push("effname IN (SELECT effname FROM category_metapackages WHERE category = $15)");
+    }
+
+    // has_related
+    if filter.require_has_related {
+        query_conditions.push("has_related");
+    }
+
+    // not_in_repo
+    if filter.not_in_repo.is_some() {
+        query_conditions.push(indoc! {"
+            NOT EXISTS (
+                SELECT *
+                FROM repo_metapackages
+                WHERE
+                    effname = metapackages.effname AND
+                    repository_id = (SELECT id FROM repositories WHERE name = $6)
+            )
+        "});
+    }
+
+    // maintainer, in_repo and flags are checked together
+    {
+        let mut binding_condition = QueryAndJoiner::new();
+        if filter.require_newest {
+            binding_condition.push("newest");
+        }
+        if filter.require_outdated {
+            binding_condition.push("outdated");
+        }
+        if filter.require_problematic {
+            binding_condition.push("problematic");
+        }
+        if filter.require_vulnerable {
+            binding_condition.push("vulnerable");
+        }
+
+        match (filter.maintainer.is_some(), filter.in_repo.is_some()) {
+            (true, true) => {
+                binding_condition.push(indoc! {"
+                    effname = metapackages.effname AND
+                    maintainer_id = (SELECT id FROM maintainers WHERE maintainer = $4) AND
+                    repository_id = (SELECT id FROM repositories WHERE name = $5)
+                "});
+                query_conditions.push(&format!(
+                    "EXISTS(SELECT * FROM maintainer_and_repo_metapackages WHERE {})",
+                    binding_condition.finish()
+                ));
+            }
+            (true, false) => {
+                binding_condition.push(indoc! {"
+                    effname = metapackages.effname AND
+                    maintainer_id = (SELECT id FROM maintainers WHERE maintainer = $4)
+                "});
+                query_conditions.push(&format!(
+                    "EXISTS(SELECT * FROM maintainer_metapackages WHERE {})",
+                    binding_condition.finish()
+                ));
+            }
+            (false, true) => {
+                binding_condition.push(indoc! {"
+                    effname = metapackages.effname AND
+                    repository_id = (SELECT id FROM repositories WHERE name = $5)
+                "});
+                query_conditions.push(&format!(
+                    "EXISTS(SELECT * FROM repo_metapackages WHERE {})",
+                    binding_condition.finish()
+                ));
+            }
+            (false, false) => {
+                if filter.require_newest {
+                    query_conditions.push("EXISTS (SELECT * FROM repo_metapackages WHERE effname = metapackages.effname AND newest)");
+                }
+                if filter.require_outdated {
+                    query_conditions.push("EXISTS (SELECT * FROM repo_metapackages WHERE effname = metapackages.effname AND outdated)");
+                }
+                if filter.require_problematic {
+                    query_conditions.push("EXISTS (SELECT * FROM repo_metapackages WHERE effname = metapackages.effname AND problematic)");
+                }
+                if filter.require_vulnerable {
+                    query_conditions.push("EXISTS (SELECT * FROM repo_metapackages WHERE effname = metapackages.effname AND vulnerable)");
+                }
+            }
+        }
+    }
+
+    Ok(sqlx::query_as(&formatdoc! {"
         SELECT * FROM (
             SELECT
                 effname,
@@ -47,130 +204,35 @@ pub async fn query_listing_projects(
                 has_related
             FROM metapackages
             WHERE
-                num_repos_nonshadow > 0
-
-                -- pagination
-                AND ($1 IS NULL OR effname >= $1)
-                AND ($2 IS NULL OR effname <= $2)
-
-                -- substring
-                AND ($3 IS NULL OR effname ILIKE ('%%' || $3 || '%%'))
-
-                -- count ranges
-                AND ($7 IS NULL OR num_repos >= $7)
-                AND ($8 IS NULL OR num_repos <= $8)
-                AND ($9 IS NULL OR num_families >= $9)
-                AND ($10 IS NULL OR num_families <= $10)
-                AND ($11 IS NULL OR num_repos_newest >= $11)
-                AND ($12 IS NULL OR num_repos_newest <= $12)
-                AND ($13 IS NULL OR num_families_newest >= $13)
-                AND ($14 IS NULL OR num_families_newest <= $14)
-
-                -- category
-                AND ($15 IS NULL OR
-                    effname IN (
-                        SELECT
-                            effname
-                        FROM category_metapackages
-                        WHERE category = $15
-                    )
-                )
-
-                -- has_related
-                AND (NOT $19 OR has_related)
-
-                -- not_in_repo
-                AND ($6 IS NULL OR
-                    NOT EXISTS (
-                        SELECT *
-                        FROM repo_metapackages
-                        WHERE
-                            effname = metapackages.effname AND
-                            repository_id = (SELECT id FROM repositories WHERE name = $6)
-                    )
-                )
-
-                -- maintainer, in_repo and flags are checked together
-                AND CASE
-                    WHEN $4 IS NOT NULL AND $5 IS NOT NULL THEN (
-                        -- both maintainer and in_repo conditions
-                        EXISTS (
-                            SELECT * FROM maintainer_and_repo_metapackages WHERE
-                                (
-                                    effname = metapackages.effname AND
-                                    maintainer_id = (SELECT id FROM maintainers WHERE maintainer = $4) AND
-                                    repository_id = (SELECT id FROM repositories WHERE name = $5)
-                                )
-                                AND (NOT $16 OR newest)
-                                AND (NOT $17 OR outdated)
-                                AND (NOT $18 OR problematic)
-                                AND (NOT $20 OR vulnerable)
-                        )
-                    )
-                    WHEN $4 IS NOT NULL AND $5 IS NULL THEN (
-                        -- only maintainer condition
-                        EXISTS (
-                            SELECT * FROM maintainer_metapackages WHERE
-                                (
-                                    effname = metapackages.effname AND
-                                    maintainer_id = (SELECT id FROM maintainers WHERE maintainer = $4)
-                                )
-                                AND (NOT $16 OR newest)
-                                AND (NOT $17 OR outdated)
-                                AND (NOT $18 OR problematic)
-                                AND (NOT $20 OR vulnerable)
-                        )
-                    )
-                    WHEN $4 IS NULL AND $5 IS NOT NULL THEN (
-                        -- only in_repo condition
-                        EXISTS (
-                            SELECT * FROM repo_metapackages WHERE
-                                (
-                                    effname = metapackages.effname AND
-                                    repository_id = (SELECT id FROM repositories WHERE name = $5)
-                                )
-                                AND (NOT $16 OR newest)
-                                AND (NOT $17 OR outdated)
-                                AND (NOT $18 OR problematic)
-                                AND (NOT $20 OR vulnerable)
-                        )
-                    )
-                    ELSE (
-                        -- neither maintainer nor in_repo condition
-                        (NOT $16 OR EXISTS (SELECT * FROM repo_metapackages WHERE effname = metapackages.effname AND newest)) AND
-                        (NOT $17 OR EXISTS (SELECT * FROM repo_metapackages WHERE effname = metapackages.effname AND outdated)) AND
-                        (NOT $18 OR EXISTS (SELECT * FROM repo_metapackages WHERE effname = metapackages.effname AND problematic)) AND
-                        (NOT $20 OR EXISTS (SELECT * FROM repo_metapackages WHERE effname = metapackages.effname AND vulnerable))
-                    )
-                END
+                num_repos_nonshadow > 0 AND {}
             ORDER BY
                 CASE WHEN $2 IS NULL THEN effname END,
                 CASE WHEN $2 IS NOT NULL THEN effname END DESC
             LIMIT $21
         ) AS tmp
         ORDER BY effname
-    "})
-    .bind(&filter.start_project_name)      // $1
-    .bind(&filter.end_project_name)        // $2
-    .bind(&filter.project_name_substring)  // $3
-    .bind(&filter.maintainer)              // $4
-    .bind(&filter.in_repo)                 // $5
-    .bind(&filter.not_in_repo)             // $6
-    .bind(&filter.min_repositories)        // $7
-    .bind(&filter.max_repositories)        // $8
-    .bind(&filter.min_families)            // $9
-    .bind(&filter.max_families)            // $10
+    ", query_conditions.finish()})
+    .bind(&filter.start_project_name) // $1
+    .bind(&filter.end_project_name) // $2
+    .bind(&filter.project_name_substring) // $3
+    .bind(&filter.maintainer) // $4
+    .bind(&filter.in_repo) // $5
+    .bind(&filter.not_in_repo) // $6
+    .bind(&filter.min_repositories) // $7
+    .bind(&filter.max_repositories) // $8
+    .bind(&filter.min_families) // $9
+    .bind(&filter.max_families) // $10
     .bind(&filter.min_repositories_newest) // $11
     .bind(&filter.max_repositories_newest) // $12
-    .bind(&filter.min_families_newest)     // $13
-    .bind(&filter.max_families_newest)     // $14
-    .bind(&filter.category)                // $15
-    .bind(&filter.require_newest)          // $16
-    .bind(&filter.require_outdated)        // $17
-    .bind(&filter.require_problematic)     // $18
-    .bind(&filter.require_has_related)     // $19
-    .bind(&filter.require_vulnerable)      // $20
-    .bind(&filter.limit)                   // $21
+    .bind(&filter.min_families_newest) // $13
+    .bind(&filter.max_families_newest) // $14
+    .bind(&filter.category) // $15
+    .bind(&filter.require_newest) // $16
+    .bind(&filter.require_outdated) // $17
+    .bind(&filter.require_problematic) // $18
+    .bind(&filter.require_has_related) // $19
+    .bind(&filter.require_vulnerable) // $20
+    .bind(&filter.limit) // $21
     .fetch_all(pool)
     .await?)
 }
