@@ -124,10 +124,18 @@ macro_rules! check_condition {
         );
     };
     ($resp:ident, contains, $text:literal) => {
-        assert!($resp.text().contains($text));
+        assert!(
+            $resp.text().contains($text),
+            "contains condition with text \"{}\" has not matched",
+            $text
+        );
     };
     ($resp:ident, contains_not, $text:literal) => {
-        assert!(!$resp.text().contains($text));
+        assert!(
+            !$resp.text().contains($text),
+            "contains_not condition with text \"{}\" has unexpectedly matched",
+            $text
+        );
     };
     ($resp:ident, body_length, $length:literal) => {
         assert_eq!($resp.body.len(), $length);
