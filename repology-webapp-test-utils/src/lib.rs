@@ -182,7 +182,7 @@ macro_rules! check_condition {
             $crate::__private::regex::Regex::new($regexp)
                 .expect("failed to parse regex")
                 .is_match($resp.text()),
-            "line_matches condition with regexp \"{}\" has not matched",
+            "matches condition with regexp \"{}\" has not matched",
             $regexp
         );
     };
