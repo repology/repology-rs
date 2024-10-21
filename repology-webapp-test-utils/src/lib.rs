@@ -170,22 +170,38 @@ macro_rules! check_condition {
         );
     }};
     ($resp:ident, matches, $regexp:literal) => {
-        assert!($crate::__private::regex::Regex::new($regexp)
-            .expect("failed to parse regex")
-            .is_match($resp.text()));
+        assert!(
+            $crate::__private::regex::Regex::new($regexp)
+                .expect("failed to parse regex")
+                .is_match($resp.text()),
+            "line_matches condition with regexp \"{}\" has not matched",
+            $regexp
+        );
     };
     ($resp:ident, matches_not, $regexp:literal) => {
-        assert!(!$crate::__private::regex::Regex::new($regexp)
-            .expect("failed to parse regex")
-            .is_match($resp.text()));
+        assert!(
+            !$crate::__private::regex::Regex::new($regexp)
+                .expect("failed to parse regex")
+                .is_match($resp.text()),
+            "matches_not condition with regexp \"{}\" has unexpectedly matched",
+            $regexp
+        );
     };
     ($resp:ident, line_matches, $regexp:literal) => {
         let re = $crate::__private::regex::Regex::new($regexp).expect("failed to parse regex");
-        assert!($resp.text().lines().any(|line| re.is_match(line)));
+        assert!(
+            $resp.text().lines().any(|line| re.is_match(line)),
+            "line_matches condition with regexp \"{}\" has not matched",
+            $regexp
+        );
     };
     ($resp:ident, line_matches_not, $regexp:literal) => {
         let re = $crate::__private::regex::Regex::new($regexp).expect("failed to parse regex");
-        assert!(!$resp.text().lines().any(|line| re.is_match(line)));
+        assert!(
+            !$resp.text().lines().any(|line| re.is_match(line)),
+            "line_matches_not condition with regexp \"{}\" has unexpectedly matched",
+            $regexp
+        );
     };
 }
 
