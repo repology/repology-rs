@@ -1,24 +1,14 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![allow(warnings, unused)]
-
-use std::collections::HashMap;
-
 use askama::Template;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
 use indoc::indoc;
-use itertools::Itertools;
 use serde::Deserialize;
-use sqlx::FromRow;
-
-use repology_common::{PackageFlags, PackageStatus};
 
 use crate::endpoints::Endpoint;
-use crate::package::ordering::by_version_descending;
-use crate::package::traits::{PackageWithFlags, PackageWithVersion};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
