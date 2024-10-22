@@ -6,15 +6,11 @@ updates:
       interval: "weekly"
     labels:
       - "Topic: dependencies"
-      - "Topic: testing"
       - "Priority: soon"
-      - "Type: infrastructure"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     labels:
       - "Topic: dependencies"
-      - "Topic: testing"
       - "Priority: soon"
-      - "Type: infrastructure"
