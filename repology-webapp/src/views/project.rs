@@ -4,6 +4,8 @@
 pub mod common;
 pub mod nonexistent;
 
+pub mod information;
 pub mod versions;
 
+pub use information::*;
 pub use versions::*;

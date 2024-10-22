@@ -47,3 +47,34 @@ async fn test_project_versions(pool: PgPool) {
         contains_not "&nbsp;"
     );
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages")
+)]
+async fn test_project_information(pool: PgPool) {
+    check_response!(
+        pool,
+        "/project/nonexistent/information",
+        status NOT_FOUND,
+        content_type "text/html",
+        contains "Unknown project"
+    );
+    check_response!(
+        pool,
+        "/project/orphaned/information",
+        status NOT_FOUND,
+        content_type "text/html",
+        contains "Gone project"
+    );
+
+    check_response!(
+        pool,
+        "/project/zsh/information",
+        status OK,
+        content_type "text/html",
+        contains "Information for <strong>zsh",
+    );
+
+    // XXX: more tests
+}

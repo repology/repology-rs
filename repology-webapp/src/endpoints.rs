@@ -25,6 +25,8 @@ pub enum Endpoint {
     // Project
     #[strum(props(path = "/project/:project_name/versions", section = "Projects"))]
     ProjectVersions,
+    #[strum(props(path = "/project/:project_name/information", section = "Projects"))]
+    ProjectInformation,
 
     // Maintainer
     #[strum(props(
@@ -97,8 +99,6 @@ pub enum Endpoint {
     ProjectVersionsCompact,
     #[strum(props(path = "/project/:project_name/packages", section = "Projects"))]
     ProjectPackages,
-    #[strum(props(path = "/project/:project_name/information", section = "Projects"))]
-    ProjectInformation,
     #[strum(props(path = "/project/:project_name/history", section = "Projects"))]
     ProjectHistory,
     #[strum(props(path = "/project/:project_name/related", section = "Projects"))]
