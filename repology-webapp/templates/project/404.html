@@ -16,7 +16,7 @@
 </div>
 
 {% if !redirect_projects_list.is_empty() %}
-{% call projects_table::projects_table(redirect_projects_list, repo="", maintainer="", target_project_endpoint=ctx.endpoint) %}
+{% call projects_table::projects_table(redirect_projects_list, target_project_endpoint=ctx.endpoint) %}
 {% endif %}
 
 </div>

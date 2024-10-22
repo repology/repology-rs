@@ -157,7 +157,7 @@
 
 {% call pagination() %}
 
-{% call projects_table::projects_table(projects_list, repo="", maintainer="", target_project_endpoint=crate::endpoints::Endpoint::ProjectVersions) %}
+{% call projects_table::projects_table_with_focus(projects_list, repo=query.inrepo|as_ref, maintainer=query.maintainer|as_ref, target_project_endpoint=crate::endpoints::Endpoint::ProjectVersions) %}
 
 {% call pagination() %}
 

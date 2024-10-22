@@ -10,11 +10,91 @@
 {%- endfor -%}
 {%- endmacro -%}
 
-{%- macro projects_table(list, repo, maintainer, target_project_endpoint) -%}
-
+{%- macro projects_table(list, target_project_endpoint) -%}
 {% if !list.is_empty() %}
 <p><b>{{ list.len() }}</b> project(s) on this page</p>
+<table class="table table-striped table-condensed">
+	<thead>
+	{% for item in list %}
+	{% set headerevery = 50 %}
+	{% if loop.first || (headerevery != 0 && loop.index0 % headerevery == 0) %}
+		<tr>
+			<th>Project</th>
+			<th class="text-center" title="Spread - number of repository families a project is present in">Spr</th>
+			<th title="Versions considered newest">Newest</th>
+			<th title="Versions considered outdated">Outdated</th>
+			<th title="Versions excluded from comparison">Ignored</th>
+			{#% if 'rank' in metapackage %}
+			<th title="Versions excluded from comparison">Rank</th>
+			{% endif %#}
+		</tr>
+	{% if loop.first %}</thead><tbody>{% endif %}
+	{% endif %}
+		<tr>
+			<td class="text-nowrap">
+				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|as_ref)])? }}">{{ item.project.effname }}</a>
+				{%- if item.project.has_related -%}
+				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|as_ref)])? }}">∗</a>
+				{% endif %}
+			</td>
+			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
+			<td>{% call versions_list(item.versions.newest|as_ref, "") %}</td>
+			<td>{% call versions_list(item.versions.outdated|as_ref, "") %}</td>
+			<td>{% call versions_list(item.versions.ignored|as_ref, "") %}</td>
+			{#% if 'rank' in metapackage %}
+			<td>{{ metapackage.rank|round(2) }}</td>
+			{% endif %#}
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% else %}
+<div class="alert alert-warning" role="alert">No projects found matching the criteria</div>
+{% endif %}
+{%- endmacro -%}
 
+{%- macro projects_table_with_rank(list, target_project_endpoint) -%}
+{% if !list.is_empty() %}
+<p><b>{{ list.len() }}</b> project(s) on this page</p>
+<table class="table table-striped table-condensed">
+	<thead>
+	{% for item in list %}
+	{% set headerevery = 50 %}
+	{% if loop.first || (headerevery != 0 && loop.index0 % headerevery == 0) %}
+		<tr>
+			<th>Project</th>
+			<th class="text-center" title="Spread - number of repository families a project is present in">Spr</th>
+			<th title="Versions considered newest">Newest</th>
+			<th title="Versions considered outdated">Outdated</th>
+			<th title="Versions excluded from comparison">Ignored</th>
+			<th>Rank</th>
+		</tr>
+	{% if loop.first %}</thead><tbody>{% endif %}
+	{% endif %}
+		<tr>
+			<td class="text-nowrap">
+				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|as_ref)])? }}">{{ item.project.effname }}</a>
+				{%- if item.project.has_related -%}
+				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|as_ref)])? }}">∗</a>
+				{% endif %}
+			</td>
+			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
+			<td>{% call versions_list(item.versions.newest|as_ref, "") %}</td>
+			<td>{% call versions_list(item.versions.outdated|as_ref, "") %}</td>
+			<td>{% call versions_list(item.versions.ignored|as_ref, "") %}</td>
+			<td>{{ item.rank|round(2) }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+{% else %}
+<div class="alert alert-warning" role="alert">No projects found matching the criteria</div>
+{% endif %}
+{%- endmacro -%}
+
+{%- macro projects_table_with_focus(list, repo, maintainer, target_project_endpoint) -%}
+{% if !list.is_empty() %}
+<p><b>{{ list.len() }}</b> project(s) on this page</p>
 <table class="table table-striped table-condensed">
 	<thead>
 	{% for item in list %}
@@ -24,8 +104,7 @@
 			<th>Project</th>
 			{% if !repo.is_empty() || !maintainer.is_empty() %}
 			<th class="text-nowrap" title="Packages
-				{# TODO %- if !repo.is_empty() %} in {{ repometadata[repo].desc }}{% endif -%#}
-				{%- if !repo.is_empty() && !maintainer.is_empty() %} and{% endif -%}
+				{%- if !repo.is_empty() %} in {% for repository_data in repositories_data %}{% if repository_data.name|as_ref == repo %}{{ repository_data.title }}{% endif %}{% endfor %}{% endif -%}
 				{%- if !maintainer.is_empty() %} maintained by {{ maintainer }}{% endif -%}
 			">Selected</th>
 			{% endif %}
@@ -46,7 +125,6 @@
 				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|as_ref)])? }}">∗</a>
 				{% endif %}
 			</td>
-
 			{% if !repo.is_empty() || !maintainer.is_empty() %}
 			<td>{% call versions_list(item.versions.focused|as_ref, "-") %}</td>
 			{% endif %}
@@ -64,5 +142,4 @@
 {% else %}
 <div class="alert alert-warning" role="alert">No projects found matching the criteria</div>
 {% endif %}
-
 {%- endmacro -%}

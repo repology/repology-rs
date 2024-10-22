@@ -239,8 +239,11 @@ async fn projects_generic(
     .fetch_all(&state.pool)
     .await?;
 
-    let mut versions_per_project =
-        packages_to_categorized_display_versions_per_project(&packages, None, None);
+    let mut versions_per_project = packages_to_categorized_display_versions_per_project(
+        &packages,
+        Some(query.inrepo.as_str()).filter(|s| !s.is_empty()),
+        Some(query.maintainer.as_str()).filter(|s| !s.is_empty()),
+    );
 
     let projects_list = projects
         .into_iter()
@@ -252,8 +255,6 @@ async fn projects_generic(
         })
         .collect();
 
-    let repositories_data = state.repository_data_cache.get_all_active().await;
-
     Ok((
         [(
             header::CONTENT_TYPE,
@@ -262,7 +263,7 @@ async fn projects_generic(
         TemplateParams {
             ctx,
             query,
-            repositories_data,
+            repositories_data: state.repository_data_cache.get_all_active().await,
             projects_list,
         }
         .render()?,
