@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 bitflags = "2.6.0"
 serde = { version = "1.0.210", features = ["derive"] }
+serde_repr = "0.1.19"
 sqlx = { version = "0.8.2", default-features = false, features = ["derive", "migrate", "macros"] }
 strum = { version = "0.26.3", features = ["strum_macros"] }
 strum_macros = "0.26.4"
