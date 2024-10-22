@@ -155,6 +155,27 @@ macro_rules! check_condition {
         );
         $crate::__private::pretty_assertions::assert_eq!(returned, expected);
     };
+    ($resp:ident, xpath, $xpath:literal, $value:literal) => {{
+        use $crate::__private::EqualsToXpathValue;
+
+        let factory = $crate::__private::sxd_xpath::Factory::new();
+        let xpath = factory
+            .build($xpath)
+            .expect("failed to parse xpath")
+            .expect("no xpath");
+
+        let mut context = $crate::__private::sxd_xpath::Context::new();
+
+        let xpath_res = xpath
+            .evaluate(&context, $resp.xml().root())
+            .expect("failed to evaluate xpath");
+        assert!(
+            $value.equals_to_xpath_value(&xpath_res),
+            "unexpected xpath value {:?} while expected \"{}\"",
+            xpath_res,
+            $value
+        );
+    }};
     ($resp:ident, svg_xpath, $xpath:literal, $value:literal) => {{
         use $crate::__private::EqualsToXpathValue;
 

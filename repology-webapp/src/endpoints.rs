@@ -76,6 +76,12 @@ pub enum Endpoint {
     #[strum(props(path = "/api/v1/project/:project_name"))]
     ApiV1Project,
 
+    // Opensearch
+    #[strum(props(path = "/opensearch/project.xml"))]
+    OpensearchProject,
+    #[strum(props(path = "/opensearch/maintainer.xml"))]
+    OpensearchMaintainer,
+
     // Badges
     #[strum(props(path = "/badge/tiny-repos/:project_name.svg"))]
     BadgeTinyRepos,
@@ -262,12 +268,6 @@ pub enum Endpoint {
     GraphTotalMaintainers,
     #[strum(props(path = "/graph/total/problems.svg"))]
     GraphTotalProblems,
-
-    // Opensearch
-    #[strum(props(path = "/opensearch/project.xml"))]
-    OpensearchProject,
-    #[strum(props(path = "/opensearch/maintainer.xml"))]
-    OpensearchMaintainer,
 
     // Badges
     #[strum(props(path = "/badge/versions-matrix.svg"))]
