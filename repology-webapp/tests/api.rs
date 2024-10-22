@@ -12,12 +12,14 @@ use repology_webapp_test_utils::check_response;
 async fn test_api_v1_project(pool: PgPool) {
     check_response!(pool,
         "/api/v1/project/nonexistent",
+        status OK,
         content_type "application/json",
         json "[]"
     );
     check_response!(
         pool,
         "/api/v1/project/full",
+        status OK,
         content_type "application/json",
         json r#"
         [
@@ -49,6 +51,7 @@ async fn test_api_v1_project(pool: PgPool) {
     check_response!(
         pool,
         "/api/v1/project/minimal",
+        status OK,
         content_type "application/json",
         json r#"
         [
@@ -65,6 +68,7 @@ async fn test_api_v1_project(pool: PgPool) {
     check_response!(
         pool,
         "/api/v1/project/vulnerable",
+        status OK,
         content_type "application/json",
         json r#"
         [
@@ -90,6 +94,7 @@ async fn test_api_v1_projects(pool: PgPool) {
     check_response!(
         pool,
         "/api/v1/projects/pkg_foo/",
+        status OK,
         content_type "application/json",
         json r#"
             {
@@ -108,6 +113,7 @@ async fn test_api_v1_projects(pool: PgPool) {
     check_response!(
         pool,
         "/api/v1/projects/?search=bar",
+        status OK,
         content_type "application/json",
         json r#"
             {
