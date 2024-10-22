@@ -41,6 +41,17 @@ impl<'a> UrlConstructor<'a> {
                         self.fields
                     );
                 }
+            } else if let Some(field_name) = segment.strip_prefix('*') {
+                if let Some(field_value) = fields.remove(&field_name) {
+                    res += &url_escape::encode_path(field_value);
+                } else {
+                    bail!(
+                        "missing required field {} when trying to construct url for {} with {:?}",
+                        field_name,
+                        self.pattern,
+                        self.fields
+                    );
+                }
             } else {
                 // since this comes from path, assumed to be valid path part
                 res += segment;
@@ -133,5 +144,15 @@ mod tests {
             c.construct().unwrap(),
             "/_%2F%3F%23%25_/bbb/ccc/ddd?e=_%2F%3F%23%25_#_%2F%3F%23%25_"
         );
+    }
+
+    #[test]
+    fn test_url_constructor_wildcard() {
+        let mut c = UrlConstructor::new("/:a/bbb/*c");
+
+        c.add_fields([("a", "aaa")]);
+        c.add_fields([("c", "ccc/ddd")]);
+        c.add_fields([("e", "eee")]);
+        assert_eq!(c.construct().unwrap(), "/aaa/bbb/ccc/ddd?e=eee");
     }
 }
