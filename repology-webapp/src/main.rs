@@ -36,10 +36,20 @@ async fn main() -> Result<(), Error> {
             0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0,
         ];
 
+        const SIZE_BYTES_BUCKETS: &[f64] = &[
+            64., 128., 256., 512., 1024., 2048., 4096., 8192., 16384., 32768., 65536., 131072.,
+            262144., 524288., 1048576., 2097152.,
+        ];
+
         PrometheusBuilder::new()
             .set_buckets_for_metric(
                 Matcher::Suffix("_duration_seconds".to_string()),
                 DURATION_SECONDS_BUCKETS,
+            )
+            .unwrap()
+            .set_buckets_for_metric(
+                Matcher::Suffix("_size_bytes".to_string()),
+                SIZE_BYTES_BUCKETS,
             )
             .unwrap()
             .with_http_listener(*socket_addr)

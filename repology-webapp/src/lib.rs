@@ -25,6 +25,7 @@ use std::time::Instant;
 
 use anyhow::{Context, Error};
 use axum::{
+    body::HttpBody,
     extract::{MatchedPath, Request},
     middleware::{self, Next},
     response::IntoResponse,
@@ -51,7 +52,13 @@ async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> i
 
     counter!("repology_webapp_http_requests_total", "path" => path.clone(), "status" => status)
         .increment(1);
-    histogram!("repology_webapp_http_requests_duration_seconds", "path" => path).record(latency);
+    histogram!("repology_webapp_http_requests_duration_seconds", "path" => path.clone())
+        .record(latency);
+
+    if let Some(body_size) = response.body().size_hint().exact() {
+        histogram!("repology_webapp_http_response_size_bytes", "path" => path)
+            .record(body_size as f64);
+    }
 
     response
 }
