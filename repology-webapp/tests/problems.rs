@@ -23,6 +23,7 @@ async fn test_problems(pool: PgPool) {
         "/repository/freebsd/problems",
         status OK,
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
 
         // contains maintainer column
         contains r#"<td class="text-center"><a href="/maintainer/johndoe"#,
@@ -53,6 +54,7 @@ async fn test_problems(pool: PgPool) {
         "/maintainer/johndoe@example.com/problems-for-repo/freebsd",
         status OK,
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
 
         // does not contain maintainer column, because maintainer is fixed
         contains_not r#"<td class="text-center"><a href="/maintainer/johndoe"#,

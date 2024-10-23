@@ -13,9 +13,31 @@ use repology_webapp_test_utils::check_response;
     fixtures("common_repositories", "common_packages", "log_data")
 )]
 async fn test_log(pool: PgPool) {
-    check_response!(pool, "/log/10", status NOT_FOUND);
-    check_response!(pool, "/log/foo", status BAD_REQUEST);
+    check_response!(
+        pool,
+        "/log/10",
+        status NOT_FOUND
+    );
+    check_response!(
+        pool,
+        "/log/foo",
+        status BAD_REQUEST
+    );
 
-    check_response!(pool, "/log/1", status OK, contains "ongoing");
-    check_response!(pool, "/log/2", status OK, contains "successful");
+    check_response!(
+        pool,
+        "/log/1",
+        status OK,
+        content_type TEXT_HTML,
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "ongoing"
+    );
+    check_response!(
+        pool,
+        "/log/2",
+        status OK,
+        content_type TEXT_HTML,
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "successful"
+    );
 }

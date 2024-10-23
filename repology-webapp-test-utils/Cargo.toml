@@ -15,4 +15,5 @@ repology-webapp = { path = "../repology-webapp" }
 sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres", "chrono"] }
 sxd-document = "0.3.2"
 sxd-xpath = "0.4.2"
+tidy-sys = "0.8.2"
 tower-service = "0.3.3"

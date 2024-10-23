@@ -18,6 +18,7 @@ async fn test_project_versions(pool: PgPool) {
         "/project/nonexistent/versions",
         status NOT_FOUND,
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
         contains "Unknown project"
     );
     check_response!(
@@ -25,6 +26,7 @@ async fn test_project_versions(pool: PgPool) {
         "/project/orphaned/versions",
         status NOT_FOUND,
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
         contains "Gone project"
     );
 
@@ -33,6 +35,7 @@ async fn test_project_versions(pool: PgPool) {
         "/project/zsh/versions",
         status OK,
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
         contains "Versions for <strong>zsh",
         contains "FreeBSD",
         contains "1.1"
@@ -43,6 +46,7 @@ async fn test_project_versions(pool: PgPool) {
         pool,
         "/project/%3Cmarquee%3E%26nbsp%3B/versions",
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
         contains_not "<marquee>",
         contains_not "&nbsp;"
     );
@@ -58,6 +62,7 @@ async fn test_project_information(pool: PgPool) {
         "/project/nonexistent/information",
         status NOT_FOUND,
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
         contains "Unknown project"
     );
     check_response!(
@@ -65,6 +70,7 @@ async fn test_project_information(pool: PgPool) {
         "/project/orphaned/information",
         status NOT_FOUND,
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
         contains "Gone project"
     );
 
@@ -73,6 +79,7 @@ async fn test_project_information(pool: PgPool) {
         "/project/zsh/information",
         status OK,
         content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
         contains "Information for <strong>zsh",
     );
 
