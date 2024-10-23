@@ -5,11 +5,51 @@ mod config;
 
 use anyhow::{Context, Error};
 use clap::Parser;
+use metrics::{counter, gauge};
 use sqlx::PgPool;
 use tracing::info;
 
 use crate::config::Config;
 use repology_webapp::create_app;
+
+fn collect_tokio_runtime_metrics() {
+    let metrics = tokio::runtime::Handle::current().metrics();
+
+    gauge!("tokio_blocking_queue_depth").set(metrics.blocking_queue_depth() as f64);
+    counter!("tokio_budget_forced_yield_count_total").absolute(metrics.budget_forced_yield_count());
+    gauge!("tokio_global_queue_depth").set(metrics.global_queue_depth() as f64);
+    gauge!("tokio_num_alive_tasks").set(metrics.num_alive_tasks() as f64);
+    gauge!("tokio_num_blocking_threads").set(metrics.num_blocking_threads() as f64);
+    gauge!("tokio_num_idle_blocking_threads").set(metrics.num_idle_blocking_threads() as f64);
+    gauge!("tokio_num_workers").set(metrics.num_workers() as f64);
+    counter!("tokio_spawned_tasks_count_total").absolute(metrics.spawned_tasks_count());
+
+    for nworker in 0..metrics.num_workers() {
+        let labels = [("worker", format!("{}", nworker))];
+        gauge!("tokio_worker_local_queue_depth", &labels)
+            .set(metrics.worker_local_queue_depth(nworker) as f64);
+        counter!("tokio_worker_local_schedule_count_total", &labels)
+            .absolute(metrics.worker_local_schedule_count(nworker));
+        gauge!("tokio_worker_mean_poll_time", &labels)
+            .set(metrics.worker_mean_poll_time(nworker).as_secs_f64());
+        counter!("tokio_worker_noop_count_total", &labels)
+            .absolute(metrics.worker_noop_count(nworker));
+        counter!("tokio_worker_overflow_count_total", &labels)
+            .absolute(metrics.worker_overflow_count(nworker));
+        counter!("tokio_worker_park_count_total", &labels)
+            .absolute(metrics.worker_park_count(nworker));
+        counter!("tokio_worker_park_unpark_count_total", &labels)
+            .absolute(metrics.worker_park_unpark_count(nworker));
+        counter!("tokio_worker_poll_count_total", &labels)
+            .absolute(metrics.worker_poll_count(nworker));
+        counter!("tokio_worker_steal_count_total", &labels)
+            .absolute(metrics.worker_steal_count(nworker));
+        counter!("tokio_worker_steal_operations_total", &labels)
+            .absolute(metrics.worker_steal_operations(nworker));
+        counter!("tokio_worker_total_busy_duration", &labels)
+            .absolute(metrics.worker_total_busy_duration(nworker).as_secs());
+    }
+}
 
 async fn async_main() -> Result<(), Error> {
     let config = Config::parse();
@@ -61,6 +101,7 @@ async fn async_main() -> Result<(), Error> {
         tokio::spawn(async move {
             loop {
                 collector.collect();
+                collect_tokio_runtime_metrics();
                 tokio::time::sleep(std::time::Duration::from_secs(5)).await;
             }
         });
