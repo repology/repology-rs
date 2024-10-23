@@ -43,7 +43,9 @@ use crate::static_files::STATIC_FILES;
 
 async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> impl IntoResponse {
     let start = Instant::now();
-    let path = matched_path.as_str().to_owned();
+    // normalize some paths which lead to the same endpoints; XXX this will hopefully be gone
+    // someday when endpoints are redesigned (e.g. /projects/:bound/ → /projects/?start=)
+    let path = matched_path.as_str().trim_end_matches(":bound/").trim_end_matches("/:sorting").to_owned();
 
     let response = next.run(req).await;
 
