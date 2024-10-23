@@ -12,18 +12,30 @@ use tracing::info;
 use crate::config::Config;
 use repology_webapp::create_app;
 
+#[allow(unexpected_cfgs)]
 fn collect_tokio_runtime_metrics() {
     let metrics = tokio::runtime::Handle::current().metrics();
 
-    gauge!("tokio_blocking_queue_depth").set(metrics.blocking_queue_depth() as f64);
-    counter!("tokio_budget_forced_yield_count_total").absolute(metrics.budget_forced_yield_count());
+    #[cfg(tokio_unstable)]
+    {
+        gauge!("tokio_blocking_queue_depth").set(metrics.blocking_queue_depth() as f64);
+        counter!("tokio_budget_forced_yield_count_total")
+            .absolute(metrics.budget_forced_yield_count());
+    }
     gauge!("tokio_global_queue_depth").set(metrics.global_queue_depth() as f64);
     gauge!("tokio_num_alive_tasks").set(metrics.num_alive_tasks() as f64);
-    gauge!("tokio_num_blocking_threads").set(metrics.num_blocking_threads() as f64);
-    gauge!("tokio_num_idle_blocking_threads").set(metrics.num_idle_blocking_threads() as f64);
+    #[cfg(tokio_unstable)]
+    {
+        gauge!("tokio_num_blocking_threads").set(metrics.num_blocking_threads() as f64);
+        gauge!("tokio_num_idle_blocking_threads").set(metrics.num_idle_blocking_threads() as f64);
+    }
     gauge!("tokio_num_workers").set(metrics.num_workers() as f64);
-    counter!("tokio_spawned_tasks_count_total").absolute(metrics.spawned_tasks_count());
+    #[cfg(tokio_unstable)]
+    {
+        counter!("tokio_spawned_tasks_count_total").absolute(metrics.spawned_tasks_count());
+    }
 
+    #[cfg(tokio_unstable)]
     for nworker in 0..metrics.num_workers() {
         let labels = [("worker", format!("{}", nworker))];
         gauge!("tokio_worker_local_queue_depth", &labels)
