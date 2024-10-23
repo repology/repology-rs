@@ -11,8 +11,7 @@ use tracing::info;
 use crate::config::Config;
 use repology_webapp::create_app;
 
-#[tokio::main]
-async fn main() -> Result<(), Error> {
+async fn async_main() -> Result<(), Error> {
     let config = Config::parse();
 
     if let Some(log_directory) = &config.log_directory {
@@ -80,4 +79,12 @@ async fn main() -> Result<(), Error> {
     axum::serve(listener, app)
         .await
         .context("error starting HTTP server")
+}
+
+fn main() -> Result<(), Error> {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+        .unwrap()
+        .block_on(async_main())
 }
