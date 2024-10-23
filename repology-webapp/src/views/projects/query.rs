@@ -3,7 +3,6 @@
 
 use anyhow::Result;
 use indoc::{formatdoc, indoc};
-use sqlx::query;
 
 use super::common::ProjectForListing;
 
