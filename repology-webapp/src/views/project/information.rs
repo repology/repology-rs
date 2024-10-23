@@ -11,7 +11,6 @@ use askama::Template;
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
-use chrono::{DateTime, Utc};
 use indoc::indoc;
 use sqlx::FromRow;
 
@@ -65,11 +64,10 @@ impl PackageWithStatus for Package {
 struct Link {
     id: i32,
     url: String,
-    last_checked: Option<DateTime<Utc>>,
     ipv4_success: Option<bool>,
-    ipv4_permanent_redirect_target: Option<String>,
+    has_ipv4_permanent_redirect: bool,
     ipv6_success: Option<bool>,
-    ipv6_permanent_redirect_target: Option<String>,
+    has_ipv6_permanent_redirect: bool,
 }
 
 #[derive(Template)]
@@ -219,9 +217,9 @@ pub async fn project_information(
             url,
             last_checked,
             ipv4_success,
-            ipv4_permanent_redirect_target,
+            ipv4_permanent_redirect_target IS NOT NULL AS has_ipv4_permanent_redirect,
             ipv6_success,
-            ipv6_permanent_redirect_target
+            ipv6_permanent_redirect_target IS NOT NULL AS has_ipv6_permanent_redirect
         FROM links
         WHERE id = ANY($1)
     "})

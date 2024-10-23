@@ -14,12 +14,12 @@ IPv4      Ok | redir from v6 | ok | mixed: v4 ok, no v6    | ok
 {%- macro link_status(link, use_archive) -%}
 {%- if link.ipv4_success.is_some() || link.ipv6_success.is_some() -%}
 	<sup class="link-status non-selectable"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", link.url|as_ref)])? }}" rel="nofollow">
-		{%- if link.ipv6_success.unwrap_or(false) && link.ipv6_permanent_redirect_target.is_some() -%}
+		{%- if link.ipv6_success.unwrap_or(false) && link.has_ipv6_permanent_redirect -%}
 			<span class="link-redirect">redir</span>
 		{%- else if link.ipv6_success.unwrap_or(false) -%}
 			<span class="link-ok">ok</span>
 		{%- else if link.ipv6_success.is_none() -%}
-			{%- if link.ipv4_success.unwrap_or(false) && link.ipv4_permanent_redirect_target.is_some() -%}
+			{%- if link.ipv4_success.unwrap_or(false) && link.has_ipv4_permanent_redirect -%}
 				<span class="link-redirect">redir</span>
 			{%- else if link.ipv4_success.unwrap_or(false) -%}
 				<span class="link-ok">ok</span>
@@ -27,7 +27,7 @@ IPv4      Ok | redir from v6 | ok | mixed: v4 ok, no v6    | ok
 				<span class="link-error">dead</span>
 			{%- endif -%}
 		{%- else -%}
-			{%- if link.ipv4_success.unwrap_or(false) && link.ipv4_permanent_redirect_target.is_some() -%}
+			{%- if link.ipv4_success.unwrap_or(false) && link.has_ipv4_permanent_redirect -%}
 				<span class="link-redirect">redir</span>, <span class="link-error">no IPv6</span>
 			{%- else if link.ipv4_success.unwrap_or(false) -%}
 				<span class="link-ok">ok</span>, <span class="link-error">no IPv6</span>
