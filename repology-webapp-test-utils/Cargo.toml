@@ -10,7 +10,7 @@ bytes = "1.8.0"
 json = "0.12.4"
 mime = "0.3.17"
 pretty_assertions = "1.4.1"
-regex = "1.11.0"
+regex = "1.11.1"
 repology-webapp = { path = "../repology-webapp" }
 sqlx = { version = "0.8.2", features = ["runtime-tokio", "postgres", "chrono"] }
 sxd-document = "0.3.2"
