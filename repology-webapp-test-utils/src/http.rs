@@ -17,7 +17,7 @@ pub mod __private {
 
     pub struct Response {
         pub status: axum::http::StatusCode,
-        pub content_type: Option<String>,
+        pub headers: axum::http::header::HeaderMap,
         pub body: bytes::Bytes,
         pub text: Option<String>,
         pub xml: std::cell::OnceCell<sxd_document::Package>,
@@ -54,15 +54,12 @@ pub mod __private {
         let mut app = create_app(pool).await?;
         let response = app.call(request).await?;
         let status = response.status();
-        let content_type = response
-            .headers()
-            .get(axum::http::header::CONTENT_TYPE)
-            .and_then(|value| value.to_str().ok().map(|value| value.to_owned()));
+        let headers = response.headers().clone();
         let body = axum::body::to_bytes(response.into_body(), 1000000).await?;
         let text = std::str::from_utf8(&body).ok().map(|s| s.to_owned());
         Ok(Response {
             status,
-            content_type,
+            headers,
             body,
             text,
             xml: std::cell::OnceCell::new(),
@@ -104,7 +101,9 @@ pub mod __private {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             writeln!(f, "Response {{")?;
             writeln!(f, "    status: {}", self.status)?;
-            writeln!(f, "    content-type: {:?}", self.content_type)?;
+            for (k, v) in &self.headers {
+                writeln!(f, "    header {}: {:?}", k, v)?;
+            }
 
             if let Some(text) = &self.text {
                 writeln!(f, "    text:")?;
@@ -133,13 +132,19 @@ macro_rules! check_condition {
     };
     ($resp:ident, content_type, $content_type:literal) => {
         assert_eq!(
-            $resp.content_type.as_ref().map(|s| s.as_str()),
+            $resp
+                .headers
+                .get(axum::http::header::CONTENT_TYPE)
+                .and_then(|v| v.to_str().ok()),
             Some($content_type)
         );
     };
     ($resp:ident, content_type, $content_type:ident) => {
         assert_eq!(
-            $resp.content_type.as_ref().map(|s| s.as_str()),
+            $resp
+                .headers
+                .get(axum::http::header::CONTENT_TYPE)
+                .and_then(|v| v.to_str().ok()),
             Some($crate::__private::mime::$content_type.as_ref().into())
         );
     };
@@ -287,6 +292,11 @@ macro_rules! check_condition {
                 "HTML validation failed (warnings treated as fatal)"
             );
         }
+    };
+    ($resp:ident, header_value, $header:literal, $value:literal) => {
+        let header = $resp.headers.get($header);
+        assert!(header.is_some());
+        assert_eq!(header.unwrap(), $value);
     };
 }
 
