@@ -25,11 +25,11 @@ async fn test_problems(pool: PgPool) {
         content_type "text/html",
         html_ok "allow_empty_tags,warnings_fatal",
 
-        contains "111",
-        contains "222",
-        contains "333",
-        contains "444",
-        contains "555",
-        contains "666",
+        contains ">111<",
+        contains ">222<",
+        contains ">333<",
+        contains ">444<",
+        contains ">555<",
+        contains ">666<",
     );
 }

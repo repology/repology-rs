@@ -40,7 +40,7 @@
 			<span class="version version-outdated">{{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }}</span> is outdated
 			{% if let Some(newest_versions) = event.data.get("newest_versions") %}by
 				{% for version in newest_versions.as_array().ok_or("newest_versions are not an array")? %}
-				<span class="version version-newest">{{ version }}</span>
+				<span class="version version-newest">{{ version.as_str().ok_or("version is not a string")? }}</span>
 				{% endfor %}
 			{% endif %}
 			{% else if event.event_type == "ignored" %}
