@@ -1,53 +1,62 @@
 {% extends "_base.html" %}
-{% from "_macros/autorefresh.html" import autorefresh_toggler, enable_autorefresh with context %}
-{% from "_macros/time.html" import format_absolute_time, timezone_abbr %}
+{% import "_macros/autorefresh.html" as autorefresh %}
+{% import "_macros/time.html" as time %}
 
 {% block extrameta %}
-{{ enable_autorefresh(3600 + randrange(60)) }}
-	<link rel="alternate" href="{{ url_for(endpoint='maintainer_repo_feed_atom', maintainer=maintainer, repo=repo) }}" type="application/atom+xml" />
+{% call autorefresh::enable_autorefresh(3600) %}
+{# call autorefresh::enable_autorefresh(3600 + rand::random() % 60) #}
+	<link rel="alternate" href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainerRepoFeedAtom, [("maintainer_name", maintainer_name), ("repository_name", repository_name)])? }}" type="application/atom+xml" />
 {% endblock %}
 
-{% block title %}Feed for {{ maintainer }} in {{ repometadata[repo].desc }} - Repology{% endblock %}
-{% block header %}Feed for <strong><a href="{{ url_for(endpoint='maintainer', maintainer=maintainer) }}">{{ maintainer }}</a></strong>
-in <strong><a href="{{ url_for(endpoint='repository', repo=repo) }}">{{ repometadata[repo].desc }}</a></strong>{% endblock %}
-{% block description %}Feed for maintainer {{ maintainer }} in repository {{ repometadata[repo].desc }}{% endblock %}
+{% block title %}Feed for {{ maintainer_name }} in {{ repository_data.title }} - Repology{% endblock %}
+{% block header %}Feed for <strong><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer_name)])? }}">{{ maintainer_name }}</a></strong>
+in <strong><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_name)])? }}">{{ repository_data.title }}</a></strong>
+{% endblock %}
+{% block description %}Feed for maintainer {{ maintainer_name }} in repository {{ repository_data.title }}{% endblock %}
 
 {% block content %}
 <div class="container">
 
-<p>This feed is also available in <a href="{{ url_for(endpoint='maintainer_repo_feed_atom', maintainer=maintainer, repo=repo) }}">atom<img src="{{ url_for_static(file='feed.v1.svg') }}" width="16" height="16" alt="Atom feed"></a> format</p>
+<p>This feed is also available in <a href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainerRepoFeedAtom, [("maintainer_name", maintainer_name), ("repository_name", repository_name)])? }}">atom<img src="{{ ctx.url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a> format</p>
 
-{{ autorefresh_toggler() }}
+{% call autorefresh::autorefresh_toggler() %}
 
-{% if history %}
+{% if !events.is_empty() %}
 <table class="table table-striped">
 	<tr>
-		<th class="text-center">Date{{ timezone_abbr() }}</th>
+		<th class="text-center">Date{% call time::timezone_abbr() %}</th>
 		<th class="text-center">Event</th>
 	</tr>
-{% for entry in history %}
+	{% for event in events %}
 	<tr>
-		<td class="minimal-column">{{ format_absolute_time(entry.ts) }}</td>
+		<td class="minimal-column">{% call time::format_absolute_time(event.timestamp) %}</td>
 		<td>
-		{% if entry.type == 'added' %}
-			<a href="{{ url_for(endpoint='project_versions', name=entry.effname) }}">{{ entry.effname }}</a> was added to <strong><a href="{{ url_for(endpoint='repository', repo=repo) }}">{{ repometadata[repo].desc }}</a></strong> and/or assigned to <strong><a href="{{ url_for(endpoint='maintainer', maintainer=maintainer) }}">{{ maintainer }}</a></strong>
-		{% elif entry.type == 'removed' %}
-			<a href="{{ url_for(endpoint='project_versions', name=entry.effname) }}">{{ entry.effname }}</a> is no longer maintained by <strong><a href="{{ url_for(endpoint='maintainer', maintainer=maintainer) }}">{{ maintainer }}</a></strong> and/or was removed from <strong><a href="{{ url_for(endpoint='repository', repo=repo) }}">{{ repometadata[repo].desc }}</a></strong>
-		{% elif entry.type == 'uptodate' %}
-			<a href="{{ url_for(endpoint='project_versions', name=entry.effname) }}">{{ entry.effname }}</a> <span class="version version-newest">{{ entry.data.version }}</span> is now up to date
-		{% elif entry.type == 'outdated' %}
-			<a href="{{ url_for(endpoint='project_versions', name=entry.effname) }}">{{ entry.effname }}</a> <span class="version version-outdated">{{ entry.data.version }}</span> is outdated
-			{% if entry.data.newest_versions %}by {% for version in entry.data.newest_versions %}<span class="version version-newest">{{ version }}</span>{% endfor %}{% endif %}
-		{% elif entry.type == 'ignored' %}
-			<a href="{{ url_for(endpoint='project_versions', name=entry.effname) }}">{{ entry.effname }}</a> <span class="version version-ignored">{{ entry.data.version }}</span> is ignored
-		{% endif %}
+			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", event.project_name.as_str())])? }}">{{ event.project_name }}</a>
+			{% if event.event_type == "added" %}
+			was added to <strong><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_name)])? }}">{{ repository_data.title }}</a></strong>
+			and/or assigned to <strong><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer_name)])? }}">{{ maintainer_name }}</a></strong>
+			{% else if event.event_type == "removed" %}
+			is no longer maintained by <strong><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer_name)])? }}">{{ maintainer_name }}</a></strong>
+			and/or was removed from <strong><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_name)])? }}">{{ repository_data.title }}</a></strong>
+			{% else if event.event_type == "uptodate" %}
+			<span class="version version-newest">{{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }}</span> is now up to date
+			{% else if event.event_type == "outdated" %}
+			<span class="version version-outdated">{{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }}</span> is outdated
+			{% if let Some(newest_versions) = event.data.get("newest_versions") %}by
+				{% for version in newest_versions.as_array().ok_or("newest_versions are not an array")? %}
+				<span class="version version-newest">{{ version.as_str().ok_or("version is not a string")? }}</span>
+				{% endfor %}
+			{% endif %}
+			{% else if event.event_type == "ignored" %}
+			<span class="version version-ignored">{{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }}</span> is ignored
+			{% endif %}
 		</td>
 	</tr>
-{% endfor %}
+	{% endfor %}
 </table>
 {% else %}
 <div class="alert alert-warning" role="alert">No events in this feed yet</div>
 {% endif %}
 
-</div> {#- container #}
+</div>
 {% endblock %}

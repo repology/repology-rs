@@ -105,6 +105,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(DocsNotSupported.path(), get(views::docs_not_supported))
         .route(DocsRequirements.path(), get(views::docs_requirements))
         .route(Log.path(), get(views::log))
+        .route(MaintainerRepoFeed.path(), get(views::maintainer_repo_feed))
         .route(MaintainerProblems.path(), get(views::maintainer_problems))
         .route(News.path(), get(views::news))
         .route(OpensearchMaintainer.path(), get(views::opensearch_maintainer))

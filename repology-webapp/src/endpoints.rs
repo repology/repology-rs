@@ -30,6 +30,11 @@ pub enum Endpoint {
 
     // Maintainer
     #[strum(props(
+        path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name",
+        section = "Maintainers"
+    ))]
+    MaintainerRepoFeed,
+    #[strum(props(
         path = "/maintainer/:maintainer_name/problems-for-repo/:repository_name",
         section = "Maintainers"
     ))]
@@ -131,11 +136,6 @@ pub enum Endpoint {
     // Maintainer
     #[strum(props(path = "/maintainer/:maintainer_name", section = "Maintainers"))]
     Maintainer,
-    #[strum(props(
-        path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name",
-        section = "Maintainers"
-    ))]
-    MaintainerRepoFeed,
     #[strum(props(
         path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name/atom",
         section = "Maintainers"
