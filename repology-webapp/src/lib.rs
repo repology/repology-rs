@@ -113,6 +113,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(ProjectVersions.path(), get(views::project_versions))
         .route(Projects.path(), get(views::projects))
         .route(ProjectsBounded.path(), get(views::projects_bounded))
+        .route(RepositoryFeed.path(), get(views::repository_feed))
         .route(RepositoryProblems.path(), get(views::repository_problems))
         .route(StaticFile.path(), get(views::static_file))
         .route(Tools.path(), get(views::tools))
