@@ -79,7 +79,7 @@ pub async fn repository_feed(
                 id,
                 ts AS timestamp,
                 metapackage_id AS project_id,
-                type::text AS event_type,
+                type,
                 data
             FROM repository_events
             WHERE
@@ -89,11 +89,11 @@ pub async fn repository_feed(
         )
         SELECT
             timestamp,
-            event_type,
+            type::text AS event_type,
             data,
             (SELECT effname FROM metapackages WHERE id = project_id) AS project_name
         FROM candidates
-        ORDER BY timestamp DESC, project_name, event_type DESC, id
+        ORDER BY timestamp DESC, project_name, type DESC, id
     "#})
     .bind(&repository_name)
     .bind(&(crate::constants::HTML_FEED_MAX_ENTRIES as i32))

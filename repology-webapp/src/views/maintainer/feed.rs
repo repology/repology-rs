@@ -80,7 +80,7 @@ pub async fn maintainer_repo_feed(
                 id,
                 ts AS timestamp,
                 metapackage_id AS project_id,
-                type::text AS event_type,
+                type,
                 data
             FROM maintainer_repo_metapackages_events
             WHERE
@@ -91,11 +91,11 @@ pub async fn maintainer_repo_feed(
         )
         SELECT
             timestamp,
-            event_type,
+            type::text AS event_type,
             data,
             (SELECT effname FROM metapackages WHERE id = project_id) AS project_name
         FROM candidates
-        ORDER BY timestamp DESC, project_name, event_type DESC, id
+        ORDER BY timestamp DESC, project_name, type DESC, id
     "#})
     .bind(&maintainer_name)
     .bind(&repository_name)
