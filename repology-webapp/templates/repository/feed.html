@@ -4,7 +4,6 @@
 
 {% block extrameta %}
 {% call autorefresh::enable_autorefresh(3600) %}
-{# call autorefresh::enable_autorefresh(3600 + rand::random() % 60) #}
 	<link rel="alternate" href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoryFeedAtom, [("repository_name", repository_name)])? }}" type="application/atom+xml" />
 {% endblock %}
 
