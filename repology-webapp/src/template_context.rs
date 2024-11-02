@@ -44,6 +44,10 @@ impl TemplateContext {
             .construct()?)
     }
 
+    pub fn external_url_for_static<'a>(&self, file_name: &str) -> Result<String, Error> {
+        Ok(crate::constants::REPOLOGY_HOSTNAME.to_string() + &self.url_for_static(file_name)?)
+    }
+
     pub fn url_for<'a>(
         &self,
         endpoint: Endpoint,
