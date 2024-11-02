@@ -9,6 +9,7 @@
 mod badges;
 mod constants;
 mod endpoints;
+mod feeds;
 mod font;
 mod package;
 mod query;
@@ -106,6 +107,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(DocsRequirements.path(), get(views::docs_requirements))
         .route(Log.path(), get(views::log))
         .route(MaintainerRepoFeed.path(), get(views::maintainer_repo_feed))
+        .route(MaintainerRepoFeedAtom.path(), get(views::maintainer_repo_feed_atom))
         .route(MaintainerProblems.path(), get(views::maintainer_problems))
         .route(News.path(), get(views::news))
         .route(OpensearchMaintainer.path(), get(views::opensearch_maintainer))
@@ -115,6 +117,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(Projects.path(), get(views::projects))
         .route(ProjectsBounded.path(), get(views::projects_bounded))
         .route(RepositoryFeed.path(), get(views::repository_feed))
+        .route(RepositoryFeedAtom.path(), get(views::repository_feed_atom))
         .route(RepositoryProblems.path(), get(views::repository_problems))
         .route(StaticFile.path(), get(views::static_file))
         .route(Tools.path(), get(views::tools))

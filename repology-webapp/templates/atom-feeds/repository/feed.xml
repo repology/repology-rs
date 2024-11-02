@@ -1,49 +1,57 @@
 {%- macro feed_id() -%}
-tag:repology.org,2020-02-27:repository:{{ repo }}
+tag:repology.org,2020-02-27:repository:{{ repository_name }}
 {%- endmacro -%}
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<title>Repology feed for {{ repometadata[repo].desc }}</title>
-	<icon>{{ url_for_static(file="repology40x40.v1.png", _external=True) }}</icon>
-	<link href="{{ url_for_self(_external=True) }}" rel="self" type="application/atom+xml" />
-	<link href="{{ url_for(endpoint='repository_feed', repo=repo, _external=True) }}" rel="alternate" type="text/html" />
-	<author><name>Repology</name><uri>{{ url_for(endpoint='index', _external=True) }}</uri></author>
-	<id>{{ feed_id() }}</id>
-{% for entry in history %}
-	{% if loop.first %}
-	<updated>{{ entry.ts.astimezone(tz).isoformat('T', 'seconds') }}</updated>
-	{% endif %}
+	<title>Repology feed for {{ repository_data.title }}</title>
+	<icon>{{ ctx.external_url_for_static("repology40x40.v1.png")? }}</icon>
+	<link href="{{ ctx.external_url_for_self([])? }}" rel="self" type="application/atom+xml" />
+	<link href="{{ ctx.external_url_for(crate::endpoints::Endpoint::RepositoryFeed, [("repository_name", repository_name)])? }}" rel="alternate" type="text/html" />
+	<author><name>Repology</name><uri>{{ ctx.external_url_for(crate::endpoints::Endpoint::Index, [])? }}</uri></author>
+	<id>{% call feed_id() %}</id>
+{%- for event in events %}
+	{%- if loop.first %}
+	<updated>{{ event.timestamp }}</updated>
+	{%- endif %}
 	<entry>
-		<id>{{ feed_id() }}:{{ entry.id }}</id>
-		<updated>{{ entry.ts.astimezone(tz).isoformat('T', 'seconds') }}</updated>
-		<link href="{{ url_for(endpoint='project_versions', name=entry.effname, _external=True) }}#{{ repo }}" />
-		{% if entry.type == 'added' %}
-		<title>{{ entry.effname }} is now tracked</title>
-		<content>Package for {{ entry.effname }} was added to {{ repometadata[repo].desc }}</content>
+		<id>{% call feed_id() %}:{{ event.id }}</id>
+		<updated>{{ event.timestamp }}</updated>
+		<link href="{{ ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", event.project_name.as_str())])? }}#{{ repository_name }}" />
+		{%- if event.event_type == "added" %}
+		<title>{{ event.project_name }} is now tracked</title>
+		<content>Package for {{ event.project_name }} was added to {{ repository_data.title }}</content>
 		<category term="added" label="Package was added" />
-		{% elif entry.type == 'removed' %}
-		<title>{{ entry.effname }} is no longer tracked</title>
-		<content>Package for {{ entry.effname }} was removed from {{ repometadata[repo].desc }}</content>
+		{%- else if event.event_type == "removed" %}
+		<title>{{ event.project_name }} is no longer tracked</title>
+		<content>Package for {{ event.project_name }} was removed from {{ repository_data.title }}</content>
 		<category term="removed" label="Package was removed" />
-		{% elif entry.type == 'uptodate' %}
-		<title>{{ entry.effname }} {{ entry.data.version }} is up to date</title>
-		<content>Package {{ entry.effname }} version {{ entry.data.version }} in {{ repometadata[repo].desc }} is up to date</content>
+		{%- else if event.event_type == "uptodate" %}
+		<title>{{ event.project_name }} {{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }} is up to date</title>
+		<content>Package {{ event.project_name }} version {{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }} in {{ repository_data.title }} is up to date</content>
 		<category term="uptodate" label="Package is up to date" />
-		{% elif entry.type == 'outdated' %}
-		<title>{{ entry.effname }} {{ entry.data.version }} is outdated
-		{%- if entry.data.newest_versions %} by {{ entry.data.newest_versions|join(', ') }}{% endif -%}
+		{%- else if event.event_type == "outdated" %}
+		<title>{{ event.project_name }} {{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }} is outdated
+		{%- if let Some(newest_versions) = event.data.get("newest_versions") %} by
+		{%- for version in newest_versions.as_array().ok_or("newest_versions are not an array")? -%}
+		{%- if !loop.first %},{% endif %} {{ version.as_str().ok_or("version is not a string")? -}}
+		{%- endfor -%}
+		{%- endif -%}
 		</title>
-		<content>Package {{ entry.effname }} version {{ entry.data.version }} in {{ repometadata[repo].desc }} is outdated
-		{%- if entry.data.newest_versions %} by {{ entry.data.newest_versions|join(', ') }}{% endif -%}
+		<content>Package {{ event.project_name }} version {{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }} in {{ repository_data.title }} is outdated
+		{%- if let Some(newest_versions) = event.data.get("newest_versions") %} by
+		{%- for version in newest_versions.as_array().ok_or("newest_versions are not an array")? -%}
+		{%- if !loop.first %},{% endif %} {{ version.as_str().ok_or("version is not a string")? -}}
+		{%- endfor -%}
+		{%- endif -%}
 		</content>
 		<category term="outdated" label="Package is outdated" />
-		{% elif entry.type == 'ignored' %}
-		<title>{{ entry.effname }} {{ entry.data.version }} is ignored</title>
-		<content>Package {{ entry.effname }} version {{ entry.data.version }} in {{ repometadata[repo].desc }} is ignored</content>
+		{%- else if event.event_type == "ignored" %}
+		<title>{{ event.project_name }} {{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }} is ignored</title>
+		<content>Package {{ event.project_name }} version {{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }} in {{ repository_data.title }} is ignored</content>
 		<category term="ignored" label="Package is ignored" />
-		{% endif %}
+		{%- endif %}
 	</entry>
-{% else %}
+{%- else %}
 	<updated>2000-01-01T00:00:00Z</updated>
-{% endfor %}
+{%- endfor %}
 </feed>

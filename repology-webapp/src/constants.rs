@@ -20,5 +20,4 @@ pub const TRENDING_PER_PAGE: u32 = 25;
 #[expect(unused)]
 pub const TURNOVER_PER_PAGE: u32 = 350;
 pub const HTML_FEED_MAX_ENTRIES: u32 = 500;
-#[expect(unused)]
 pub const ATOM_FEED_MAX_ENTRIES: u32 = 500;

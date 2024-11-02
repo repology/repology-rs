@@ -35,6 +35,11 @@ pub enum Endpoint {
     ))]
     MaintainerRepoFeed,
     #[strum(props(
+        path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name/atom",
+        section = "Maintainers"
+    ))]
+    MaintainerRepoFeedAtom,
+    #[strum(props(
         path = "/maintainer/:maintainer_name/problems-for-repo/:repository_name",
         section = "Maintainers"
     ))]
@@ -43,6 +48,11 @@ pub enum Endpoint {
     // Repository
     #[strum(props(path = "/repository/:repository_name/feed", section = "Repositories"))]
     RepositoryFeed,
+    #[strum(props(
+        path = "/repository/:repository_name/feed/atom",
+        section = "Repositories"
+    ))]
+    RepositoryFeedAtom,
     #[strum(props(
         path = "/repository/:repository_name/problems",
         section = "Repositories"
@@ -136,11 +146,6 @@ pub enum Endpoint {
     // Maintainer
     #[strum(props(path = "/maintainer/:maintainer_name", section = "Maintainers"))]
     Maintainer,
-    #[strum(props(
-        path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name/atom",
-        section = "Maintainers"
-    ))]
-    MaintainerRepoFeedAtom,
 
     // Repositories
     #[strum(props(path = "/repositories/statistics", section = "Repositories"))]
@@ -159,11 +164,6 @@ pub enum Endpoint {
     // Repository
     #[strum(props(path = "/repository/:repository_name", section = "Repositories"))]
     Repository,
-    #[strum(props(
-        path = "/repository/:repository_name/feed/atom",
-        section = "Repositories"
-    ))]
-    RepositoryFeedAtom,
 
     // Tools
     #[strum(props(path = "/tools/project-by", section = "Tools"))]
