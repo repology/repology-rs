@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-anyhow = "1.0.91"
+anyhow = "1.0.92"
 async-trait = "0.1.83"
 chrono = { version = "0.4.38", default-features = false, features = ["now"] }
 clap = { version = "4.5.20", features = ["derive"] }
