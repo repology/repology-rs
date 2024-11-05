@@ -13,18 +13,14 @@ This repository is a gradual rewrite of Repology components to Rust.
 
 - **repology-common** - common code for all Repology components, such as 
   data classes and database queries.
-- **repology-webapp** - backend of Repology web site.
+- **repology-webapp** - backend of Repology web site (active development;
+  most of repology.org traffic is already served from this implementation).
+- **repology-vulnupdater** - tool to sync vulnerability information from
+  [National Vulnerability Database](https://nvd.nist.gov/) (complete).
 
 ## Requirements
 
-This code requires rust nightly.
-
-## Status
-
-To start with, we're rewriting most loaded Replogy website backend
-endpoints such as `/api/v1/project/{project}`, used by a lot of new
-version reporter tools which generate about 1/4 of Repology traffic,
-and `/badges/**` which are now widely used on many sites.
+This code requires at least Rust 1.84 nightly.
 
 ## Author
 
