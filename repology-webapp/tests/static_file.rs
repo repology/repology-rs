@@ -11,11 +11,18 @@ use repology_webapp_test_utils::check_response;
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("log_data"))]
 async fn test_static_file(pool: PgPool) {
     check_response!(pool, "/static/nonexistent", status NOT_FOUND);
-    check_response!(pool, "/static/repology.v1.ico", status NOT_FOUND);
 
     check_response!(
         pool,
         "/static/repology.v1.6108dff405ea1a42.ico",
+        status OK,
+        content_type "application/x-icon",
+        body_length 22382,
+        body_cityhash64 0x6108dff405ea1a42,
+    );
+    check_response!(
+        pool,
+        "/static/repology.v1.ico",
         status OK,
         content_type "application/x-icon",
         body_length 22382,

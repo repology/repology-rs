@@ -4,7 +4,7 @@ tag:repology.org,2018-04-25:maintainer-repo:{{ maintainer_name }}:{{ repository_
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>Repology feed for {{ maintainer_name }}</title>
-	<icon>{{ ctx.external_url_for_static("repology40x40.v1.png")? }}</icon>
+	<icon>{{ ctx.external_url_for_unversioned_static("repology40x40.v1.png")? }}</icon>
 	<link href="{{ ctx.external_url_for_self([])? }}" rel="self" type="application/atom+xml" />
 	<link href="{{ ctx.external_url_for(crate::endpoints::Endpoint::MaintainerRepoFeed, [("maintainer_name", maintainer_name), ("repository_name", repository_name)])? }}" rel="alternate" type="text/html" />
 	<author><name>Repology</name><uri>{{ ctx.external_url_for(crate::endpoints::Endpoint::Index, [])? }}</uri></author>

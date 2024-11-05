@@ -35,17 +35,32 @@ impl TemplateContext {
     }
 
     pub fn url_for_static(&self, file_name: &str) -> Result<String, Error> {
-        let hashed_file_name = STATIC_FILES
-            .hashed_name_by_orig_name(file_name)
+        let file = STATIC_FILES
+            .by_orig_name(file_name)
             .ok_or_else(|| anyhow!("unknown static file \"{}\"", file_name))?;
 
         Ok(UrlConstructor::new(Endpoint::StaticFile.path())
-            .with_field("file_name", hashed_file_name)
+            .with_field("file_name", &file.hashed_name)
             .construct()?)
     }
 
+    pub fn url_for_unversioned_static(&self, file_name: &str) -> Result<String, Error> {
+        Ok(UrlConstructor::new(Endpoint::StaticFile.path())
+            .with_field("file_name", file_name)
+            .construct()?)
+    }
+
+    #[expect(dead_code)]
     pub fn external_url_for_static<'a>(&self, file_name: &str) -> Result<String, Error> {
         Ok(crate::constants::REPOLOGY_HOSTNAME.to_string() + &self.url_for_static(file_name)?)
+    }
+
+    pub fn external_url_for_unversioned_static<'a>(
+        &self,
+        file_name: &str,
+    ) -> Result<String, Error> {
+        Ok(crate::constants::REPOLOGY_HOSTNAME.to_string()
+            + &self.url_for_unversioned_static(file_name)?)
     }
 
     pub fn url_for<'a>(

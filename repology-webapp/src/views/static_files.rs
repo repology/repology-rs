@@ -10,7 +10,7 @@ use crate::static_files::STATIC_FILES;
 
 #[tracing::instrument]
 pub async fn static_file(Path(file_name): Path<String>, headers: HeaderMap) -> EndpointResult {
-    let file = if let Some(file) = STATIC_FILES.by_hashed_name(&file_name) {
+    let file = if let Some(file) = STATIC_FILES.by_either_name(&file_name) {
         file
     } else {
         return Ok((StatusCode::NOT_FOUND, "not found".to_owned()).into_response());

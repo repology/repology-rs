@@ -21,8 +21,10 @@ pub struct StaticFile {
 }
 
 pub struct StaticFiles {
-    by_hashed_name: HashMap<String, StaticFile>,
-    hashed_name_by_original_name: HashMap<&'static str, String>,
+    files: Vec<StaticFile>,
+    // TODO: sobjugate self-referential structures and convert to HashMap<&str, &StaticFile>
+    by_hashed_name: HashMap<String, usize>,
+    by_orig_name: HashMap<String, usize>,
 }
 
 unsafe impl Send for StaticFiles {}
@@ -45,7 +47,7 @@ impl StaticFiles {
                 }
             });
 
-        let by_hashed_name: HashMap<_, _> = static_files_iterator
+        let files: Vec<_> = static_files_iterator
             .map(|(name, content)| {
                 let compressed_content = {
                     use std::io::Write;
@@ -79,28 +81,40 @@ impl StaticFiles {
                     file.name,
                 );
 
-                (hashed_name, file)
+                file
             })
             .collect();
 
-        let hashed_name_by_original_name = by_hashed_name
-            .values()
-            .map(|file| (file.name, file.hashed_name.clone()))
-            .collect();
-
         Self {
-            by_hashed_name,
-            hashed_name_by_original_name,
+            by_hashed_name: files
+                .iter()
+                .enumerate()
+                .map(|(i, file)| (file.hashed_name.clone(), i))
+                .collect(),
+            by_orig_name: files
+                .iter()
+                .enumerate()
+                .map(|(i, file)| (file.name.to_string(), i))
+                .collect(),
+            files,
         }
     }
 
+    #[expect(dead_code)]
     pub fn by_hashed_name(&self, hashed_name: &str) -> Option<&StaticFile> {
-        self.by_hashed_name.get(hashed_name)
+        self.by_hashed_name
+            .get(hashed_name)
+            .map(|i| &self.files[*i])
     }
 
-    pub fn hashed_name_by_orig_name(&self, orig_name: &str) -> Option<&str> {
-        self.hashed_name_by_original_name
-            .get(orig_name)
-            .map(|name| name.as_ref())
+    pub fn by_orig_name(&self, orig_name: &str) -> Option<&StaticFile> {
+        self.by_orig_name.get(orig_name).map(|i| &self.files[*i])
+    }
+
+    pub fn by_either_name(&self, name: &str) -> Option<&StaticFile> {
+        self.by_hashed_name
+            .get(name)
+            .or_else(|| self.by_orig_name.get(name))
+            .map(|i| &self.files[*i])
     }
 }
