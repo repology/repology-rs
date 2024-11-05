@@ -47,35 +47,35 @@
 	{%- endif -%}
 {%- endmacro -%}
 
-{%- macro format_link_type(code) -%}
-	{%- if code == 0 %}Upstream homepage
-	{%- else if code == 1 %}Upstream download
-	{%- else if code == 2 %}Upstream repository
-	{%- else if code == 3 %}Upstream issue tracker
-	{%- else if code == 4 %}Project page
-	{%- else if code == 5 %}Package page
-	{%- else if code == 6 %}Package download
-	{%- else if code == 7 %}Package sources
-	{%- else if code == 8 %}Package issue tracker
-	{%- else if code == 9 %}Package recipe
-	{%- else if code == 10 %}Package recipe (raw)
-	{%- else if code == 11 %}Patch
-	{%- else if code == 12 %}Patch (raw)
-	{%- else if code == 13 %}Build log
-	{%- else if code == 14 %}Build log (raw)
-	{%- else if code == 15 %}New version checker page
-	{%- else if code == 16 %}Documentation
-	{%- else if code == 17 %}Changelog
-	{%- else if code == 18 %}Project download
-	{%- else if code == 19 %}Donation
-	{%- else if code == 20 %}Discussion
-	{%- else if code == 21 %}Coverage
-	{%- else if code == 22 %}CI
-	{%- else if code == 23 %}Wiki
-	{%- else if code == 25 %}Package statistics
-	{%- else if code == 26 %}Package build status
-	{%- else if code == 27 %}Package build logs
-	{%- else if code == 28 %}Upstream download page
+{%- macro format_link_type(link_type) -%}
+	{%- if link_type == repology_common::LinkType::UpstreamHomepage %}Upstream homepage
+	{%- else if link_type == repology_common::LinkType::UpstreamDownload %}Upstream download
+	{%- else if link_type == repology_common::LinkType::UpstreamRepository %}Upstream repository
+	{%- else if link_type == repology_common::LinkType::UpstreamIssueTracker %}Upstream issue tracker
+	{%- else if link_type == repology_common::LinkType::ProjectHomepage %}Project page
+	{%- else if link_type == repology_common::LinkType::PackageHomepage %}Package page
+	{%- else if link_type == repology_common::LinkType::PackageDownload %}Package download
+	{%- else if link_type == repology_common::LinkType::PackageSources %}Package sources
+	{%- else if link_type == repology_common::LinkType::PackageIssueTracker %}Package issue tracker
+	{%- else if link_type == repology_common::LinkType::PackageRecipe %}Package recipe
+	{%- else if link_type == repology_common::LinkType::PackageRecipeRaw %}Package recipe (raw)
+	{%- else if link_type == repology_common::LinkType::PackagePatch %}Patch
+	{%- else if link_type == repology_common::LinkType::PackagePatchRaw %}Patch (raw)
+	{%- else if link_type == repology_common::LinkType::PackageBuildLog %}Build log
+	{%- else if link_type == repology_common::LinkType::PackageBuildLogRaw %}Build log (raw)
+	{%- else if link_type == repology_common::LinkType::PackageNewVersionChecker %}New version checker page
+	{%- else if link_type == repology_common::LinkType::UpstreamDocumentation %}Documentation
+	{%- else if link_type == repology_common::LinkType::UpstreamChangelog %}Changelog
+	{%- else if link_type == repology_common::LinkType::ProjectDownload %}Project download
+	{%- else if link_type == repology_common::LinkType::UpstreamDonation %}Donation
+	{%- else if link_type == repology_common::LinkType::UpstreamDiscussion %}Discussion
+	{%- else if link_type == repology_common::LinkType::UpstreamCoverage %}Coverage
+	{%- else if link_type == repology_common::LinkType::UpstreamCi %}CI
+	{%- else if link_type == repology_common::LinkType::UpstreamWiki %}Wiki
+	{%- else if link_type == repology_common::LinkType::PackageStatistics %}Package statistics
+	{%- else if link_type == repology_common::LinkType::PackageBuildStatus %}Package build status
+	{%- else if link_type == repology_common::LinkType::PackageBuildLogs %}Package build logs
+	{%- else if link_type == repology_common::LinkType::UpstreamDownloadPage %}Upstream download page
 	{%- else %}Other{% endif -%}
 {%- endmacro -%}
 

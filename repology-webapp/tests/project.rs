@@ -56,6 +56,40 @@ async fn test_project_versions(pool: PgPool) {
     migrator = "repology_common::MIGRATOR",
     fixtures("common_repositories", "common_packages")
 )]
+async fn test_project_packages(pool: PgPool) {
+    check_response!(
+        pool,
+        "/project/nonexistent/packages",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Unknown project"
+    );
+    check_response!(
+        pool,
+        "/project/orphaned/packages",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Gone project"
+    );
+
+    check_response!(
+        pool,
+        "/project/zsh/packages",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Packages for <strong>zsh",
+        contains "FreeBSD",
+        contains "1.1"
+    );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages")
+)]
 async fn test_project_information(pool: PgPool) {
     check_response!(
         pool,

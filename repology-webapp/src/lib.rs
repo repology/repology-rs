@@ -115,6 +115,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(OpensearchProject.path(), get(views::opensearch_project))
         .route(ProjectInformation.path(), get(views::project_information))
         .route(ProjectVersions.path(), get(views::project_versions))
+        .route(ProjectPackages.path(), get(views::project_packages))
         .route(Projects.path(), get(views::projects))
         .route(ProjectsBounded.path(), get(views::projects_bounded))
         .route(RepositoryFeed.path(), get(views::repository_feed))

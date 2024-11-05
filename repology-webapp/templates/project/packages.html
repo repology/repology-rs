@@ -1,38 +1,38 @@
 {% extends "project/_base.html" %}
-{% from "_macros/link_status.html" import link_status %}
-{% from "_macros/links.html" import format_link_type %}
+{% import "_macros/link_status.html" as link_status %}
+{% import "_macros/links.html" as links %}
 
-{% block title %}{{ name }} packages - Repology{% endblock %}
-{% block header %}Packages for <strong>{{ name }}</strong>{% endblock %}
-{% block description %}Information on all packages for project {{ name }}{% endblock %}
+{% block title %}{{ project_name }} packages - Repology{% endblock %}
+{% block header %}Packages for <strong>{{ project_name }}</strong>{% endblock %}
+{% block description %}Information on all packages for project {{ project_name }}{% endblock %}
 
 {% block content %}
 <div class="container">
 
-<p><b>{{ packages|length }}</b> package(s) known</p>
+<p><b>{{ packages.len() }}</b> package(s) known</p>
 
 <div class="row">
 {% for package in packages %}
-{% if not loop.first and loop.index0 % 3 == 0 %}
+{% if !loop.first && loop.index0 % 3 == 0 %}
 </div>
 <div class="row">
 {% endif %}
 	<div class="col-md-4">
-		<div class="panel panel-version-{{ package.versionclass|css_for_versionclass }}">
+		<div class="panel panel-version-{{ package.status.as_ref() }}">
 			<div class="panel-heading">
 				<div class="package-repository">
-				<a class="panel-heading-link" href="{{ url_for(endpoint='repository', repo=package.repo) }}">{{ repometadata[package.repo].desc }}</a>
-				{%- if package.subrepo -%}
-					<br><sup>{{ package.subrepo }}</sup>
+				<a class="panel-heading-link" href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", package.repo.as_str())])? }}">{% for repository_data in repositories_data %}{% if repository_data.name == package.repo %}{{ repository_data.title }}{% endif %}{% endfor %}</a>
+				{%- if let Some(subrepo) = package.subrepo -%}
+					<br><sup>{{ subrepo }}</sup>
 				{%- endif -%}
 				</div>
 				<h3 class="package-name">
 					{{- package.visiblename -}}
 				</h3>
 				<div class="package-version">
-					{%- set is_vulnerable = package.flags is has_flag_at(16) -%}
-					{%- set is_recalled = package.flags is has_flag_at(20) -%}
-					{%- set is_fixed = package.version != package.origversion -%}
+					{%- let is_vulnerable = (package.flags & (1<<16)) != 0 -%}
+					{%- let is_recalled = (package.flags & (1<<20)) != 0 -%}
+					{%- let is_fixed = package.version != package.origversion -%}
 					<span class="
 						{%- if is_fixed %} version-property-fixed{% endif -%}
 						{%- if is_recalled %} version-property-recalled{% endif -%}
@@ -40,36 +40,36 @@
 						{%- if is_fixed %} title="Normalized from &quot;{{ package.origversion }}&quot;"{% endif -%}
 					>
 						{{- package.version -}}
-						{%- if is_vulnerable %} <a href="{{ url_for(endpoint='project_cves', name=name, version=package.version) }}"><img src="{{ url_for_static(file="vulnerable.v1.svg") }}" alt="Potentially vulnerable"></a>{% endif -%}
+						{%- if is_vulnerable %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name), ("version", package.version.as_str())])? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
 					</span>
 					{%- if package.rawversion != package.version %} ({{ package.rawversion }}){% endif -%}
 					{%- if is_recalled %} (recalled){% endif -%}
 				</div>
 			</div>
 			<ul class="list-group">
-			{% if package.comment %}
+			{% if let Some(summary) = package.summary %}
 				<li class="list-group-item"><b>Summary:</b><br>
-					{{- package.comment -}}
+					{{- summary -}}
 				</li>
 			{% endif %}
-			{% if package.maintainers %}
-				<li class="list-group-item"><b>Maintainer{% if package.maintainers|length > 1 %}s{% endif %}:</b>
+			{% if !package.maintainers.is_empty() %}
+				<li class="list-group-item"><b>Maintainer{% if package.maintainers.len() > 1 %}s{% endif %}:</b>
 					<ul class="list-package-details">
 					{% for maintainer in package.maintainers %}
-						<li><a href="{{ url_for(endpoint='maintainer', maintainer=maintainer) }}">{{ maintainer }}</a></li>
+						<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer.as_str())])? }}">{{ maintainer }}</a></li>
 					{% endfor %}
 					</ul>
 				</li>
 			{% endif %}
-			{% if package.category %}
+			{% if let Some(category) = package.category %}
 				<li class="list-group-item"><b>Category:</b>
 					<ul class="list-package-details">
-						<li>{{ package.category }}</li>
+						<li>{{ category }}</li>
 					</ul>
 				</li>
 			{% endif %}
-			{% if package.licenses %}
-				<li class="list-group-item"><b>License{% if package.licenses|length > 1 %}s{% endif %}:</b>
+			{% if !package.licenses.is_empty() %}
+				<li class="list-group-item"><b>License{% if package.licenses.len() > 1 %}s{% endif %}:</b>
 					<ul class="list-package-details">
 					{% for license in package.licenses %}
 						<li>{{ license }}</li>
@@ -77,14 +77,12 @@
 					</ul>
 				</li>
 			{% endif %}
-			{% if package.links %}
+			{% if !package.links.is_empty() %}
 				<li class="list-group-item"><b>Link(s):</b>
 					<ul class="list-package-details">
-					{% for link_info in package.links %}
-						{% set link_type = link_info[0] %}
-						{% set link = links[link_info[1]] %}
-						{% set link_url = link.url + '#' + link_info[2] if link_info|length > 2 else link.url %}
-						<li><a href="{{ link_url }}">{{ format_link_type(link_type) }}</a>{{ link_status(link) }}</li>
+					{% for (link_type, link_id, link_fragment) in package.links.as_ref() %}
+						{% let link = links[link_id] %}
+						<li><a href="{{ link.url }}{% if let Some(link_fragment) = link_fragment %}#{{ link_fragment }}{% endif %}">{% call links::format_link_type(ctx.deref(ctx.deref(link_type))) %}</a>{% call link_status::link_status(link, false) %}</li>
 					{% endfor %}
 					</ul>
 				</li>
@@ -94,6 +92,5 @@
 	</div>
 {% endfor %}
 </div>
-
-</div> {#- container #}
+</div>
 {% endblock %}

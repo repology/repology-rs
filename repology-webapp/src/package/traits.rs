@@ -18,3 +18,7 @@ pub trait PackageWithStatus {
 pub trait PackageWithRepositoryName {
     fn repository_name(&self) -> &str;
 }
+
+pub trait PackageWithDisplayName {
+    fn display_name(&self) -> &str;
+}

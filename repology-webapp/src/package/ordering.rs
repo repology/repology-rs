@@ -5,7 +5,7 @@ use libversion::version_compare;
 
 use repology_common::PackageFlags;
 
-use crate::package::traits::{PackageWithFlags, PackageWithVersion};
+use crate::package::traits::{PackageWithDisplayName, PackageWithFlags, PackageWithVersion};
 use crate::package::version::package_version_flags;
 
 pub fn package_metaorder<T>(package: &T) -> i32
@@ -42,6 +42,33 @@ pub mod by_version_descending {
     pub fn sort<T>(packages: &mut [T])
     where
         T: PackageWithVersion + PackageWithFlags,
+    {
+        packages.sort_by(compare);
+    }
+}
+
+pub mod by_name_asc_version_desc {
+    use super::*;
+
+    pub fn compare<T>(a: &T, b: &T) -> std::cmp::Ordering
+    where
+        T: PackageWithDisplayName + PackageWithVersion + PackageWithFlags,
+    {
+        a.display_name()
+            .cmp(&b.display_name())
+            .then_with(|| package_metaorder(a).cmp(&package_metaorder(b)).reverse())
+            .then_with(|| {
+                version_compare(
+                    (a.version(), package_version_flags(a)),
+                    (b.version(), package_version_flags(b)),
+                )
+                .reverse()
+            })
+    }
+
+    pub fn sort<T>(packages: &mut [T])
+    where
+        T: PackageWithDisplayName + PackageWithVersion + PackageWithFlags,
     {
         packages.sort_by(compare);
     }

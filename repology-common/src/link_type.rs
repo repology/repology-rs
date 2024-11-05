@@ -3,7 +3,7 @@
 
 use serde_repr::Deserialize_repr;
 
-#[derive(Debug, PartialEq, Eq, sqlx::Type, PartialOrd, Ord, Hash, Deserialize_repr)]
+#[derive(Debug, PartialEq, Eq, sqlx::Type, PartialOrd, Ord, Hash, Deserialize_repr, Copy, Clone)]
 #[repr(i8)]
 pub enum LinkType {
     UpstreamHomepage = 0,
