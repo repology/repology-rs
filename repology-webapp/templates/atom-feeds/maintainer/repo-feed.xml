@@ -11,11 +11,11 @@ tag:repology.org,2018-04-25:maintainer-repo:{{ maintainer_name }}:{{ repository_
 	<id>{% call feed_id() %}</id>
 {%- for event in events %}
 	{%- if loop.first %}
-	<updated>{{ event.timestamp }}</updated>
+	<updated>{{ event.timestamp.format("%Y-%m-%dT%H:%M:%SZ") }}</updated>
 	{%- endif %}
 	<entry>
 		<id>{% call feed_id() %}:{{ event.id }}</id>
-		<updated>{{ event.timestamp }}</updated>
+		<updated>{{ event.timestamp.format("%Y-%m-%dT%H:%M:%SZ") }}</updated>
 		<link href="{{ ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", event.project_name.as_str())])? }}#{{ repository_name }}" />
 		{%- if event.event_type == "added" %}
 		<title>{{ event.project_name }} is now tracked</title>
