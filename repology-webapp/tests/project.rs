@@ -119,3 +119,37 @@ async fn test_project_information(pool: PgPool) {
 
     // XXX: more tests
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages")
+)]
+async fn test_project_badges(pool: PgPool) {
+    check_response!(
+        pool,
+        "/project/nonexistent/badges",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Unknown project"
+    );
+    check_response!(
+        pool,
+        "/project/orphaned/badges",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Gone project"
+    );
+
+    check_response!(
+        pool,
+        "/project/zsh/badges",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Badges for <strong>zsh",
+    );
+
+    // XXX: more tests
+}

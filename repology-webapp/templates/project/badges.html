@@ -1,22 +1,25 @@
 {% extends "project/_base.html" %}
 
-{% block title %}{{ name }} packaging badges - Repology{% endblock %}
-{% block header %}Badges for <strong>{{ name }}</strong>{% endblock %}
-{% block description %}SVG badges with packaging information for project {{ name }}{% endblock %}
-{% block keywords %}{{ super() }}, badge{% endblock %}
+{% block title %}{{ project_name }} packaging badges - Repology{% endblock %}
+{% block header %}Badges for <strong>{{ project_name }}</strong>{% endblock %}
+{% block description %}SVG badges with packaging information for project {{ project_name }}{% endblock %}
+{% block keywords %}{% call super() %}, badge{% endblock %}
 
-{% macro badge_example(badge_type, alt="Packaging status", badge_args={}) %}
-<p><a href="{{ REPOLOGY_HOME }}{{ url_for(endpoint='project_versions', name=name) }}"><img src="{{ url_for(endpoint=badge_type, name=name, **badge_args) }}" alt="{{ alt }}"></a></p>
+{% macro badge_example(endpoint, alt) %}
+{% let project_url = ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name)])? %}
+{% let badge_url = ctx.external_url_for(ctx.deref(endpoint), [("project_name.svg", project_name)])? %}
+
+<p><a href="{{ project_url }}"><img src="{{ badge_url }}.svg" alt="{{ alt }}"></a></p>
 
 <p>Markdown code:</p>
 <pre>
-[![{{ alt }}]({{ REPOLOGY_HOME }}{{ url_for(endpoint=badge_type, name=name, **badge_args) }})]({{ REPOLOGY_HOME }}{{ url_for(endpoint='project_versions', name=name) }})
+[![{{ alt }}]({{ badge_url }}.svg)]({{ project_url }})
 </pre>
 
 <p>HTML code:</p>
 <pre>
-&lt;a href=&quot;{{ REPOLOGY_HOME }}{{ url_for(endpoint='project_versions', name=name) }}&quot;&gt;
-    &lt;img src=&quot;{{ REPOLOGY_HOME }}{{ url_for(endpoint=badge_type, name=name, **badge_args)}}&quot; alt=&quot;{{ alt }}&quot;&gt;
+&lt;a href=&quot;{{ project_url }}&quot;&gt;
+    &lt;img src=&quot;{{ badge_url }}.svg&quot; alt=&quot;{{ alt }}&quot;&gt;
 &lt;/a&gt;
 </pre>
 {% endmacro %}
@@ -32,12 +35,12 @@
 
 <p>This badge shows versions and up to date status of this project in all known repositories.</p>
 
-{{ badge_example('badge_vertical_allrepos') }}
+{% call badge_example(crate::endpoints::Endpoint::BadgeVerticalAllRepos, "Packaging status") %}
 
 <p>HTML code for right-aligned badge (most useful for README.md as it allows other content to flow around it not leading to space waste):</p>
 <pre>
-&lt;a href=&quot;{{ REPOLOGY_HOME }}{{ url_for(endpoint='project_versions', name=name) }}&quot;&gt;
-    &lt;img src=&quot;{{ REPOLOGY_HOME }}{{ url_for(endpoint='badge_vertical_allrepos', name=name)}}&quot; alt=&quot;Packaging status&quot; <strong>align=&quot;right&quot;</strong>&gt;
+&lt;a href=&quot;{{ ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name)])? }}&quot;&gt;
+    &lt;img src=&quot;{{ ctx.external_url_for(crate::endpoints::Endpoint::BadgeVerticalAllRepos, [("project_name.svg", project_name)])? }}.svg&quot; alt=&quot;Packaging status&quot; <strong>align=&quot;right&quot;</strong>&gt;
 &lt;/a&gt;
 </pre>
 
@@ -54,7 +57,7 @@
 
 <p>This shows total number of repository families featuring this package. Repository family is an aggregation of related repositories, e.g. Debian Stable, Testing, Unstable and Experimental all belong to a single family and are thus only counted once.</p>
 
-{{ badge_example('badge_tiny_repos') }}
+{% call badge_example(crate::endpoints::Endpoint::BadgeTinyRepos, "Packaging status") %}
 
 <p>May be tweaked with <code>header</code> parameter (see below).</p>
 
@@ -66,7 +69,7 @@
 
 <p>This shows latest version(s) known to repology. There may be multiple versions, for example devel and newest, or multiple variations of the same version encountered in some repositories (e.g.<code>1.0.0</code> and <code>1.0</code>). These badges also support <code>minversion=</code> parameter.</p>
 
-{{ badge_example('badge_latest_versions', alt='latest packaged version(s)') }}
+{% call badge_example(crate::endpoints::Endpoint::BadgeLatestVersions, "latest packaged version(s)") %}
 
 <p>May be tweaked with <code>header</code> parameter (see below).</p>
 
@@ -80,15 +83,17 @@
 
 <table class="table">
 	<tr><th>Sample</th><th>Markdown code</th><th>HTML code</th></tr>
-	{% for repo in repos %}
+	{% for repository_data in containing_repositories_data %}
+	{% let project_url = ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name)])? %}
+	{% let badge_url = ctx.external_url_for(crate::endpoints::Endpoint::BadgeVersionForRepo, [("project_name.svg", project_name), ("repository_name", repository_data.name.as_str())])? %}
 	<tr>
 		<td>
-			<a href="{{ REPOLOGY_HOME }}{{ url_for(endpoint='project_versions', name=name) }}">
-				<img src="{{ url_for(endpoint='badge_version_for_repo', name=name, repo=repo) }}" alt="{{ repometadata[repo].singular }}">
+			<a href="{{ project_url }}">
+				<img src="{{ badge_url }}.svg" alt="{{ repository_data.singular }}">
 			</a>
 		</td>
-		<td><code>[![{{ repometadata[repo].singular }}]({{ REPOLOGY_HOME }}{{ url_for(endpoint='badge_version_for_repo', name=name, repo=repo) }})]({{ REPOLOGY_HOME }}{{ url_for(endpoint='project_versions', name=name) }})</code></td>
-		<td><code>&lt;a href=&quot;{{ REPOLOGY_HOME }}{{ url_for(endpoint='project_versions', name=name) }}&quot;&gt;<br>&nbsp;&nbsp;&lt;img src=&quot;{{ REPOLOGY_HOME }}{{ url_for(endpoint='badge_version_for_repo', name=name, repo=repo)}}&quot; alt=&quot;{{ repometadata[repo].singular }}&quot;&gt;<br>&lt;/a&gt;</code></td>
+		<td><code>[![{{ repository_data.singular }}]({{ badge_url }}.svg)]({{ project_url }})</code></td>
+		<td><code>&lt;a href=&quot;{{ project_url }}&quot;&gt;<br>&nbsp;&nbsp;&lt;img src=&quot;{{ badge_url }}.svg&quot; alt=&quot;{{ repository_data.singular }}&quot;&gt;<br>&lt;/a&gt;</code></td>
 	</tr>
 	{% endfor %}
 </table>
@@ -96,10 +101,11 @@
 <p>May be tweaked with <code>header</code>, <code>minversion</code>, and <code>allow_ignored</code> parameters (see below).</p>
 
 </section>
-
 <section>
 
 <h2>Additional parameters</h2>
+
+{% let url = ctx.external_url_for(crate::endpoints::Endpoint::BadgeVersionForRepo, [("project_name.svg", project_name), ("repository_name", containing_repositories_data[0].name.as_str())])? %}
 
 <p>Most badges may be tweaked by specifying additional parameters in the URL.</p>
 
@@ -109,19 +115,16 @@
 
 <table class="table table-condensed">
 	<tr>
-		{% set url = url_for(endpoint='badge_version_for_repo', name=name, repo=repos[0]) %}
-		<td><code>{{ REPOLOGY_HOME }}{{ url }}</code></td>
-		<td><img src="{{ REPOLOGY_HOME }}{{ url }}" alt="Version badge example, with default caption"></td>
+		<td><code>{{ url }}.svg</code></td>
+		<td><img src="{{ url }}.svg" alt="Version badge example, with default caption"></td>
 	</tr>
 	<tr>
-		{% set url = url_for(endpoint='badge_version_for_repo', name=name, repo=repos[0], header='') %}
-		<td><code>{{ REPOLOGY_HOME }}{{ url }}</code></td>
-		<td><img src="{{ REPOLOGY_HOME }}{{ url }}" alt="Version badge example, with caption removed"></td>
+		<td><code>{{ url }}.svg?header=</code></td>
+		<td><img src="{{ url }}.svg?header=" alt="Version badge example, with caption removed"></td>
 	</tr>
 	<tr>
-		{% set url = url_for(endpoint='badge_version_for_repo', name=name, repo=repos[0], header='PACKAGE') %}
-		<td><code>{{ REPOLOGY_HOME }}{{ url }}</code></td>
-		<td><img src="{{ REPOLOGY_HOME }}{{ url }}" alt="Version badge example, with custom caption set to &quot;PACKAGE&quot;"></td>
+		<td><code>{{ url }}.svg?header=PACKAGE</code></td>
+		<td><img src="{{ url }}.svg?header=PACKAGE" alt="Version badge example, with custom caption set to &quot;PACKAGE&quot;"></td>
 	</tr>
 </table>
 
@@ -131,14 +134,12 @@
 
 <table class="table table-condensed">
 	<tr>
-		{% set url = url_for(endpoint='badge_version_for_repo', name=name, repo=repos[0]) %}
-		<td><code>{{ REPOLOGY_HOME }}{{ url }}</code></td>
-		<td><img src="{{ REPOLOGY_HOME }}{{ url }}" alt="Version badge example"></td>
+		<td><code>{{ url }}.svg</code></td>
+		<td><img src="{{ url }}.svg" alt="Version badge example"></td>
 	</tr>
 	<tr>
-		{% set url = url_for(endpoint='badge_version_for_repo', name=name, repo=repos[0], minversion='999999999') %}
-		<td><code>{{ REPOLOGY_HOME }}{{ url }}</code></td>
-		<td><img src="{{ REPOLOGY_HOME }}{{ url }}" alt="Version badge example, with minimal version set"></td>
+		<td><code>{{ url }}.svg?minversion=999999999</code></td>
+		<td><img src="{{ url }}.svg?minversion=999999999" alt="Version badge example, with minimal version set"></td>
 	</tr>
 </table>
 
@@ -146,11 +147,11 @@
 
 <p>By default, when picking the version to show on badge, all <span class="version version-rolling">rolling</span>, <span class="version version-noscheme">noscheme</span>, <span class="version version-incorrect">incorrect</span>, <span class="version version-untrusted">untrusted</span>, <span class="version version-ignored">ignored</span> versions are skipped (so, for instance, rolling <code>9999</code> versions in Gentoo do not hide real stable versions). When <code>allow_ignored</code> parameter is specified (with some non-empty value), the greatest version is always picked regardless of status.</p>
 
-<p><code>{{ REPOLOGY_HOME }}{{ url_for(endpoint='badge_version_for_repo', name=name, repo=repos[0], allow_ignored=1) }}</code></p>
+<p><code>{{ url }}.svg?allow_ignored=1</code></p>
 
 </section>
 
 </article>
 
-</div> {#- container #}
+</div>
 {% endblock %}
