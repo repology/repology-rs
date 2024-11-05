@@ -9,7 +9,7 @@ use sqlx::PgPool;
 use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("log_data"))]
-async fn test_log(pool: PgPool) {
+async fn test_static_file(pool: PgPool) {
     check_response!(pool, "/static/nonexistent", status NOT_FOUND);
     check_response!(pool, "/static/repology.v1.ico", status NOT_FOUND);
 
