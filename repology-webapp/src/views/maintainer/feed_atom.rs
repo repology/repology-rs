@@ -77,19 +77,23 @@ pub async fn maintainer_repo_feed_atom(
     // See #58
     // Note: sorting by id (in addition to timestamp) in this query guarantees stable result
     let mut events: Vec<Event> = sqlx::query_as(indoc! {r#"
-        WITH candidates AS (
+        WITH candidates_unlimited AS (
             SELECT
                 id,
                 ts AS timestamp,
                 metapackage_id AS project_id,
                 type,
-                data
+                data,
+                row_number() OVER (ORDER BY ts DESC, id) AS row_number
             FROM maintainer_repo_metapackages_events
             WHERE
                 maintainer_id = (SELECT id FROM maintainers WHERE maintainer = $1) AND
                 repository_id = (SELECT id FROM repositories WHERE name = $2)
             ORDER BY timestamp DESC, id
             LIMIT $3
+        ), candidates AS (
+            SELECT * FROM candidates_unlimited
+            WHERE timestamp > now() - $4 OR row_number < $5
         )
         SELECT
             id,
@@ -103,6 +107,8 @@ pub async fn maintainer_repo_feed_atom(
     .bind(&maintainer_name)
     .bind(&repository_name)
     .bind(&(crate::constants::ATOM_FEED_MAX_ENTRIES as i32))
+    .bind(&(crate::constants::ATOM_FEED_MAX_AGE))
+    .bind(&(crate::constants::ATOM_FEED_MIN_ENTRIES as i32))
     .fetch_all(&state.pool)
     .await?;
 

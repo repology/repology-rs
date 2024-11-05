@@ -5,6 +5,7 @@
 #![feature(coverage_attribute)]
 #![feature(stmt_expr_attributes)]
 #![feature(assert_matches)]
+#![feature(duration_constructors)]
 
 mod badges;
 mod constants;
