@@ -162,10 +162,7 @@ pub async fn project_packages(
     let mut packages_by_repo = packages
         .into_iter()
         .into_group_map_by(|package| package.repo.clone());
-    //packages_by_repo
-    //   .values_mut()
-    //  .for_each(|packages| by_version_descending::sort(packages));
-    //
+
     let repositories_data = state.repository_data_cache.get_all_active().await;
 
     // XXX: do we really want descending sort by version here?
