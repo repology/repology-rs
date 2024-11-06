@@ -22,7 +22,9 @@ use serde_repr::Deserialize_repr;
 /// `https://flask.palletsprojects.com` can be both `UpstreamHomepage` and `UpstreamDocumentation`
 /// and `https://github.com/pallets/flask` can be both `UpstreamHomepage` and `UpstreamRepository`),
 /// and these values are in fact used to differentiate *link sources* rather than links themselves.
-#[derive(Debug, PartialEq, Eq, sqlx::Type, PartialOrd, Ord, Hash, Deserialize_repr, Copy, Clone)]
+#[derive(
+    Debug, PartialEq, Eq, sqlx::Type, PartialOrd, Ord, Hash, Deserialize_repr, Copy, Clone,
+)]
 #[repr(i8)]
 pub enum LinkType {
     /// Projects official home page maintained by its authors.
