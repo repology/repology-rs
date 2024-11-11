@@ -1,13 +1,13 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::collections::HashMap;
+use indexmap::IndexMap;
 
 use anyhow::{bail, Error};
 
 pub struct UrlConstructor<'a> {
     pattern: &'static str,
-    fields: HashMap<&'a str, &'a str>,
+    fields: IndexMap<&'a str, &'a str>,
 }
 
 impl<'a> UrlConstructor<'a> {
@@ -31,7 +31,7 @@ impl<'a> UrlConstructor<'a> {
             first = false;
 
             if let Some(field_name) = segment.strip_prefix(':') {
-                if let Some(field_value) = fields.remove(&field_name) {
+                if let Some(field_value) = fields.shift_remove(&field_name) {
                     res += &url_escape::encode_component(field_value);
                 } else {
                     bail!(
@@ -42,7 +42,7 @@ impl<'a> UrlConstructor<'a> {
                     );
                 }
             } else if let Some(field_name) = segment.strip_prefix('*') {
-                if let Some(field_value) = fields.remove(&field_name) {
+                if let Some(field_value) = fields.shift_remove(&field_name) {
                     res += &url_escape::encode_path(field_value);
                 } else {
                     bail!(
@@ -58,7 +58,7 @@ impl<'a> UrlConstructor<'a> {
             }
         }
 
-        let fragment = fields.remove("_fragment");
+        let fragment = fields.shift_remove("_fragment");
         let mut first = true;
         for (key, value) in fields {
             res += if first { "?" } else { "&" };
@@ -82,7 +82,7 @@ impl<'a> UrlConstructor<'a> {
     {
         fields.into_iter().for_each(|(key, value)| {
             if value.is_empty() {
-                self.fields.remove(key);
+                self.fields.shift_remove(key);
             } else {
                 self.fields.insert(key, value);
             }
@@ -128,8 +128,7 @@ mod tests {
         c.add_fields([("g", "ggg")]);
         assert_matches!(
             c.construct().unwrap().as_ref(),
-            // query param order is undefined because of HashMap
-            "/aaa/bbb/ccc/ddd?e=eee&g=ggg#fff" | "/aaa/bbb/ccc/ddd?g=ggg&e=eee#fff"
+            "/aaa/bbb/ccc/ddd?e=eee&g=ggg#fff"
         );
 
         c.add_fields([("e", ""), ("g", "")]);
@@ -144,6 +143,21 @@ mod tests {
             c.construct().unwrap(),
             "/_%2F%3F%23%25_/bbb/ccc/ddd?e=_%2F%3F%23%25_#_%2F%3F%23%25_"
         );
+    }
+
+    #[test]
+    fn test_url_constructor_query_param_order() {
+        let mut c = UrlConstructor::new("/");
+
+        c.add_fields([("b", "b"), ("a", "a")]);
+        c.add_fields([("d", "d"), ("c", "c")]);
+        assert_eq!(c.construct().unwrap(), "/?b=b&a=a&d=d&c=c");
+        c.add_fields([("a", "")]);
+        assert_eq!(c.construct().unwrap(), "/?b=b&d=d&c=c");
+        c.add_fields([("d", "")]);
+        assert_eq!(c.construct().unwrap(), "/?b=b&c=c");
+        c.add_fields([("b", "")]);
+        assert_eq!(c.construct().unwrap(), "/?c=c");
     }
 
     #[test]
