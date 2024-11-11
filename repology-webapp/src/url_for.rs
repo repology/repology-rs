@@ -30,13 +30,28 @@ impl<'a> UrlConstructor<'a> {
             }
             first = false;
 
-            if let Some(field_name) = segment.strip_prefix(':') {
-                if let Some(field_value) = fields.shift_remove(&field_name) {
+            if let Some(full_field_name) = segment.strip_prefix(':') {
+                let (field_name_without_ext, extension) = full_field_name
+                    .split_at(full_field_name.find('.').unwrap_or(full_field_name.len()));
+
+                // XXX: field names may currently come from either
+                // - axum Path extractor (in which case they include extension for
+                //   components like :foo.txt), until #31 is implemented
+                // - manually specified params in e.g. url_for in templates (in
+                //   which case we don't want to specify any extensions so we don't)
+                // Until #31 is implemented, we have to support both.
+                if let Some(field_value) = fields.shift_remove(&full_field_name) {
+                    // TODO: remove this branch when issue #31 is fixed
                     res += &url_escape::encode_component(field_value);
+                } else if let Some(field_value) = fields.shift_remove(&field_name_without_ext) {
+                    res += &url_escape::encode_component(field_value);
+                    if !extension.is_empty() {
+                        res += &url_escape::encode_component(extension);
+                    }
                 } else {
                     bail!(
                         "missing required field {} when trying to construct url for {} with {:?}",
-                        field_name,
+                        full_field_name,
                         self.pattern,
                         self.fields
                     );
@@ -168,5 +183,22 @@ mod tests {
         c.add_fields([("c", "ccc/ddd")]);
         c.add_fields([("e", "eee")]);
         assert_eq!(c.construct().unwrap(), "/aaa/bbb/ccc/ddd?e=eee");
+    }
+
+    #[test]
+    fn test_url_constructor_extension() {
+        let mut c = UrlConstructor::new("/:filename.txt");
+
+        c.add_fields([("filename", "foo")]);
+        assert_eq!(c.construct().unwrap(), "/foo.txt");
+    }
+
+    #[test]
+    fn test_url_constructor_extension_legacy() {
+        // TODO: remove this test when issue #31 is fixed
+        let mut c = UrlConstructor::new("/:filename.txt");
+
+        c.add_fields([("filename.txt", "foo.txt")]);
+        assert_eq!(c.construct().unwrap(), "/foo.txt");
     }
 }
