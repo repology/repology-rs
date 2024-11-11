@@ -34,6 +34,7 @@ pub enum SourceType {
 
 #[derive(Debug, Clone, FromRow)]
 pub struct RepositoryData {
+    pub id: i16,
     pub name: String,
     pub title: String,
     pub singular: String,
@@ -73,6 +74,7 @@ impl RepositoryDataCache {
         // legacy repositories which don't have meta properly filled
         sqlx::query_as(indoc! {r#"
             SELECT
+                id,
                 name,
                 "desc" AS title,
                 COALESCE(metadata->>'singular', name || ' package') AS singular,
