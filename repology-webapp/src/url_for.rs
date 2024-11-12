@@ -68,7 +68,7 @@ impl<'a> UrlConstructor<'a> {
                     );
                 }
             } else {
-                // since this comes from path, assumed to be valid path part
+                // since this comes from path, assumed to be valid path part with no need to escape
                 res += segment;
             }
         }
