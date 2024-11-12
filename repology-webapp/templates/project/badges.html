@@ -7,19 +7,19 @@
 
 {% macro badge_example(endpoint, alt) %}
 {% let project_url = ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name)])? %}
-{% let badge_url = ctx.external_url_for(ctx.deref(endpoint), [("project_name.svg", project_name)])? %}
+{% let badge_url = ctx.external_url_for(ctx.deref(endpoint), [("project_name", project_name)])? %}
 
-<p><a href="{{ project_url }}"><img src="{{ badge_url }}.svg" alt="{{ alt }}"></a></p>
+<p><a href="{{ project_url }}"><img src="{{ badge_url }}" alt="{{ alt }}"></a></p>
 
 <p>Markdown code:</p>
 <pre>
-[![{{ alt }}]({{ badge_url }}.svg)]({{ project_url }})
+[![{{ alt }}]({{ badge_url }})]({{ project_url }})
 </pre>
 
 <p>HTML code:</p>
 <pre>
 &lt;a href=&quot;{{ project_url }}&quot;&gt;
-    &lt;img src=&quot;{{ badge_url }}.svg&quot; alt=&quot;{{ alt }}&quot;&gt;
+    &lt;img src=&quot;{{ badge_url }}&quot; alt=&quot;{{ alt }}&quot;&gt;
 &lt;/a&gt;
 </pre>
 {% endmacro %}
@@ -40,7 +40,7 @@
 <p>HTML code for right-aligned badge (most useful for README.md as it allows other content to flow around it not leading to space waste):</p>
 <pre>
 &lt;a href=&quot;{{ ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name)])? }}&quot;&gt;
-    &lt;img src=&quot;{{ ctx.external_url_for(crate::endpoints::Endpoint::BadgeVerticalAllRepos, [("project_name.svg", project_name)])? }}.svg&quot; alt=&quot;Packaging status&quot; <strong>align=&quot;right&quot;</strong>&gt;
+    &lt;img src=&quot;{{ ctx.external_url_for(crate::endpoints::Endpoint::BadgeVerticalAllRepos, [("project_name", project_name)])? }}&quot; alt=&quot;Packaging status&quot; <strong>align=&quot;right&quot;</strong>&gt;
 &lt;/a&gt;
 </pre>
 
@@ -85,15 +85,15 @@
 	<tr><th>Sample</th><th>Markdown code</th><th>HTML code</th></tr>
 	{% for repository_data in containing_repositories_data %}
 	{% let project_url = ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name)])? %}
-	{% let badge_url = ctx.external_url_for(crate::endpoints::Endpoint::BadgeVersionForRepo, [("project_name.svg", project_name), ("repository_name", repository_data.name.as_str())])? %}
+	{% let badge_url = ctx.external_url_for(crate::endpoints::Endpoint::BadgeVersionForRepo, [("project_name", project_name), ("repository_name", repository_data.name.as_str())])? %}
 	<tr>
 		<td>
 			<a href="{{ project_url }}">
-				<img src="{{ badge_url }}.svg" alt="{{ repository_data.singular }}">
+				<img src="{{ badge_url }}" alt="{{ repository_data.singular }}">
 			</a>
 		</td>
-		<td><code>[![{{ repository_data.singular }}]({{ badge_url }}.svg)]({{ project_url }})</code></td>
-		<td><code>&lt;a href=&quot;{{ project_url }}&quot;&gt;<br>&nbsp;&nbsp;&lt;img src=&quot;{{ badge_url }}.svg&quot; alt=&quot;{{ repository_data.singular }}&quot;&gt;<br>&lt;/a&gt;</code></td>
+		<td><code>[![{{ repository_data.singular }}]({{ badge_url }})]({{ project_url }})</code></td>
+		<td><code>&lt;a href=&quot;{{ project_url }}&quot;&gt;<br>&nbsp;&nbsp;&lt;img src=&quot;{{ badge_url }}&quot; alt=&quot;{{ repository_data.singular }}&quot;&gt;<br>&lt;/a&gt;</code></td>
 	</tr>
 	{% endfor %}
 </table>
@@ -105,7 +105,7 @@
 
 <h2>Additional parameters</h2>
 
-{% let url = ctx.external_url_for(crate::endpoints::Endpoint::BadgeVersionForRepo, [("project_name.svg", project_name), ("repository_name", containing_repositories_data[0].name.as_str())])? %}
+{% let url = ctx.external_url_for(crate::endpoints::Endpoint::BadgeVersionForRepo, [("project_name", project_name), ("repository_name", containing_repositories_data[0].name.as_str())])? %}
 
 <p>Most badges may be tweaked by specifying additional parameters in the URL.</p>
 
@@ -115,16 +115,16 @@
 
 <table class="table table-condensed">
 	<tr>
-		<td><code>{{ url }}.svg</code></td>
-		<td><img src="{{ url }}.svg" alt="Version badge example, with default caption"></td>
+		<td><code>{{ url }}</code></td>
+		<td><img src="{{ url }}" alt="Version badge example, with default caption"></td>
 	</tr>
 	<tr>
-		<td><code>{{ url }}.svg?header=</code></td>
-		<td><img src="{{ url }}.svg?header=" alt="Version badge example, with caption removed"></td>
+		<td><code>{{ url }}?header=</code></td>
+		<td><img src="{{ url }}?header=" alt="Version badge example, with caption removed"></td>
 	</tr>
 	<tr>
-		<td><code>{{ url }}.svg?header=PACKAGE</code></td>
-		<td><img src="{{ url }}.svg?header=PACKAGE" alt="Version badge example, with custom caption set to &quot;PACKAGE&quot;"></td>
+		<td><code>{{ url }}?header=PACKAGE</code></td>
+		<td><img src="{{ url }}?header=PACKAGE" alt="Version badge example, with custom caption set to &quot;PACKAGE&quot;"></td>
 	</tr>
 </table>
 
@@ -134,12 +134,12 @@
 
 <table class="table table-condensed">
 	<tr>
-		<td><code>{{ url }}.svg</code></td>
-		<td><img src="{{ url }}.svg" alt="Version badge example"></td>
+		<td><code>{{ url }}</code></td>
+		<td><img src="{{ url }}" alt="Version badge example"></td>
 	</tr>
 	<tr>
-		<td><code>{{ url }}.svg?minversion=999999999</code></td>
-		<td><img src="{{ url }}.svg?minversion=999999999" alt="Version badge example, with minimal version set"></td>
+		<td><code>{{ url }}?minversion=999999999</code></td>
+		<td><img src="{{ url }}?minversion=999999999" alt="Version badge example, with minimal version set"></td>
 	</tr>
 </table>
 
@@ -147,7 +147,7 @@
 
 <p>By default, when picking the version to show on badge, all <span class="version version-rolling">rolling</span>, <span class="version version-noscheme">noscheme</span>, <span class="version version-incorrect">incorrect</span>, <span class="version version-untrusted">untrusted</span>, <span class="version version-ignored">ignored</span> versions are skipped (so, for instance, rolling <code>9999</code> versions in Gentoo do not hide real stable versions). When <code>allow_ignored</code> parameter is specified (with some non-empty value), the greatest version is always picked regardless of status.</p>
 
-<p><code>{{ url }}.svg?allow_ignored=1</code></p>
+<p><code>{{ url }}?allow_ignored=1</code></p>
 
 </section>
 
