@@ -24,9 +24,9 @@
 	{% endif %}
 
 	but it has failed
-	{% if reason == FailureReason::BadRepository && query.repo.is_none() %}
+	{% if reason == FailureReason::RepositoryNotSpecified %}
 	because the repository (<code>repo</code> parameter) was not specified.
-	{% else if reason == FailureReason::BadRepository %}
+	{% else if reason == FailureReason::RepositoryNotFound %}
 	because the specified repository <code>{{ query.repo.as_ref().unwrap() }}</code> is not known to Repology: either the identifier is misspelled, or the repository was removed from Repology.
 	{% else if reason == FailureReason::BadNameType && query.name_type.is_none() %}
 	because name type (<code>name_type</code>) parameter was not specified.

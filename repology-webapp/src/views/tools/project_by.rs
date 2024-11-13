@@ -152,7 +152,8 @@ struct ConstructTemplateParams<'a> {
 #[derive(Clone, Copy, PartialEq)]
 enum FailureReason {
     BadNameType,
-    BadRepository,
+    RepositoryNotSpecified,
+    RepositoryNotFound,
     BadTargetPage,
     NotFound,
 }
@@ -181,7 +182,7 @@ pub fn project_by_error(
 ) -> EndpointResult {
     Ok((
         match reason {
-            FailureReason::NotFound => StatusCode::NOT_FOUND,
+            FailureReason::NotFound | FailureReason::RepositoryNotFound => StatusCode::NOT_FOUND,
             _ => StatusCode::BAD_REQUEST,
         },
         [(
@@ -225,10 +226,10 @@ pub async fn project_by_perform(
         {
             repository_data
         } else {
-            return project_by_error(ctx, query, FailureReason::BadRepository);
+            return project_by_error(ctx, query, FailureReason::RepositoryNotFound);
         }
     } else {
-        return project_by_error(ctx, query, FailureReason::BadRepository);
+        return project_by_error(ctx, query, FailureReason::RepositoryNotSpecified);
     };
 
     let target_page = if let Some(target_page) = TARGET_PAGES

@@ -75,11 +75,11 @@ async fn test_project_by_failures(pool: PgPool) {
         matches "repository.*was not specified"
     );
 
-    // repository invalid
+    // repository not found
     check_response!(
         pool,
         "/tools/project-by?repo=invalid&name_type=srcname&target_page=project_versions&name=shells/zsh",
-        status BAD_REQUEST,
+        status NOT_FOUND,
         content_type "text/html",
         html_ok "allow_empty_tags,warnings_fatal",
         contains "repository was removed"
