@@ -1,33 +1,19 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![allow(warnings, unused)]
-
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use anyhow::Result;
 use askama::Template;
-use axum::extract::{Path, Query, State};
+use axum::extract::{Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use itertools::Itertools;
-use metrics::histogram;
 use serde::Deserialize;
-use sqlx::FromRow;
 
-use repology_common::{PackageFlags, PackageStatus};
-
-use crate::badges::{
-    badge_color_for_package_status, render_generic_badge, Cell, CellAlignment, SpecialVersionStatus,
-};
 use crate::endpoints::Endpoint;
-use crate::package::processing::pick_representative_package_per_repository;
-use crate::package::traits::{
-    PackageWithFlags, PackageWithRepositoryName, PackageWithStatus, PackageWithVersion,
-};
-use crate::package::version::package_version;
-use crate::repository_data::{RepositoryData, SourceType};
+use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -175,7 +161,7 @@ struct AmbiguityTemplateParams<'a> {
     repository_data: &'a RepositoryData,
 }
 
-pub fn project_by_error(
+fn project_by_error(
     ctx: TemplateContext,
     query: QueryParams,
     reason: FailureReason,
@@ -346,7 +332,7 @@ pub async fn project_by_construct(
         .nth(0);
 
     let template_url = match (&query.repo, &query.name_type, target_page) {
-        (Some(repo), Some(name_type), Some(target_page)) => Some(
+        (Some(_), Some(_), Some(_)) => Some(
             ctx.external_url_for_self(
                 &gen_query
                     .iter()
