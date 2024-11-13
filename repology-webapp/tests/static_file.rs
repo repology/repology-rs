@@ -8,7 +8,7 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("log_data"))]
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_static_file(pool: PgPool) {
     check_response!(pool, "/static/nonexistent", status NOT_FOUND);
 
@@ -46,4 +46,13 @@ async fn test_static_file(pool: PgPool) {
         body_length 3117,
         body_cityhash64 10174067632225889947
     );
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_mime_types(pool: PgPool) {
+    check_response!(pool, "/static/repology.v1.ico", status OK, content_type "image/x-icon");
+    check_response!(pool, "/static/repology.v2.js", status OK, content_type "application/javascript");
+    check_response!(pool, "/static/repology.v21.css", status OK, content_type "text/css");
+    check_response!(pool, "/static/repology40x40.v1.png", status OK, content_type "image/png");
+    check_response!(pool, "/static/vulnerable.v1.svg", status OK, content_type "image/svg+xml");
 }
