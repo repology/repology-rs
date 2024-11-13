@@ -16,11 +16,11 @@
 	{% endif %}
 
 	{% if let Some(name) = query.name %}
-	package name <b>{{ name }}</b>
+	package name <code>{{ name }}</code>
 	{% endif %}
 
 	{% if let Some(repo) = query.repo %}
-	in repository identified as <b>{{ repo }}</b>,
+	in repository identified as <code>{{ repo }}</code>,
 	{% endif %}
 
 	but it has failed
