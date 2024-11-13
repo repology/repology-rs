@@ -25,3 +25,20 @@ pub async fn legacy_badge_version_only_for_repo(
     )
         .into_response())
 }
+
+pub async fn legacy_metapackage_versions(
+    Path(gen_path): Path<Vec<(String, String)>>,
+    Query(gen_query): Query<Vec<(String, String)>>,
+) -> EndpointResult {
+    Ok((
+        StatusCode::MOVED_PERMANENTLY,
+        [(
+            header::LOCATION,
+            HeaderValue::from_maybe_shared(
+                TemplateContext::new(Endpoint::ProjectVersions, gen_path, gen_query)
+                    .url_for_self(&[])?,
+            )?,
+        )],
+    )
+        .into_response())
+}
