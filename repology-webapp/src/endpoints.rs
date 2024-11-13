@@ -111,7 +111,7 @@ pub enum Endpoint {
     #[strum(props(path = "/badge/latest-versions/:project_name.svg"))]
     BadgeLatestVersions,
 
-    // legacy
+    // Legacy redirects
     #[strum(props(path = "/badge/version-only-for-repo/:repository_name/:project_name.svg"))]
     LegacyBadgeVersionOnlyForRepo,
     #[strum(props(path = "/metapackage/:project_name/versions"))]
