@@ -115,7 +115,7 @@ async fn test_project_by_failures(pool: PgPool) {
         matches "target page.*was not specified"
     );
 
-    // target page not speified
+    // target page invalid
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=invalid&name=shells/zsh",
@@ -125,7 +125,7 @@ async fn test_project_by_failures(pool: PgPool) {
         matches "target page.*is invalid"
     );
 
-    // not found
+    // package name not found
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_versions&name=invalid/invalid",
