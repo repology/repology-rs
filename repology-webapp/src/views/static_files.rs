@@ -18,7 +18,7 @@ pub async fn static_file(Path(file_name): Path<String>, headers: HeaderMap) -> E
 
     let content_type = match file_name.rsplit_once(".").map(|(_, ext)| ext).unwrap_or("") {
         "css" => mime::TEXT_CSS.as_ref(),
-        "ico" => "application/x-icon",
+        "ico" => "image/x-icon",
         "js" => mime::APPLICATION_JAVASCRIPT.as_ref(),
         "png" => mime::IMAGE_PNG.as_ref(),
         "svg" => mime::IMAGE_SVG.as_ref(),

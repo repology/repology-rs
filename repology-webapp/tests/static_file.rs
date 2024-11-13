@@ -16,7 +16,7 @@ async fn test_static_file(pool: PgPool) {
         pool,
         "/static/repology.v1.6108dff405ea1a42.ico",
         status OK,
-        content_type "application/x-icon",
+        content_type "image/x-icon",
         body_length 22382,
         body_cityhash64 0x6108dff405ea1a42,
     );
@@ -24,7 +24,7 @@ async fn test_static_file(pool: PgPool) {
         pool,
         "/static/repology.v1.ico",
         status OK,
-        content_type "application/x-icon",
+        content_type "image/x-icon",
         body_length 22382,
         body_cityhash64 0x6108dff405ea1a42,
     );
@@ -33,7 +33,7 @@ async fn test_static_file(pool: PgPool) {
         add_header "accept-encoding" "gzip",
         "/static/repology.v1.6108dff405ea1a42.ico",
         status OK,
-        content_type "application/x-icon",
+        content_type "image/x-icon",
         body_length 3117,
         body_cityhash64 10174067632225889947
     );
@@ -42,7 +42,7 @@ async fn test_static_file(pool: PgPool) {
         add_header "accept-encoding" "br;q=1.0, gzip;q=0.8, *;q=0.1",
         "/static/repology.v1.6108dff405ea1a42.ico",
         status OK,
-        content_type "application/x-icon",
+        content_type "image/x-icon",
         body_length 3117,
         body_cityhash64 10174067632225889947
     );
