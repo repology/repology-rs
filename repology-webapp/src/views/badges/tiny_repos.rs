@@ -28,10 +28,10 @@ pub async fn badge_tiny_repos(
         return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
     };
 
-    let num_families: i64 =
-        sqlx::query_scalar("SELECT count(DISTINCT family) FROM packages WHERE effname = $1;")
+    let num_families: Option<i16> =
+        sqlx::query_scalar("SELECT num_families FROM metapackages WHERE effname = $1")
             .bind(project_name)
-            .fetch_one(&state.pool)
+            .fetch_optional(&state.pool)
             .await?;
 
     let body = render_generic_badge(
@@ -43,7 +43,7 @@ pub async fn badge_tiny_repos(
                     .map_or("in repositories", String::as_str),
             )
             .collapsible(true),
-            Cell::new(&format!("{}", num_families)).color("#007ec6"),
+            Cell::new(&format!("{}", num_families.unwrap_or(0))).color("#007ec6"),
         ]],
         None,
         0,

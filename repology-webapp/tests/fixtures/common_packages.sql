@@ -5,6 +5,6 @@ INSERT INTO packages(id, effname, version, versionclass, flags, repo, family, tr
 	(4, 'zsh', '1.2', 3, 0, 'ubuntu_24', 'ubuntu', 'zsh', 'zsh', 'zsh', '1.0', '1.0', false),
 	(5, 'zsh', '1.0', 2, 0, 'freshcode', 'freshcode', 'zsh', 'zsh', 'zsh', '1.0', '1.0', false);
 
-INSERT INTO metapackages(id, effname, num_repos) VALUES
-	(1, 'zsh', 4),
-	(2, 'orphaned', 0);
+INSERT INTO metapackages(id, effname, num_repos, num_families) VALUES
+	(1, 'zsh', 4, 3),
+	(2, 'orphaned', 0, 0);
