@@ -6,6 +6,8 @@ use std::time::Duration;
 // TODO: make this configurable
 pub const REPOLOGY_HOSTNAME: &str = "https://repology.org";
 
+pub const BUILD_INFO: Option<&str> = option_env!("REPOLOGY_BUILD_INFO");
+
 #[expect(unused)]
 pub const CVES_PER_PAGE: u32 = 200;
 #[expect(unused)]
