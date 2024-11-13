@@ -10,9 +10,9 @@
 {% block content %}
 <div class="container">
 <div class="alert alert-danger" role="alert">
-	<p>This link was supposed to redirect you to Repology project
+	<p>This link was supposed to redirect you to Repology project corresponding to
 	{% if let Some(name_type) = query.name_type %}
-	corresponding to {% if name_type == "srcname" %}source{% else if name_type == "binname" %}binary{% endif %}
+		{% if name_type == "srcname" %}source{% else if name_type == "binname" %}binary{% endif %}
 	{% endif %}
 
 	{% if let Some(name) = query.name %}
@@ -27,17 +27,17 @@
 	{% if reason == FailureReason::RepositoryNotSpecified %}
 	because the repository (<code>repo</code> parameter) was not specified.
 	{% else if reason == FailureReason::RepositoryNotFound %}
-	because the specified repository <code>{{ query.repo.as_ref().unwrap() }}</code> is not known to Repology: either the identifier is misspelled, or the repository was removed from Repology.
+	because the specified repository is not known to Repology. Either the identifier is misspelled, or the repository was removed from Repology.
 	{% else if reason == FailureReason::BadNameType && query.name_type.is_none() %}
 	because name type (<code>name_type</code>) parameter was not specified.
 	{% else if reason == FailureReason::BadNameType %}
-	because name type <code>{{ query.name_type.as_ref().unwrap() }}</code> is invalid (valid name types are <code>srcname</code> or <code>binname</code>).
+	because name type <code>{{ query.name_type.as_ref().unwrap() }}</code> is invalid (valid name types are <code>srcname</code> and <code>binname</code>).
 	{% else if reason == FailureReason::BadTargetPage && query.target_page.is_none() %}
 	because target page (<code>target_page</code> parameter) was not specified.
 	{% else if reason == FailureReason::BadTargetPage %}
-	because specified target page <code>{{ query.target_page.as_ref().unwrap() }}</code> is invalid. See {{ ctx.url_for(crate::endpoints::Endpoint::ToolProjectBy, [])? }} for valid locations.
+	because specified target page <code>{{ query.target_page.as_ref().unwrap() }}</code> is invalid. See {{ ctx.url_for(crate::endpoints::Endpoint::ToolProjectBy, [])? }} for valid target pages.
 	{% else if reason == FailureReason::NotFound %}
-	because the specified package name <code>{{ query.name.as_ref().unwrap() }}</code> was not found.
+	because the specified package name was not found.
 	{% endif %}
 	</p>
 	<p>You may want to report to the site you came from that their link need correction.</p>
