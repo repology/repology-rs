@@ -110,6 +110,8 @@ pub enum Endpoint {
     BadgeVerticalAllRepos,
     #[strum(props(path = "/badge/latest-versions/:project_name.svg"))]
     BadgeLatestVersions,
+    #[strum(props(path = "/badge/repository-big/:repository_name.svg"))]
+    BadgeRepositoryBig,
 
     // Legacy redirects
     #[strum(props(path = "/badge/version-only-for-repo/:repository_name/:project_name.svg"))]
@@ -274,8 +276,6 @@ pub enum Endpoint {
     // Badges
     #[strum(props(path = "/badge/versions-matrix.svg"))]
     BadgeVersionsMatrix,
-    #[strum(props(path = "/badge/repository-big/:repository_name.svg"))]
-    BadgeRepositoryBig,
 
     // Sitemaps
     #[strum(props(path = "/sitemaps/index.xml"))]

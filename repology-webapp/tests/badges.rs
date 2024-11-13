@@ -330,3 +330,63 @@ async fn test_badge_latest_versions(pool: PgPool) {
         svg_xpath "count(//svg:g[1]/svg:g[1]/svg:text)" 2_f64,
     );
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "badge_repository_big_data")
+)]
+async fn test_badge_repositry_big(pool: PgPool) {
+    check_response!(pool, "/badge/repository-big/nonexistent", status NOT_FOUND);
+
+    check_response!(
+        pool,
+        "/badge/repository-big/nonexistent.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" "Repository status",
+        svg_xpath "count(//svg:g[1]/svg:g[@font-size=11]/svg:text)" 4_f64,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[1])" "Projects total",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[3])" "0",
+    );
+
+    check_response!(
+        pool,
+        "/badge/repository-big/freebsd.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" "Repository status",
+        svg_xpath "count(//svg:g[1]/svg:g[@font-size=11]/svg:text)" 32_f64,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[1])" "Projects total",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[3])" "10",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][2]/svg:text[1])" "Up to date",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][2]/svg:text[3])" "1",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][2]/svg:text[5])" "20.00%",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][3]/svg:text[1])" "Outdated",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][3]/svg:text[3])" "2",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][3]/svg:text[5])" "40.00%",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][4]/svg:text[1])" "Vulnerable",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][4]/svg:text[3])" "3",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][4]/svg:text[5])" "30.00%",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][5]/svg:text[1])" "Bad versions",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][5]/svg:text[3])" "4",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][5]/svg:text[5])" "40.00%",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][6]/svg:text[1])" "Maintainers",
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][6]/svg:text[3])" "7",
+    );
+
+    check_response!(
+        pool,
+        "/badge/repository-big/freebsd.svg?header=FreeBSD",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:g[@font-size=15])" 1_f64,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" "FreeBSD",
+    );
+    check_response!(
+        pool,
+        "/badge/repository-big/freebsd.svg?header=",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:g[@font-size=15])" 0_f64,
+    );
+}

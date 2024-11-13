@@ -26,6 +26,7 @@ pub enum CellAlignment {
 
 #[derive(Default)]
 pub struct Cell {
+    // TODO: switch to Cow here to avoid allocation
     pub text: String,
     pub color: Option<String>,
     pub min_width: usize,
@@ -37,6 +38,13 @@ impl Cell {
     pub fn new(text: &str) -> Self {
         Self {
             text: text.to_owned(),
+            ..Default::default()
+        }
+    }
+
+    pub fn empty() -> Self {
+        Self {
+            text: String::new(),
             ..Default::default()
         }
     }
