@@ -8,10 +8,28 @@ use axum::response::IntoResponse;
 use crate::result::EndpointResult;
 use crate::static_files::STATIC_FILES;
 
+enum HttpCacheMode {
+    ShortLived,
+    Infinite,
+}
+
+impl HttpCacheMode {
+    pub fn to_cache_control_header_value(&self) -> HeaderValue {
+        match self {
+            HttpCacheMode::ShortLived => HeaderValue::from_static("public, max-age=3600"),
+            HttpCacheMode::Infinite => {
+                HeaderValue::from_static("public, max-age=31536000, immutable")
+            }
+        }
+    }
+}
+
 #[tracing::instrument]
 pub async fn static_file(Path(file_name): Path<String>, headers: HeaderMap) -> EndpointResult {
-    let file = if let Some(file) = STATIC_FILES.by_either_name(&file_name) {
-        file
+    let (file, cache_mode) = if let Some(file) = STATIC_FILES.by_hashed_name(&file_name) {
+        (file, HttpCacheMode::Infinite)
+    } else if let Some(file) = STATIC_FILES.by_orig_name(&file_name) {
+        (file, HttpCacheMode::ShortLived)
     } else {
         return Ok((StatusCode::NOT_FOUND, "not found".to_owned()).into_response());
     };
@@ -45,7 +63,7 @@ pub async fn static_file(Path(file_name): Path<String>, headers: HeaderMap) -> E
                 (header::CONTENT_ENCODING, HeaderValue::from_static("gzip")),
                 (
                     header::CACHE_CONTROL,
-                    HeaderValue::from_static("public, max-age=31536000, immutable"),
+                    cache_mode.to_cache_control_header_value(),
                 ),
             ],
             file.compressed_content.clone(),
@@ -57,7 +75,7 @@ pub async fn static_file(Path(file_name): Path<String>, headers: HeaderMap) -> E
                 (header::CONTENT_TYPE, HeaderValue::from_static(content_type)),
                 (
                     header::CACHE_CONTROL,
-                    HeaderValue::from_static("public, max-age=31536000, immutable"),
+                    cache_mode.to_cache_control_header_value(),
                 ),
             ],
             file.original_content,

@@ -100,7 +100,6 @@ impl StaticFiles {
         }
     }
 
-    #[expect(dead_code)]
     pub fn by_hashed_name(&self, hashed_name: &str) -> Option<&StaticFile> {
         self.by_hashed_name
             .get(hashed_name)
@@ -109,12 +108,5 @@ impl StaticFiles {
 
     pub fn by_orig_name(&self, orig_name: &str) -> Option<&StaticFile> {
         self.by_orig_name.get(orig_name).map(|i| &self.files[*i])
-    }
-
-    pub fn by_either_name(&self, name: &str) -> Option<&StaticFile> {
-        self.by_hashed_name
-            .get(name)
-            .or_else(|| self.by_orig_name.get(name))
-            .map(|i| &self.files[*i])
     }
 }

@@ -19,6 +19,8 @@ async fn test_static_file(pool: PgPool) {
         content_type "image/x-icon",
         body_length 22382,
         body_cityhash64 0x6108dff405ea1a42,
+        header_value_contains "cache-control" "public",
+        header_value_contains "cache-control" "immutable",
     );
     check_response!(
         pool,
@@ -27,6 +29,8 @@ async fn test_static_file(pool: PgPool) {
         content_type "image/x-icon",
         body_length 22382,
         body_cityhash64 0x6108dff405ea1a42,
+        header_value_contains "cache-control" "public",
+        header_value_contains_not "cache-control" "immutable",
     );
     check_response!(
         pool,
@@ -35,7 +39,9 @@ async fn test_static_file(pool: PgPool) {
         status OK,
         content_type "image/x-icon",
         body_length 3117,
-        body_cityhash64 10174067632225889947
+        body_cityhash64 10174067632225889947,
+        header_value_contains "cache-control" "public",
+        header_value_contains "cache-control" "immutable",
     );
     check_response!(
         pool,
@@ -44,7 +50,9 @@ async fn test_static_file(pool: PgPool) {
         status OK,
         content_type "image/x-icon",
         body_length 3117,
-        body_cityhash64 10174067632225889947
+        body_cityhash64 10174067632225889947,
+        header_value_contains "cache-control" "public",
+        header_value_contains "cache-control" "immutable",
     );
 }
 

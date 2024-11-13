@@ -293,10 +293,21 @@ macro_rules! check_condition {
             );
         }
     };
+    ($resp:ident, header_present, $header:literal) => {
+        assert!($resp.headers.contains_key($header));
+    };
     ($resp:ident, header_value, $header:literal, $value:literal) => {
         let header = $resp.headers.get($header);
         assert!(header.is_some());
         assert_eq!(header.unwrap(), $value);
+    };
+    ($resp:ident, header_value_contains, $header:literal, $needle:literal) => {
+        let header = $resp.headers.get($header);
+        assert!(header.is_some_and(|header| { header.to_str().unwrap().contains($needle) }));
+    };
+    ($resp:ident, header_value_contains_not, $header:literal, $needle:literal) => {
+        let header = $resp.headers.get($header);
+        assert!(header.is_some_and(|header| { !header.to_str().unwrap().contains($needle) }));
     };
 }
 
