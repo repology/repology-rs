@@ -338,17 +338,38 @@ async fn test_badge_latest_versions(pool: PgPool) {
 async fn test_badge_repositry_big(pool: PgPool) {
     check_response!(pool, "/badge/repository-big/nonexistent", status NOT_FOUND);
 
+    // repository which never existed or which is not active (i.e. was removed) are handled the same way
     check_response!(
         pool,
         "/badge/repository-big/nonexistent.svg",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" "Repository status",
-        svg_xpath "count(//svg:g[1]/svg:g[@font-size=11]/svg:text)" 4_f64,
+        svg_xpath "count(//svg:g[1]/svg:g[@font-size=11]/svg:text)" 2_f64,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[1])" "Repository not known or was removed",
+    );
+    check_response!(
+        pool,
+        "/badge/repository-big/ubuntu_10.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" "Repository status",
+        svg_xpath "count(//svg:g[1]/svg:g[@font-size=11]/svg:text)" 2_f64,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[1])" "Repository not known or was removed",
+    );
+
+    // active repository which does not have any packages
+    check_response!(
+        pool,
+        "/badge/repository-big/freshcode.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "string(//svg:g[1]/svg:g[@font-size=15]/svg:text[1])" "Repository status",
         svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[1])" "Projects total",
         svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][1]/svg:text[3])" "0",
     );
 
+    // complete repository with packages
     check_response!(
         pool,
         "/badge/repository-big/freebsd.svg",
@@ -374,6 +395,7 @@ async fn test_badge_repositry_big(pool: PgPool) {
         svg_xpath "string(//svg:g[1]/svg:g[@font-size=11][6]/svg:text[3])" "7",
     );
 
+    // title tweaks
     check_response!(
         pool,
         "/badge/repository-big/freebsd.svg?header=FreeBSD",

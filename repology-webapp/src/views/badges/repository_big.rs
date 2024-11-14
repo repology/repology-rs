@@ -20,7 +20,7 @@ pub struct QueryParams {
     pub caption: Option<String>,
 }
 
-#[derive(FromRow, Default)]
+#[derive(FromRow)]
 pub struct RepositoryStatistics {
     pub num_projects: i32,
     pub num_projects_comparable: i32,
@@ -52,7 +52,7 @@ pub async fn badge_repository_big(
         return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
     };
 
-    let statistics: RepositoryStatistics = sqlx::query_as(indoc! {r#"
+    let statistics: Option<RepositoryStatistics> = sqlx::query_as(indoc! {r#"
         SELECT
             num_metapackages AS num_projects,
             num_metapackages_comparable AS num_projects_comparable,
@@ -62,12 +62,11 @@ pub async fn badge_repository_big(
             num_metapackages_problematic AS num_projects_problematic,
             num_maintainers
         FROM repositories
-        WHERE name = $1
+        WHERE name = $1 AND state = 'active'
     "#})
     .bind(repository_name)
     .fetch_optional(&state.pool)
-    .await?
-    .unwrap_or_default();
+    .await?;
 
     let caption = query
         .caption
@@ -76,14 +75,14 @@ pub async fn badge_repository_big(
             Some(caption).filter(|caption| !caption.is_empty())
         });
 
-    let mut cells: Vec<Vec<Cell>> = vec![vec![
-        Cell::new("Projects total").align(CellAlignment::Right),
-        Cell::new(&format!("{}", statistics.num_projects)),
-    ]];
+    let mut cells: Vec<Vec<Cell>> = vec![];
 
-    if statistics.num_projects > 0 {
-        // will need third column for percentages
-        cells[0].push(Cell::empty());
+    if let Some(statistics) = statistics {
+        cells.push(vec![
+            Cell::new("Projects total").align(CellAlignment::Right),
+            Cell::new(&format!("{}", statistics.num_projects)),
+            Cell::empty(),
+        ]);
 
         let color = badge_color_for_package_status(PackageStatus::Newest, None);
         cells.push(vec![
@@ -136,6 +135,11 @@ pub async fn badge_repository_big(
                 Cell::empty(),
             ]);
         }
+    } else {
+        // either no repository entry or repository inactive
+        cells.push(vec![Cell::new("Repository not known or was removed")
+            .align(CellAlignment::Center)
+            .color("#e00000")]);
     }
 
     let body = render_generic_badge(&cells, caption, 0, &state.font_measurer)?;
