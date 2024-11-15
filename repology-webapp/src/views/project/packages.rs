@@ -86,7 +86,7 @@ pub struct QueryParams {
     pub experimental_link_query: bool,
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_packages(
     Path(project_name): Path<String>,
     Query(query): Query<QueryParams>,

@@ -44,7 +44,7 @@ impl PackageWithFlags for Package {
     }
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn badge_latest_versions(
     Path(project_name): Path<String>,
     State(state): State<AppState>,

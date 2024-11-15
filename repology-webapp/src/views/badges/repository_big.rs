@@ -40,7 +40,7 @@ fn format_percentage(divident: i32, divisor: i32) -> String {
     }
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn badge_repository_big(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,

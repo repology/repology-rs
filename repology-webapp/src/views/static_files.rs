@@ -24,7 +24,7 @@ impl HttpCacheMode {
     }
 }
 
-#[tracing::instrument]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument)]
 pub async fn static_file(Path(file_name): Path<String>, headers: HeaderMap) -> EndpointResult {
     let (file, cache_mode) = if let Some(file) = STATIC_FILES.by_hashed_name(&file_name) {
         (file, HttpCacheMode::Infinite)

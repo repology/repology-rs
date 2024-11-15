@@ -79,7 +79,7 @@ struct TemplateParams<'a> {
     slices: Slices<'a>,
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_information(
     Path(project_name): Path<String>,
     State(state): State<AppState>,

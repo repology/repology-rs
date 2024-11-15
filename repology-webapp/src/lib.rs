@@ -71,7 +71,10 @@ async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> i
     response
 }
 
-#[tracing::instrument(name = "app init", skip_all)]
+#[cfg_attr(
+    not(feature = "coverage"),
+    tracing::instrument(name = "app init", skip_all)
+)]
 pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
     info!("initializing font measurer");
     let font_measurer = FontMeasurer::new();

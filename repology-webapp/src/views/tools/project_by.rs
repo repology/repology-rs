@@ -359,7 +359,7 @@ pub async fn project_by_construct(
         .into_response())
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_by(
     Query(query): Query<QueryParams>,
     Query(gen_query): Query<Vec<(String, String)>>,

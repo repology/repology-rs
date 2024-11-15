@@ -27,7 +27,7 @@ struct TemplateParams<'a> {
     containing_repositories_data: Vec<RepositoryData>,
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_badges(
     Path(project_name): Path<String>,
     State(state): State<AppState>,

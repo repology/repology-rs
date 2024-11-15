@@ -9,7 +9,7 @@ use crate::endpoints::Endpoint;
 use crate::result::EndpointResult;
 use crate::template_context::TemplateContext;
 
-#[tracing::instrument()]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
 pub async fn news() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "news.html")]
@@ -29,7 +29,7 @@ pub async fn news() -> EndpointResult {
         .into_response())
 }
 
-#[tracing::instrument()]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
 pub async fn docs() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/index.html")]
@@ -49,7 +49,7 @@ pub async fn docs() -> EndpointResult {
         .into_response())
 }
 
-#[tracing::instrument()]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
 pub async fn docs_about() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/about.html")]
@@ -69,7 +69,7 @@ pub async fn docs_about() -> EndpointResult {
         .into_response())
 }
 
-#[tracing::instrument()]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
 pub async fn docs_bots() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/bots.html")]
@@ -89,7 +89,7 @@ pub async fn docs_bots() -> EndpointResult {
         .into_response())
 }
 
-#[tracing::instrument()]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
 pub async fn docs_not_supported() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/not_supported.html")]
@@ -109,7 +109,7 @@ pub async fn docs_not_supported() -> EndpointResult {
         .into_response())
 }
 
-#[tracing::instrument()]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
 pub async fn docs_requirements() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/requirements.html")]
@@ -129,7 +129,7 @@ pub async fn docs_requirements() -> EndpointResult {
         .into_response())
 }
 
-#[tracing::instrument()]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
 pub async fn tools() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "tools/index.html")]
@@ -149,7 +149,7 @@ pub async fn tools() -> EndpointResult {
         .into_response())
 }
 
-#[tracing::instrument()]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
 pub async fn api_v1() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "api.html")]

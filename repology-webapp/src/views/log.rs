@@ -60,7 +60,10 @@ struct LogLine {
     pub message: String,
 }
 
-#[tracing::instrument(skip(gen_path, gen_query, state))]
+#[cfg_attr(
+    not(feature = "coverage"),
+    tracing::instrument(skip(gen_path, gen_query, state))
+)]
 pub async fn log(
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,

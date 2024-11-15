@@ -53,7 +53,7 @@ impl PackageWithStatus for Package {
     }
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn badge_version_for_repo(
     Path((repository_name, project_name)): Path<(String, String)>,
     State(state): State<AppState>,

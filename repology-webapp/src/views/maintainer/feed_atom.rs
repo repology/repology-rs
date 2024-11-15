@@ -45,7 +45,7 @@ struct TemplateParams<'a> {
     repository_data: RepositoryData,
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn maintainer_repo_feed_atom(
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,

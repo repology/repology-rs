@@ -16,7 +16,7 @@ pub struct QueryParams {
     pub caption: Option<String>,
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn badge_tiny_repos(
     Path(project_name): Path<String>,
     State(state): State<AppState>,

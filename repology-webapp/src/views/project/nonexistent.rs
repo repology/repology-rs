@@ -49,7 +49,10 @@ pub struct ProjectListItem {
     pub versions: CategorizedDisplayVersions,
 }
 
-#[tracing::instrument(skip(state, ctx, project))]
+#[cfg_attr(
+    not(feature = "coverage"),
+    tracing::instrument(skip(state, ctx, project))
+)]
 pub async fn nonexisting_project(
     state: AppState,
     ctx: TemplateContext,

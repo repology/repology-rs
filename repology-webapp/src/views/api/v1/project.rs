@@ -11,7 +11,7 @@ use crate::state::AppState;
 
 use super::common::ApiV1Package;
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn api_v1_project(
     Path(project_name): Path<String>,
     State(state): State<AppState>,

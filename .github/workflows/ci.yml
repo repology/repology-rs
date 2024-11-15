@@ -34,7 +34,7 @@ jobs:
       - name: Format check
         run: cargo fmt --check
       - name: Test
-        run: cargo test
+        run: cargo test --features=coverage
         env:
           DATABASE_URL: postgres://postgres@localhost:5432/
           RUSTFLAGS: "-Cinstrument-coverage"

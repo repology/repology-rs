@@ -60,7 +60,7 @@ struct TemplateParams {
     repositories_data: Vec<RepositoryData>,
 }
 
-#[tracing::instrument(skip(state))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_versions(
     Path(project_name): Path<String>,
     State(state): State<AppState>,

@@ -3,6 +3,9 @@ name = "repology-webapp"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+coverage = []  # used to calculate coverage correctly (see https://github.com/rust-lang/rust/issues/110486)
+
 [dependencies]
 anyhow = "1.0.93"
 askama = "0.12.1"
