@@ -155,7 +155,7 @@ pub async fn api_v1() -> EndpointResult {
     #[template(path = "api.html")]
     struct TemplateParams {
         ctx: TemplateContext,
-        per_page: u32,
+        per_page: usize,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::ApiV1);
