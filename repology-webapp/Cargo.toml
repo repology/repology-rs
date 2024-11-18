@@ -9,7 +9,7 @@ coverage = []  # used to calculate coverage correctly (see https://github.com/ru
 [dependencies]
 anyhow = "1.0.93"
 askama = "0.12.1"
-axum = { version = "0.7.7", features = ["macros"] }
+axum = { version = "0.7.9", features = ["macros"] }
 chrono = { version = "0.4.38", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
 clap = { version = "4.5.20", features = ["derive"] }
