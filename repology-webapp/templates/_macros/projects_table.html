@@ -74,15 +74,13 @@
 		<tr>
 			<td class="text-nowrap">
 				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|as_ref)])? }}">{{ item.project.effname }}</a>
-				{%- if item.project.has_related -%}
 				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|as_ref)])? }}">∗</a>
-				{% endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
 			<td>{% call versions_list(item.versions.newest|as_ref, "") %}</td>
 			<td>{% call versions_list(item.versions.outdated|as_ref, "") %}</td>
 			<td>{% call versions_list(item.versions.ignored|as_ref, "") %}</td>
-			<td>{{ item.rank|round(2) }}</td>
+			<td>{{ item.project.rank|fmt("{:.2}") }}</td>
 		</tr>
 	{% endfor %}
 	</tbody>
@@ -112,9 +110,6 @@
 			<th title="Versions considered newest">Newest</th>
 			<th title="Versions considered outdated">Outdated</th>
 			<th title="Versions excluded from comparison">Ignored</th>
-			{#% if 'rank' in metapackage %}
-			<th title="Versions excluded from comparison">Rank</th>
-			{% endif %#}
 		</tr>
 	{% if loop.first %}</thead><tbody>{% endif %}
 	{% endif %}
@@ -132,9 +127,6 @@
 			<td>{% call versions_list(item.versions.newest|as_ref, "") %}</td>
 			<td>{% call versions_list(item.versions.outdated|as_ref, "") %}</td>
 			<td>{% call versions_list(item.versions.ignored|as_ref, "") %}</td>
-			{#% if 'rank' in metapackage %}
-			<td>{{ metapackage.rank|round(2) }}</td>
-			{% endif %#}
 		</tr>
 	{% endfor %}
 	</tbody>

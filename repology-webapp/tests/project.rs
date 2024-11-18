@@ -153,3 +153,52 @@ async fn test_project_badges(pool: PgPool) {
 
     // XXX: more tests
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "related_data")
+)]
+async fn test_project_related(pool: PgPool) {
+    check_response!(
+        pool,
+        "/project/nonexistent/related",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Unknown project"
+    );
+    check_response!(
+        pool,
+        "/project/orphaned/related",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Gone project"
+    );
+
+    check_response!(
+        pool,
+        "/project/zsh/related",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains_not "gcc",
+        contains_not "binutils"
+    );
+    check_response!(
+        pool,
+        "/project/gcc/related",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "binutils"
+    );
+    check_response!(
+        pool,
+        "/project/binutils/related",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "gcc"
+    );
+}
