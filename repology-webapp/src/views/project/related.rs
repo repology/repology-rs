@@ -85,16 +85,19 @@ pub async fn project_related(
     .fetch_all(&state.pool)
     .await?;
 
+    // XXX: we don't need to fetch repo and maintainers here as these are never used
+    // in packages_to_categorized_display_versions_per_project(..., None, None). In
+    // fact, we need to add specialization for focusless case.
     let packages: Vec<PackageForListing> = sqlx::query_as(indoc! {"
         SELECT
-            repo,
+            '' AS repo,
             family,
             visiblename,
             effname,
             version,
             versionclass AS status,
             flags,
-            coalesce(maintainers, '{}'::text[]) AS maintainers
+            '{}'::text[] AS maintainers
         FROM packages
         WHERE effname = ANY($1)
     "})
