@@ -46,7 +46,7 @@ jobs:
           ./grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --keep-only 'repology-webapp/*' --keep-only 'repology-common/*' --keep-only 'repology-vulnupdater/*' -o coverage.lcov
       - name: Submit coverage
         if: ${{ github.actor != 'dependabot[bot]' && github.event_name != 'pull_request' }}
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: true
           files: ./coverage.lcov
