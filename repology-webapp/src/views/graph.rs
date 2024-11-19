@@ -43,47 +43,51 @@ async fn graph_repository_generic(
     let query = if experimental_history {
         &format!(
             indoc! {r#"
-            (
-                SELECT
-                    ts AS timestamp,
-                    {0}::real AS value
-                FROM repositories_history_new
-                WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts < now() - $3 AND {0} IS NOT NULL
-                ORDER BY ts DESC
-                LIMIT 1
-            )
-            UNION ALL
-            (
-                SELECT
-                    ts AS timestamp,
-                    {0}::real AS value
-                FROM repositories_history_new
-                WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts >= now() - $3 AND {0} IS NOT NULL
-                ORDER BY ts
-            )
+            SELECT * FROM (
+                (
+                    SELECT
+                        ts AS timestamp,
+                        {0}::real AS value
+                    FROM repositories_history_new
+                    WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts < now() - $3
+                    ORDER BY ts DESC
+                    LIMIT 1
+                )
+                UNION ALL
+                (
+                    SELECT
+                        ts AS timestamp,
+                        {0}::real AS value
+                    FROM repositories_history_new
+                    WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts >= now() - $3
+                    ORDER BY ts
+                )
+            ) WHERE value IS NOT NULL
         "#},
             field_name
         )
     } else {
         indoc! {r#"
-            (
-                SELECT
-                    ts AS timestamp,
-                    (snapshot->$1->>$2)::real AS value
-                FROM repositories_history
-                WHERE ts < now() - $3 AND snapshot->$1->>$2 IS NOT NULL
-                ORDER BY ts DESC
-                LIMIT 1
-            )
-            UNION ALL
-            (
-                SELECT
-                    ts AS timestamp,
-                    (snapshot->$1->>$2)::real AS value
-                FROM repositories_history
-                WHERE ts >= now() - $3 AND snapshot->$1->>$2 IS NOT NULL
-                ORDER BY ts
-            )
+            SELECT * FROM (
+                (
+                    SELECT
+                        ts AS timestamp,
+                        (snapshot->$1->>$2)::real AS value
+                    FROM repositories_history
+                    WHERE ts < now() - $3
+                    ORDER BY ts DESC
+                    LIMIT 1
+                )
+                UNION ALL
+                (
+                    SELECT
+                        ts AS timestamp,
+                        (snapshot->$1->>$2)::real AS value
+                    FROM repositories_history
+                    WHERE ts >= now() - $3
+                    ORDER BY ts
+                )
+            ) WHERE value IS NOT NULL
         "#}
     };
     let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(query)
@@ -243,24 +247,26 @@ pub async fn graph_repository_projects_vulnerable(
 
 async fn graph_total_generic(pool: &PgPool, field_name: &str, stroke: &str) -> EndpointResult {
     let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(indoc! {r#"
-        (
-            SELECT
-                ts AS timestamp,
-                (snapshot->>$1)::real AS value
-            FROM statistics_history
-            WHERE ts < now() - $2
-            ORDER BY ts DESC
-            LIMIT 1
-        )
-        UNION ALL
-        (
-            SELECT
-                ts AS timestamp,
-                (snapshot->>$1)::real AS value
-            FROM statistics_history
-            WHERE ts >= now() - $2
-            ORDER BY ts
-        )
+        SELECT * FROM (
+            (
+                SELECT
+                    ts AS timestamp,
+                    (snapshot->>$1)::real AS value
+                FROM statistics_history
+                WHERE ts < now() - $2
+                ORDER BY ts DESC
+                LIMIT 1
+            )
+            UNION ALL
+            (
+                SELECT
+                    ts AS timestamp,
+                    (snapshot->>$1)::real AS value
+                FROM statistics_history
+                WHERE ts >= now() - $2
+                ORDER BY ts
+            )
+        ) WHERE value IS NOT NULL
     "#})
     .bind(&field_name)
     .bind(&GRAPH_PERIOD)
