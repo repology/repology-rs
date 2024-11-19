@@ -80,6 +80,23 @@ fn calculate_ticks(min: f32, max: f32, graph_type: GraphType) -> Ticks {
     }
 }
 
+fn collect_with_deduplication_by_value<I, A, B>(mut iter: I) -> Vec<(A, B)>
+where
+    A: Copy,
+    B: Copy + PartialEq,
+    I: Iterator<Item = (A, B)>,
+{
+    let mut res = Vec::<(A, B)>::new();
+    for item in iter {
+        let len = res.len();
+        if len >= 2 && res[len - 1].1 == item.1 && res[len - 2].1 == item.1 {
+            res.pop();
+        }
+        res.push(item);
+    }
+    res
+}
+
 pub fn normalize_graph_data(
     points: &Vec<(Duration, f32)>,
     graph_type: GraphType,
@@ -104,15 +121,12 @@ pub fn normalize_graph_data(
         Some((&min, &max)) => {
             let ticks = calculate_ticks(min, max, graph_type);
             NormalizedGraphData {
-                points: points
-                    .iter()
-                    .map(|(age, value)| {
-                        (
-                            age.as_secs_f32() / period.as_secs_f32(),
-                            (value - min) / (max - min),
-                        )
-                    })
-                    .collect(),
+                points: collect_with_deduplication_by_value(points.iter().map(|(age, value)| {
+                    (
+                        age.as_secs_f32() / period.as_secs_f32(),
+                        (value - min) / (max - min),
+                    )
+                })),
                 y_ticks: (0..ticks.count)
                     .map(|i| {
                         let value = ticks.start + ticks.step * (i as f32);
@@ -275,6 +289,29 @@ mod tests {
     use super::*;
 
     use float_cmp::approx_eq;
+
+    #[test]
+    fn test_collect_with_deduplication_by_value() {
+        let inp = vec![(1, 1), (2, 1), (3, 2), (4, 2), (5, 3), (6, 3)];
+        assert_eq!(
+            collect_with_deduplication_by_value(inp.clone().into_iter()),
+            inp
+        );
+
+        let inp = vec![
+            (1, 1),
+            (2, 1),
+            (3, 1),
+            (4, 2),
+            (5, 2),
+            (6, 2),
+            (7, 3),
+            (8, 3),
+            (9, 3),
+        ];
+        let out = vec![(1, 1), (3, 1), (4, 2), (6, 2), (7, 3), (9, 3)];
+        assert_eq!(collect_with_deduplication_by_value(inp.into_iter()), out);
+    }
 
     impl PartialEq for NormalizedGraphData {
         fn eq(&self, other: &Self) -> bool {
