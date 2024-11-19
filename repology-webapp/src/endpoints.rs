@@ -107,6 +107,23 @@ pub enum Endpoint {
     #[strum(props(path = "/graph/total/problems.svg"))]
     GraphTotalProblems,
 
+    #[strum(props(path = "/graph/repo/:repository_name/problems.svg"))]
+    GraphRepoProblems,
+    #[strum(props(path = "/graph/repo/:repository_name/maintainers.svg"))]
+    GraphRepoMaintainers,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_total.svg"))]
+    GraphRepoProjectsTotal,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_unique.svg"))]
+    GraphRepoProjectsUnique,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_newest.svg"))]
+    GraphRepoProjectsNewest,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_outdated.svg"))]
+    GraphRepoProjectsOutdated,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_problematic.svg"))]
+    GraphRepoProjectsProblematic,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable.svg"))]
+    GraphRepoProjectsVulnerable,
+
     // Opensearch
     #[strum(props(path = "/opensearch/project.xml"))]
     OpensearchProject,
@@ -238,40 +255,26 @@ pub enum Endpoint {
     // Graphs
     #[strum(props(path = "/graph/project/:project_name/releases.svg"))]
     GraphReleases,
+
     #[strum(props(path = "/graph/map_repo_size_fresh.svg"))]
     GraphMapRepoSizeFresh,
     #[strum(props(path = "/graph/map_repo_size_fresh_nonunique.svg"))]
     GraphMapRepoSizeFreshNonunique,
     #[strum(props(path = "/graph/map_repo_size_freshness.svg"))]
     GraphMapRepoSizeFreshness,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_total.svg"))]
-    GraphRepoProjectsTotal,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_newest.svg"))]
-    GraphRepoProjectsNewest,
+
     #[strum(props(path = "/graph/repo/:repository_name/projects_newest_percent.svg"))]
     GraphRepoProjectsNewestPercent,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_outdated.svg"))]
-    GraphRepoProjectsOutdated,
     #[strum(props(path = "/graph/repo/:repository_name/projects_outdated_percent.svg"))]
     GraphRepoProjectsOutdatedPercent,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_unique.svg"))]
-    GraphRepoProjectsUnique,
     #[strum(props(path = "/graph/repo/:repository_name/projects_unique_percent.svg"))]
     GraphRepoProjectsUniquePercent,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_problematic.svg"))]
-    GraphRepoProjectsProblematic,
     #[strum(props(path = "/graph/repo/:repository_name/projects_problematic_percent.svg"))]
     GraphRepoProjectsProblematicPercent,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable.svg"))]
-    GraphRepoProjectsVulnerable,
     #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable_percent.svg"))]
     GraphRepoProjectsVulnerablePercent,
-    #[strum(props(path = "/graph/repo/:repository_name/problems.svg"))]
-    GraphRepoProblems,
     #[strum(props(path = "/graph/repo/:repository_name/problems_per_metapackage.svg"))]
     GraphRepoProblemsPerMetapackage,
-    #[strum(props(path = "/graph/repo/:repository_name/maintainers.svg"))]
-    GraphRepoMaintainers,
     #[strum(props(path = "/graph/repo/:repository_name/packages_per_maintainer.svg"))]
     GraphRepoPackagesPerMaintainer,
 
