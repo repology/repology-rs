@@ -3,6 +3,7 @@
 
 mod api;
 mod badges;
+mod graph;
 mod legacy_redirects;
 mod log;
 mod maintainer;
@@ -17,6 +18,7 @@ mod trivial_pages;
 
 pub use api::*;
 pub use badges::*;
+pub use graph::*;
 pub use legacy_redirects::*;
 pub use log::*;
 pub use maintainer::*;

@@ -97,6 +97,16 @@ pub enum Endpoint {
     #[strum(props(path = "/api/v1/project/:project_name"))]
     ApiV1Project,
 
+    // Graph
+    #[strum(props(path = "/graph/total/packages.svg"))]
+    GraphTotalPackages,
+    #[strum(props(path = "/graph/total/projects.svg"))]
+    GraphTotalProjects,
+    #[strum(props(path = "/graph/total/maintainers.svg"))]
+    GraphTotalMaintainers,
+    #[strum(props(path = "/graph/total/problems.svg"))]
+    GraphTotalProblems,
+
     // Opensearch
     #[strum(props(path = "/opensearch/project.xml"))]
     OpensearchProject,
@@ -264,14 +274,6 @@ pub enum Endpoint {
     GraphRepoMaintainers,
     #[strum(props(path = "/graph/repo/:repository_name/packages_per_maintainer.svg"))]
     GraphRepoPackagesPerMaintainer,
-    #[strum(props(path = "/graph/total/packages.svg"))]
-    GraphTotalPackages,
-    #[strum(props(path = "/graph/total/projects.svg"))]
-    GraphTotalProjects,
-    #[strum(props(path = "/graph/total/maintainers.svg"))]
-    GraphTotalMaintainers,
-    #[strum(props(path = "/graph/total/problems.svg"))]
-    GraphTotalProblems,
 
     // Badges
     #[strum(props(path = "/badge/versions-matrix.svg"))]

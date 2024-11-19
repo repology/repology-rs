@@ -37,4 +37,5 @@ ttf-parser = "0.25.0"
 url-escape = "0.1.1"
 
 [dev-dependencies]
+float-cmp = "0.10.0"
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }

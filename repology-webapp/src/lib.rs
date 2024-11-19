@@ -12,6 +12,7 @@ mod constants;
 mod endpoints;
 mod feeds;
 mod font;
+mod graphs;
 mod package;
 mod query;
 mod repository_data;
@@ -110,6 +111,10 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(DocsBots.path(), get(views::docs_bots))
         .route(DocsNotSupported.path(), get(views::docs_not_supported))
         .route(DocsRequirements.path(), get(views::docs_requirements))
+        .route(GraphTotalPackages.path(), get(views::graph_total_packages))
+        .route(GraphTotalProjects.path(), get(views::graph_total_projects))
+        .route(GraphTotalMaintainers.path(), get(views::graph_total_maintainers))
+        .route(GraphTotalProblems.path(), get(views::graph_total_problems))
         .route(Log.path(), get(views::log))
         .route(MaintainerRepoFeed.path(), get(views::maintainer_repo_feed))
         .route(MaintainerRepoFeedAtom.path(), get(views::maintainer_repo_feed_atom))
