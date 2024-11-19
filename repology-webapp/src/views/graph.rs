@@ -18,12 +18,24 @@ const GRAPH_PERIOD: Duration = Duration::from_days(21);
 
 async fn graph_total_generic(pool: &PgPool, field: &str, stroke: &str) -> EndpointResult {
     let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(indoc! {r#"
-        SELECT
-            ts AS timestamp,
-            (snapshot->>$1)::real AS value
-        FROM statistics_history
-        WHERE ts >= now() - $2
-        ORDER BY ts
+        (
+            SELECT
+                ts AS timestamp,
+                (snapshot->>$1)::real AS value
+            FROM statistics_history
+            WHERE ts < now() - $2
+            ORDER BY ts DESC
+            LIMIT 1
+        )
+        UNION ALL
+        (
+            SELECT
+                ts AS timestamp,
+                (snapshot->>$1)::real AS value
+            FROM statistics_history
+            WHERE ts >= now() - $2
+            ORDER BY ts
+        )
     "#})
     .bind(&field)
     .bind(&GRAPH_PERIOD)
