@@ -72,10 +72,12 @@ fn calculate_ticks(min: f32, max: f32, graph_type: GraphType) -> Ticks {
         0
     };
 
+    let start = (min / step).ceil() * step;
+
     Ticks {
-        start: (min / step).ceil() * step,
+        start,
         step,
-        count: ((max - min) / step).floor() as usize + 1,
+        count: ((max - start) / step).floor() as usize + 1,
         precision,
     }
 }
@@ -463,6 +465,28 @@ mod tests {
                     (10. / 11., String::from("10pcs")),
                 ],
             }
+        );
+    }
+
+    #[test]
+    fn test_normalize_graph_data_ticks_incorrect_calculation() {
+        // regression where tick count was calculated incorrectly
+        // and there was an extra tick outside the graph
+        let data = normalize_graph_data(
+            &vec![
+                (Duration::from_hours(24), 6514.0),
+                (Duration::from_hours(0), 6745.0),
+            ],
+            GraphType::Integer,
+            Duration::from_days(1),
+            "",
+        );
+        assert_eq!(
+            data.y_ticks
+                .iter()
+                .map(|(_, label)| label.as_str())
+                .collect::<Vec<_>>(),
+            vec!["6550", "6600", "6650", "6700"]
         );
     }
 
