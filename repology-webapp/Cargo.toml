@@ -13,7 +13,7 @@ axum = { version = "0.7.9", features = ["macros"] }
 chrono = { version = "0.4.38", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
 clap = { version = "4.5.21", features = ["derive"] }
-flate2 = "1.0.33"
+flate2 = "1.0.35"
 include_dir = { version = "0.7.4", features = ["glob", "nightly"] }
 indexmap = "2.6.0"
 indoc = "2.0.5"
