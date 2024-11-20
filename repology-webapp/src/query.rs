@@ -10,7 +10,7 @@ pub fn deserialize_bool_flag<'de, D>(deserializer: D) -> Result<bool, D::Error>
 where
     D: Deserializer<'de>,
 {
-    Ok(!<&str>::deserialize(deserializer)?.is_empty())
+    Ok(!<std::borrow::Cow<str>>::deserialize(deserializer)?.is_empty())
 }
 
 pub fn deserialize_seq<'de, D, C, I>(deserializer: D) -> Result<C, D::Error>
@@ -19,7 +19,7 @@ where
     C: FromIterator<I>,
     I: Deserialize<'de>,
 {
-    <&str>::deserialize(deserializer)?
+    <std::borrow::Cow<str>>::deserialize(deserializer)?
         .split(',')
         .map(|s| I::deserialize(s.into_deserializer()))
         .try_collect()
@@ -51,15 +51,19 @@ mod tests {
             #[serde(default)]
             #[serde(deserialize_with = "deserialize_bool_flag")]
             d: bool,
+            #[serde(default)]
+            #[serde(deserialize_with = "deserialize_bool_flag")]
+            e: bool,
         }
 
-        let uri: Uri = "https://example.com/foo?b&c=&d=1".parse().unwrap();
+        let uri: Uri = "https://example.com/foo?b&c=&d=1&e=+".parse().unwrap();
         let params = Query::<Params>::try_from_uri(&uri).unwrap().0;
 
         assert_eq!(params.a, false);
         assert_eq!(params.b, false);
         assert_eq!(params.c, false);
         assert_eq!(params.d, true);
+        assert_eq!(params.e, true);
     }
 
     #[test]
