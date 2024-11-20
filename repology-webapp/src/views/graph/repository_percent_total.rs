@@ -14,9 +14,13 @@ use crate::state::AppState;
 
 use super::common::GRAPH_PERIOD;
 
+fn get_true() -> bool {
+    true
+}
+
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
-    #[serde(default)]
+    #[serde(default = "get_true")]
     #[serde(deserialize_with = "crate::query::deserialize_bool_flag")]
     pub experimental_history: bool,
 }
