@@ -151,6 +151,7 @@ pub fn render_graph(
     points: &Vec<(Duration, f32)>,
     graph_type: GraphType,
     period: Duration,
+    suffix: &str,
     stroke: &str,
 ) -> String {
     let period_days = period.as_secs() / (60 * 60 * 24);
@@ -164,7 +165,7 @@ pub fn render_graph(
     const GRAPH_AREA_WIDTH: u64 = IMAGE_WIDTH - GRAPH_AREA_MARGIN_RIGHT;
     const GRAPH_AREA_HEIGHT: u64 = IMAGE_HEIGHT - GRAPH_AREA_MARGIN_BOTTOM - GRAPH_AREA_MARGIN_TOP;
 
-    let data = normalize_graph_data(points, graph_type, Duration::from_days(period_days), "");
+    let data = normalize_graph_data(points, graph_type, Duration::from_days(period_days), suffix);
 
     let pixel_x = |x: f32| ((1.0 - x) * (GRAPH_AREA_WIDTH as f32)).floor() + 0.5;
     let pixel_y = |y: f32| {

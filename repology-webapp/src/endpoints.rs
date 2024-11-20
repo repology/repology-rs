@@ -124,6 +124,22 @@ pub enum Endpoint {
     #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable.svg"))]
     GraphRepoProjectsVulnerable,
 
+    #[strum(props(path = "/graph/repo/:repository_name/projects_newest_percent.svg"))]
+    GraphRepoProjectsNewestPercent,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_outdated_percent.svg"))]
+    GraphRepoProjectsOutdatedPercent,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_unique_percent.svg"))]
+    GraphRepoProjectsUniquePercent,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_problematic_percent.svg"))]
+    GraphRepoProjectsProblematicPercent,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable_percent.svg"))]
+    GraphRepoProjectsVulnerablePercent,
+
+    #[strum(props(path = "/graph/repo/:repository_name/problems_per_project.svg"))]
+    GraphRepoProblemsPerProject,
+    #[strum(props(path = "/graph/repo/:repository_name/projects_per_maintainer.svg"))]
+    GraphRepoProjectsPerMaintainer,
+
     // Opensearch
     #[strum(props(path = "/opensearch/project.xml"))]
     OpensearchProject,
@@ -262,21 +278,6 @@ pub enum Endpoint {
     GraphMapRepoSizeFreshNonunique,
     #[strum(props(path = "/graph/map_repo_size_freshness.svg"))]
     GraphMapRepoSizeFreshness,
-
-    #[strum(props(path = "/graph/repo/:repository_name/projects_newest_percent.svg"))]
-    GraphRepoProjectsNewestPercent,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_outdated_percent.svg"))]
-    GraphRepoProjectsOutdatedPercent,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_unique_percent.svg"))]
-    GraphRepoProjectsUniquePercent,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_problematic_percent.svg"))]
-    GraphRepoProjectsProblematicPercent,
-    #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable_percent.svg"))]
-    GraphRepoProjectsVulnerablePercent,
-    #[strum(props(path = "/graph/repo/:repository_name/problems_per_metapackage.svg"))]
-    GraphRepoProblemsPerMetapackage,
-    #[strum(props(path = "/graph/repo/:repository_name/packages_per_maintainer.svg"))]
-    GraphRepoPackagesPerMaintainer,
 
     // Badges
     #[strum(props(path = "/badge/versions-matrix.svg"))]

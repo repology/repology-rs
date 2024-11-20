@@ -86,7 +86,21 @@ async fn test_graphs_repository(pool: PgPool) {
     );
     check_response!(
         pool,
+        "/graph/repo/freebsd/projects_unique_percent.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
         "/graph/repo/freebsd/projects_newest.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_newest_percent.svg",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
@@ -100,6 +114,13 @@ async fn test_graphs_repository(pool: PgPool) {
     );
     check_response!(
         pool,
+        "/graph/repo/freebsd/projects_outdated_percent.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
         "/graph/repo/freebsd/projects_problematic.svg",
         status OK,
         content_type IMAGE_SVG,
@@ -107,7 +128,35 @@ async fn test_graphs_repository(pool: PgPool) {
     );
     check_response!(
         pool,
+        "/graph/repo/freebsd/projects_problematic_percent.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
         "/graph/repo/freebsd/projects_vulnerable.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_vulnerable_percent.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/problems_per_project.svg",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_per_maintainer.svg",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
@@ -122,49 +171,98 @@ async fn test_graphs_repository(pool: PgPool) {
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/maintainers.svg?experimental_history",
+        "/graph/repo/freebsd/maintainers.svg?experimental_history=1",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/projects_total.svg?experimental_history",
+        "/graph/repo/freebsd/projects_total.svg?experimental_history=1",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/projects_unique.svg?experimental_history",
+        "/graph/repo/freebsd/projects_unique.svg?experimental_history=1",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/projects_newest.svg?experimental_history",
+        "/graph/repo/freebsd/projects_unique_percent.svg?experimental_history=1",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/projects_outdated.svg?experimental_history",
+        "/graph/repo/freebsd/projects_newest.svg?experimental_history=1",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/projects_problematic.svg?experimental_history",
+        "/graph/repo/freebsd/projects_newest_percent.svg?experimental_history=1",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/projects_vulnerable.svg?experimental_history",
+        "/graph/repo/freebsd/projects_outdated.svg?experimental_history=1",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_outdated_percent.svg?experimental_history=1",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_problematic.svg?experimental_history=1",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_problematic_percent.svg?experimental_history=1",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_vulnerable.svg?experimental_history=1",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_vulnerable_percent.svg?experimental_history=1",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/problems_per_project.svg?experimental_history=1",
+        status OK,
+        content_type IMAGE_SVG,
+        svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
+    );
+    check_response!(
+        pool,
+        "/graph/repo/freebsd/projects_per_maintainer.svg?experimental_history=1",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
