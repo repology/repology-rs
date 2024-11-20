@@ -67,6 +67,41 @@ mod tests {
     }
 
     #[test]
+    fn test_bool_flag_default_true() {
+        fn get_true() -> bool {
+            true
+        }
+
+        #[derive(Deserialize)]
+        struct Params {
+            #[serde(default = "get_true")]
+            #[serde(deserialize_with = "deserialize_bool_flag")]
+            a: bool,
+            #[serde(default = "get_true")]
+            #[serde(deserialize_with = "deserialize_bool_flag")]
+            b: bool,
+            #[serde(default = "get_true")]
+            #[serde(deserialize_with = "deserialize_bool_flag")]
+            c: bool,
+            #[serde(default = "get_true")]
+            #[serde(deserialize_with = "deserialize_bool_flag")]
+            d: bool,
+            #[serde(default = "get_true")]
+            #[serde(deserialize_with = "deserialize_bool_flag")]
+            e: bool,
+        }
+
+        let uri: Uri = "https://example.com/foo?b&c=&d=1&e=+".parse().unwrap();
+        let params = Query::<Params>::try_from_uri(&uri).unwrap().0;
+
+        assert_eq!(params.a, true);
+        assert_eq!(params.b, false);
+        assert_eq!(params.c, false);
+        assert_eq!(params.d, true);
+        assert_eq!(params.e, true);
+    }
+
+    #[test]
     fn test_seq() {
         #[derive(Debug, PartialEq, Eq, Hash, Deserialize)]
         enum Test {
