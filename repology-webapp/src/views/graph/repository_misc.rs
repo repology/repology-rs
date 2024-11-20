@@ -25,6 +25,7 @@ async fn graph_generic(
     state: &AppState,
     repository_name: &str,
     experimental_history: bool,
+    multiplier: f32,
     divident_field_name: &str,
     divisor_field_name: &str,
     stroke: &str,
@@ -48,7 +49,7 @@ async fn graph_generic(
                             CASE
                                 WHEN {1} = 0 THEN NULL
                                 ELSE {0}::real / {1}::real
-                            END AS value
+                            END * $5 AS value
                         FROM repositories_history_new
                         WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts < now() - $4
                         ORDER BY ts DESC
@@ -61,7 +62,7 @@ async fn graph_generic(
                             CASE
                                 WHEN {1} = 0 THEN NULL
                                 ELSE {0}::real / {1}::real
-                            END AS value
+                            END * $5 AS value
                         FROM repositories_history_new
                         WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts >= now() - $4
                         ORDER BY ts
@@ -79,7 +80,7 @@ async fn graph_generic(
                         CASE
                             WHEN (snapshot->$1->>$3)::integer = 0 THEN NULL
                             ELSE (snapshot->$1->>$2)::real / (snapshot->$1->>$3)::real
-                        END AS value
+                        END * $5 AS value
                     FROM repositories_history
                     WHERE ts < now() - $4
                     ORDER BY ts DESC
@@ -92,7 +93,7 @@ async fn graph_generic(
                         CASE
                             WHEN (snapshot->$1->>$3)::integer = 0 THEN NULL
                             ELSE (snapshot->$1->>$2)::real / (snapshot->$1->>$3)::real
-                        END AS value
+                        END * $5 AS value
                     FROM repositories_history
                     WHERE ts >= now() - $4
                     ORDER BY ts
@@ -105,6 +106,7 @@ async fn graph_generic(
         .bind(&divident_field_name.replace("num_projects", "num_metapackages"))
         .bind(&divisor_field_name.replace("num_projects", "num_metapackages"))
         .bind(&GRAPH_PERIOD)
+        .bind(&multiplier)
         .fetch_all(&state.pool)
         .await?;
 
@@ -130,7 +132,7 @@ async fn graph_generic(
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
-pub async fn graph_repository_problems_per_project(
+pub async fn graph_repository_problems_per_1000_projects(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
     State(state): State<AppState>,
@@ -139,6 +141,7 @@ pub async fn graph_repository_problems_per_project(
         &state,
         &repository_name,
         query.experimental_history,
+        1000.0,
         "num_problems",
         "num_projects",
         "#c0c000",
@@ -156,6 +159,7 @@ pub async fn graph_repository_projects_per_maintainer(
         &state,
         &repository_name,
         query.experimental_history,
+        1.0,
         "num_projects",
         "num_maintainers",
         "#c0c000",

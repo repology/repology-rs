@@ -135,8 +135,8 @@ pub enum Endpoint {
     #[strum(props(path = "/graph/repo/:repository_name/projects_vulnerable_percent.svg"))]
     GraphRepoProjectsVulnerablePercent,
 
-    #[strum(props(path = "/graph/repo/:repository_name/problems_per_project.svg"))]
-    GraphRepoProblemsPerProject,
+    #[strum(props(path = "/graph/repo/:repository_name/problems_per_1000_projects.svg"))]
+    GraphRepoProblemsPer1000Projects,
     #[strum(props(path = "/graph/repo/:repository_name/projects_per_maintainer.svg"))]
     GraphRepoProjectsPerMaintainer,
 

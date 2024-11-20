@@ -149,7 +149,7 @@ async fn test_graphs_repository(pool: PgPool) {
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/problems_per_project.svg",
+        "/graph/repo/freebsd/problems_per_1000_projects.svg",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
@@ -255,7 +255,7 @@ async fn test_graphs_repository(pool: PgPool) {
     );
     check_response!(
         pool,
-        "/graph/repo/freebsd/problems_per_project.svg?experimental_history=1",
+        "/graph/repo/freebsd/problems_per_1000_projects.svg?experimental_history=1",
         status OK,
         content_type IMAGE_SVG,
         svg_xpath "count(//svg:g[1]/svg:line[1])" 1_f64,
