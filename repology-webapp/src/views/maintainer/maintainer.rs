@@ -55,6 +55,14 @@ fn generate_maintainer_links(maintainer_name: &str) -> Vec<String> {
     res
 }
 
+// TODO:
+// This endpoint (and maybe other similar ones) should be refactored the following way:
+// - All code which transforms data from database objects into template objects should
+//   be moved to template object constructors
+// - There should be an object for maintainer counters too, so we don't need to have
+//   partially deconstructed Maintainer, and we also could fill percentages right away
+//   instead of trying to format these in templates
+
 struct MaintainerRepository {
     pub name: String,
     pub num_packages: usize,
