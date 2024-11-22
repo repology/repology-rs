@@ -1,0 +1,29 @@
+{% extends "_base.html" %}
+{% import "_macros/time.html" as time %}
+
+{% block extrameta %}
+	<meta http-equiv="robots" content="noindex">
+{% endblock %}
+
+{% block title %}Gone maintainer {{ maintainer_name }} - Repology{% endblock %}
+{% block header %}Gone maintainer <strong>{{ maintainer_name }}</strong>{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<div class="alert alert-warning" role="alert">
+	<p>Sorry, but Repology no longer knows maintainer <strong>{{ maintainer_name }}</strong>{% if let Some(orphaned_at) = maintainer.orphaned_at %} since {% call time::format_absolute_time(orphaned_at) %}{% call time::timezone_abbr() %} ({% call time::format_time_interval(chrono::Utc::now() - orphaned_at) %} ago){% endif %}.</p>
+	<p>Some of the reasons which may have caused this:</p>
+	<ul>
+		<li>The maintainer no longer maintains any packages.</li>
+		<li>The maintainer obfuscates his email in package metadata, so repology cannot parse it.</li>
+		<li>The maintainer opted out from repology processing and was manually blacklisted.</li>
+		<li>The maintainer opted to merge this entry into another one.</li>
+		<li>Repology no longer supports any repositories this maintainer is active in. Check <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}">the list</a>.</li>
+		<li>The maintainer identifier (email) is misspelled, or have changed. Try <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainers, [])? }}">searching</a>. It is quite common for only domain part to change.</li>
+		<li>Repology is no longer able to parse maintainer information for repositories this maintainer is active in. Check <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesFields, [])? }}">repository support table</a>. This can be fixed if repositories in question setup a more complete dump of information on their packages.</li>
+	</ul>
+</div>
+
+</div>
+{% endblock %}

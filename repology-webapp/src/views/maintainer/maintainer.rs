@@ -90,6 +90,21 @@ struct SimilarMaintainer {
 }
 
 #[derive(Template)]
+#[template(path = "maintainer/unknown.html")]
+struct TemplateParamsUnknown<'a> {
+    ctx: TemplateContext,
+    maintainer_name: &'a str,
+}
+
+#[derive(Template)]
+#[template(path = "maintainer/gone.html")]
+struct TemplateParamsGone<'a> {
+    ctx: TemplateContext,
+    maintainer_name: &'a str,
+    maintainer: Maintainer,
+}
+
+#[derive(Template)]
 #[template(path = "maintainer.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
@@ -149,10 +164,39 @@ pub async fn maintainer(
     .fetch_optional(&state.pool)
     .await?;
 
-    let mut maintainer = if let Some(maintainer) = maintainer {
-        maintainer
-    } else {
-        return Ok((StatusCode::NOT_FOUND, "maintainer not found".to_owned()).into_response());
+    let mut maintainer = match maintainer {
+        Some(maintainer) if maintainer.num_packages > 0 => maintainer,
+        Some(maintainer) => {
+            return Ok((
+                StatusCode::NOT_FOUND, // or should it be GONE?
+                [(
+                    header::CONTENT_TYPE,
+                    HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
+                )],
+                TemplateParamsGone {
+                    ctx,
+                    maintainer_name: &maintainer_name,
+                    maintainer,
+                }
+                .render()?,
+            )
+                .into_response());
+        }
+        None => {
+            return Ok((
+                StatusCode::NOT_FOUND,
+                [(
+                    header::CONTENT_TYPE,
+                    HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
+                )],
+                TemplateParamsUnknown {
+                    ctx,
+                    maintainer_name: &maintainer_name,
+                }
+                .render()?,
+            )
+                .into_response());
+        }
     };
 
     let maintainer_categories: Vec<_> = std::mem::take(&mut maintainer.num_projects_per_category.0)
