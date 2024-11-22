@@ -35,3 +35,12 @@ pub async fn legacy_metapackage_versions(
         TemplateContext::new(Endpoint::ProjectVersions, gen_path, gen_query).url_for_self(&[])?,
     )
 }
+
+pub async fn legacy_metapackage_packages(
+    Path(gen_path): Path<Vec<(String, String)>>,
+    Query(gen_query): Query<Vec<(String, String)>>,
+) -> EndpointResult {
+    redirect(
+        TemplateContext::new(Endpoint::ProjectPackages, gen_path, gen_query).url_for_self(&[])?,
+    )
+}
