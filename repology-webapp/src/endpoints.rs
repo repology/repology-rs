@@ -31,6 +31,8 @@ pub enum Endpoint {
     ProjectBadges,
 
     // Maintainer
+    #[strum(props(path = "/maintainer/:maintainer_name", section = "Maintainers"))]
+    Maintainer,
     #[strum(props(
         path = "/maintainer/:maintainer_name/feed-for-repo/:repository_name",
         section = "Maintainers"
@@ -187,10 +189,6 @@ pub enum Endpoint {
     Maintainers,
     #[strum(props(path = "/maintainers/:bound/", section = "Maintainers"))]
     MaintainersBounded,
-
-    // Maintainer
-    #[strum(props(path = "/maintainer/:maintainer_name", section = "Maintainers"))]
-    Maintainer,
 
     // Repositories
     #[strum(props(path = "/repositories/statistics", section = "Repositories"))]

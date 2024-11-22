@@ -3,8 +3,10 @@
 
 pub mod feed;
 pub mod feed_atom;
+pub mod maintainer;
 pub mod problems;
 
 pub use feed::*;
 pub use feed_atom::*;
+pub use maintainer::*;
 pub use problems::*;

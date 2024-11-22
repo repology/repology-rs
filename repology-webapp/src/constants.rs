@@ -27,3 +27,5 @@ pub const HTML_FEED_MAX_ENTRIES: usize = 500;
 pub const ATOM_FEED_MAX_ENTRIES: usize = 500;
 pub const ATOM_FEED_MAX_AGE: Duration = Duration::from_days(31);
 pub const ATOM_FEED_MIN_ENTRIES: usize = 1;
+pub const NUM_SIMILAR_MAINTAINERS: usize = 50;
+pub const MAX_MAINTAINER_PROJECTS: usize = 500;
