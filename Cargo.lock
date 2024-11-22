@@ -2030,6 +2030,7 @@ dependencies = [
  "metrics-exporter-prometheus",
  "metrics-process",
  "mime",
+ "num-traits",
  "repology-common",
  "repology-webapp-test-utils",
  "serde",

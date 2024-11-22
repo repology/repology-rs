@@ -123,4 +123,50 @@ impl TemplateContext {
     pub fn deref<T: Copy>(&self, r: &T) -> T {
         *r
     }
+
+    // XXX: convert to free functions
+    pub fn format_percent<T>(&self, divident: &T, divisor: &T) -> String
+    where
+        T: num_traits::Num + num_traits::cast::AsPrimitive<f32>,
+    {
+        if *divisor == T::zero() {
+            "-".into()
+        } else {
+            format!("{:.1}%", 100.0 * divident.as_() / divisor.as_())
+        }
+    }
+
+    pub fn format_percent_longer<T>(&self, divident: &T, divisor: &T) -> String
+    where
+        T: num_traits::Num + num_traits::cast::AsPrimitive<f32>,
+    {
+        if *divisor == T::zero() {
+            "-".into()
+        } else {
+            format!("{:.2}%", 100.0 * divident.as_() / divisor.as_())
+        }
+    }
+}
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_format_percent() {
+        let ctx = TemplateContext::new_without_params(crate::endpoints::Endpoint::Index);
+
+        assert_eq!(ctx.format_percent(&1_usize, &2_usize), "50.0%".to_owned());
+        assert_eq!(ctx.format_percent(&1_i32, &2_i32), "50.0%".to_owned());
+
+        assert_eq!(
+            ctx.format_percent_longer(&1_usize, &2_usize),
+            "50.00%".to_owned()
+        );
+        assert_eq!(
+            ctx.format_percent_longer(&1_i32, &2_i32),
+            "50.00%".to_owned()
+        );
+    }
 }
