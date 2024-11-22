@@ -4,7 +4,7 @@
 use std::collections::HashMap;
 
 use askama::Template;
-use axum::extract::{Path, Query, State};
+use axum::extract::{Path, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
 use indoc::indoc;
@@ -79,17 +79,9 @@ struct TemplateParams<'a> {
     repositories_data: Vec<RepositoryData>,
 }
 
-#[derive(Deserialize, Debug)]
-pub struct QueryParams {
-    #[serde(default)]
-    #[serde(deserialize_with = "crate::query::deserialize_bool_flag")]
-    pub experimental_link_query: bool,
-}
-
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_packages(
     Path(project_name): Path<String>,
-    Query(query): Query<QueryParams>,
     State(state): State<AppState>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectPackages);
@@ -147,48 +139,26 @@ pub async fn project_packages(
     .fetch_all(&state.pool)
     .await?;
 
-    let links: Vec<Link> = if query.experimental_link_query {
-        let all_link_ids: Vec<_> = packages
+    let links: Vec<Link> = sqlx::query_as(indoc! {"
+        SELECT
+            id,
+            url,
+            last_checked,
+            ipv4_success,
+            ipv4_permanent_redirect_target IS NOT NULL AS has_ipv4_permanent_redirect,
+            ipv6_success,
+            ipv6_permanent_redirect_target IS NOT NULL AS has_ipv6_permanent_redirect
+        FROM links WHERE id = ANY($1)
+    "})
+    .bind(
+        &packages
             .iter()
             .flat_map(|package| package.links.iter().map(|(_, link_id, _)| link_id))
             .unique()
-            .collect();
-
-        sqlx::query_as(indoc! {"
-            SELECT
-                id,
-                url,
-                last_checked,
-                ipv4_success,
-                ipv4_permanent_redirect_target IS NOT NULL AS has_ipv4_permanent_redirect,
-                ipv6_success,
-                ipv6_permanent_redirect_target IS NOT NULL AS has_ipv6_permanent_redirect
-            FROM links WHERE id = ANY($1)
-        "})
-        .bind(&all_link_ids)
-        .fetch_all(&state.pool)
-        .await?
-    } else {
-        sqlx::query_as(indoc! {"
-            WITH link_ids AS (
-                SELECT DISTINCT (json_array_elements(links)->>1)::integer AS id
-                FROM packages
-                WHERE effname = $1
-            )
-            SELECT
-                id,
-                url,
-                last_checked,
-                ipv4_success,
-                ipv4_permanent_redirect_target IS NOT NULL AS has_ipv4_permanent_redirect,
-                ipv6_success,
-                ipv6_permanent_redirect_target IS NOT NULL AS has_ipv6_permanent_redirect
-            FROM links INNER JOIN link_ids USING(id);
-        "})
-        .bind(&project_name)
-        .fetch_all(&state.pool)
-        .await?
-    };
+            .collect::<Vec<_>>(),
+    )
+    .fetch_all(&state.pool)
+    .await?;
 
     let mut packages_by_repo = packages
         .into_iter()
