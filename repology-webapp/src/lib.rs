@@ -161,6 +161,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(StaticFile.path(), get(views::static_file))
         .route(Tools.path(), get(views::tools))
         .route(LegacyBadgeVersionOnlyForRepo.path(), get(views::legacy_badge_version_only_for_repo))
+        .route(LegacyMetapackage.path(), get(views::legacy_metapackage_versions))
         .route(LegacyMetapackageVersions.path(), get(views::legacy_metapackage_versions))
         .route(ToolProjectBy.path(), get(views::project_by))
         .route_layer(middleware::from_fn(track_metrics))
