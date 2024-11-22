@@ -90,6 +90,8 @@ pub enum Endpoint {
     // Misc
     #[strum(props(path = "/log/:run_id"))]
     Log,
+    #[strum(props(path = "/favicon.ico"))]
+    Favicon,
 
     // API
     #[strum(props(path = "/api/v1/projects/"))]
@@ -257,8 +259,6 @@ pub enum Endpoint {
     // Misc
     #[strum(props(path = "/link/*url"))]
     Link,
-    #[strum(props(path = "/favicon.ico"))]
-    Favicon,
 
     // API
     #[strum(props(path = "/api/v1/repository/:repository_name/problems"))]

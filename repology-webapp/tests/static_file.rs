@@ -63,4 +63,6 @@ async fn test_mime_types(pool: PgPool) {
     check_response!(pool, "/static/repology.v21.css", status OK, content_type "text/css");
     check_response!(pool, "/static/repology40x40.v1.png", status OK, content_type "image/png");
     check_response!(pool, "/static/vulnerable.v1.svg", status OK, content_type "image/svg+xml");
+
+    check_response!(pool, "/favicon.ico", status OK, content_type "image/x-icon");
 }
