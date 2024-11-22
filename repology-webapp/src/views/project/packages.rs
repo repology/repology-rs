@@ -9,7 +9,6 @@ use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use itertools::Itertools;
-use serde::Deserialize;
 use sqlx::FromRow;
 
 use repology_common::{LinkType, PackageFlags, PackageStatus};
