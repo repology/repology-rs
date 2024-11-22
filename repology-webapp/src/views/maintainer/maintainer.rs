@@ -21,17 +21,6 @@ use crate::template_context::TemplateContext;
 #[derive(FromRow)]
 pub struct Maintainer {
     pub num_packages: i32,
-    pub num_packages_newest: i32,
-    pub num_packages_outdated: i32,
-    pub num_packages_ignored: i32,
-    pub num_packages_unique: i32,
-    pub num_packages_devel: i32,
-    pub num_packages_legacy: i32,
-    pub num_packages_incorrect: i32,
-    pub num_packages_untrusted: i32,
-    pub num_packages_noscheme: i32,
-    pub num_packages_rolling: i32,
-    pub num_packages_vulnerable: i32,
 
     pub num_projects: i32,
     pub num_projects_newest: i32,
@@ -43,7 +32,6 @@ pub struct Maintainer {
 
     pub num_projects_per_category: sqlx::types::Json<HashMap<String, i32>>,
 
-    pub first_seen: DateTime<Utc>,
     pub orphaned_at: Option<DateTime<Utc>>,
 }
 
@@ -131,32 +119,14 @@ pub async fn maintainer(
     let maintainer: Option<Maintainer> = sqlx::query_as(indoc! {"
         SELECT
             num_packages,
-            num_packages_newest,
-            num_packages_outdated,
-            num_packages_ignored,
-            num_packages_unique,
-            num_packages_devel,
-            num_packages_legacy,
-            num_packages_incorrect,
-            num_packages_untrusted,
-            num_packages_noscheme,
-            num_packages_rolling,
-            num_packages_vulnerable,
-
             num_projects,
             num_projects_newest,
             num_projects_outdated,
             num_projects_problematic,
             num_projects_vulnerable,
-
             coalesce(counts_per_repo, '{}'::jsonb) AS counts_per_repo,
-
             coalesce(num_projects_per_category, '{}'::jsonb) AS num_projects_per_category,
-
-            first_seen,
-            orphaned_at,
-            now() - first_seen AS first_seen_ago,
-            now() - orphaned_at AS orphaned_ago
+            orphaned_at
         FROM maintainers
         WHERE maintainer = $1
     "})
