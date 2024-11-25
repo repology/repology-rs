@@ -34,20 +34,6 @@ jobs:
       - name: Format check
         run: cargo fmt --check
       - name: Test
-        run: cargo test --features=coverage
+        run: cargo test
         env:
           DATABASE_URL: postgres://postgres@localhost:5432/
-          RUSTFLAGS: "-Cinstrument-coverage"
-          RUSTDOCFLAGS: "-Cinstrument-coverage"
-          LLVM_PROFILE_FILE: "${{ github.workspace }}/default_%m_%p.profraw"
-      - name: Collect coverage
-        run: |
-          curl -sL https://github.com/mozilla/grcov/releases/download/v0.8.19/grcov-x86_64-unknown-linux-gnu.tar.bz2 | tar -xjf-
-          ./grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --keep-only 'repology-webapp/*' --keep-only 'repology-common/*' --keep-only 'repology-vulnupdater/*' -o coverage.lcov
-      - name: Submit coverage
-        if: ${{ github.actor != 'dependabot[bot]' && github.event_name != 'pull_request' }}
-        uses: codecov/codecov-action@v5
-        with:
-          fail_ci_if_error: true
-          files: ./coverage.lcov
-          token: ${{ secrets.CODECOV_TOKEN }}
