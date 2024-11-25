@@ -25,7 +25,7 @@ use serde_repr::Deserialize_repr;
 #[derive(
     Debug, PartialEq, Eq, sqlx::Type, PartialOrd, Ord, Hash, Deserialize_repr, Copy, Clone,
 )]
-#[repr(i8)]
+#[repr(i32)]
 pub enum LinkType {
     /// Projects official home page maintained by its authors.
     ///

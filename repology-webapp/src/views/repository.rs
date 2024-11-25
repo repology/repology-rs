@@ -4,7 +4,9 @@
 pub mod feed;
 pub mod feed_atom;
 pub mod problems;
+pub mod repository;
 
 pub use feed::*;
 pub use feed_atom::*;
 pub use problems::*;
+pub use repository::*;

@@ -50,6 +50,8 @@ pub enum Endpoint {
     MaintainerProblems,
 
     // Repository
+    #[strum(props(path = "/repository/:repository_name", section = "Repositories"))]
+    Repository,
     #[strum(props(path = "/repository/:repository_name/feed", section = "Repositories"))]
     RepositoryFeed,
     #[strum(props(
@@ -211,10 +213,6 @@ pub enum Endpoint {
     RepositoriesGraphs,
     #[strum(props(path = "/repositories/fields", section = "Repositories"))]
     RepositoriesFields,
-
-    // Repository
-    #[strum(props(path = "/repository/:repository_name", section = "Repositories"))]
-    Repository,
 
     // Tools
     #[strum(props(path = "/tools/trending", section = "Tools"))]
