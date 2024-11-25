@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashMap;
+use std::time::Instant;
 
 use askama::Template;
 use axum::extract::{Path, State};
@@ -10,6 +11,7 @@ use axum::response::IntoResponse;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
 use itertools::Itertools;
+use metrics::histogram;
 use sqlx::FromRow;
 
 use crate::endpoints::Endpoint;
@@ -214,6 +216,9 @@ pub async fn maintainer(
         })
         .collect();
 
+    let all_queries_start = Instant::now();
+
+    let projects_query_start = Instant::now();
     let projects: Vec<String> = sqlx::query_scalar(indoc! {"
         SELECT
             effname
@@ -226,7 +231,9 @@ pub async fn maintainer(
     .bind(&(crate::constants::MAX_MAINTAINER_PROJECTS as i32))
     .fetch_all(&state.pool)
     .await?;
+    let projects_query_duration = projects_query_start.elapsed();
 
+    let similar_maintainers_query_start = Instant::now();
     // this obscure request needs some clarification
     //
     // what we calculate as score here is actually Jaccard index
@@ -278,6 +285,16 @@ pub async fn maintainer(
     .bind(&(crate::constants::NUM_SIMILAR_MAINTAINERS as i32))
     .fetch_all(&state.pool)
     .await?;
+    let similar_maintainers_query_duration = similar_maintainers_query_start.elapsed();
+
+    let all_queries_duration = all_queries_start.elapsed();
+
+    histogram!("repology_webapp_maintainer_query_duration_seconds", "type" => "projects")
+        .record(projects_query_duration.as_secs_f64());
+    histogram!("repology_webapp_maintainer_query_duration_seconds", "type" => "similar_maintainers")
+        .record(similar_maintainers_query_duration.as_secs_f64());
+    histogram!("repology_webapp_maintainer_query_duration_seconds", "type" => "all")
+        .record(all_queries_duration.as_secs_f64());
 
     let similar_maintainers_columns =
         similar_maintainers.split_at((similar_maintainers.len() + 1) / 2);
