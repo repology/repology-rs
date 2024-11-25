@@ -108,7 +108,7 @@ async fn graph_generic(
         render_graph(
             &points
                 .into_iter()
-                .map(|(timestamp, value)| ((now - timestamp).to_std().unwrap(), value))
+                .map(|(timestamp, value)| ((now - timestamp).to_std().unwrap_or_default(), value))
                 .collect(),
             GraphType::Integer,
             GRAPH_PERIOD,
