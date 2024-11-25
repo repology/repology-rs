@@ -29,7 +29,7 @@ INSERT INTO repositories(
 	'Stripped',
 	'active',
 	now() - interval '2 week',
-	now(),
+	now() + interval '5 second',
 	'{}'::jsonb,
 	1,
 	NULL
@@ -41,7 +41,7 @@ INSERT INTO repositories(
 	'Good',
 	'active',
 	now() - interval '2 week',
-	now(),
+	now() + interval '5 second',
 	'{"repolinks":[{"url":"https://example.com/goodrepo","desc":"Repository homepage"}]}'::jsonb,
 	1,
 	'{0,1,7,9,19}'::integer[]
