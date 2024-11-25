@@ -58,4 +58,12 @@ async fn test_maintainer(pool: PgPool) {
         // contact section
         contains_not "mailto:active@example.com",
     );
+    check_response!(
+        pool,
+        "/maintainer/no-vuln-column@example.com",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        // enough to just be deserialized without errors
+    );
 }

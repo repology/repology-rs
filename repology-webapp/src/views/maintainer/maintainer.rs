@@ -28,7 +28,7 @@ pub struct Maintainer {
     pub num_projects_problematic: i32,
     pub num_projects_vulnerable: i32,
 
-    pub counts_per_repo: sqlx::types::Json<HashMap<String, (i32, i32, i32, i32, i32, i32)>>,
+    pub counts_per_repo: sqlx::types::Json<HashMap<String, Vec<i32>>>,
 
     pub num_projects_per_category: sqlx::types::Json<HashMap<String, i32>>,
 
@@ -190,29 +190,22 @@ pub async fn maintainer(
                 .then_with(|| a.name.cmp(&b.name))
         })
         .collect();
+
     let maintainer_repositories: Vec<_> = std::mem::take(&mut maintainer.counts_per_repo.0)
         .into_iter()
-        .map(
-            |(
+        .map(|(name, fields)| {
+            // there may be 5 or 6 fields - vulnerable projects count was added at some
+            // point and there are still maintainers which do not have it filled
+            MaintainerRepository {
                 name,
-                (
-                    num_packages,
-                    num_projects,
-                    num_projects_newest,
-                    num_projects_outdated,
-                    num_projects_problematic,
-                    num_projects_vulnerable,
-                ),
-            )| MaintainerRepository {
-                name,
-                num_packages: num_packages as usize,
-                num_projects: num_projects as usize,
-                num_projects_newest: num_projects_newest as usize,
-                num_projects_outdated: num_projects_outdated as usize,
-                num_projects_problematic: num_projects_problematic as usize,
-                num_projects_vulnerable: num_projects_vulnerable as usize,
-            },
-        )
+                num_packages: fields[0] as usize,
+                num_projects: fields[1] as usize,
+                num_projects_newest: fields[2] as usize,
+                num_projects_outdated: fields[3] as usize,
+                num_projects_problematic: fields[4] as usize,
+                num_projects_vulnerable: *fields.get(5).unwrap_or(&0) as usize,
+            }
+        })
         .sorted_by(|a, b| {
             a.num_projects_newest
                 .cmp(&b.num_projects_newest)
