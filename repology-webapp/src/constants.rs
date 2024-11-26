@@ -8,7 +8,6 @@ pub const REPOLOGY_HOSTNAME: &str = "https://repology.org";
 
 pub const BUILD_INFO: Option<&str> = option_env!("REPOLOGY_BUILD_INFO");
 
-#[expect(unused)]
 pub const CVES_PER_PAGE: usize = 200;
 pub const HISTORY_PER_PAGE: usize = 500;
 #[expect(unused)]
