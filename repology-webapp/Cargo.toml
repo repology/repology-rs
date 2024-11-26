@@ -5,6 +5,11 @@ edition = "2021"
 
 [features]
 coverage = []  # used to calculate coverage correctly (see https://github.com/rust-lang/rust/issues/110486)
+snapshot-tests = []  # enable snapshot tests
+
+[profile.dev.package]
+insta.opt-level = 3
+similar.opt-level = 3
 
 [dependencies]
 anyhow = "1.0.93"
@@ -39,4 +44,6 @@ url-escape = "0.1.1"
 
 [dev-dependencies]
 float-cmp = "0.10.0"
+insta = "1.41.1"
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }
+tower-service = "0.3.3"

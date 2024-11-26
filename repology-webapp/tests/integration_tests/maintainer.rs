@@ -26,6 +26,14 @@ async fn test_maintainer(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         contains "Gone maintainer",
     );
+    check_response!(
+        pool,
+        "/maintainer/orphaned-in-future@example.com",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "Gone maintainer",
+    );
 
     check_response!(
         pool,

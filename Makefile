@@ -2,6 +2,15 @@ COVERAGE_FLAGS=-Cinstrument-coverage -Zcoverage-options=condition
 
 cov: llvm-cov
 
+snapshot-tests:
+	env INSTA_UPDATE=unseen cargo test --features=snapshot-tests snapshot_tests::
+
+insta:
+	cargo insta review
+
+clean:
+	rm -rf repology-webapp/tests/snapshot_tests/snapshots
+
 grcov:
 	rm -rf target/coverage-profile
 	mkdir -p target/coverage-output-grcov
