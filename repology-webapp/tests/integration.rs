@@ -4,4 +4,4 @@
 #![feature(coverage_attribute)]
 #![coverage(off)]
 
-mod endpoint_tests;
+mod integration_tests;
