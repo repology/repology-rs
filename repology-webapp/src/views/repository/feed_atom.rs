@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use askama::Template;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
@@ -49,7 +51,7 @@ pub async fn repository_feed_atom(
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Path(repository_name): Path<String>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::RepositoryFeedAtom, gen_path, gen_query);
 

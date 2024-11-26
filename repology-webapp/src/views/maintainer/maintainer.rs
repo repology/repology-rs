@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashMap;
+use std::sync::Arc;
 use std::time::Instant;
 
 use askama::Template;
@@ -120,7 +121,7 @@ struct TemplateParams<'a> {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn maintainer(
     Path(maintainer_name): Path<String>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Maintainer);
 

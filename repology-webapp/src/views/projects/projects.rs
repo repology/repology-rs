@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use askama::Template;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue};
@@ -168,25 +170,25 @@ struct TemplateParams {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn projects(
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Projects);
 
-    projects_generic(ctx, None, None, query, state).await
+    projects_generic(ctx, None, None, query, &*state).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn projects_bounded(
     Path(bound): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectsBounded);
 
     if let Some(end) = bound.strip_prefix("..") {
-        projects_generic(ctx, None, Some(end), query, state).await
+        projects_generic(ctx, None, Some(end), query, &*state).await
     } else {
-        projects_generic(ctx, Some(&bound), None, query, state).await
+        projects_generic(ctx, Some(&bound), None, query, &*state).await
     }
 }
 
@@ -196,7 +198,7 @@ async fn projects_generic(
     start_project_name: Option<&str>,
     end_project_name: Option<&str>,
     query: QueryParams,
-    state: AppState,
+    state: &AppState,
 ) -> EndpointResult {
     let filter = ProjectsFilter {
         start_project_name,

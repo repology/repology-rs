@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashSet;
+use std::sync::Arc;
 
 use askama::Template;
 use axum::extract::{Path, Query, State};
@@ -76,7 +77,7 @@ pub async fn repository(
     Query(gen_query): Query<Vec<(String, String)>>,
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::Repository, gen_path, gen_query);
 

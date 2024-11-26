@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use axum::extract::{Path, Query, State};
 use serde::Deserialize;
 
@@ -24,7 +26,7 @@ pub async fn repository_problems(
     Query(gen_query): Query<Vec<(String, String)>>,
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::RepositoryProblems, gen_path, gen_query);
 
@@ -34,7 +36,7 @@ pub async fn repository_problems(
         None,
         query.start_project_name.as_ref().map(|s| s.as_ref()),
         query.end_project_name.as_ref().map(|s| s.as_ref()),
-        state,
+        &*state,
     )
     .await
 }

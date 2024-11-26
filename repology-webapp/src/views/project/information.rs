@@ -6,6 +6,7 @@ mod emails;
 mod slices;
 
 use std::collections::{HashMap, HashSet};
+use std::sync::Arc;
 
 use askama::Template;
 use axum::extract::{Path, State};
@@ -82,7 +83,7 @@ struct TemplateParams<'a> {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_information(
     Path(project_name): Path<String>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectInformation);
 
@@ -103,7 +104,7 @@ pub async fn project_information(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return nonexisting_project(state, ctx, project_name, project).await;
+        return nonexisting_project(&*state, ctx, project_name, project).await;
     }
 
     // TODO: try fetching project and packages in parallel tasks, see

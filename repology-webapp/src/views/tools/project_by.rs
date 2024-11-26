@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashMap;
+use std::sync::Arc;
 
 use anyhow::Result;
 use askama::Template;
@@ -188,7 +189,7 @@ fn project_by_error(
 pub async fn project_by_perform(
     query: QueryParams,
     gen_query: Vec<(String, String)>,
-    state: AppState,
+    state: &AppState,
     name: &str,
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::ToolProjectBy, vec![], gen_query.clone());
@@ -322,7 +323,7 @@ pub async fn project_by_perform(
 pub async fn project_by_construct(
     query: QueryParams,
     gen_query: Vec<(String, String)>,
-    state: AppState,
+    state: &AppState,
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::ToolProjectBy, vec![], gen_query.clone());
 
@@ -363,11 +364,11 @@ pub async fn project_by_construct(
 pub async fn project_by(
     Query(query): Query<QueryParams>,
     Query(gen_query): Query<Vec<(String, String)>>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     if let Some(name) = &query.name.clone() {
-        project_by_perform(query, gen_query, state, name).await
+        project_by_perform(query, gen_query, &*state, name).await
     } else {
-        project_by_construct(query, gen_query, state).await
+        project_by_construct(query, gen_query, &*state).await
     }
 }

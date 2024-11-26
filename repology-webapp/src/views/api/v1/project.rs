@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
@@ -14,7 +16,7 @@ use super::common::ApiV1Package;
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn api_v1_project(
     Path(project_name): Path<String>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let packages: Vec<ApiV1Package> = sqlx::query_as(indoc! {"
         SELECT

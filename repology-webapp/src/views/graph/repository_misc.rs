@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
@@ -139,10 +141,10 @@ async fn graph_generic(
 pub async fn graph_repository_problems_per_1000_projects(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         1000.0,
@@ -157,10 +159,10 @@ pub async fn graph_repository_problems_per_1000_projects(
 pub async fn graph_repository_projects_per_maintainer(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         1.0,

@@ -54,7 +54,7 @@ pub struct ProjectListItem {
     tracing::instrument(skip(state, ctx, project))
 )]
 pub async fn nonexisting_project(
-    state: AppState,
+    state: &AppState,
     ctx: TemplateContext,
     project_name: String,
     project: Option<Project>,

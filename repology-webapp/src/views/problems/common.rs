@@ -63,7 +63,7 @@ pub async fn problems_generic(
     maintainer_name: Option<&str>,
     start_project_name: Option<&str>,
     end_project_name: Option<&str>,
-    state: AppState,
+    state: &AppState,
 ) -> EndpointResult {
     let repository_data = if let Some(repository_data) = state
         .repository_data_cache

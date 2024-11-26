@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
@@ -135,10 +137,10 @@ async fn graph_generic(
 pub async fn graph_repository_projects_newest_percent(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_projects_newest",
@@ -151,10 +153,10 @@ pub async fn graph_repository_projects_newest_percent(
 pub async fn graph_repository_projects_outdated_percent(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_projects_outdated",

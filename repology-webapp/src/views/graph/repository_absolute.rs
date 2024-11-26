@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
@@ -123,7 +125,7 @@ async fn graph_generic(
 pub async fn graph_repository_maintainers(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
         &state,
@@ -139,10 +141,10 @@ pub async fn graph_repository_maintainers(
 pub async fn graph_repository_problems(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_problems",
@@ -155,10 +157,10 @@ pub async fn graph_repository_problems(
 pub async fn graph_repository_projects_total(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_projects",
@@ -171,10 +173,10 @@ pub async fn graph_repository_projects_total(
 pub async fn graph_repository_projects_unique(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_projects_unique",
@@ -187,10 +189,10 @@ pub async fn graph_repository_projects_unique(
 pub async fn graph_repository_projects_newest(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_projects_newest",
@@ -203,10 +205,10 @@ pub async fn graph_repository_projects_newest(
 pub async fn graph_repository_projects_outdated(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_projects_outdated",
@@ -219,10 +221,10 @@ pub async fn graph_repository_projects_outdated(
 pub async fn graph_repository_projects_problematic(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_projects_problematic",
@@ -235,10 +237,10 @@ pub async fn graph_repository_projects_problematic(
 pub async fn graph_repository_projects_vulnerable(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &state,
+        &*state,
         &repository_name,
         query.experimental_history,
         "num_projects_vulnerable",

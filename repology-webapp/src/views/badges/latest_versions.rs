@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::borrow::Cow;
+use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
@@ -47,7 +48,7 @@ impl PackageWithFlags for Package {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn badge_latest_versions(
     Path(project_name): Path<String>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
     let project_name = if let Some(project_name) = project_name.strip_suffix(".svg") {

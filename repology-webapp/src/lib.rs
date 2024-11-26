@@ -24,6 +24,7 @@ mod url_for;
 mod views;
 mod xmlwriter;
 
+use std::sync::Arc;
 use std::time::Instant;
 
 use anyhow::{Context, Error};
@@ -97,7 +98,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .await
         .context("error getting repository metadata")?;
 
-    let state = AppState::new(pool, font_measurer, repository_data_cache);
+    let state = Arc::new(AppState::new(pool, font_measurer, repository_data_cache));
 
     info!("initializing static files");
     let _ = &*STATIC_FILES;

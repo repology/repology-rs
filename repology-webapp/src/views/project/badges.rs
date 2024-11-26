@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashSet;
+use std::sync::Arc;
 
 use askama::Template;
 use axum::extract::{Path, State};
@@ -30,7 +31,7 @@ struct TemplateParams<'a> {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_badges(
     Path(project_name): Path<String>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectBadges);
 
@@ -51,7 +52,7 @@ pub async fn project_badges(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return nonexisting_project(state, ctx, project_name, project).await;
+        return nonexisting_project(&*state, ctx, project_name, project).await;
     }
 
     let containing_repository_names: HashSet<String> = sqlx::query_scalar(indoc! {"

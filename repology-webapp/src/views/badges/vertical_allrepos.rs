@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashSet;
+use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
@@ -97,7 +98,7 @@ fn is_repository_filtered(repository_data: &RepositoryData, query: &QueryParams)
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn badge_vertical_allrepos(
     Path(project_name): Path<String>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
     let project_name = if let Some(project_name) = project_name.strip_suffix(".svg") {

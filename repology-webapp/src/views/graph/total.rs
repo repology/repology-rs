@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use axum::extract::State;
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
@@ -64,21 +66,21 @@ async fn graph_generic(pool: &PgPool, field_name: &str, stroke: &str) -> Endpoin
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
-pub async fn graph_total_packages(State(state): State<AppState>) -> EndpointResult {
+pub async fn graph_total_packages(State(state): State<Arc<AppState>>) -> EndpointResult {
     graph_generic(&state.pool, "num_packages", "#000").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
-pub async fn graph_total_projects(State(state): State<AppState>) -> EndpointResult {
+pub async fn graph_total_projects(State(state): State<Arc<AppState>>) -> EndpointResult {
     graph_generic(&state.pool, "num_metapackages", "#000").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
-pub async fn graph_total_maintainers(State(state): State<AppState>) -> EndpointResult {
+pub async fn graph_total_maintainers(State(state): State<Arc<AppState>>) -> EndpointResult {
     graph_generic(&state.pool, "num_maintainers", "#c000c0").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
-pub async fn graph_total_problems(State(state): State<AppState>) -> EndpointResult {
+pub async fn graph_total_problems(State(state): State<Arc<AppState>>) -> EndpointResult {
     graph_generic(&state.pool, "num_problems", "#c00000").await
 }

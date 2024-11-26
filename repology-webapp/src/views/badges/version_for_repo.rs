@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::IntoResponse;
@@ -56,7 +58,7 @@ impl PackageWithStatus for Package {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn badge_version_for_repo(
     Path((repository_name, project_name)): Path<(String, String)>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
     let project_name = if let Some(project_name) = project_name.strip_suffix(".svg") {

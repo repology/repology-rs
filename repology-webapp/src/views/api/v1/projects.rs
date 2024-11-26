@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashMap;
+use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue};
@@ -26,21 +27,21 @@ struct ApiV1PackageWithEffname {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn api_v1_projects(
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    api_v1_projects_generic(None, None, query, state).await
+    api_v1_projects_generic(None, None, query, &*state).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn api_v1_projects_bounded(
     Path(bound): Path<String>,
     Query(query): Query<QueryParams>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     if let Some(end) = bound.strip_prefix("..") {
-        api_v1_projects_generic(None, Some(end), query, state).await
+        api_v1_projects_generic(None, Some(end), query, &*state).await
     } else {
-        api_v1_projects_generic(Some(&bound), None, query, state).await
+        api_v1_projects_generic(Some(&bound), None, query, &*state).await
     }
 }
 
@@ -49,7 +50,7 @@ async fn api_v1_projects_generic(
     start_project_name: Option<&str>,
     end_project_name: Option<&str>,
     query: QueryParams,
-    state: AppState,
+    state: &AppState,
 ) -> EndpointResult {
     let filter = ProjectsFilter {
         start_project_name,

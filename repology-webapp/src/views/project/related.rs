@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::sync::Arc;
+
 use askama::Template;
 use axum::extract::{Path, State};
 use axum::http::{header, HeaderValue, StatusCode};
@@ -45,7 +47,7 @@ struct TemplateParams {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_related(
     Path(project_name): Path<String>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectRelated);
 
@@ -66,7 +68,7 @@ pub async fn project_related(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return nonexisting_project(state, ctx, project_name, project).await;
+        return nonexisting_project(&*state, ctx, project_name, project).await;
     }
 
     let projects: Vec<RelatedProject> = sqlx::query_as(indoc! {"
