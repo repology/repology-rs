@@ -46,33 +46,27 @@ pub struct RepositoryData {
 
 #[derive(Default)]
 struct CachedData {
-    // XXX: Wrap RepositoryData into Arc<>, which would allow to
-    // avoid data duplication both when storing metadata here, and when
-    // returning it from get_* methods
     repositories: Vec<RepositoryData>,
     repositories_by_name: HashMap<String, RepositoryData>,
 }
 
-#[derive(Clone)]
 pub struct RepositoryDataCache {
     pool: PgPool,
-    cached_data: Arc<Mutex<CachedData>>,
+    cached_data: Mutex<Arc<CachedData>>,
 }
 
 impl RepositoryDataCache {
     pub async fn new(pool: PgPool) -> Result<Self> {
-        let this = Self {
+        Ok(Self {
+            cached_data: Mutex::new(Arc::new(Self::fetch(&pool).await?)),
             pool,
-            cached_data: Default::default(),
-        };
-        this.update().await?;
-        Ok(this)
+        })
     }
 
-    pub async fn update(&self) -> Result<()> {
+    async fn fetch(pool: &PgPool) -> Result<CachedData> {
         // XXX: COALESCE for singular and source_type are meant for
         // legacy repositories which don't have meta properly filled
-        sqlx::query_as(indoc! {r#"
+        let repositories: Vec<RepositoryData> = sqlx::query_as(indoc! {r#"
             SELECT
                 id,
                 name,
@@ -84,41 +78,45 @@ impl RepositoryDataCache {
             FROM repositories
             ORDER BY sortname
         "#})
-        .fetch_all(&self.pool)
-        .await
-        .map(|repositories: Vec<RepositoryData>| {
-            let cached_data = &mut self.cached_data.lock().unwrap();
-            cached_data.repositories_by_name = repositories
-                .iter()
-                .cloned()
-                .map(|repository| (repository.name.clone(), repository))
-                .collect();
-            cached_data.repositories = repositories;
-            if let Ok(timestamp) = UNIX_EPOCH.elapsed() {
-                gauge!("repology_webapp_repository_data_cache_last_update_seconds")
-                    .set(timestamp.as_secs_f64());
-            }
-            info!(
-                "updated repository data cache, {} entries",
-                cached_data.repositories.len()
-            );
-        })?;
+        .fetch_all(pool)
+        .await?;
+
+        let repositories_by_name = repositories
+            .iter()
+            .cloned()
+            .map(|repository| (repository.name.clone(), repository))
+            .collect();
+
+        Ok(CachedData {
+            repositories_by_name,
+            repositories,
+        })
+    }
+
+    pub async fn update(&self) -> Result<()> {
+        let data = Self::fetch(&self.pool).await?;
+        let count = data.repositories.len();
+        let data = Arc::new(data);
+        *self.cached_data.lock().unwrap() = data;
+        if let Ok(timestamp) = UNIX_EPOCH.elapsed() {
+            gauge!("repology_webapp_repository_data_cache_last_update_seconds")
+                .set(timestamp.as_secs_f64());
+        }
+        info!("updated repository data cache, {} entries", count);
         Ok(())
     }
 
     pub fn get(&self, repository_name: &str) -> Option<RepositoryData> {
-        self.cached_data
-            .lock()
-            .unwrap()
+        let cached_data = self.cached_data.lock().unwrap().clone();
+        cached_data
             .repositories_by_name
             .get(repository_name)
             .cloned()
     }
 
     pub fn get_active(&self, repository_name: &str) -> Option<RepositoryData> {
-        self.cached_data
-            .lock()
-            .unwrap()
+        let cached_data = self.cached_data.lock().unwrap().clone();
+        cached_data
             .repositories_by_name
             .get(repository_name)
             .filter(|metadata| metadata.status == RepositoryStatus::Active)
@@ -126,9 +124,8 @@ impl RepositoryDataCache {
     }
 
     pub fn get_all_active(&self) -> Vec<RepositoryData> {
-        self.cached_data
-            .lock()
-            .unwrap()
+        let cached_data = self.cached_data.lock().unwrap().clone();
+        cached_data
             .repositories
             .iter()
             .filter(|metadata| metadata.status == RepositoryStatus::Active)
