@@ -3,10 +3,11 @@
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use std::time::Instant;
+use std::time::UNIX_EPOCH;
 
 use anyhow::Result;
 use indoc::indoc;
+use metrics::gauge;
 use serde::Deserialize;
 use sqlx::{FromRow, PgPool};
 use strum_macros::EnumString;
@@ -45,7 +46,6 @@ pub struct RepositoryData {
 
 #[derive(Default)]
 struct CachedData {
-    last_update: Option<Instant>,
     // XXX: Wrap RepositoryData into Arc<>, which would allow to
     // avoid data duplication both when storing metadata here, and when
     // returning it from get_* methods
@@ -94,7 +94,10 @@ impl RepositoryDataCache {
                 .map(|repository| (repository.name.clone(), repository))
                 .collect();
             cached_data.repositories = repositories;
-            cached_data.last_update = Some(Instant::now());
+            if let Ok(timestamp) = UNIX_EPOCH.elapsed() {
+                gauge!("repology_webapp_repository_data_cache_last_update_seconds")
+                    .set(timestamp.as_secs_f64());
+            }
             info!(
                 "updated repository data cache, {} entries",
                 cached_data.repositories.len()
