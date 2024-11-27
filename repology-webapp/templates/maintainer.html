@@ -52,7 +52,7 @@
 		<tr>
 			<td class="text-right break-word">
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository.name.as_str())])? }}">
-					{%- for repository_data in repositories_data %}{% if repository_data.name.as_str() == repository.name %}{{ repository_data.title }}{% endif %}{% endfor -%}
+					{{ repositories_data.repository_title(repository.name) }}
 				</a>
 			</td>
 			<td class="text-center total-cell">

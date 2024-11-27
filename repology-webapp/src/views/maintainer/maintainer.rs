@@ -16,7 +16,7 @@ use metrics::histogram;
 use sqlx::FromRow;
 
 use crate::endpoints::Endpoint;
-use crate::repository_data::RepositoryData;
+use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -115,7 +115,7 @@ struct TemplateParams<'a> {
     projects: Vec<String>,
     is_fallback_maintainer: bool,
     maintainer_links: Vec<String>,
-    repositories_data: Vec<RepositoryData>,
+    repositories_data: &'a RepositoriesDataSnapshot,
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -319,7 +319,7 @@ pub async fn maintainer(
             is_fallback_maintainer: maintainer_name.starts_with("fallback-mnt-")
                 && maintainer_name.ends_with("@repology"),
             maintainer_links: generate_maintainer_links(&maintainer_name),
-            repositories_data: state.repository_data_cache.get_all_active(),
+            repositories_data: &*state.repository_data_cache.snapshot(),
         }
         .render()?,
     )
