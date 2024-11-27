@@ -319,7 +319,7 @@ pub async fn maintainer(
             is_fallback_maintainer: maintainer_name.starts_with("fallback-mnt-")
                 && maintainer_name.ends_with("@repology"),
             maintainer_links: generate_maintainer_links(&maintainer_name),
-            repositories_data: state.repository_data_cache.get_all_active().await,
+            repositories_data: state.repository_data_cache.get_all_active(),
         }
         .render()?,
     )

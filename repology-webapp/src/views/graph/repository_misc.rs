@@ -39,7 +39,6 @@ async fn graph_generic(
     if state
         .repository_data_cache
         .get_active(&repository_name)
-        .await
         .is_none()
     {
         return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());

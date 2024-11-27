@@ -128,7 +128,6 @@ pub async fn badge_vertical_allrepos(
     for repository_data in state
         .repository_data_cache
         .get_all_active()
-        .await
         .into_iter()
         .filter(|repository_data| !is_repository_filtered(repository_data, &query))
     {

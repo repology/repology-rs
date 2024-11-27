@@ -54,15 +54,12 @@ pub async fn maintainer_repo_feed(
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::MaintainerRepoFeed, gen_path, gen_query);
 
-    let repository_data = if let Some(repository_data) = state
-        .repository_data_cache
-        .get_active(&repository_name)
-        .await
-    {
-        repository_data
-    } else {
-        return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
-    };
+    let repository_data =
+        if let Some(repository_data) = state.repository_data_cache.get_active(&repository_name) {
+            repository_data
+        } else {
+            return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
+        };
 
     // XXX: this may be ineffective in some cases, as there may be a lot of events with a
     // single timestamp, and we only have index on (repository, ts), so postgres would have

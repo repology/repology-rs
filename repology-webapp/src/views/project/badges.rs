@@ -67,7 +67,6 @@ pub async fn project_badges(
     let containing_repositories_data: Vec<_> = state
         .repository_data_cache
         .get_all_active()
-        .await
         .into_iter()
         .filter(|repository| containing_repository_names.contains(&repository.name))
         .collect();

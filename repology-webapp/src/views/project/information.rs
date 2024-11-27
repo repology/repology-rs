@@ -229,7 +229,7 @@ pub async fn project_information(
     .await?;
 
     let links: HashMap<i32, Link> = links.into_iter().map(|link| (link.id, link)).collect();
-    let repositories_data = state.repository_data_cache.get_all_active().await;
+    let repositories_data = state.repository_data_cache.get_all_active();
 
     Ok((
         [(

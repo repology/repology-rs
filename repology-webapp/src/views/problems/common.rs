@@ -65,15 +65,12 @@ pub async fn problems_generic(
     end_project_name: Option<&str>,
     state: &AppState,
 ) -> EndpointResult {
-    let repository_data = if let Some(repository_data) = state
-        .repository_data_cache
-        .get_active(&repository_name)
-        .await
-    {
-        repository_data
-    } else {
-        return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
-    };
+    let repository_data =
+        if let Some(repository_data) = state.repository_data_cache.get_active(&repository_name) {
+            repository_data
+        } else {
+            return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
+        };
 
     let problems: Vec<Problem> = sqlx::query_as(indoc! {r#"
         WITH unsorted AS (

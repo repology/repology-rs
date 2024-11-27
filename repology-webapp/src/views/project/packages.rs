@@ -164,7 +164,7 @@ pub async fn project_packages(
         .into_iter()
         .into_group_map_by(|package| package.repo.clone());
 
-    let repositories_data = state.repository_data_cache.get_all_active().await;
+    let repositories_data = state.repository_data_cache.get_all_active();
 
     // XXX: do we really want descending sort by version here?
     let packages: Vec<_> = repositories_data

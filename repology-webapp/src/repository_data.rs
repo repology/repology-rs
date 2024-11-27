@@ -103,7 +103,7 @@ impl RepositoryDataCache {
         Ok(())
     }
 
-    pub async fn get(&self, repository_name: &str) -> Option<RepositoryData> {
+    pub fn get(&self, repository_name: &str) -> Option<RepositoryData> {
         self.cached_data
             .lock()
             .unwrap()
@@ -112,7 +112,7 @@ impl RepositoryDataCache {
             .cloned()
     }
 
-    pub async fn get_active(&self, repository_name: &str) -> Option<RepositoryData> {
+    pub fn get_active(&self, repository_name: &str) -> Option<RepositoryData> {
         self.cached_data
             .lock()
             .unwrap()
@@ -122,7 +122,7 @@ impl RepositoryDataCache {
             .cloned()
     }
 
-    pub async fn get_all_active(&self) -> Vec<RepositoryData> {
+    pub fn get_all_active(&self) -> Vec<RepositoryData> {
         self.cached_data
             .lock()
             .unwrap()

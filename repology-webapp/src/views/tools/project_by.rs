@@ -206,11 +206,7 @@ pub async fn project_by_perform(
     };
 
     let repository_data = if let Some(repository_name) = &query.repo {
-        if let Some(repository_data) = state
-            .repository_data_cache
-            .get_active(&repository_name)
-            .await
-        {
+        if let Some(repository_data) = state.repository_data_cache.get_active(&repository_name) {
             repository_data
         } else {
             return project_by_error(ctx, query, FailureReason::RepositoryNotFound);
@@ -353,7 +349,7 @@ pub async fn project_by_construct(
             ctx,
             query: &query,
             template_url,
-            repositories_data: state.repository_data_cache.get_all_active().await,
+            repositories_data: state.repository_data_cache.get_all_active(),
         }
         .render()?,
     )

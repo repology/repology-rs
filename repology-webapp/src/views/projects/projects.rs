@@ -255,7 +255,7 @@ async fn projects_generic(
         TemplateParams {
             ctx,
             query,
-            repositories_data: state.repository_data_cache.get_all_active().await,
+            repositories_data: state.repository_data_cache.get_all_active(),
             projects_list,
         }
         .render()?,

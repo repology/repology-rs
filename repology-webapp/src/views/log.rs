@@ -108,7 +108,6 @@ pub async fn log(
     let repository_data = state
         .repository_data_cache
         .get(&run.reponame)
-        .await
         .expect("repository data should be available for run's repository");
 
     let lines: Vec<LogLine> = sqlx::query_as(indoc! {"
