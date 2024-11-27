@@ -94,14 +94,14 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
     info!("initializing repository data cache");
     let repository_data_cache = RepositoryDataCache::new(pool.clone())
         .await
-        .context("error getting repository metadata")?;
+        .context("initial repository data cache fill failed")?;
 
     let state = Arc::new(AppState::new(pool, font_measurer, repository_data_cache));
 
     info!("initializing static files");
     let _ = &*STATIC_FILES;
 
-    info!("launching background tasks");
+    info!("starting background tasks");
     {
         let state = Arc::downgrade(&state);
         let task = async move {
