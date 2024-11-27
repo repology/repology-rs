@@ -105,13 +105,17 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
     {
         let state = Arc::downgrade(&state);
         let task = async move {
-            while let Some(state) = state.upgrade() {
+            loop {
                 tokio::time::sleep(crate::constants::REPOSITORY_CACHE_REFRESH_PERIOD).await;
 
-                if let Err(e) = state.repository_data_cache.update().await {
-                    error!("repository data cache update failed {:?}", e);
+                if let Some(state) = state.upgrade() {
+                    state
+                        .repository_data_cache
+                        .update()
+                        .await
+                        .unwrap_or_else(|e| error!("repository data cache update failed {:?}", e));
                 } else {
-                    info!("repository data cache updated");
+                    break;
                 }
             }
         };
