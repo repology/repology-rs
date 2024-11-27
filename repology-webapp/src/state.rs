@@ -4,19 +4,19 @@
 use sqlx::PgPool;
 
 use crate::font::FontMeasurer;
-use crate::repository_data::RepositoryDataCache;
+use crate::repository_data::RepositoriesDataCache;
 
 pub struct AppState {
     pub pool: PgPool,
     pub font_measurer: FontMeasurer,
-    pub repository_data_cache: RepositoryDataCache,
+    pub repository_data_cache: RepositoriesDataCache,
 }
 
 impl AppState {
     pub fn new(
         pool: PgPool,
         font_measurer: FontMeasurer,
-        repository_data_cache: RepositoryDataCache,
+        repository_data_cache: RepositoriesDataCache,
     ) -> Self {
         Self {
             pool,

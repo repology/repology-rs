@@ -41,7 +41,7 @@ use sqlx::PgPool;
 use tracing::{error, info, info_span, Instrument as _};
 
 use crate::font::FontMeasurer;
-use crate::repository_data::RepositoryDataCache;
+use crate::repository_data::RepositoriesDataCache;
 use crate::state::AppState;
 use crate::static_files::STATIC_FILES;
 
@@ -92,7 +92,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
     let font_measurer = FontMeasurer::new();
 
     info!("initializing repository data cache");
-    let repository_data_cache = RepositoryDataCache::new(pool.clone())
+    let repository_data_cache = RepositoriesDataCache::new(pool.clone())
         .await
         .context("initial repository data cache fill failed")?;
 

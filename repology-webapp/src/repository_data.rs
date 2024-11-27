@@ -77,13 +77,12 @@ impl RepositoriesDataSnapshot {
     }
 }
 
-// XXX: rename to RepositoriesDataCache to differentiate from entities related to single repository
-pub struct RepositoryDataCache {
+pub struct RepositoriesDataCache {
     pool: PgPool,
     cached_data: Mutex<Arc<RepositoriesDataSnapshot>>,
 }
 
-impl RepositoryDataCache {
+impl RepositoriesDataCache {
     pub async fn new(pool: PgPool) -> Result<Self> {
         Ok(Self {
             cached_data: Mutex::new(Arc::new(Self::fetch(&pool).await?)),
