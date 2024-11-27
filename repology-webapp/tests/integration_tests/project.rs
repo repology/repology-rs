@@ -188,7 +188,9 @@ async fn test_project_related(pool: PgPool) {
         status OK,
         content_type "text/html",
         html_ok "allow_empty_tags,warnings_fatal",
-        contains "binutils"
+        contains "binutils",
+        contains "/project/binutils/versions",
+        contains "/project/binutils/related",
     );
     check_response!(
         pool,
@@ -196,6 +198,8 @@ async fn test_project_related(pool: PgPool) {
         status OK,
         content_type "text/html",
         html_ok "allow_empty_tags,warnings_fatal",
-        contains "gcc"
+        contains "gcc",
+        contains "/project/gcc/versions",
+        contains "/project/gcc/related",
     );
 }
