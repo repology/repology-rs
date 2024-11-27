@@ -180,7 +180,8 @@ async fn test_project_related(pool: PgPool) {
         content_type "text/html",
         html_ok "allow_empty_tags,warnings_fatal",
         contains_not "gcc",
-        contains_not "binutils"
+        contains_not "binutils",
+        contains_not "∗"
     );
     check_response!(
         pool,
@@ -191,6 +192,7 @@ async fn test_project_related(pool: PgPool) {
         contains "binutils",
         contains "/project/binutils/versions",
         contains "/project/binutils/related",
+        contains "∗",
     );
     check_response!(
         pool,
@@ -201,5 +203,6 @@ async fn test_project_related(pool: PgPool) {
         contains "gcc",
         contains "/project/gcc/versions",
         contains "/project/gcc/related",
+        contains "∗",
     );
 }

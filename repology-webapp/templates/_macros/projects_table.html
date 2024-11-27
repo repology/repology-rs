@@ -74,8 +74,9 @@
 		<tr>
 			<td class="text-nowrap">
 				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|as_ref)])? }}">{{ item.project.effname }}</a>
-				{#- -#}
+				{%- if item.project.has_related -%}
 				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|as_ref)])? }}">∗</a>
+				{% endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
 			<td>{% call versions_list(item.versions.newest|as_ref, "") %}</td>

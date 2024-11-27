@@ -7,8 +7,8 @@ INSERT INTO url_relations(metapackage_id, urlhash, weight) VALUES
 	(3, 123123123, 1.0),
 	(4, 123123123, 1.0);
 
-INSERT INTO metapackages(id, effname, num_repos, num_families) VALUES
-	(1, 'zsh', 1, 1),
-	(2, 'orphaned', 0, 0),
-	(3, 'gcc', 1, 1),
-	(4, 'binutils', 1, 1);
+INSERT INTO metapackages(id, effname, num_repos, num_families, has_related) VALUES
+	(1, 'zsh', 1, 1, false),
+	(2, 'orphaned', 0, 0, false),
+	(3, 'gcc', 1, 1, true),
+	(4, 'binutils', 1, 1, true);

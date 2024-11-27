@@ -25,6 +25,7 @@ pub struct RelatedProject {
     pub rank: f64,
     #[sqlx(try_from = "i16")]
     pub num_families: u32,
+    pub has_related: bool,
 }
 
 pub struct ProjectListItem {
@@ -72,7 +73,8 @@ pub async fn project_related(
         SELECT
             effname,
             rank,
-            num_families
+            num_families,
+            has_related
         FROM project_get_related(
             (SELECT id FROM metapackages WHERE effname=$1),
             $2
