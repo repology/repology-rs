@@ -92,9 +92,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
     let font_measurer = FontMeasurer::new();
 
     info!("initializing repository data cache");
-    let repository_data_cache = RepositoryDataCache::new(pool.clone());
-    repository_data_cache
-        .update()
+    let repository_data_cache = RepositoryDataCache::new(pool.clone())
         .await
         .context("error getting repository metadata")?;
 

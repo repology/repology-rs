@@ -60,11 +60,13 @@ pub struct RepositoryDataCache {
 }
 
 impl RepositoryDataCache {
-    pub fn new(pool: PgPool) -> Self {
-        Self {
+    pub async fn new(pool: PgPool) -> Result<Self> {
+        let this = Self {
             pool,
             cached_data: Default::default(),
-        }
+        };
+        this.update().await?;
+        Ok(this)
     }
 
     pub async fn update(&self) -> Result<()> {
