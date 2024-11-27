@@ -30,7 +30,7 @@ Also note that you may add additional parameters to a URL, such as
 		<label for="repo" class="col-sm-2 control-label">Repository</label>
 		<div class="col-sm-8">
 			<select class="form-control" id="repo" name="repo">
-			{% for repository_data in repositories_data %}
+			{% for repository_data in repositories_data.active_repositories() %}
 				<option value="{{ repository_data.name }}"{% if Some(repository_data.name) == query.repo.as_ref() %} selected{% endif %}>{{ repository_data.title }}</option>
 			{% endfor %}
 			</select>

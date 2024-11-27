@@ -39,7 +39,7 @@ struct TemplateParams<'a> {
     ctx: TemplateContext,
     events: Vec<Event>,
     repository_name: &'a str,
-    repository_data: RepositoryData,
+    repository_data: &'a RepositoryData,
     autorefresh: bool,
 }
 
@@ -53,8 +53,10 @@ pub async fn repository_feed(
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::RepositoryFeed, gen_path, gen_query);
 
+    let repositories_data = state.repository_data_cache.snapshot();
+
     let repository_data =
-        if let Some(repository_data) = state.repository_data_cache.get_active(&repository_name) {
+        if let Some(repository_data) = repositories_data.active_repository(&repository_name) {
             repository_data
         } else {
             return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());

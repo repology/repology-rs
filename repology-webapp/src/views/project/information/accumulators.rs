@@ -7,7 +7,7 @@ use std::collections::{HashMap, HashSet};
 use itertools::Itertools;
 
 use crate::package::summarization::DisplayVersion;
-use crate::repository_data::RepositoryData;
+use crate::repository_data::RepositoriesDataSnapshot;
 
 use super::emails::MaintainerEmailsAggregator;
 use super::slices::*;
@@ -69,7 +69,7 @@ impl<'a> SlicesAccumulator<'a> {
     pub fn finalize(
         self,
         links: &'a HashMap<i32, Link>,
-        repositories_data: &'a [RepositoryData],
+        repositories_data: &'a RepositoriesDataSnapshot,
     ) -> Slices<'a> {
         let versions = {
             // XXX: this code is somewhat similar to packages_to_categorized_display_versions_per_project(), merge code?
@@ -113,7 +113,7 @@ impl<'a> SlicesAccumulator<'a> {
         Slices {
             versions,
             repositories: repositories_data
-                .iter()
+                .active_repositories()
                 .filter(|repository_data| self.repositories.contains(repository_data.name.as_str()))
                 .collect(),
             string_slices: self

@@ -14,7 +14,7 @@ use itertools::Itertools;
 use serde::Deserialize;
 
 use crate::endpoints::Endpoint;
-use crate::repository_data::RepositoryData;
+use crate::repository_data::{RepositoriesDataSnapshot, RepositoryData};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -133,7 +133,7 @@ struct ConstructTemplateParams<'a> {
     ctx: TemplateContext,
     query: &'a QueryParams,
     template_url: Option<String>,
-    repositories_data: Vec<RepositoryData>,
+    repositories_data: &'a RepositoriesDataSnapshot,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -205,8 +205,10 @@ pub async fn project_by_perform(
         return project_by_error(ctx, query, FailureReason::BadNameType);
     };
 
+    let repositories_data = state.repository_data_cache.snapshot();
+
     let repository_data = if let Some(repository_name) = &query.repo {
-        if let Some(repository_data) = state.repository_data_cache.get_active(&repository_name) {
+        if let Some(repository_data) = repositories_data.active_repository(&repository_name) {
             repository_data
         } else {
             return project_by_error(ctx, query, FailureReason::RepositoryNotFound);
@@ -349,7 +351,7 @@ pub async fn project_by_construct(
             ctx,
             query: &query,
             template_url,
-            repositories_data: state.repository_data_cache.get_all_active(),
+            repositories_data: &*state.repository_data_cache.snapshot(),
         }
         .render()?,
     )

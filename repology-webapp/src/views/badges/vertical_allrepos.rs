@@ -127,8 +127,8 @@ pub async fn badge_vertical_allrepos(
 
     for repository_data in state
         .repository_data_cache
-        .get_all_active()
-        .into_iter()
+        .snapshot()
+        .active_repositories()
         .filter(|repository_data| !is_repository_filtered(repository_data, &query))
     {
         if let Some(&package) = package_per_repository.get(&repository_data.name) {

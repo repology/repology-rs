@@ -36,13 +36,13 @@ async fn graph_generic(
     divisor_field_name: &str,
     stroke: &str,
 ) -> EndpointResult {
-    if state
+    if !state
         .repository_data_cache
-        .get_active(&repository_name)
-        .is_none()
+        .snapshot()
+        .is_repository_active(&repository_name)
     {
         return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
-    };
+    }
 
     let query = if experimental_history {
         &format!(

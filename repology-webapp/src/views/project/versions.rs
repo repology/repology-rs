@@ -17,7 +17,7 @@ use repology_common::{PackageFlags, PackageStatus};
 use crate::endpoints::Endpoint;
 use crate::package::ordering::by_version_descending;
 use crate::package::traits::{PackageWithFlags, PackageWithVersion};
-use crate::repository_data::RepositoryData;
+use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -52,13 +52,13 @@ impl PackageWithFlags for Package {
 
 #[derive(Template)]
 #[template(path = "project/versions.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
     project_name: String,
     project: Option<Project>,
     num_packages: usize,
     packages_by_repo: HashMap<String, Vec<Package>>,
-    repositories_data: Vec<RepositoryData>,
+    repositories_data: &'a RepositoriesDataSnapshot,
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -153,7 +153,7 @@ pub async fn project_versions(
             project,
             num_packages,
             packages_by_repo,
-            repositories_data: state.repository_data_cache.get_all_active(),
+            repositories_data: &*state.repository_data_cache.snapshot(),
         }
         .render()?,
     )

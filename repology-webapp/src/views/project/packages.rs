@@ -17,7 +17,7 @@ use repology_common::{LinkType, PackageFlags, PackageStatus};
 use crate::endpoints::Endpoint;
 use crate::package::ordering::by_name_asc_version_desc;
 use crate::package::traits::{PackageWithDisplayName, PackageWithFlags, PackageWithVersion};
-use crate::repository_data::RepositoryData;
+use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -76,7 +76,7 @@ struct TemplateParams<'a> {
     project: Option<Project>,
     packages: Vec<Package>,
     links: HashMap<i32, Link>,
-    repositories_data: Vec<RepositoryData>,
+    repositories_data: &'a RepositoriesDataSnapshot,
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -164,11 +164,11 @@ pub async fn project_packages(
         .into_iter()
         .into_group_map_by(|package| package.repo.clone());
 
-    let repositories_data = state.repository_data_cache.get_all_active();
+    let repositories_data = state.repository_data_cache.snapshot();
 
     // XXX: do we really want descending sort by version here?
     let packages: Vec<_> = repositories_data
-        .iter()
+        .active_repositories()
         .flat_map(|repository_data| {
             packages_by_repo
                 .remove(repository_data.name.as_str())
@@ -193,7 +193,7 @@ pub async fn project_packages(
             project,
             packages,
             links,
-            repositories_data,
+            repositories_data: &*repositories_data,
         }
         .render()?,
     )

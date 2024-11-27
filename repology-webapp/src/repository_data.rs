@@ -61,13 +61,19 @@ impl RepositoriesDataSnapshot {
         self.repositories_by_name.get(repository_name)
     }
 
+    pub fn is_repository_active(&self, repository_name: &str) -> bool {
+        self.active_repository(repository_name).is_some()
+    }
+
     pub fn active_repository(&self, repository_name: &str) -> Option<&RepositoryData> {
         self.repository(repository_name)
             .filter(|data| data.status == RepositoryStatus::Active)
     }
 
-    pub fn active_repositories(&self) -> &Vec<RepositoryData> {
-        &self.repositories
+    pub fn active_repositories(&self) -> impl Iterator<Item = &RepositoryData> {
+        self.repositories
+            .iter()
+            .filter(|data| data.status == RepositoryStatus::Active)
     }
 }
 
@@ -126,21 +132,6 @@ impl RepositoryDataCache {
         }
         info!("updated repository data cache, {} entries", count);
         Ok(())
-    }
-
-    #[deprecated(note = "use RepositoriesDataSnapshot")]
-    pub fn get(&self, repository_name: &str) -> Option<RepositoryData> {
-        self.snapshot().repository(repository_name).cloned()
-    }
-
-    #[deprecated(note = "use RepositoriesDataSnapshot")]
-    pub fn get_active(&self, repository_name: &str) -> Option<RepositoryData> {
-        self.snapshot().active_repository(repository_name).cloned()
-    }
-
-    #[deprecated(note = "use RepositoriesDataSnapshot")]
-    pub fn get_all_active(&self) -> Vec<RepositoryData> {
-        self.snapshot().active_repositories().clone()
     }
 
     pub fn snapshot(&self) -> Arc<RepositoriesDataSnapshot> {

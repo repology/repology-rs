@@ -27,11 +27,10 @@ pub struct QueryParams {
 
 #[derive(Template)]
 #[template(path = "log.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
-
     run: Run,
-    repometadata: RepositoryData,
+    repository_data: &'a RepositoryData,
     lines: Vec<LogLine>,
     autorefresh: bool,
 }
@@ -105,9 +104,10 @@ pub async fn log(
         return Ok((StatusCode::NOT_FOUND, "run not found".to_owned()).into_response());
     };
 
-    let repository_data = state
-        .repository_data_cache
-        .get(&run.reponame)
+    let repositories_data = state.repository_data_cache.snapshot();
+
+    let repository_data = repositories_data
+        .repository(&run.reponame)
         .expect("repository data should be available for run's repository");
 
     let lines: Vec<LogLine> = sqlx::query_as(indoc! {"
@@ -130,9 +130,8 @@ pub async fn log(
         )],
         TemplateParams {
             ctx,
-
             run,
-            repometadata: repository_data,
+            repository_data,
             lines,
             autorefresh: query.autorefresh,
         }

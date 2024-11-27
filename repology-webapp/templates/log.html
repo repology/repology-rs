@@ -20,7 +20,7 @@
 	{% else if run.status == "interrupted" %}
 	<span class="text-danger">interrupted</span>
 	{% endif %}
-	{{ run.type }} for {{ repometadata.title }}
+	{{ run.type }} for {{ repository_data.title }}
 {% endblock %}
 
 {% block content %}

@@ -104,7 +104,7 @@
 			<th>Project</th>
 			{% if !repo.is_empty() || !maintainer.is_empty() %}
 			<th class="text-nowrap" title="Packages
-				{%- if !repo.is_empty() %} in {% for repository_data in repositories_data %}{% if repository_data.name|as_ref == repo %}{{ repository_data.title }}{% endif %}{% endfor %}{% endif -%}
+				{%- if !repo.is_empty() %} in {{ repositories_data.repository_title(repo) }}{% endif -%}
 				{%- if !maintainer.is_empty() %} maintained by {{ maintainer }}{% endif -%}
 			">Selected</th>
 			{% endif %}

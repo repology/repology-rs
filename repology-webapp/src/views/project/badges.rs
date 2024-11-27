@@ -25,7 +25,7 @@ struct TemplateParams<'a> {
     ctx: TemplateContext,
     project_name: &'a str,
     project: Option<Project>,
-    containing_repositories_data: Vec<RepositoryData>,
+    containing_repositories_data: Vec<&'a RepositoryData>,
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -64,9 +64,10 @@ pub async fn project_badges(
     .into_iter()
     .collect();
 
-    let containing_repositories_data: Vec<_> = state
-        .repository_data_cache
-        .get_all_active()
+    let repositories_data = state.repository_data_cache.snapshot();
+
+    let containing_repositories_data: Vec<_> = repositories_data
+        .active_repositories()
         .into_iter()
         .filter(|repository| containing_repository_names.contains(&repository.name))
         .collect();

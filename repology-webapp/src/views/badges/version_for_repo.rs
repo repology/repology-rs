@@ -67,9 +67,11 @@ pub async fn badge_version_for_repo(
         return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
     };
 
+    let repositories_data = state.repository_data_cache.snapshot();
+
     let singular =
-        if let Some(repository_data) = state.repository_data_cache.get_active(&repository_name) {
-            repository_data.singular
+        if let Some(repository_data) = repositories_data.active_repository(&repository_name) {
+            &repository_data.singular
         } else {
             return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
         };

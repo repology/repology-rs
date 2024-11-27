@@ -229,7 +229,6 @@ pub async fn project_information(
     .await?;
 
     let links: HashMap<i32, Link> = links.into_iter().map(|link| (link.id, link)).collect();
-    let repositories_data = state.repository_data_cache.get_all_active();
 
     Ok((
         [(
@@ -240,7 +239,7 @@ pub async fn project_information(
             ctx,
             project_name,
             project,
-            slices: accum.finalize(&links, &repositories_data),
+            slices: accum.finalize(&links, &*state.repository_data_cache.snapshot()),
         }
         .render()?,
     )

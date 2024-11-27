@@ -11,7 +11,7 @@ use indoc::indoc;
 use serde::Deserialize;
 
 use crate::endpoints::Endpoint;
-use crate::repository_data::RepositoryData;
+use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -160,10 +160,10 @@ pub struct ProjectListItem {
 
 #[derive(Template)]
 #[template(path = "projects/index.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
     query: QueryParams,
-    repositories_data: Vec<RepositoryData>,
+    repositories_data: &'a RepositoriesDataSnapshot,
     projects_list: Vec<ProjectListItem>,
 }
 
@@ -255,7 +255,7 @@ async fn projects_generic(
         TemplateParams {
             ctx,
             query,
-            repositories_data: state.repository_data_cache.get_all_active(),
+            repositories_data: &*state.repository_data_cache.snapshot(),
             projects_list,
         }
         .render()?,

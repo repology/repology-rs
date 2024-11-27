@@ -21,7 +21,7 @@
 		<div class="panel panel-version-{{ package.status.as_ref() }}">
 			<div class="panel-heading">
 				<div class="package-repository">
-				<a class="panel-heading-link" href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", package.repo.as_str())])? }}">{% for repository_data in repositories_data %}{% if repository_data.name == package.repo %}{{ repository_data.title }}{% endif %}{% endfor %}</a>
+				<a class="panel-heading-link" href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", package.repo.as_str())])? }}">{{ repositories_data.repository_title(package.repo) }}</a>
 				{%- if let Some(subrepo) = package.subrepo -%}
 					<br><sup>{{ subrepo }}</sup>
 				{%- endif -%}

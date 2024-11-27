@@ -17,7 +17,7 @@
 		<th class="text-center">Category</th>
 		<th class="text-left">Maintainer(s)</th>
 	</tr>
-{% for repository_data in repositories_data %}
+{% for repository_data in repositories_data.active_repositories() %}
 {% if let Some(packages) = packages_by_repo.get(repository_data.name) %}
 {% for package in packages %}
 	<tr{% if loop.first %} id="{{ repository_data.name }}"{% endif %}>

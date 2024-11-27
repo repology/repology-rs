@@ -53,7 +53,7 @@ struct TemplateParams<'a> {
     ctx: TemplateContext,
     maintainer_name: Option<&'a str>,
     problems: Vec<Problem>,
-    repository_data: RepositoryData,
+    repository_data: &'a RepositoryData,
     pagination: Option<Pagination<'a>>,
 }
 
@@ -65,8 +65,10 @@ pub async fn problems_generic(
     end_project_name: Option<&str>,
     state: &AppState,
 ) -> EndpointResult {
+    let repositories_data = state.repository_data_cache.snapshot();
+
     let repository_data =
-        if let Some(repository_data) = state.repository_data_cache.get_active(&repository_name) {
+        if let Some(repository_data) = repositories_data.active_repository(&repository_name) {
             repository_data
         } else {
             return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
