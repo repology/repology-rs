@@ -38,7 +38,7 @@ use axum::{
 };
 use metrics::{counter, histogram};
 use sqlx::PgPool;
-use tracing::info;
+use tracing::{error, info, info_span, Instrument as _};
 
 use crate::font::FontMeasurer;
 use crate::repository_data::RepositoryDataCache;
@@ -102,6 +102,23 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
 
     info!("initializing static files");
     let _ = &*STATIC_FILES;
+
+    info!("launching background tasks");
+    {
+        let state = Arc::downgrade(&state);
+        let task = async move {
+            while let Some(state) = state.upgrade() {
+                tokio::time::sleep(crate::constants::REPOSITORY_CACHE_REFRESH_PERIOD).await;
+
+                if let Err(e) = state.repository_data_cache.update().await {
+                    error!("repository data cache update failed {:?}", e);
+                } else {
+                    info!("repository data cache updated");
+                }
+            }
+        };
+        tokio::task::spawn(task.instrument(info_span!(parent: None, "background task")));
+    }
 
     info!("initializing routes");
     use crate::endpoints::Endpoint::*;

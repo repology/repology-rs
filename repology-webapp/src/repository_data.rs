@@ -3,9 +3,9 @@
 
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
-use anyhow::Error;
+use anyhow::Result;
 use indoc::indoc;
 use serde::Deserialize;
 use sqlx::{FromRow, PgPool};
@@ -59,8 +59,6 @@ pub struct RepositoryDataCache {
     cached_data: Arc<Mutex<CachedData>>,
 }
 
-const CACHE_DURATION: Duration = Duration::from_secs(300);
-
 impl RepositoryDataCache {
     pub fn new(pool: PgPool) -> Self {
         Self {
@@ -69,7 +67,7 @@ impl RepositoryDataCache {
         }
     }
 
-    pub async fn update(&self) -> Result<(), Error> {
+    pub async fn update(&self) -> Result<()> {
         // XXX: COALESCE for singular and source_type are meant for
         // legacy repositories which don't have meta properly filled
         sqlx::query_as(indoc! {r#"
@@ -103,23 +101,7 @@ impl RepositoryDataCache {
         Ok(())
     }
 
-    async fn try_update_if_needed(&self) {
-        // XXX: instead of updating cache from requests, spawn explicit task
-        // to update it regularly. May benefit from switchung Mutex to RWLock
-        // in that case
-        if !self
-            .cached_data
-            .lock()
-            .unwrap()
-            .last_update
-            .is_some_and(|t| t.elapsed() < CACHE_DURATION)
-        {
-            let _ = self.update().await;
-        }
-    }
-
     pub async fn get(&self, repository_name: &str) -> Option<RepositoryData> {
-        self.try_update_if_needed().await;
         self.cached_data
             .lock()
             .unwrap()
@@ -129,7 +111,6 @@ impl RepositoryDataCache {
     }
 
     pub async fn get_active(&self, repository_name: &str) -> Option<RepositoryData> {
-        self.try_update_if_needed().await;
         self.cached_data
             .lock()
             .unwrap()
@@ -140,7 +121,6 @@ impl RepositoryDataCache {
     }
 
     pub async fn get_all_active(&self) -> Vec<RepositoryData> {
-        self.try_update_if_needed().await;
         self.cached_data
             .lock()
             .unwrap()
