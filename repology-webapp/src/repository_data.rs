@@ -44,12 +44,12 @@ pub struct RepositoryData {
     pub source_type: SourceType,
 }
 
-pub struct RepositoryDataSnapshot {
+pub struct RepositoriesDataSnapshot {
     repositories: Vec<RepositoryData>,
     repositories_by_name: HashMap<String, RepositoryData>,
 }
 
-impl RepositoryDataSnapshot {
+impl RepositoriesDataSnapshot {
     pub fn repository_title<'a>(&'a self, repository_name: &'a str) -> &'a str {
         self.repositories_by_name
             .get(repository_name)
@@ -71,9 +71,10 @@ impl RepositoryDataSnapshot {
     }
 }
 
+// XXX: rename to RepositoriesDataCache to differentiate from entities related to single repository
 pub struct RepositoryDataCache {
     pool: PgPool,
-    cached_data: Mutex<Arc<RepositoryDataSnapshot>>,
+    cached_data: Mutex<Arc<RepositoriesDataSnapshot>>,
 }
 
 impl RepositoryDataCache {
@@ -84,7 +85,7 @@ impl RepositoryDataCache {
         })
     }
 
-    async fn fetch(pool: &PgPool) -> Result<RepositoryDataSnapshot> {
+    async fn fetch(pool: &PgPool) -> Result<RepositoriesDataSnapshot> {
         // XXX: COALESCE for singular and source_type are meant for
         // legacy repositories which don't have meta properly filled
         let repositories: Vec<RepositoryData> = sqlx::query_as(indoc! {r#"
@@ -108,7 +109,7 @@ impl RepositoryDataCache {
             .map(|repository| (repository.name.clone(), repository))
             .collect();
 
-        Ok(RepositoryDataSnapshot {
+        Ok(RepositoriesDataSnapshot {
             repositories_by_name,
             repositories,
         })
@@ -127,22 +128,22 @@ impl RepositoryDataCache {
         Ok(())
     }
 
-    #[deprecated(note = "use RepositoryDataSnapshot")]
+    #[deprecated(note = "use RepositoriesDataSnapshot")]
     pub fn get(&self, repository_name: &str) -> Option<RepositoryData> {
         self.snapshot().repository(repository_name).cloned()
     }
 
-    #[deprecated(note = "use RepositoryDataSnapshot")]
+    #[deprecated(note = "use RepositoriesDataSnapshot")]
     pub fn get_active(&self, repository_name: &str) -> Option<RepositoryData> {
         self.snapshot().active_repository(repository_name).cloned()
     }
 
-    #[deprecated(note = "use RepositoryDataSnapshot")]
+    #[deprecated(note = "use RepositoriesDataSnapshot")]
     pub fn get_all_active(&self) -> Vec<RepositoryData> {
         self.snapshot().active_repositories().clone()
     }
 
-    pub fn snapshot(&self) -> Arc<RepositoryDataSnapshot> {
+    pub fn snapshot(&self) -> Arc<RepositoriesDataSnapshot> {
         self.cached_data.lock().unwrap().clone()
     }
 }
