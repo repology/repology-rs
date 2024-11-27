@@ -44,15 +44,36 @@ pub struct RepositoryData {
     pub source_type: SourceType,
 }
 
-#[derive(Default)]
-struct CachedData {
+pub struct RepositoryDataSnapshot {
     repositories: Vec<RepositoryData>,
     repositories_by_name: HashMap<String, RepositoryData>,
 }
 
+impl RepositoryDataSnapshot {
+    pub fn repository_title<'a>(&'a self, repository_name: &'a str) -> &'a str {
+        self.repositories_by_name
+            .get(repository_name)
+            .map(|data| data.title.as_str())
+            .unwrap_or(repository_name)
+    }
+
+    pub fn repository(&self, repository_name: &str) -> Option<&RepositoryData> {
+        self.repositories_by_name.get(repository_name)
+    }
+
+    pub fn active_repository(&self, repository_name: &str) -> Option<&RepositoryData> {
+        self.repository(repository_name)
+            .filter(|data| data.status == RepositoryStatus::Active)
+    }
+
+    pub fn active_repositories(&self) -> &Vec<RepositoryData> {
+        &self.repositories
+    }
+}
+
 pub struct RepositoryDataCache {
     pool: PgPool,
-    cached_data: Mutex<Arc<CachedData>>,
+    cached_data: Mutex<Arc<RepositoryDataSnapshot>>,
 }
 
 impl RepositoryDataCache {
@@ -63,7 +84,7 @@ impl RepositoryDataCache {
         })
     }
 
-    async fn fetch(pool: &PgPool) -> Result<CachedData> {
+    async fn fetch(pool: &PgPool) -> Result<RepositoryDataSnapshot> {
         // XXX: COALESCE for singular and source_type are meant for
         // legacy repositories which don't have meta properly filled
         let repositories: Vec<RepositoryData> = sqlx::query_as(indoc! {r#"
@@ -87,7 +108,7 @@ impl RepositoryDataCache {
             .map(|repository| (repository.name.clone(), repository))
             .collect();
 
-        Ok(CachedData {
+        Ok(RepositoryDataSnapshot {
             repositories_by_name,
             repositories,
         })
@@ -106,30 +127,22 @@ impl RepositoryDataCache {
         Ok(())
     }
 
+    #[deprecated(note = "use RepositoryDataSnapshot")]
     pub fn get(&self, repository_name: &str) -> Option<RepositoryData> {
-        let cached_data = self.cached_data.lock().unwrap().clone();
-        cached_data
-            .repositories_by_name
-            .get(repository_name)
-            .cloned()
+        self.snapshot().repository(repository_name).cloned()
     }
 
+    #[deprecated(note = "use RepositoryDataSnapshot")]
     pub fn get_active(&self, repository_name: &str) -> Option<RepositoryData> {
-        let cached_data = self.cached_data.lock().unwrap().clone();
-        cached_data
-            .repositories_by_name
-            .get(repository_name)
-            .filter(|metadata| metadata.status == RepositoryStatus::Active)
-            .cloned()
+        self.snapshot().active_repository(repository_name).cloned()
     }
 
+    #[deprecated(note = "use RepositoryDataSnapshot")]
     pub fn get_all_active(&self) -> Vec<RepositoryData> {
-        let cached_data = self.cached_data.lock().unwrap().clone();
-        cached_data
-            .repositories
-            .iter()
-            .filter(|metadata| metadata.status == RepositoryStatus::Active)
-            .cloned()
-            .collect()
+        self.snapshot().active_repositories().clone()
+    }
+
+    pub fn snapshot(&self) -> Arc<RepositoryDataSnapshot> {
+        self.cached_data.lock().unwrap().clone()
     }
 }
