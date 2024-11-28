@@ -6,7 +6,8 @@ mod config;
 use anyhow::{Context, Error};
 use clap::Parser;
 use metrics::{counter, gauge};
-use sqlx::PgPool;
+use sqlx::Executor;
+use sqlx::postgres::PgPoolOptions;
 use tracing::info;
 
 use crate::config::Config;
@@ -120,7 +121,15 @@ async fn async_main() -> Result<(), Error> {
     }
 
     info!("initializing database pool");
-    let pool = PgPool::connect(&config.dsn)
+    let pool = PgPoolOptions::new()
+        .after_connect(|conn, _meta| {
+            Box::pin(async move {
+                conn.execute("SET application_name = 'repology-webapp'")
+                    .await?;
+                Ok(())
+            })
+        })
+        .connect(&config.dsn)
         .await
         .context("error creating PostgreSQL connection pool")?;
 
