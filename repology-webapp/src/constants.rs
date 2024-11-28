@@ -10,7 +10,6 @@ pub const BUILD_INFO: Option<&str> = option_env!("REPOLOGY_BUILD_INFO");
 
 #[expect(unused)]
 pub const CVES_PER_PAGE: usize = 200;
-#[expect(unused)]
 pub const HISTORY_PER_PAGE: usize = 500;
 #[expect(unused)]
 pub const MAINTAINERS_PER_PAGE: usize = 200;

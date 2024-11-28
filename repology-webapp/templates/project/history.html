@@ -1,15 +1,15 @@
 {% extends "project/_base.html" %}
-{% from "_macros/autorefresh.html" import autorefresh_toggler, enable_autorefresh with context %}
-{% from "_macros/links.html" import repository_link %}
-{% from "_macros/time.html" import format_absolute_time, format_time_interval, timezone_abbr %}
+{% import "_macros/autorefresh.html" as autorefresh %}
+{% import "_macros/links.html" as links %}
+{% import "_macros/time.html" as time %}
 
 {% block extrameta %}
-{{ enable_autorefresh(3600 + randrange(60)) }}
+{% call autorefresh::enable_autorefresh(3600) %}
 {% endblock %}
 
-{% block title %}{{ name }} packaging history - Repology{% endblock %}
-{% block header %}History for <strong>{{ name }}</strong>{% endblock %}
-{% block description %}History of package versions for project {{ name }} in all repositories{% endblock %}
+{% block title %}{{ project_name }} packaging history - Repology{% endblock %}
+{% block header %}History for <strong>{{ project_name }}</strong>{% endblock %}
+{% block description %}History of package versions for project {{ project_name }} in all repositories{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -23,113 +23,106 @@ by repology. For example, if two projects are merged it will look
 like one project has appeared in more repositories and another one
 removed from all repositories.</p>
 
-{{ autorefresh_toggler() }}
+{% call autorefresh::autorefresh_toggler() %}
 
 <table class="table table-striped">
 	<tr>
-		<th class="text-center">Date{{ timezone_abbr() }}</th>
+		<th class="text-center">Date{% call time::timezone_abbr() %}</th>
 		<th class="text-center">Event</th>
 	</tr>
-{% for entry in history %}
+{% for event in events %}
 	<tr>
-		<td class="minimal-column">{{ format_absolute_time(entry.ts) }}</td>
+		<td class="minimal-column">{% call time::format_absolute_time(event.timestamp) %}</td>
 		<td>
-		{%- if entry.type == 'history_start' -%}
+		{%- if let EventData::HistoryStart{actual_repos, old_repos, devel_versions, newest_versions} = event.data -%}
 			<b>
-			{%- set numversions = entry.data.devel_versions|length + entry.data.newest_versions|length -%}
+			{%- let num_versions = devel_versions.len() + newest_versions.len() -%}
 			History start
 
-			{%- if numversions -%}
-				, latest {% if numversions == 1 %}version is{% else %}versions are{% endif %}
-				{% for version in entry.data.devel_versions %}
+			{%- if num_versions > 0 -%}
+				, latest {% if num_versions == 1 %}version is{% else %}versions are{% endif %}
+				{% for version in devel_versions %}
 					<span class="version version-big version-devel">{{ version }}</span>
 				{%- endfor %}
-				{% for version in entry.data.newest_versions %}
+				{% for version in newest_versions %}
 					<span class="version version-big version-newest">{{ version }}</span>
 				{%- endfor %}
 			{%- else -%}
 				, no known latest or devel versions for this project
 			{%- endif -%}
 
-			{%- if entry.data.actual_repos -%}
+			{%- if !actual_repos.is_empty() -%}
 				, up to date in
-
-				{% for repo in entry.data.actual_repos %}
-					{% if loop.index0 %}, {% endif %}{{ repository_link(repo) }}
+				{%- for repo in actual_repos %}
+					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
 				{%- endfor %}
-			{% endif %}
+			{%- endif %}
 
-			{%- if entry.data.old_repos -%}
-				, {% if entry.data.actual_repos %}also {% endif %}present in
-
-				{% for repo in entry.data.old_repos %}
-					{% if loop.index0 %}, {% endif %}{{ repository_link(repo) }}
+			{%- if !old_repos.is_empty() -%}
+				, {% if !actual_repos.is_empty() %}also {% endif %}present in
+				{%- for repo in old_repos %}
+					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
 				{%- endfor %}
-			{% endif %}
+			{%- endif %}
 			</b>
-		{%- elif entry.type == 'version_update' -%}
+		{%- else if let EventData::VersionUpdate{versions, repos, branch, passed} = event.data -%}
 			<b>
-			{%- set numversions = entry.data.versions|length -%}
-			{% if numversions %}
-				{{ entry.data.branch|capitalize }} version{% if numversions > 1 %}s{% endif %} updated to
-				{% for version in entry.data.versions %}
-					<span class="version version-big version-{{ entry.data.branch }}">{{ version }}</span>
+			{%- if !versions.is_empty() %}
+				{{- branch|capitalize }} version{% if versions.len() > 1 %}s{% endif %} updated to
+				{%- for version in versions %}
+					<span class="version version-big version-{{ branch }}">{{ version }}</span>
 				{%- endfor %}
 
-				{% if entry.data.repos %}
+				{%- if !repos.is_empty() %}
 					by
 
-					{% for repo in entry.data.repos %}
-						{% if loop.index0 %}, {% endif %}{{ repository_link(repo) }}
+					{%- for repo in repos %}
+					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
 					{%- endfor %}
-				{% endif %}
+				{%- endif %}
 			{%- else -%}
-				There's no more {{ entry.data.branch }} version
-			{% endif %}
+				There's no more {{ branch }} version
+			{%- endif %}
 
-			{%- if entry.data.passed -%}
-				, in {{ format_time_interval(entry.data.passed) }} since the last update
-			{% endif %}
-
+			{%- if let Some(passed) = passed -%}
+				, in {% call time::format_time_interval(passed) %} since the last update
+			{%- endif %}
 			</b>
-		{%- elif entry.type == 'catch_up' -%}
-			{% for repo in entry.data.repos -%}
-				{% if loop.index0 %}, {% endif %}{{ repository_link(repo) }}
+		{%- else if let EventData::CatchUp{repos, branch, lag} = event.data -%}
+			{%- for repo in repos -%}
+				{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
 			{%- endfor %}
 
-			{% if entry.data.repos|length == 1 %}has{% else %}have{% endif %} caught up with the {{ entry.data.branch }} version
+			{%- if repos.len() == 1 %} has{% else %} have{% endif %} caught up with the {{ branch }} version
 
-			{% if entry.data.lag %}
-				in {{ format_time_interval(entry.data.lag) }}
-			{% endif %}
-		{%- elif entry.type == 'repos_update' -%}
+			{%- if let Some(lag) = lag %}
+                in {% call time::format_time_interval(lag) %}
+            {%- endif %}
+		{%- else if let EventData::RepositoriesUpdate{repos_added, repos_removed} = event.data -%}
 			Project
-			{% if entry.data.repos_added %}
+			{%- if !repos_added.is_empty() %}
 				added to
-
-				{% for repo in entry.data.repos_added %}
-					{% if loop.index0 %}, {% endif %}{{ repository_link(repo) }}
+				{%- for repo in repos_added %}
+					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
 				{%- endfor %}
-			{% endif %}
+			{%- endif %}
 
-			{%- if entry.data.repos_added and entry.data.repos_removed -%}, and{% endif %}
+			{%- if !repos_added.is_empty() && !repos_removed.is_empty() -%}, and{% endif %}
 
-			{% if entry.data.repos_removed %}
+			{%- if !repos_removed.is_empty() %}
 				removed from
-
-				{% for repo in entry.data.repos_removed %}
-					{% if loop.index0 %}, {% endif %}{{ repository_link(repo) }}
+				{%- for repo in repos_removed %}
+					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
 				{%- endfor %}
 			{% endif %}
-		{%- elif entry.type == 'history_end' -%}
+		{%- else if let EventData::HistoryEnd{last_repos} = event.data -%}
 			<b>
 			History ends, there are no longer packages for this project in any repositories known to repology
 
-			{%- if entry.data.last_repos -%}
-				, last repositor{% if entry.data.last_repos|length==1 %}y was{% else %}ies were{% endif %}
-
-				{% for repo in entry.data.last_repos %}
-					{% if loop.index0 %}, {% endif %}{{ repository_link(repo) }}
+			{%- if !last_repos.is_empty() -%}
+				, last repositor{% if last_repos.len() == 1 %}y was{% else %}ies were{% endif %}
+				{%- for repo in last_repos %}
+					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
 				{%- endfor %}
 			{% endif %}
 			</b>
@@ -138,6 +131,5 @@ removed from all repositories.</p>
 	</tr>
 {% endfor %}
 </table>
-
-</div> {#- container #}
+</div>
 {% endblock %}

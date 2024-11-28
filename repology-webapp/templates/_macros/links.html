@@ -79,12 +79,10 @@
 	{%- else %}Other{% endif -%}
 {%- endmacro -%}
 
-{#
-{%- macro repository_link(repo) -%}
-	{%- if repo in repometadata.active_names() -%}
-		<a href="{{ url_for(endpoint='repository', repo=repo) }}">{{ repometadata[repo].desc }}</a>
+{%- macro repository_link(repository_name) -%}
+	{%- if repositories_data.is_repository_active(repository_name) -%}
+		<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_name)])? }}">{{ repositories_data.repository_title(repository_name) }}</a>
 	{%- else -%}
-		<span class="legacy-repository">{{ repometadata[repo].desc }}</span>
+		<span class="legacy-repository">{{ repositories_data.repository_title(repository_name) }}</span>
 	{%- endif -%}
 {%- endmacro -%}
-#}

@@ -57,3 +57,14 @@ async fn test_project_related(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/project/gcc/related").await;
     uri_snapshot_test(pool.clone(), "/project/binutils/related").await;
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_history_data")
+)]
+async fn test_project_history(pool: PgPool) {
+    uri_snapshot_test(pool.clone(), "/project/nonexistent/hitstory").await;
+    uri_snapshot_test(pool.clone(), "/project/orphaned-with-history/history").await;
+    uri_snapshot_test(pool.clone(), "/project/orphaned-without-history/history").await;
+    uri_snapshot_test(pool.clone(), "/project/zsh/history").await;
+}

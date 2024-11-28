@@ -5,12 +5,14 @@ pub mod common;
 pub mod nonexistent;
 
 pub mod badges;
+pub mod history;
 pub mod information;
 pub mod packages;
 pub mod related;
 pub mod versions;
 
 pub use badges::*;
+pub use history::*;
 pub use information::*;
 pub use packages::*;
 pub use related::*;

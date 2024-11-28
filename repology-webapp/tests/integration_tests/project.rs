@@ -206,3 +206,42 @@ async fn test_project_related(pool: PgPool) {
         contains "∗",
     );
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_history_data")
+)]
+async fn test_project_history(pool: PgPool) {
+    check_response!(
+        pool,
+        "/project/nonexistent/history",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+    );
+    check_response!(
+        pool,
+        "/project/orphaned-without-history/history",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+    );
+    check_response!(
+        pool,
+        "/project/orphaned-with-history/history",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+    );
+
+    check_response!(
+        pool,
+        "/project/zsh/history",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        // rather complex templates which may lead to whitespace before comma in some lists
+        contains_not " ,",
+        contains_not "\t,",
+    );
+}
