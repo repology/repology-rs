@@ -33,6 +33,7 @@ pub enum SourceType {
     Site,
 }
 
+/// Information on a single repository.
 #[derive(Debug, Clone, FromRow)]
 pub struct RepositoryData {
     pub id: i16,
@@ -45,12 +46,23 @@ pub struct RepositoryData {
     pub order: i16,
 }
 
+/// Ready to use collection of Repository metadata.
+///
+/// This is retrieved from [RepositoriesDataCache::snapshot()] and the
+/// can be used to query specific bits of Repository data.
 pub struct RepositoriesDataSnapshot {
     repositories: Vec<RepositoryData>,
     repositories_by_name: HashMap<String, RepositoryData>,
 }
 
 impl RepositoriesDataSnapshot {
+    /// Returns repository title by its name.
+    ///
+    /// Mostly for use in templates - returns human-readable Repository
+    /// _title_ by its internal _name_. Never fails - if repository name
+    /// is not known, returns it back. This may happen if new repository
+    /// was just added but [`RepositoriesDataCache`] has not yet updated
+    /// and picked it up.
     pub fn repository_title<'a>(&'a self, repository_name: &'a str) -> &'a str {
         self.repositories_by_name
             .get(repository_name)
@@ -58,32 +70,62 @@ impl RepositoriesDataSnapshot {
             .unwrap_or(repository_name)
     }
 
+    /// Returns repository data by its name.
+    ///
+    /// Note that this returns data in non-active (`legacy`) repositories
+    /// as well, and in most cases you need [`active_repository`] instead.
+    ///
+    /// [`active_repository`]: Self::active_repository
     pub fn repository(&self, repository_name: &str) -> Option<&RepositoryData> {
         self.repositories_by_name.get(repository_name)
     }
 
+    /// Checks whether given repository is known and active by its name.
     pub fn is_repository_active(&self, repository_name: &str) -> bool {
         self.active_repository(repository_name).is_some()
     }
 
+    /// Returns repository data for active repository by its name.
+    ///
+    /// Same as [`repository`], but pretends that Repository does not
+    /// exist if it's not in `active` state (in most cases that would be
+    /// Repositories which existed at some point, but were then removed
+    /// from Repology).
+    ///
+    /// [`repository`]: Self::repository
     pub fn active_repository(&self, repository_name: &str) -> Option<&RepositoryData> {
         self.repository(repository_name)
             .filter(|data| data.status == RepositoryStatus::Active)
     }
 
+    /// Returns data on all active Repositories.
+    ///
+    /// Repositories are sorted according to their `sortname`, so this may
+    /// be iterated and presented to user right away.
     pub fn active_repositories(&self) -> impl Iterator<Item = &RepositoryData> {
         self.repositories
             .iter()
             .filter(|data| data.status == RepositoryStatus::Active)
     }
 
+    /// Sorts a slice of Repository names according to their designated order.
+    ///
+    /// This is useful if a subset of Repository names must be presented to user,
+    /// and we want it to be ordered according to Repositories `sortname`s.
+    ///
+    /// This handles unknown repository names by placing them after all known
+    /// repositories in alphabetical order.
+    ///
+    /// The implementation avoids `N*logN` `HashMap` lookups which would
+    /// naive `names.sort_by(|a, b| self.repositories_by_name.get(a)...`
+    /// approach do. Instead, it extracts sorting keys in form of (int, &str)
+    /// pairs, sorts these, and then orders original strings in that order.
+    /// It was not tested if it's actually faster or the performance is relevant
+    /// here, just this felt right :)
     pub fn sort_repository_names<T>(&self, names: &mut [T])
     where
         T: AsRef<str>,
     {
-        // Order by repositry sortname (here we use RepositoryData::order
-        // which is derived from it). Unknown repositories are ordered last
-        // and sorted by their own names
         let keys: Vec<_> = names
             .iter()
             .map(|name| {
@@ -100,6 +142,7 @@ impl RepositoriesDataSnapshot {
     }
 }
 
+/// Shared facility which stores and periodically updates Repository metadata.
 pub struct RepositoriesDataCache {
     pool: PgPool,
     cached_data: Mutex<Arc<RepositoriesDataSnapshot>>,
