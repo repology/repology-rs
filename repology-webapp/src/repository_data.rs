@@ -108,37 +108,63 @@ impl RepositoriesDataSnapshot {
             .filter(|data| data.status == RepositoryStatus::Active)
     }
 
+    /// Sorts a slice of objects tied to Repositories according to designated Repository order.
+    ///
+    /// This is useful if a subset if a set of objects related somehow
+    /// to Repositories (for instance, per-repository counters) needs to be sorted
+    /// according to designated Repository order (based on `sortnames`) to be presented
+    /// to user.
+    ///
+    /// This handles unknown repository names by placing them after all known
+    /// repositories, in alphabetical order.
+    ///
+    /// Note that this implementation avoids `N*logN` HashMap lookups which would
+    /// naive approach do:
+    ///
+    /// ```ignore
+    /// items.sort_by(
+    ///     |a, b| {
+    ///         self.repositories_by_name.get(get_name(a))...
+    ///         self.repositories_by_name.get(get_name(b))...
+    ///     }
+    /// );
+    /// ```
+    ///
+    /// Instead, it extracts sorting keys in form of (int, &str) pairs,
+    /// sorts these, and then places original objects according to that
+    /// order. It was not tested if it's actually faster or the performance
+    /// is relevant here at all, just that felt right :)
+    pub fn sort_by_repository_names<T, F>(&self, items: &mut [T], get_name: F)
+    where
+        F: Fn(&T) -> &str,
+    {
+        let keys: Vec<_> = items
+            .iter()
+            .map(|item| {
+                (
+                    self.repositories_by_name
+                        .get(get_name(item))
+                        .map(|data| data.order)
+                        .unwrap_or(i16::MAX),
+                    get_name(item),
+                )
+            })
+            .collect();
+        permutation::permutation::sort(keys).apply_slice_in_place(items);
+    }
+
     /// Sorts a slice of Repository names according to their designated order.
     ///
     /// This is useful if a subset of Repository names must be presented to user,
     /// and we want it to be ordered according to Repositories `sortname`s.
     ///
     /// This handles unknown repository names by placing them after all known
-    /// repositories in alphabetical order.
-    ///
-    /// The implementation avoids `N*logN` `HashMap` lookups which would
-    /// naive `names.sort_by(|a, b| self.repositories_by_name.get(a)...`
-    /// approach do. Instead, it extracts sorting keys in form of (int, &str)
-    /// pairs, sorts these, and then orders original strings in that order.
-    /// It was not tested if it's actually faster or the performance is relevant
-    /// here, just this felt right :)
+    /// repositories, in alphabetical order.
     pub fn sort_repository_names<T>(&self, names: &mut [T])
     where
         T: AsRef<str>,
     {
-        let keys: Vec<_> = names
-            .iter()
-            .map(|name| {
-                (
-                    self.repositories_by_name
-                        .get(name.as_ref())
-                        .map(|data| data.order)
-                        .unwrap_or(i16::MAX),
-                    name.as_ref(),
-                )
-            })
-            .collect();
-        permutation::permutation::sort(keys).apply_slice_in_place(names);
+        self.sort_by_repository_names(names, |name| name.as_ref());
     }
 }
 
