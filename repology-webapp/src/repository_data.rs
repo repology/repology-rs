@@ -42,6 +42,7 @@ pub struct RepositoryData {
     pub eol_date: Option<chrono::NaiveDate>, // TODO: convert to chrono
     pub status: RepositoryStatus,
     pub source_type: SourceType,
+    pub order: i16,
 }
 
 pub struct RepositoriesDataSnapshot {
@@ -75,6 +76,28 @@ impl RepositoriesDataSnapshot {
             .iter()
             .filter(|data| data.status == RepositoryStatus::Active)
     }
+
+    pub fn sort_repository_names<T>(&self, names: &mut [T])
+    where
+        T: AsRef<str>,
+    {
+        // Order by repositry sortname (here we use RepositoryData::order
+        // which is derived from it). Unknown repositories are ordered last
+        // and sorted by their own names
+        let keys: Vec<_> = names
+            .iter()
+            .map(|name| {
+                (
+                    self.repositories_by_name
+                        .get(name.as_ref())
+                        .map(|data| data.order)
+                        .unwrap_or(i16::MAX),
+                    name.as_ref(),
+                )
+            })
+            .collect();
+        permutation::permutation::sort(keys).apply_slice_in_place(names);
+    }
 }
 
 pub struct RepositoriesDataCache {
@@ -101,7 +124,8 @@ impl RepositoriesDataCache {
                 COALESCE(metadata->>'singular', name || ' package') AS singular,
                 (metadata->>'valid_till')::DATE AS eol_date,
                 state AS status,
-                COALESCE(metadata->>'type', 'repository') AS source_type
+                COALESCE(metadata->>'type', 'repository') AS source_type,
+                (row_number() OVER (ORDER BY sortname))::SMALLINT AS order
             FROM repositories
             ORDER BY sortname
         "#})
