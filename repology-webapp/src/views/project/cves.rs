@@ -21,6 +21,24 @@ use crate::template_context::TemplateContext;
 use super::common::Project;
 use super::nonexistent::nonexisting_project;
 
+fn version_compare_nulls_last(a: &Option<&str>, b: &Option<&str>) -> std::cmp::Ordering {
+    match (a, b) {
+        (Some(a), Some(b)) => version_compare(a, b),
+        (Some(_), None) => std::cmp::Ordering::Less,
+        (None, Some(_)) => std::cmp::Ordering::Greater,
+        (None, None) => std::cmp::Ordering::Equal,
+    }
+}
+
+fn version_compare_nulls_first(a: &Option<&str>, b: &Option<&str>) -> std::cmp::Ordering {
+    match (a, b) {
+        (Some(a), Some(b)) => version_compare(a, b),
+        (Some(_), None) => std::cmp::Ordering::Greater,
+        (None, Some(_)) => std::cmp::Ordering::Less,
+        (None, None) => std::cmp::Ordering::Equal,
+    }
+}
+
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
     #[serde(rename = "version")]
@@ -80,6 +98,17 @@ impl Cve {
             cmp.is_lt() || !self.end_version_excluded && cmp.is_le()
         })
     }
+
+    fn sort_key(&self) -> (u32, u32) {
+        if let Some(numbers) = self.cve_id.strip_prefix("CVE-") {
+            if let Some((a, b)) = numbers.split_once('-') {
+                let a: u32 = a.parse().unwrap_or(0);
+                let b: u32 = b.parse().unwrap_or(0);
+                return (a, b);
+            }
+        }
+        (0, 0)
+    }
 }
 
 #[derive(PartialEq, Eq, Hash)]
@@ -135,7 +164,7 @@ pub async fn project_cves(
     .fetch_optional(&state.pool)
     .await?;
 
-    let cves: Vec<Cve> = sqlx::query_as(indoc! {r#"
+    let mut cves: Vec<Cve> = sqlx::query_as(indoc! {r#"
         SELECT
             cve_id,
             to_char(published::timestamptz at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI"Z"') AS published,
@@ -198,12 +227,13 @@ pub async fn project_cves(
             coalesce(nullif(expanded_cves.cpe_target_hw, '*') = nullif(manual_cpes.cpe_target_hw, '*'), TRUE) AND
             coalesce(nullif(expanded_cves.cpe_other, '*') = nullif(manual_cpes.cpe_other, '*'), TRUE)
         WHERE effname = $1
-        ORDER BY
-            -- assuming CVE-xxxx-yyyyy format
-            split_part(cve_id, '-', 2)::integer,
-            split_part(cve_id, '-', 3)::integer,
-            end_version::versiontext NULLS LAST,
-            start_version::versiontext NULLS FIRST
+        -- Sorted in rust code, so we don't need to pull libversion externsion here
+        --ORDER BY
+        --    -- assuming CVE-xxxx-yyyyy format
+        --    split_part(cve_id, '-', 2)::integer,
+        --    split_part(cve_id, '-', 3)::integer,
+        --    end_version::versiontext NULLS LAST,
+        --    start_version::versiontext NULLS FIRST
     "#})
     .bind(&project_name)
     .bind(&(crate::constants::CVES_PER_PAGE as i32))
@@ -219,6 +249,21 @@ pub async fn project_cves(
     {
         return nonexisting_project(&*state, ctx, project_name, project).await;
     }
+
+    // sort by CVE number, then end version
+    cves.sort_by(|a, b| {
+        a.sort_key()
+            .cmp(&b.sort_key())
+            .then_with(|| {
+                version_compare_nulls_last(&a.end_version.as_deref(), &b.end_version.as_deref())
+            })
+            .then_with(|| {
+                version_compare_nulls_first(
+                    &a.start_version.as_deref(),
+                    &b.start_version.as_deref(),
+                )
+            })
+    });
 
     let num_cves = cves.len();
     let mut aggregated_cves: IndexMap<CveAggregation, Vec<CveVersionRange>> = Default::default();
