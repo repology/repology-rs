@@ -68,3 +68,15 @@ async fn test_project_history(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/project/orphaned-without-history/history").await;
     uri_snapshot_test(pool.clone(), "/project/zsh/history").await;
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_cves_data")
+)]
+async fn test_project_cves(pool: PgPool) {
+    uri_snapshot_test(pool.clone(), "/project/cves/history").await;
+    uri_snapshot_test(pool.clone(), "/project/orphaned-without-cves/cves").await;
+    uri_snapshot_test(pool.clone(), "/project/orphaned-with-cves/cves").await;
+    uri_snapshot_test(pool.clone(), "/project/vulnerable/cves").await;
+    uri_snapshot_test(pool.clone(), "/project/vulnerable/cves?version=2.0.0").await;
+}

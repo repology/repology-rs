@@ -245,3 +245,54 @@ async fn test_project_history(pool: PgPool) {
         contains_not "\t,",
     );
 }
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_cves_data")
+)]
+async fn test_project_cves(pool: PgPool) {
+    check_response!(
+        pool,
+        "/project/cves/history",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+    );
+    check_response!(
+        pool,
+        "/project/orphaned-without-cves/cves",
+        status NOT_FOUND,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+    );
+    check_response!(
+        pool,
+        "/project/orphaned-with-cves/cves",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "CVE-1-1",
+    );
+
+    check_response!(
+        pool,
+        "/project/vulnerable/cves",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "CVE-2-2",
+        contains "(1.0.0, 2.0.0]",
+        contains "[1.0.0, 2.0.0)",
+        // used for highlighted entries, here we don't expect any
+        contains_not "version-outdated"
+    );
+
+    check_response!(
+        pool,
+        "/project/vulnerable/cves?version=2.0.0",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains "version-outdated"
+    );
+}
