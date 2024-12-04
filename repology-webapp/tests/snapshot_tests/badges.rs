@@ -9,22 +9,6 @@ use super::uri_snapshot_test;
     migrator = "repology_common::MIGRATOR",
     fixtures("common_repositories", "common_packages")
 )]
-async fn test_badge_tiny_repos(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/nonexistent").await;
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/nonexistent.svg").await;
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/zsh.svg").await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/badge/tiny-repos/zsh.svg?header=Repository+Count",
-    )
-    .await;
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/zsh.svg?header=").await;
-}
-
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages")
-)]
 async fn test_badge_version_for_repo(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/badge/version-for-repo/freebsd/zsh").await;
     uri_snapshot_test(pool.clone(), "/badge/version-for-repo/freebsd/zsh.svg").await;

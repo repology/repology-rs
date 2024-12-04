@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 mod api;
+mod badge_tiny_repos;
 mod badges;
 mod feeds;
 mod graphs; // XXX: may produce false positives due to moving timestamps
