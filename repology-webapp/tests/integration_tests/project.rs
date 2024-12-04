@@ -276,23 +276,46 @@ async fn test_project_cves(pool: PgPool) {
 
     check_response!(
         pool,
-        "/project/vulnerable/cves",
+        "/project/manyranges/cves",
         status OK,
         content_type "text/html",
         html_ok "allow_empty_tags,warnings_fatal",
         contains "CVE-2-2",
-        contains "(1.0.0, 2.0.0]",
-        contains "[1.0.0, 2.0.0)",
-        // used for highlighted entries, here we don't expect any
-        contains_not "version-outdated"
+        contains "(-∞, +∞)",
+        contains "(1.1, +∞)",
+        contains "[1.2, +∞)",
+        contains "(1.3, 1.4]",
+        contains "[1.5, 1.6)",
+        contains "(-∞, 1.7)",
+        contains "(-∞, 1.8]",
     );
 
     check_response!(
         pool,
-        "/project/vulnerable/cves?version=2.0.0",
+        "/project/tworanges/cves",
         status OK,
         content_type "text/html",
         html_ok "allow_empty_tags,warnings_fatal",
-        contains "version-outdated"
+        contains "CVE-3-3",
+        contains "(1.3, 1.4]",
+        contains "[1.5, 1.6)",
+        // css class used for highlighted entries, here we don't expect any
+        contains_not "version-outdated"
+    );
+    check_response!(
+        pool,
+        "/project/tworanges/cves?version=1.3",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains r#"<span class="version version-rolling">(1.3, 1.4]</span>"#,
+    );
+    check_response!(
+        pool,
+        "/project/tworanges/cves?version=1.4",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains r#"<span class="version version-outdated">(1.3, 1.4]</span>"#,
     );
 }

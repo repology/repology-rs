@@ -77,6 +77,8 @@ async fn test_project_cves(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/project/cves/history").await;
     uri_snapshot_test(pool.clone(), "/project/orphaned-without-cves/cves").await;
     uri_snapshot_test(pool.clone(), "/project/orphaned-with-cves/cves").await;
-    uri_snapshot_test(pool.clone(), "/project/vulnerable/cves").await;
-    uri_snapshot_test(pool.clone(), "/project/vulnerable/cves?version=2.0.0").await;
+    uri_snapshot_test(pool.clone(), "/project/manyranges/cves").await;
+    uri_snapshot_test(pool.clone(), "/project/tworanges/cves").await;
+    uri_snapshot_test(pool.clone(), "/project/tworanges/cves?version=1.3").await;
+    uri_snapshot_test(pool.clone(), "/project/tworanges/cves?version=1.4").await;
 }
