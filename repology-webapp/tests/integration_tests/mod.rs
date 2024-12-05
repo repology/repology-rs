@@ -14,6 +14,7 @@ mod problems;
 mod project;
 mod projects;
 mod repository;
+mod security;
 mod static_file;
 mod tool_project_by;
 mod trivial_pages;

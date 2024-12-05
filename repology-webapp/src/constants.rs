@@ -28,3 +28,6 @@ pub const ATOM_FEED_MIN_ENTRIES: usize = 1;
 pub const NUM_SIMILAR_MAINTAINERS: usize = 50;
 pub const MAX_MAINTAINER_PROJECTS: usize = 500;
 pub const REPOSITORY_CACHE_REFRESH_PERIOD: Duration = Duration::from_mins(5);
+pub const RECENT_CPES_MAX_COUNT: usize = 200;
+pub const RECENT_CVES_MAX_COUNT: usize = 200;
+pub const RECENT_CVES_MAX_AGE: Duration = Duration::from_days(31);

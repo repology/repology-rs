@@ -38,7 +38,7 @@ INSERT INTO cves(cve_id, published, last_modified, matches, cpe_pairs) VALUES
 		'{"baz:baz"}'::text[]
 	);
 
-INSERT INTO manual_cpes(effname, cpe_vendor, cpe_product, cpe_edition, cpe_lang, cpe_sw_edition, cpe_target_sw, cpe_target_hw, cpe_other) VALUES
-	('orphaned-with-cves', 'foo', 'foo', '*', '*', '*', '*', '*', '*'),
-	('manyranges', 'bar', 'bar', '*', '*', '*', '*', '*', '*'),
-	('tworanges', 'baz', 'baz', '*', '*', '*', '*', '*', '*');
+INSERT INTO manual_cpes(effname, cpe_vendor, cpe_product, cpe_edition, cpe_lang, cpe_sw_edition, cpe_target_sw, cpe_target_hw, cpe_other, added_ts) VALUES
+	('orphaned-with-cves', 'foo', 'foo', '*', '*', '*', '*', '*', '*', '2024-01-01 00:00:00'),
+	('manyranges', 'bar', 'bar', '*', '*', '*', '*', '*', '*', '2024-01-01 00:00:00'),
+	('tworanges', 'baz', 'baz', '*', '*', '*', '*', '*', '*', '2024-01-01 00:00:00');

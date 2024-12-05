@@ -182,6 +182,8 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(RepositoryFeed.path(), get(views::repository_feed))
         .route(RepositoryFeedAtom.path(), get(views::repository_feed_atom))
         .route(RepositoryProblems.path(), get(views::repository_problems))
+        .route(SecurityRecentCves.path(), get(views::recent_cves))
+        .route(SecurityRecentCpes.path(), get(views::recent_cpes))
         .route(StaticFile.path(), get(views::static_file))
         .route(Tools.path(), get(views::tools))
         .route(LegacyBadgeVersionOnlyForRepo.path(), get(views::legacy_badge_version_only_for_repo))
