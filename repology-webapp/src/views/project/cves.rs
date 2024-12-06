@@ -251,6 +251,8 @@ pub async fn project_cves(
     }
 
     // sort by CVE number, then end version
+    // XXX: this needs to include CPE files to be stable, as there may be multiple
+    // records with equal CVE and version ranges, but different only by e.g. target_sw
     cves.sort_by(|a, b| {
         a.sort_key()
             .cmp(&b.sort_key())
