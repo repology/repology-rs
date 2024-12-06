@@ -1,16 +1,10 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![allow(warnings, unused)]
-
 use std::time::Duration;
 
-use anyhow::Error;
 use itertools::Itertools;
 
-use repology_common::PackageStatus;
-
-use crate::font::{FontMeasurer, FontStyle};
 use crate::xmlwriter::{xml, XmlTag};
 
 #[derive(Clone, Copy)]
@@ -83,7 +77,7 @@ fn calculate_ticks(min: f32, max: f32, graph_type: GraphType) -> Ticks {
     }
 }
 
-fn collect_with_deduplication_by_value<I, A, B>(mut iter: I) -> Vec<(A, B)>
+fn collect_with_deduplication_by_value<I, A, B>(iter: I) -> Vec<(A, B)>
 where
     A: Copy,
     B: Copy + PartialEq,
@@ -100,7 +94,7 @@ where
     res
 }
 
-pub fn normalize_graph_data(
+fn normalize_graph_data(
     points: &Vec<(Duration, f32)>,
     graph_type: GraphType,
     period: Duration,

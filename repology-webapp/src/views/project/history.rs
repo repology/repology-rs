@@ -1,28 +1,20 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![allow(warnings, unused)]
-
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::sync::Arc;
 
-use anyhow::{anyhow, bail, Result};
 use askama::Template;
 use axum::extract::{Path, Query, State};
 use axum::http::{header, HeaderValue};
 use axum::response::IntoResponse;
 use chrono::{DateTime, TimeDelta, Utc};
 use indoc::indoc;
-use itertools::Itertools;
 use libversion::version_compare;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use repology_common::{PackageFlags, PackageStatus};
-
 use crate::endpoints::Endpoint;
-use crate::package::ordering::by_version_descending;
-use crate::package::traits::{PackageWithFlags, PackageWithVersion};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -134,8 +126,8 @@ fn translate_raw_event(
 ) -> Option<Event> {
     let event_data = match raw_event.data.0 {
         RawEventData::HistoryStart {
-            mut devel_repos,
-            mut newest_repos,
+            devel_repos,
+            newest_repos,
             mut all_repos,
             mut devel_versions,
             mut newest_versions,
