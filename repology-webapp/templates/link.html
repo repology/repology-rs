@@ -1,0 +1,102 @@
+{% extends "_base.html" %}
+{% from "_macros/links.html" import format_link_status_code, format_link_suggestions %}
+{% from "_macros/time.html" import format_absolute_time_sec, format_time_interval %}
+
+{% block extrameta %}
+	<meta name="robots" content="noindex">
+{% endblock %}
+
+{% block title %}Link check status - Repology{% endblock %}
+{% block header %}Link check status{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<ul class="list-unstyled">
+	<li>URL: <b><a href="{{ linkinfo.url }}">{{ linkinfo.url }}</a></b> (<a href="{{ 'https://web.archive.org/web/*/' + linkinfo.url }}">see on archive.org</a>)</li>
+	<li>First seen: <b>{{ format_absolute_time_sec(linkinfo.first_extracted) }}</b> (<b>{{ format_time_interval(now() - linkinfo.first_extracted) }} ago</b>)</li>
+	{% if linkinfo.last_checked is not none %}
+	<li>Last checked:
+		<b>{{ format_absolute_time_sec(linkinfo.last_checked) }}</b>
+		(<b>{{ format_time_interval(now() - linkinfo.last_checked) }} ago</b>)</li>
+	{% else %}
+	<li>Not yet checked</li>
+	{% endif %}
+</ul>
+
+{% if linkinfo.last_checked is not none %}
+
+<h3>IPv6</h3>
+
+<ul class="list-unstyled">
+	<li>Last success:
+	{% if linkinfo.ipv6_last_success is not none %}
+		<b>{{ format_absolute_time_sec(linkinfo.ipv6_last_success) }}</b>
+		(<b>{{ format_time_interval(now() - linkinfo.ipv6_last_success) }} ago</b>)
+	{% else %}
+		<b>never</b>
+	{% endif %}
+	</li>
+	<li>Last failure:
+	{% if linkinfo.ipv6_last_failure is not none %}
+		<b>{{ format_absolute_time_sec(linkinfo.ipv6_last_failure) }}</b>
+		(<b>{{ format_time_interval(now() - linkinfo.ipv6_last_failure) }} ago</b>)
+	{% else %}
+		<b>never</b>
+	{% endif %}
+	</li>
+	<li>Status:
+	{% if linkinfo.ipv6_success is none %}
+		<b>-</b>
+	{% elif linkinfo.ipv6_success and linkinfo.ipv6_permanent_redirect_target is not none %}
+		<b class="link-redirect">permanent redirect</b> to <b><a href="{{ linkinfo.ipv6_permanent_redirect_target }}">{{ linkinfo.ipv6_permanent_redirect_target }}</a></b>
+	{% elif linkinfo.ipv6_success %}
+		<b class="link-ok">OK ({{ linkinfo.ipv6_status_code }})</b>
+	{% else %}
+		<b class="link-error">{{ format_link_status_code(linkinfo.ipv6_status_code) }}</b>
+		{{ format_link_suggestions(linkinfo.ipv6_status_code, linkinfo.url) }}
+	{% endif %}
+	</li>
+</ul>
+
+{% if linkinfo.ipv4_success is none and linkinfo.ipv6_success is not none %}
+<p>Legacy IPv4 check was skipped because IPv6 check succeeded</p>
+{% else %}
+<h3>IPv4</h3>
+
+<ul class="list-unstyled">
+	<li>Last success:
+	{% if linkinfo.ipv4_last_success is not none %}
+		<b>{{ format_absolute_time_sec(linkinfo.ipv4_last_success) }}</b>
+		(<b>{{ format_time_interval(now() - linkinfo.ipv4_last_success) }} ago</b>)
+	{% else %}
+		<b>never</b>
+	{% endif %}
+	</li>
+	<li>Last failure:
+	{% if linkinfo.ipv4_last_failure is not none %}
+		<b>{{ format_absolute_time_sec(linkinfo.ipv4_last_failure) }}</b>
+		(<b>{{ format_time_interval(now() - linkinfo.ipv4_last_failure) }} ago</b>)
+	{% else %}
+		<b>never</b>
+	{% endif %}
+	</li>
+	<li>Status:
+	{% if linkinfo.ipv4_success is none %}
+		<b>-</b>
+	{% elif linkinfo.ipv4_success and linkinfo.ipv4_permanent_redirect_target is not none %}
+		<b class="link-redirect">permanent redirect</b> to <b><a href="{{ linkinfo.ipv4_permanent_redirect_target }}">{{ linkinfo.ipv4_permanent_redirect_target }}</a></b>
+	{% elif linkinfo.ipv4_success %}
+		<b class="link-ok">OK ({{ linkinfo.ipv4_status_code }})</b>
+	{% else %}
+		<b class="link-error">{{ format_link_status_code(linkinfo.ipv4_status_code) }}</b>
+		{{ format_link_suggestions(linkinfo.ipv4_status_code, linkinfo.url) }}
+	{% endif %}
+	</li>
+</ul>
+{% endif %}
+
+{% endif %}
+
+</div>
+{% endblock %}
