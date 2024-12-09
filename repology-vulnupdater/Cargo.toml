@@ -16,7 +16,7 @@ reqwest = { version = "0.12.9", features = ["stream"] }
 serde = { version = "1.0.214", features = ["derive"] }
 serde_json = "1.0.133"
 sqlx = { version = "0.8.2", features = ["postgres", "chrono", "runtime-tokio"] }
-tokio = { version = "1.41.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.42.0", features = ["macros", "rt-multi-thread"] }
 tracing = "0.1.41"
 tracing-appender = "0.2.3"
 tracing-subscriber = "0.3.19"
