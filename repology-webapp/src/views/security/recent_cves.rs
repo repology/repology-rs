@@ -52,6 +52,9 @@ pub async fn recent_cves(
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::SecurityRecentCves, gen_path, gen_query);
 
+    // XXX: it would be great to get rid of age limit here: there's no need for it
+    // and it complicates testing; however it's needed for more optimal query, as
+    // without it we'll have to process all cves
     let cves: Vec<Cve> = sqlx::query_as(indoc! {r#"
         WITH expanded_matches AS (
             SELECT DISTINCT
