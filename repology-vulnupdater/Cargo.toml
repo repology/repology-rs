@@ -7,7 +7,7 @@ edition = "2021"
 anyhow = "1.0.94"
 async-trait = "0.1.83"
 chrono = { version = "0.4.39", default-features = false, features = ["now"] }
-clap = { version = "4.5.21", features = ["derive"] }
+clap = { version = "4.5.23", features = ["derive"] }
 indoc = "2.0.5"
 metrics = "0.24.1"
 metrics-exporter-prometheus = { version = "0.16.0", default-features = false, features = ["http-listener"] }
