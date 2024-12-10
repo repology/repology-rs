@@ -105,6 +105,10 @@ pub enum Endpoint {
     #[strum(props(path = "/favicon.ico"))]
     Favicon,
 
+    // Misc
+    #[strum(props(path = "/link/*url"))]
+    Link,
+
     // API
     #[strum(props(path = "/api/v1/projects/"))]
     ApiV1Projects,
@@ -253,10 +257,6 @@ pub enum Endpoint {
     MaintainersTurnover,
     #[strum(props(path = "/experimental/distromap", section = "Experimental"))]
     Distromap,
-
-    // Misc
-    #[strum(props(path = "/link/*url"))]
-    Link,
 
     // API
     #[strum(props(path = "/api/v1/repository/:repository_name/problems"))]

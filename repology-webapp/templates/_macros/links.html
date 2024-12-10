@@ -42,8 +42,8 @@
 	{%- if code == -205 -%}
 		(<a href="https://bb6-ie.blogspot.com/2017/04/do-not-put-ipv4-mapped-ipv6-addresses.html" rel="nofollow">related reading</a>)
 	{%- endif -%}
-	{%- if code >= -599 && code <= -500 -%}
-		(<a href="https://www.ssllabs.com/ssltest/analyze.html?d={{ url|extract_netloc }}" rel="nofollow">check on SSL Labs</a>)
+	{%- if code >= -599 && code <= -500 -%}{# TODO: we only need netloc here #}
+		(<a href="https://www.ssllabs.com/ssltest/analyze.html?d={{ url }}" rel="nofollow">check on SSL Labs</a>)
 	{%- endif -%}
 {%- endmacro -%}
 

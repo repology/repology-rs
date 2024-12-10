@@ -7,6 +7,7 @@ mod badges;
 mod feeds;
 mod graphs;
 mod legacy_redirects;
+mod link;
 mod log;
 mod maintainer;
 mod opensearch;
