@@ -1,13 +1,11 @@
 {# note that local times are always UTC #}
 
 {%- macro format_absolute_time(datetime) -%}
-	<time class="tzfix_time"
-				datetime="{{ datetime.format("%Y-%m-%dT%H:%M%z") }}">{{ datetime.format("%Y-%m-%d %H:%M") }}</time>
+	<time class="tzfix_time" datetime="{{ datetime.format("%Y-%m-%dT%H:%M%z") }}">{{ datetime.format("%Y-%m-%d %H:%M") }}</time>
 {%- endmacro -%}
 
 {%- macro format_absolute_time_sec(datetime) -%}
-	<time class="tzfix_time_sec"
-				datetime="{{ datetime.format("%Y-%m-%dT%H:%M:%S%z") }}">{{ datetime.format("%Y-%m-%d %H:%M:%S") }}</time>
+	<time class="tzfix_time_sec" datetime="{{ datetime.format("%Y-%m-%dT%H:%M:%S%z") }}">{{ datetime.format("%Y-%m-%d %H:%M:%S") }}</time>
 {%- endmacro -%}
 
 {%- macro format_time_interval(timedelta) -%}
