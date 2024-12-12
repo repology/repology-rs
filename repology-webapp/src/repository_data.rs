@@ -121,7 +121,7 @@ impl RepositoriesDataSnapshot {
     /// Note that this implementation avoids `N*logN` HashMap lookups which would
     /// naive approach do:
     ///
-    /// ```ignore
+    /// ```text
     /// items.sort_by(
     ///     |a, b| {
     ///         self.repositories_by_name.get(get_name(a))...
