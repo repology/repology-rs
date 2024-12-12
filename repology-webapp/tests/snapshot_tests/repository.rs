@@ -9,6 +9,7 @@ use super::uri_snapshot_test;
 async fn test_repository(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/repository/nonexistent").await;
     uri_snapshot_test(pool.clone(), "/repository/orphaned").await;
+    uri_snapshot_test(pool.clone(), "/repository/empty").await;
     uri_snapshot_test(pool.clone(), "/repository/stripped").await;
     uri_snapshot_test(pool.clone(), "/repository/good").await;
 }

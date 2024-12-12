@@ -52,6 +52,7 @@ pub struct Repository {
     pub repository_links: sqlx::types::Json<Vec<RepositoryLink>>,
     pub used_package_link_types: Vec<LinkType>,
     pub last_seen: Option<DateTime<Utc>>,
+    pub is_active: bool,
 }
 
 #[derive(Template)]
@@ -98,7 +99,8 @@ pub async fn repository(
             metadata,
             coalesce(metadata->'repolinks', '[]'::jsonb) AS repository_links,
             coalesce(used_package_link_types, '{}'::integer[]) AS used_package_link_types,
-            last_seen
+            last_seen,
+            state!='legacy' AS is_active
         FROM repositories
         WHERE name = $1
     "#})
@@ -107,7 +109,7 @@ pub async fn repository(
     .await?;
 
     let mut repository = match repository {
-        Some(repository) if repository.num_projects > 0 => repository,
+        Some(repository) if repository.is_active => repository,
         Some(repository) => {
             return Ok((
                 StatusCode::NOT_FOUND, // or should it be GONE?

@@ -26,6 +26,14 @@ async fn test_repository(pool: PgPool) {
     );
     check_response!(
         pool,
+        "/repository/empty",
+        status OK,
+        content_type "text/html",
+        html_ok "allow_empty_tags,warnings_fatal",
+        contains_not "Gone repository",
+    );
+    check_response!(
+        pool,
         "/repository/stripped",
         status OK,
         content_type "text/html",

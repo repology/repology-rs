@@ -57,4 +57,16 @@ INSERT INTO repositories(
 	'{"repolinks":[{"url":"https://example.com/goodrepo","desc":"Repository homepage"}]}'::jsonb,
 	1,
 	'{0,1,7,9,19}'::integer[]
+),
+(
+	5,
+	'empty',
+	'empty',
+	'Empty',
+	'active',
+	'2023-01-01 00:00:00',
+	'2124-01-01 00:00:00',
+	'{}'::jsonb,
+	0,
+	NULL
 );
