@@ -2082,6 +2082,7 @@ dependencies = [
  "tracing-appender",
  "tracing-subscriber",
  "ttf-parser",
+ "url",
  "url-escape",
 ]
 

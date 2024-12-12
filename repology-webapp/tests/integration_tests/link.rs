@@ -92,7 +92,6 @@ async fn test_ipv6_redirect(pool: PgPool) {
     );
 }
 
-#[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_ssl_failure(pool: PgPool) {
     check_response!(
