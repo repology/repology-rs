@@ -48,14 +48,11 @@ impl TemplateContext {
     }
 
     #[expect(dead_code)]
-    pub fn external_url_for_static<'a>(&self, file_name: &str) -> Result<String, Error> {
+    pub fn external_url_for_static(&self, file_name: &str) -> Result<String, Error> {
         Ok(crate::constants::REPOLOGY_HOSTNAME.to_string() + &self.url_for_static(file_name)?)
     }
 
-    pub fn external_url_for_unversioned_static<'a>(
-        &self,
-        file_name: &str,
-    ) -> Result<String, Error> {
+    pub fn external_url_for_unversioned_static(&self, file_name: &str) -> Result<String, Error> {
         Ok(crate::constants::REPOLOGY_HOSTNAME.to_string()
             + &self.url_for_unversioned_static(file_name)?)
     }
