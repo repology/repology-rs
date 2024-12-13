@@ -26,7 +26,7 @@ async fn graph_generic(
     if !state
         .repository_data_cache
         .snapshot()
-        .is_repository_active(&repository_name)
+        .is_repository_active(repository_name)
     {
         return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
     }
@@ -64,9 +64,9 @@ async fn graph_generic(
             divident_field_name, divisor_field_name
         )
     )
-        .bind(&repository_name)
-        .bind(&GRAPH_PERIOD)
-        .bind(&multiplier)
+        .bind(repository_name)
+        .bind(GRAPH_PERIOD)
+        .bind(multiplier)
         .fetch_all(&state.pool)
         .await?;
 
@@ -97,7 +97,7 @@ pub async fn graph_repository_problems_per_1000_projects(
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &*state,
+        &state,
         &repository_name,
         1000.0,
         "num_problems",
@@ -113,7 +113,7 @@ pub async fn graph_repository_projects_per_maintainer(
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &*state,
+        &state,
         &repository_name,
         1.0,
         "num_projects",

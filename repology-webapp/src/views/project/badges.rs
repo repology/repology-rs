@@ -52,7 +52,7 @@ pub async fn project_badges(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return nonexisting_project(&*state, ctx, project_name, project).await;
+        return nonexisting_project(&state, ctx, project_name, project).await;
     }
 
     let containing_repository_names: HashSet<String> = sqlx::query_scalar(indoc! {"

@@ -24,7 +24,7 @@ async fn graph_generic(
     if !state
         .repository_data_cache
         .snapshot()
-        .is_repository_active(&repository_name)
+        .is_repository_active(repository_name)
     {
         return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
     }
@@ -56,8 +56,8 @@ async fn graph_generic(
             field_name
         )
     )
-        .bind(&repository_name)
-        .bind(&GRAPH_PERIOD)
+        .bind(repository_name)
+        .bind(GRAPH_PERIOD)
         .fetch_all(&state.pool)
         .await?;
 
@@ -95,7 +95,7 @@ pub async fn graph_repository_problems(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    graph_generic(&*state, &repository_name, "num_problems", "#c00000").await
+    graph_generic(&state, &repository_name, "num_problems", "#c00000").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -103,7 +103,7 @@ pub async fn graph_repository_projects_total(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    graph_generic(&*state, &repository_name, "num_projects", "#000").await
+    graph_generic(&state, &repository_name, "num_projects", "#000").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -111,7 +111,7 @@ pub async fn graph_repository_projects_unique(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    graph_generic(&*state, &repository_name, "num_projects_unique", "#5bc0de").await
+    graph_generic(&state, &repository_name, "num_projects_unique", "#5bc0de").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -119,7 +119,7 @@ pub async fn graph_repository_projects_newest(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    graph_generic(&*state, &repository_name, "num_projects_newest", "#5cb85c").await
+    graph_generic(&state, &repository_name, "num_projects_newest", "#5cb85c").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -128,7 +128,7 @@ pub async fn graph_repository_projects_outdated(
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &*state,
+        &state,
         &repository_name,
         "num_projects_outdated",
         "#d9534f",
@@ -142,7 +142,7 @@ pub async fn graph_repository_projects_problematic(
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &*state,
+        &state,
         &repository_name,
         "num_projects_problematic",
         "#808080",
@@ -156,7 +156,7 @@ pub async fn graph_repository_projects_vulnerable(
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     graph_generic(
-        &*state,
+        &state,
         &repository_name,
         "num_projects_vulnerable",
         "#ff0000",

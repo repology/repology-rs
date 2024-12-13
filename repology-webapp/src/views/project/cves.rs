@@ -236,7 +236,7 @@ pub async fn project_cves(
         --    start_version::versiontext NULLS FIRST
     "#})
     .bind(&project_name)
-    .bind(&(crate::constants::CVES_PER_PAGE as i32))
+    .bind(crate::constants::CVES_PER_PAGE as i32)
     .fetch_all(&state.pool)
     .await?;
 
@@ -247,7 +247,7 @@ pub async fn project_cves(
         .is_none_or(|project| project.num_repos == 0)
         && cves.is_empty()
     {
-        return nonexisting_project(&*state, ctx, project_name, project).await;
+        return nonexisting_project(&state, ctx, project_name, project).await;
     }
 
     // sort by CVE number, then end version

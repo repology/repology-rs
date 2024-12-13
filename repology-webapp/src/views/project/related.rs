@@ -68,7 +68,7 @@ pub async fn project_related(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return nonexisting_project(&*state, ctx, project_name, project).await;
+        return nonexisting_project(&state, ctx, project_name, project).await;
     }
 
     let projects: Vec<RelatedProject> = sqlx::query_as(indoc! {"
@@ -85,7 +85,7 @@ pub async fn project_related(
         ORDER BY rank DESC, effname;
     "})
     .bind(&project_name)
-    .bind(&(crate::constants::PROJECTS_PER_PAGE as i32))
+    .bind(crate::constants::PROJECTS_PER_PAGE as i32)
     .fetch_all(&state.pool)
     .await?;
 

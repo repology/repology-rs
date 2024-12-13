@@ -83,7 +83,7 @@ pub async fn nonexisting_project(
         LIMIT $2
     "})
     .bind(&project_name)
-    .bind(&(crate::constants::REDIRECTS_PER_PAGE as i32))
+    .bind(crate::constants::REDIRECTS_PER_PAGE as i32)
     .fetch_all(&state.pool)
     .await?;
 

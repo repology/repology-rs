@@ -174,7 +174,7 @@ pub async fn projects(
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Projects);
 
-    projects_generic(ctx, None, None, query, &*state).await
+    projects_generic(ctx, None, None, query, &state).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -186,9 +186,9 @@ pub async fn projects_bounded(
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectsBounded);
 
     if let Some(end) = bound.strip_prefix("..") {
-        projects_generic(ctx, None, Some(end), query, &*state).await
+        projects_generic(ctx, None, Some(end), query, &state).await
     } else {
-        projects_generic(ctx, Some(&bound), None, query, &*state).await
+        projects_generic(ctx, Some(&bound), None, query, &state).await
     }
 }
 
@@ -255,7 +255,7 @@ async fn projects_generic(
         TemplateParams {
             ctx,
             query,
-            repositories_data: &*state.repository_data_cache.snapshot(),
+            repositories_data: &state.repository_data_cache.snapshot(),
             projects_list,
         }
         .render()?,

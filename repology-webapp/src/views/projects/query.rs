@@ -209,27 +209,27 @@ pub async fn query_listing_projects(
         ) AS tmp
         ORDER BY effname
     ", query_conditions.finish()})
-    .bind(&filter.start_project_name) // $1
-    .bind(&filter.end_project_name) // $2
-    .bind(&filter.project_name_substring) // $3
-    .bind(&filter.maintainer) // $4
-    .bind(&filter.in_repo) // $5
-    .bind(&filter.not_in_repo) // $6
-    .bind(&filter.min_repositories) // $7
-    .bind(&filter.max_repositories) // $8
-    .bind(&filter.min_families) // $9
-    .bind(&filter.max_families) // $10
-    .bind(&filter.min_repositories_newest) // $11
-    .bind(&filter.max_repositories_newest) // $12
-    .bind(&filter.min_families_newest) // $13
-    .bind(&filter.max_families_newest) // $14
-    .bind(&filter.category) // $15
-    .bind(&filter.require_newest) // $16
-    .bind(&filter.require_outdated) // $17
-    .bind(&filter.require_problematic) // $18
-    .bind(&filter.require_has_related) // $19
-    .bind(&filter.require_vulnerable) // $20
-    .bind(&filter.limit) // $21
+    .bind(filter.start_project_name) // $1
+    .bind(filter.end_project_name) // $2
+    .bind(filter.project_name_substring) // $3
+    .bind(filter.maintainer) // $4
+    .bind(filter.in_repo) // $5
+    .bind(filter.not_in_repo) // $6
+    .bind(filter.min_repositories) // $7
+    .bind(filter.max_repositories) // $8
+    .bind(filter.min_families) // $9
+    .bind(filter.max_families) // $10
+    .bind(filter.min_repositories_newest) // $11
+    .bind(filter.max_repositories_newest) // $12
+    .bind(filter.min_families_newest) // $13
+    .bind(filter.max_families_newest) // $14
+    .bind(filter.category) // $15
+    .bind(filter.require_newest) // $16
+    .bind(filter.require_outdated) // $17
+    .bind(filter.require_problematic) // $18
+    .bind(filter.require_has_related) // $19
+    .bind(filter.require_vulnerable) // $20
+    .bind(filter.limit) // $21
     .fetch_all(pool)
     .await?)
 }

@@ -107,9 +107,9 @@ pub async fn maintainer_repo_feed_atom(
     "#})
     .bind(&maintainer_name)
     .bind(&repository_name)
-    .bind(&(crate::constants::ATOM_FEED_MAX_ENTRIES as i32))
-    .bind(&(crate::constants::ATOM_FEED_MAX_AGE))
-    .bind(&(crate::constants::ATOM_FEED_MIN_ENTRIES as i32))
+    .bind(crate::constants::ATOM_FEED_MAX_ENTRIES as i32)
+    .bind(crate::constants::ATOM_FEED_MAX_AGE)
+    .bind(crate::constants::ATOM_FEED_MIN_ENTRIES as i32)
     .fetch_all(&state.pool)
     .await?;
 

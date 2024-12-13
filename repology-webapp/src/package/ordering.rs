@@ -55,7 +55,7 @@ pub mod by_name_asc_version_desc {
         T: PackageWithDisplayName + PackageWithVersion + PackageWithFlags,
     {
         a.display_name()
-            .cmp(&b.display_name())
+            .cmp(b.display_name())
             .then_with(|| package_metaorder(a).cmp(&package_metaorder(b)).reverse())
             .then_with(|| {
                 version_compare(

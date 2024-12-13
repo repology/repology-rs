@@ -29,7 +29,7 @@ pub async fn api_v1_projects(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    api_v1_projects_generic(None, None, query, &*state).await
+    api_v1_projects_generic(None, None, query, &state).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -39,9 +39,9 @@ pub async fn api_v1_projects_bounded(
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     if let Some(end) = bound.strip_prefix("..") {
-        api_v1_projects_generic(None, Some(end), query, &*state).await
+        api_v1_projects_generic(None, Some(end), query, &state).await
     } else {
-        api_v1_projects_generic(Some(&bound), None, query, &*state).await
+        api_v1_projects_generic(Some(&bound), None, query, &state).await
     }
 }
 

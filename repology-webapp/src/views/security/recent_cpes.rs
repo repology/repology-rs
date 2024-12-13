@@ -74,7 +74,7 @@ pub async fn recent_cpes(
         ORDER BY added_ts DESC
         LIMIT $1
     "#})
-    .bind(&(crate::constants::RECENT_CPES_MAX_COUNT as i32))
+    .bind(crate::constants::RECENT_CPES_MAX_COUNT as i32)
     .fetch_all(&state.pool)
     .await?;
 

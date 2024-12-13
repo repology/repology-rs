@@ -36,7 +36,7 @@ pub async fn maintainer_problems(
         Some(&maintainer_name),
         query.start_project_name.as_ref().map(|s| s.as_ref()),
         query.end_project_name.as_ref().map(|s| s.as_ref()),
-        &*state,
+        &state,
     )
     .await
 }

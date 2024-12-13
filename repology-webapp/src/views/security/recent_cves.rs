@@ -90,8 +90,8 @@ pub async fn recent_cves(
         ORDER BY published DESC, cve_id DESC
         LIMIT $1
     "#})
-    .bind(&(crate::constants::RECENT_CVES_MAX_COUNT as i32))
-    .bind(&crate::constants::RECENT_CVES_MAX_AGE)
+    .bind(crate::constants::RECENT_CVES_MAX_COUNT as i32)
+    .bind(crate::constants::RECENT_CVES_MAX_AGE)
     .fetch_all(&state.pool)
     .await?;
 

@@ -208,7 +208,7 @@ pub async fn project_by_perform(
     let repositories_data = state.repository_data_cache.snapshot();
 
     let repository_data = if let Some(repository_name) = &query.repo {
-        if let Some(repository_data) = repositories_data.active_repository(&repository_name) {
+        if let Some(repository_data) = repositories_data.active_repository(repository_name) {
             repository_data
         } else {
             return project_by_error(ctx, query, FailureReason::RepositoryNotFound);
@@ -240,8 +240,8 @@ pub async fn project_by_perform(
             name = $3
     "})
     .bind(repository_data.id)
-    .bind(&name_type)
-    .bind(&name)
+    .bind(name_type)
+    .bind(name)
     .fetch_all(&state.pool)
     .await?;
 
@@ -288,7 +288,7 @@ pub async fn project_by_perform(
                         ctx: &ctx,
                         query: &query,
                         targets: &target_projects,
-                        repository_data: &repository_data,
+                        repository_data,
                     }
                     .render()?,
                 ),
@@ -348,7 +348,7 @@ pub async fn project_by_construct(
             ctx,
             query: &query,
             template_url,
-            repositories_data: &*state.repository_data_cache.snapshot(),
+            repositories_data: &state.repository_data_cache.snapshot(),
         }
         .render()?,
     )
@@ -362,8 +362,8 @@ pub async fn project_by(
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     if let Some(name) = &query.name.clone() {
-        project_by_perform(query, gen_query, &*state, name).await
+        project_by_perform(query, gen_query, &state, name).await
     } else {
-        project_by_construct(query, gen_query, &*state).await
+        project_by_construct(query, gen_query, &state).await
     }
 }

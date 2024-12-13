@@ -39,8 +39,8 @@ async fn graph_generic(pool: &PgPool, field_name: &str, stroke: &str) -> Endpoin
             )
         ) WHERE value IS NOT NULL
     "#})
-    .bind(&field_name)
-    .bind(&GRAPH_PERIOD)
+    .bind(field_name)
+    .bind(GRAPH_PERIOD)
     .fetch_all(pool)
     .await?;
 

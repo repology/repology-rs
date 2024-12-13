@@ -100,7 +100,7 @@ pub async fn maintainer_repo_feed(
     "#})
     .bind(&maintainer_name)
     .bind(&repository_name)
-    .bind(&(crate::constants::HTML_FEED_MAX_ENTRIES as i32))
+    .bind(crate::constants::HTML_FEED_MAX_ENTRIES as i32)
     .fetch_all(&state.pool)
     .await?;
 

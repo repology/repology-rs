@@ -97,7 +97,7 @@ pub async fn repository_feed(
         ORDER BY timestamp DESC, project_name, type DESC, id
     "#})
     .bind(&repository_name)
-    .bind(&(crate::constants::HTML_FEED_MAX_ENTRIES as i32))
+    .bind(crate::constants::HTML_FEED_MAX_ENTRIES as i32)
     .fetch_all(&state.pool)
     .await?;
 

@@ -103,7 +103,7 @@ pub async fn project_packages(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return nonexisting_project(&*state, ctx, project_name, project).await;
+        return nonexisting_project(&state, ctx, project_name, project).await;
     }
 
     let packages: Vec<Package> = sqlx::query_as(indoc! {"
@@ -151,7 +151,7 @@ pub async fn project_packages(
         FROM links WHERE id = ANY($1)
     "})
     .bind(
-        &packages
+        packages
             .iter()
             .flat_map(|package| package.links.iter().map(|(_, link_id, _)| link_id))
             .unique()
@@ -193,7 +193,7 @@ pub async fn project_packages(
             project,
             packages,
             links,
-            repositories_data: &*repositories_data,
+            repositories_data: &repositories_data,
         }
         .render()?,
     )

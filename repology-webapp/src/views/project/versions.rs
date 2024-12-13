@@ -85,7 +85,7 @@ pub async fn project_versions(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return nonexisting_project(&*state, ctx, project_name, project).await;
+        return nonexisting_project(&state, ctx, project_name, project).await;
     }
 
     // TODO: try fetching project and packages in parallel tasks, see
@@ -153,7 +153,7 @@ pub async fn project_versions(
             project,
             num_packages,
             packages_by_repo,
-            repositories_data: &*state.repository_data_cache.snapshot(),
+            repositories_data: &state.repository_data_cache.snapshot(),
         }
         .render()?,
     )

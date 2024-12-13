@@ -229,7 +229,7 @@ pub async fn maintainer(
         LIMIT $2
     "})
     .bind(&maintainer_name)
-    .bind(&(crate::constants::MAX_MAINTAINER_PROJECTS as i32))
+    .bind(crate::constants::MAX_MAINTAINER_PROJECTS as i32)
     .fetch_all(&state.pool)
     .await?;
     let projects_query_duration = projects_query_start.elapsed();
@@ -283,7 +283,7 @@ pub async fn maintainer(
         LIMIT $2
     "})
     .bind(&maintainer_name)
-    .bind(&(crate::constants::NUM_SIMILAR_MAINTAINERS as i32))
+    .bind(crate::constants::NUM_SIMILAR_MAINTAINERS as i32)
     .fetch_all(&state.pool)
     .await?;
     let similar_maintainers_query_duration = similar_maintainers_query_start.elapsed();
@@ -319,7 +319,7 @@ pub async fn maintainer(
             is_fallback_maintainer: maintainer_name.starts_with("fallback-mnt-")
                 && maintainer_name.ends_with("@repology"),
             maintainer_links: generate_maintainer_links(&maintainer_name),
-            repositories_data: &*state.repository_data_cache.snapshot(),
+            repositories_data: &state.repository_data_cache.snapshot(),
         }
         .render()?,
     )

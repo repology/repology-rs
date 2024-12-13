@@ -251,7 +251,7 @@ pub async fn project_history(
         LIMIT $2
     "})
     .bind(&project_name)
-    .bind(&(crate::constants::HISTORY_PER_PAGE as i32))
+    .bind(crate::constants::HISTORY_PER_PAGE as i32)
     .fetch_all(&state.pool)
     .await?;
 
@@ -262,7 +262,7 @@ pub async fn project_history(
         .is_none_or(|project| project.num_repos == 0)
         && events.is_empty()
     {
-        return nonexisting_project(&*state, ctx, project_name, project).await;
+        return nonexisting_project(&state, ctx, project_name, project).await;
     }
 
     let repositories_data = state.repository_data_cache.snapshot();
@@ -278,9 +278,9 @@ pub async fn project_history(
             project,
             events: events
                 .into_iter()
-                .filter_map(|event| translate_raw_event(event, &*repositories_data))
+                .filter_map(|event| translate_raw_event(event, &repositories_data))
                 .collect(),
-            repositories_data: &*repositories_data,
+            repositories_data: &repositories_data,
             autorefresh: query.autorefresh,
         }
         .render()?,

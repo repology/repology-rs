@@ -104,9 +104,9 @@ pub async fn repository_feed_atom(
         ORDER BY timestamp DESC, project_name, type DESC, id
     "#})
     .bind(&repository_name)
-    .bind(&(crate::constants::ATOM_FEED_MAX_ENTRIES as i32))
-    .bind(&(crate::constants::ATOM_FEED_MAX_AGE))
-    .bind(&(crate::constants::ATOM_FEED_MIN_ENTRIES as i32))
+    .bind(crate::constants::ATOM_FEED_MAX_ENTRIES as i32)
+    .bind(crate::constants::ATOM_FEED_MAX_AGE)
+    .bind(crate::constants::ATOM_FEED_MIN_ENTRIES as i32)
     .fetch_all(&state.pool)
     .await?;
 

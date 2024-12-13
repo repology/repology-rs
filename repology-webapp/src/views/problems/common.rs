@@ -68,7 +68,7 @@ pub async fn problems_generic(
     let repositories_data = state.repository_data_cache.snapshot();
 
     let repository_data =
-        if let Some(repository_data) = repositories_data.active_repository(&repository_name) {
+        if let Some(repository_data) = repositories_data.active_repository(repository_name) {
             repository_data
         } else {
             return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
@@ -120,10 +120,10 @@ pub async fn problems_generic(
         FROM unsorted
         ORDER BY effname, maintainer;
     "#})
-    .bind(&repository_name)
-    .bind(&maintainer_name)
-    .bind(&start_project_name)
-    .bind(&end_project_name)
+    .bind(repository_name)
+    .bind(maintainer_name)
+    .bind(start_project_name)
+    .bind(end_project_name)
     .bind(crate::constants::PROBLEMS_PER_PAGE as i32)
     .fetch_all(&state.pool)
     .await?;
@@ -133,8 +133,8 @@ pub async fn problems_generic(
         .zip(problems.last())
         .map(|(first, last)| (first.effname.clone(), last.effname.clone()));
     let page_range = page_range.as_ref().map(|(first, last)| KeyRange {
-        first: &first,
-        last: &last,
+        first,
+        last,
     });
 
     let range: (Option<String>, Option<String>) = sqlx::query_as(indoc! {r#"
@@ -146,8 +146,8 @@ pub async fn problems_generic(
             repo = $1
             AND ($2 IS NULL OR maintainer = $2)
     "#})
-    .bind(&repository_name)
-    .bind(&maintainer_name)
+    .bind(repository_name)
+    .bind(maintainer_name)
     .fetch_one(&state.pool)
     .await?;
 
@@ -156,8 +156,8 @@ pub async fn problems_generic(
         .as_ref()
         .zip(range.1.as_ref())
         .map(|(first, last)| KeyRange {
-            first: first,
-            last: last,
+            first,
+            last,
         });
 
     let pagination = whole_range

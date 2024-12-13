@@ -104,7 +104,7 @@ pub async fn project_information(
         .as_ref()
         .is_none_or(|project| project.num_repos == 0)
     {
-        return nonexisting_project(&*state, ctx, project_name, project).await;
+        return nonexisting_project(&state, ctx, project_name, project).await;
     }
 
     // TODO: try fetching project and packages in parallel tasks, see
@@ -159,17 +159,17 @@ pub async fn project_information(
         }
 
         if let Some(summary) = &package.summary {
-            accum.add_string_slice(StringSliceType::Summary, &summary, &package.family);
+            accum.add_string_slice(StringSliceType::Summary, summary, &package.family);
         }
         for maintainer in &package.maintainers {
-            accum.add_string_slice(StringSliceType::Maintainer, &maintainer, &package.family);
-            accum.maintainer_emails.add(&maintainer);
+            accum.add_string_slice(StringSliceType::Maintainer, maintainer, &package.family);
+            accum.maintainer_emails.add(maintainer);
         }
         for category in &package.categories {
-            accum.add_string_slice(StringSliceType::Category, &category, &package.family);
+            accum.add_string_slice(StringSliceType::Category, category, &package.family);
         }
         for license in &package.licenses {
-            accum.add_string_slice(StringSliceType::License, &license, &package.family);
+            accum.add_string_slice(StringSliceType::License, license, &package.family);
         }
 
         // within a given package, we don't want to duplicate e.g. Recipe and RecipeRaw links,
@@ -224,7 +224,7 @@ pub async fn project_information(
         FROM links
         WHERE id = ANY($1)
     "})
-    .bind(&accum.get_all_link_ids())
+    .bind(accum.get_all_link_ids())
     .fetch_all(&state.pool)
     .await?;
 
@@ -239,7 +239,7 @@ pub async fn project_information(
             ctx,
             project_name,
             project,
-            slices: accum.finalize(&links, &*state.repository_data_cache.snapshot()),
+            slices: accum.finalize(&links, &state.repository_data_cache.snapshot()),
         }
         .render()?,
     )
