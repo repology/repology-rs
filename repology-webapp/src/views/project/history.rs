@@ -132,10 +132,7 @@ fn translate_raw_event(
             mut devel_versions,
             mut newest_versions,
         } => {
-            let actual_repos: HashSet<_> = devel_repos
-                .into_iter()
-                .chain(newest_repos.into_iter())
-                .collect();
+            let actual_repos: HashSet<_> = devel_repos.into_iter().chain(newest_repos).collect();
             all_repos.retain(|repo| !actual_repos.contains(repo));
             let mut actual_repos: Vec<_> = actual_repos.into_iter().collect();
             sort_repositories(&mut actual_repos, repositories_data);

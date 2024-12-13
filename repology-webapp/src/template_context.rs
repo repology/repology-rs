@@ -20,10 +20,7 @@ impl TemplateContext {
     ) -> Self {
         Self {
             endpoint,
-            params: path_params
-                .into_iter()
-                .chain(query_params.into_iter())
-                .collect(),
+            params: path_params.into_iter().chain(query_params).collect(),
         }
     }
 

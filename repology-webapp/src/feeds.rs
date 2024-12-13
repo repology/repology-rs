@@ -13,7 +13,7 @@ pub trait EventWithTimestamp {
 }
 
 pub fn unicalize_feed_timestamps(events: &mut Vec<impl EventWithTimestamp>) {
-    if let Some(last_event) = events.iter().nth(0) {
+    if let Some(last_event) = events.first() {
         let mut previous_timestamp = last_event.timestamp();
 
         events.iter_mut().skip(1).for_each(|event| {

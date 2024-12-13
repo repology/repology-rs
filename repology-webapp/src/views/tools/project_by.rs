@@ -219,8 +219,7 @@ pub async fn project_by_perform(
 
     let target_page = if let Some(target_page) = TARGET_PAGES
         .iter()
-        .filter(|page| Some(page.alias) == query.target_page.as_deref())
-        .nth(0)
+        .find(|page| Some(page.alias) == query.target_page.as_deref())
     {
         target_page
     } else {
@@ -324,8 +323,7 @@ pub async fn project_by_construct(
 
     let target_page = TARGET_PAGES
         .iter()
-        .filter(|page| Some(page.alias) == query.target_page.as_deref())
-        .nth(0);
+        .find(|page| Some(page.alias) == query.target_page.as_deref());
 
     let template_url = match (&query.repo, &query.name_type, target_page) {
         (Some(_), Some(_), Some(_)) => Some(

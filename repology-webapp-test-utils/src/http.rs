@@ -268,11 +268,9 @@ macro_rules! check_condition {
                     allow_warnings = false;
                 }
                 "allow_empty_tags" => {
-                    validation_result.output = validation_result
+                    validation_result
                         .output
-                        .into_iter()
-                        .filter(|s| !s.contains("Warning: trimming empty <"))
-                        .collect();
+                        .retain(|s| !s.contains("Warning: trimming empty <"));
                 }
                 "" => {}
                 other => {
