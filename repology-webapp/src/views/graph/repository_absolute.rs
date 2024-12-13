@@ -127,13 +127,7 @@ pub async fn graph_repository_projects_outdated(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    graph_generic(
-        &state,
-        &repository_name,
-        "num_projects_outdated",
-        "#d9534f",
-    )
-    .await
+    graph_generic(&state, &repository_name, "num_projects_outdated", "#d9534f").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]

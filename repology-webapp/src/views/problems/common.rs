@@ -132,10 +132,9 @@ pub async fn problems_generic(
         .first()
         .zip(problems.last())
         .map(|(first, last)| (first.effname.clone(), last.effname.clone()));
-    let page_range = page_range.as_ref().map(|(first, last)| KeyRange {
-        first,
-        last,
-    });
+    let page_range = page_range
+        .as_ref()
+        .map(|(first, last)| KeyRange { first, last });
 
     let range: (Option<String>, Option<String>) = sqlx::query_as(indoc! {r#"
         SELECT
@@ -155,10 +154,7 @@ pub async fn problems_generic(
         .0
         .as_ref()
         .zip(range.1.as_ref())
-        .map(|(first, last)| KeyRange {
-            first,
-            last,
-        });
+        .map(|(first, last)| KeyRange { first, last });
 
     let pagination = whole_range
         .map(move |whole_range| Pagination {
