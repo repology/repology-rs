@@ -38,7 +38,7 @@ use axum::{
     extract::{MatchedPath, Request},
     middleware::{self, Next},
     response::IntoResponse,
-    routing::get,
+    routing::{get, post},
 };
 use metrics::{counter, histogram};
 use sqlx::PgPool;
@@ -187,6 +187,8 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
         .route(ProjectPackages.path(), get(views::project_packages))
         .route(ProjectRelated.path(), get(views::project_related))
         .route(ProjectBadges.path(), get(views::project_badges))
+        .route(ProjectReport.path(), get(views::project_report_get))
+        .route(ProjectReport.path(), post(views::project_report_post))
         .route(ProjectCves.path(), get(views::project_cves))
         .route(Projects.path(), get(views::projects))
         .route(ProjectsBounded.path(), get(views::projects_bounded))

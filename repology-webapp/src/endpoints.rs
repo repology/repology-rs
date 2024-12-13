@@ -31,6 +31,8 @@ pub enum Endpoint {
     ProjectRelated,
     #[strum(props(path = "/project/{project_name}/badges", section = "Projects"))]
     ProjectBadges,
+    #[strum(props(path = "/project/{project_name}/report", section = "Projects"))]
+    ProjectReport,
     #[strum(props(path = "/project/{project_name}/cves", section = "Projects"))]
     ProjectCves,
 
@@ -207,8 +209,6 @@ pub enum Endpoint {
         section = "Projects"
     ))]
     ProjectVersionsCompact,
-    #[strum(props(path = "/project/{project_name}/report", section = "Projects"))] // GET + POST
-    ProjectReport,
 
     // Maintainers
     #[strum(props(path = "/maintainers/", section = "Maintainers"))]

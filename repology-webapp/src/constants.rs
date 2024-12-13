@@ -15,8 +15,7 @@ pub const MAINTAINERS_PER_PAGE: usize = 200;
 pub const PROBLEMS_PER_PAGE: usize = 200;
 pub const PROJECTS_PER_PAGE: usize = 200;
 pub const REDIRECTS_PER_PAGE: usize = 200;
-#[expect(unused)]
-pub const REPORTS_PER_PAGE: usize = 100;
+pub const MAX_REPORTS: usize = 100;
 #[expect(unused)]
 pub const TRENDING_PER_PAGE: usize = 25;
 #[expect(unused)]

@@ -10,6 +10,7 @@ pub mod history;
 pub mod information;
 pub mod packages;
 pub mod related;
+pub mod report;
 pub mod versions;
 
 pub use badges::*;
@@ -18,4 +19,5 @@ pub use history::*;
 pub use information::*;
 pub use packages::*;
 pub use related::*;
+pub use report::*;
 pub use versions::*;

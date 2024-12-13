@@ -26,6 +26,7 @@ mod project_history;
 mod project_information;
 mod project_packages;
 mod project_related;
+mod project_report;
 mod project_versions;
 mod projects;
 mod repository;
