@@ -57,27 +57,25 @@ impl PartialEq<Self> for DisplayVersion {
 
 impl PartialOrd for DisplayVersion {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(
-            self.metaorder
-                .cmp(&other.metaorder)
-                .then_with(|| {
-                    libversion::version_compare(
-                        (&self.version, self.versionflags),
-                        (&other.version, other.versionflags),
-                    )
-                })
-                .then_with(|| self.status.cmp(&other.status))
-                .then_with(|| self.vulnerable.cmp(&other.vulnerable).reverse())
-                .then_with(|| self.recalled.cmp(&other.recalled).reverse())
-                .then_with(|| self.spread.cmp(&other.spread))
-                .then_with(|| self.version.cmp(&other.version)),
-        )
+        Some(self.cmp(other))
     }
 }
 
 impl Ord for DisplayVersion {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.partial_cmp(other).unwrap()
+        self.metaorder
+            .cmp(&other.metaorder)
+            .then_with(|| {
+                libversion::version_compare(
+                    (&self.version, self.versionflags),
+                    (&other.version, other.versionflags),
+                )
+            })
+            .then_with(|| self.status.cmp(&other.status))
+            .then_with(|| self.vulnerable.cmp(&other.vulnerable).reverse())
+            .then_with(|| self.recalled.cmp(&other.recalled).reverse())
+            .then_with(|| self.spread.cmp(&other.spread))
+            .then_with(|| self.version.cmp(&other.version))
     }
 }
 
