@@ -7,7 +7,7 @@ repository = "https://github.com/repology/libversion-rs"
 readme = "README.md"
 categories = ["algorithms", "version", "comparison"]
 license = "MIT"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 bitflags = "2.6.0"

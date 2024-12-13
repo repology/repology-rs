@@ -1,11 +1,11 @@
 [package]
 name = "repology-common"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 bitflags = "2.6.0"
-serde = { version = "1.0.214", features = ["derive"] }
+serde = { version = "1.0.216", features = ["derive"] }
 serde_repr = "0.1.19"
 sqlx = { version = "0.8.2", default-features = false, features = ["derive", "migrate", "macros"] }
 strum = { version = "0.26.3", features = ["strum_macros"] }

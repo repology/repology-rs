@@ -1,7 +1,7 @@
 [package]
 name = "repology-vulnupdater"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
 anyhow = "1.0.94"
@@ -13,7 +13,7 @@ metrics = "0.24.1"
 metrics-exporter-prometheus = { version = "0.16.0", default-features = false, features = ["http-listener"] }
 metrics-process = { version = "2.4.0", features = ["use-gauge-on-cpu-seconds-total"] }
 reqwest = { version = "0.12.9", features = ["stream"] }
-serde = { version = "1.0.214", features = ["derive"] }
+serde = { version = "1.0.216", features = ["derive"] }
 serde_json = "1.0.133"
 sqlx = { version = "0.8.2", features = ["postgres", "chrono", "runtime-tokio"] }
 tokio = { version = "1.42.0", features = ["macros", "rt-multi-thread"] }
