@@ -109,11 +109,11 @@ struct Event {
     pub data: EventData,
 }
 
-fn sort_repositories(repositories: &mut Vec<String>, repositories_data: &RepositoriesDataSnapshot) {
+fn sort_repositories(repositories: &mut [String], repositories_data: &RepositoriesDataSnapshot) {
     repositories_data.sort_repository_names(repositories);
 }
 
-fn sort_versions(versions: &mut Vec<String>) {
+fn sort_versions(versions: &mut [String]) {
     // XXX: here we do not have extra information (such as flags) required for
     // proper version sorting. This should be fixed by using correct order when
     // generating history events

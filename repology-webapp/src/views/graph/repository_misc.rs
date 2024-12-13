@@ -81,7 +81,7 @@ async fn graph_generic(
             &points
                 .into_iter()
                 .map(|(timestamp, value)| ((now - timestamp).to_std().unwrap_or_default(), value))
-                .collect(),
+                .collect::<Vec<_>>(),
             GraphType::Float,
             GRAPH_PERIOD,
             "",

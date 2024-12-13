@@ -95,7 +95,7 @@ where
 }
 
 fn normalize_graph_data(
-    points: &Vec<(Duration, f32)>,
+    points: &[(Duration, f32)],
     graph_type: GraphType,
     period: Duration,
     suffix: &str,
@@ -145,7 +145,7 @@ fn normalize_graph_data(
 }
 
 pub fn render_graph(
-    points: &Vec<(Duration, f32)>,
+    points: &[(Duration, f32)],
     graph_type: GraphType,
     period: Duration,
     suffix: &str,

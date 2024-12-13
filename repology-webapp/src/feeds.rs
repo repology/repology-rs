@@ -12,7 +12,7 @@ pub trait EventWithTimestamp {
     fn set_timestamp(&mut self, timestamp: DateTime<Utc>);
 }
 
-pub fn unicalize_feed_timestamps(events: &mut Vec<impl EventWithTimestamp>) {
+pub fn unicalize_feed_timestamps(events: &mut [impl EventWithTimestamp]) {
     if let Some(last_event) = events.first() {
         let mut previous_timestamp = last_event.timestamp();
 

@@ -55,7 +55,7 @@ async fn graph_generic(pool: &PgPool, field_name: &str, stroke: &str) -> Endpoin
             &points
                 .into_iter()
                 .map(|(timestamp, value)| ((now - timestamp).to_std().unwrap_or_default(), value))
-                .collect(),
+                .collect::<Vec<_>>(),
             GraphType::Integer,
             GRAPH_PERIOD,
             "",
