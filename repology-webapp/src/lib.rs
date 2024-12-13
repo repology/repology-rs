@@ -6,6 +6,7 @@
 #![feature(stmt_expr_attributes)]
 #![feature(assert_matches)]
 #![feature(duration_constructors)]
+#![allow(clippy::module_inception)]
 
 mod badges;
 mod constants;
