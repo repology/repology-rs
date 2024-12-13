@@ -43,7 +43,7 @@ struct RepresentativePackageChooser<'a, T> {
     representative: Option<&'a T>,
 }
 
-impl<'a, T> Default for RepresentativePackageChooser<'a, T> {
+impl<T> Default for RepresentativePackageChooser<'_, T> {
     fn default() -> Self {
         Self {
             fallback: None,

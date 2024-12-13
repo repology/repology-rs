@@ -51,7 +51,7 @@ impl<'a> CpeProcessor<'a> {
 }
 
 #[async_trait]
-impl<'a> DatasourceProcessor for CpeProcessor<'a> {
+impl DatasourceProcessor for CpeProcessor<'_> {
     async fn process(&self, data: &str) -> Result<DatasourceProcessStatus, Error> {
         counter!("repology_vulnupdater_processor_runs_total", "processor" => "cpe", "stage" => "processing").increment(1);
         counter!("repology_vulnupdater_processor_data_bytes_total", "processor" => "cpe")
