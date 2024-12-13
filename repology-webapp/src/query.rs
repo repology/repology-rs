@@ -59,11 +59,11 @@ mod tests {
         let uri: Uri = "https://example.com/foo?b&c=&d=1&e=+".parse().unwrap();
         let params = Query::<Params>::try_from_uri(&uri).unwrap().0;
 
-        assert_eq!(params.a, false);
-        assert_eq!(params.b, false);
-        assert_eq!(params.c, false);
-        assert_eq!(params.d, true);
-        assert_eq!(params.e, true);
+        assert!(!params.a);
+        assert!(!params.b);
+        assert!(!params.c);
+        assert!(params.d);
+        assert!(params.e);
     }
 
     #[test]
@@ -94,11 +94,11 @@ mod tests {
         let uri: Uri = "https://example.com/foo?b&c=&d=1&e=+".parse().unwrap();
         let params = Query::<Params>::try_from_uri(&uri).unwrap().0;
 
-        assert_eq!(params.a, true);
-        assert_eq!(params.b, false);
-        assert_eq!(params.c, false);
-        assert_eq!(params.d, true);
-        assert_eq!(params.e, true);
+        assert!(params.a);
+        assert!(!params.b);
+        assert!(!params.c);
+        assert!(params.d);
+        assert!(params.e);
     }
 
     #[test]
