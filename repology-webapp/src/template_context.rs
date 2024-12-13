@@ -36,15 +36,15 @@ impl TemplateContext {
             .by_orig_name(file_name)
             .ok_or_else(|| anyhow!("unknown static file \"{}\"", file_name))?;
 
-        Ok(UrlConstructor::new(Endpoint::StaticFile.path())
+        UrlConstructor::new(Endpoint::StaticFile.path())
             .with_field("file_name", &file.hashed_name)
-            .construct()?)
+            .construct()
     }
 
     pub fn url_for_unversioned_static(&self, file_name: &str) -> Result<String, Error> {
-        Ok(UrlConstructor::new(Endpoint::StaticFile.path())
+        UrlConstructor::new(Endpoint::StaticFile.path())
             .with_field("file_name", file_name)
-            .construct()?)
+            .construct()
     }
 
     #[expect(dead_code)]
@@ -65,9 +65,9 @@ impl TemplateContext {
         endpoint: Endpoint,
         fields: &[(&'a str, &'a str)],
     ) -> Result<String, Error> {
-        Ok(UrlConstructor::new(endpoint.path())
+        UrlConstructor::new(endpoint.path())
             .with_fields(fields.iter().cloned())
-            .construct()?)
+            .construct()
     }
 
     pub fn external_url_for<'a>(
@@ -79,10 +79,10 @@ impl TemplateContext {
     }
 
     pub fn url_for_self<'a>(&self, fields: &[(&'a str, &'a str)]) -> Result<String, Error> {
-        Ok(UrlConstructor::new(self.endpoint.path())
+        UrlConstructor::new(self.endpoint.path())
             .with_fields(self.params.iter().map(|(k, v)| (k.as_ref(), v.as_ref())))
             .with_fields(fields.iter().cloned())
-            .construct()?)
+            .construct()
     }
 
     pub fn external_url_for_self<'a>(
