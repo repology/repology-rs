@@ -247,9 +247,11 @@ pub async fn project_by_perform(
     let params: Vec<_> = gen_query
         .iter()
         .map(|(k, v)| (k.as_str(), v.as_str()))
-        .filter(|(k, _)| match *k {
-            "repo" | "name_type" | "name" | "noautoresolve" | "target_page" => false,
-            _ => true,
+        .filter(|(k, _)| {
+            !matches!(
+                *k,
+                "repo" | "name_type" | "name" | "noautoresolve" | "target_page"
+            )
         })
         .collect();
 

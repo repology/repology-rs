@@ -215,10 +215,10 @@ pub enum LinkType {
 impl LinkType {
     pub fn is_raw(&self) -> bool {
         use LinkType::*;
-        match self {
-            PackageRecipeRaw | PackagePatchRaw | PackageBuildLogRaw => true,
-            _ => false,
-        }
+        matches!(
+            self,
+            PackageRecipeRaw | PackagePatchRaw | PackageBuildLogRaw
+        )
     }
 
     pub fn raw_counterpart(&self) -> Option<Self> {
