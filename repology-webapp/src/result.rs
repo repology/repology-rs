@@ -14,7 +14,7 @@ impl IntoResponse for EndpointError {
             if cfg!(debug_assertions) {
                 format!("Internal server error:\n{:#?}", self.0)
             } else {
-                format!("Internal server error")
+                "Internal server error".to_string()
             },
         )
             .into_response()
