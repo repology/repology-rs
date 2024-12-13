@@ -9,9 +9,9 @@ use itertools::Itertools;
 use crate::package::summarization::DisplayVersion;
 use crate::repository_data::RepositoriesDataSnapshot;
 
+use super::Link;
 use super::emails::MaintainerEmailsAggregator;
 use super::slices::*;
-use super::Link;
 
 type StringSliceAccumulator<'a> = HashMap<&'a str, HashSet<&'a str>>;
 type LinkSliceAccumulator<'a> = HashMap<(i32, Option<&'a str>), HashSet<&'a str>>;

@@ -4,11 +4,11 @@
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use serde::Deserialize;
 
-use crate::badges::{render_generic_badge, Cell};
+use crate::badges::{Cell, render_generic_badge};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 

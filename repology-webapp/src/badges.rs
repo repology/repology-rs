@@ -6,7 +6,7 @@ use anyhow::Error;
 use repology_common::PackageStatus;
 
 use crate::font::{FontMeasurer, FontStyle};
-use crate::xmlwriter::{xml, XmlTag};
+use crate::xmlwriter::{XmlTag, xml};
 
 const HEADER_HEIGHT: usize = 25;
 const HEADER_FONT_SIZE: usize = 15;

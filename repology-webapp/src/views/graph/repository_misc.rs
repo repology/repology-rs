@@ -4,12 +4,12 @@
 use std::sync::Arc;
 
 use axum::extract::{Path, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
 
-use crate::graphs::{render_graph, GraphType};
+use crate::graphs::{GraphType, render_graph};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 

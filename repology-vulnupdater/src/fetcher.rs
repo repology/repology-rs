@@ -4,7 +4,7 @@
 use std::borrow::Cow;
 use std::time::{Duration, Instant};
 
-use anyhow::{bail, Error};
+use anyhow::{Error, bail};
 use chrono::{TimeDelta, Utc};
 use metrics::counter;
 use serde::Deserialize;

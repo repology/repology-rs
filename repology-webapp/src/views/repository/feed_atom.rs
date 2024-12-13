@@ -5,14 +5,14 @@ use std::sync::Arc;
 
 use askama::Template;
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
 use sqlx::FromRow;
 
 use crate::endpoints::Endpoint;
-use crate::feeds::{unicalize_feed_timestamps, EventWithTimestamp};
+use crate::feeds::{EventWithTimestamp, unicalize_feed_timestamps};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;

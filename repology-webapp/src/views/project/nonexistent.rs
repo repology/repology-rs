@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use askama::Template;
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use sqlx::FromRow;
@@ -13,8 +13,8 @@ use crate::state::AppState;
 use crate::template_context::TemplateContext;
 
 use crate::views::projects::common::{
-    packages_to_categorized_display_versions_per_project, CategorizedDisplayVersions,
-    PackageForListing, ProjectForListing,
+    CategorizedDisplayVersions, PackageForListing, ProjectForListing,
+    packages_to_categorized_display_versions_per_project,
 };
 
 use super::common::Project;
@@ -94,15 +94,12 @@ pub async fn nonexisting_project(
             // we should instead check number of projects fetched
             // by redirect to exclude gone projects
             let project_name = &redirect_project_names[0][..];
-            return Ok((
-                StatusCode::MOVED_PERMANENTLY,
-                [(
-                    header::LOCATION,
-                    HeaderValue::from_maybe_shared(
-                        ctx.url_for(ctx.endpoint, &[("project_name", project_name)])?,
-                    )?,
-                )],
-            )
+            return Ok((StatusCode::MOVED_PERMANENTLY, [(
+                header::LOCATION,
+                HeaderValue::from_maybe_shared(
+                    ctx.url_for(ctx.endpoint, &[("project_name", project_name)])?,
+                )?,
+            )])
                 .into_response());
         }
         0 => Default::default(),

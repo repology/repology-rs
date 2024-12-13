@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use sqlx::FromRow;
@@ -13,7 +13,7 @@ use sqlx::FromRow;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::views::projects::projects::QueryParams;
-use crate::views::projects::query::{query_listing_projects, ProjectsFilter};
+use crate::views::projects::query::{ProjectsFilter, query_listing_projects};
 
 use super::common::ApiV1Package;
 

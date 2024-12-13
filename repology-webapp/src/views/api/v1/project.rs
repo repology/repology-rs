@@ -4,7 +4,7 @@
 use std::sync::Arc;
 
 use axum::extract::{Path, State};
-use axum::http::{header, HeaderValue};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 

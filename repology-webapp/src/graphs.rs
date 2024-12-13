@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use itertools::Itertools;
 
-use crate::xmlwriter::{xml, XmlTag};
+use crate::xmlwriter::{XmlTag, xml};
 
 #[derive(Clone, Copy)]
 pub enum GraphType {

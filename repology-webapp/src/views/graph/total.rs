@@ -4,13 +4,13 @@
 use std::sync::Arc;
 
 use axum::extract::State;
-use axum::http::{header, HeaderValue};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
 use sqlx::PgPool;
 
-use crate::graphs::{render_graph, GraphType};
+use crate::graphs::{GraphType, render_graph};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 

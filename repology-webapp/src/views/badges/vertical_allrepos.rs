@@ -5,7 +5,7 @@ use std::collections::HashSet;
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use metrics::histogram;
@@ -15,7 +15,7 @@ use sqlx::FromRow;
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::badges::{
-    badge_color_for_package_status, render_generic_badge, Cell, CellAlignment, SpecialVersionStatus,
+    Cell, CellAlignment, SpecialVersionStatus, badge_color_for_package_status, render_generic_badge,
 };
 use crate::package::processing::pick_representative_package_per_repository;
 use crate::package::traits::{

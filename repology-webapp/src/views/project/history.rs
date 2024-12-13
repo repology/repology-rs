@@ -6,7 +6,7 @@ use std::sync::Arc;
 
 use askama::Template;
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use chrono::{DateTime, TimeDelta, Utc};
 use indoc::indoc;

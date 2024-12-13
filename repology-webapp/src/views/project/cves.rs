@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use askama::Template;
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indexmap::IndexMap;
 use indoc::indoc;

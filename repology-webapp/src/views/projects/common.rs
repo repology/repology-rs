@@ -148,15 +148,12 @@ pub fn packages_to_categorized_display_versions_per_project(
     by_project
         .into_iter()
         .map(|(project_name, categorized_buckets)| {
-            (
-                project_name.into(),
-                CategorizedDisplayVersions {
-                    focused: finalize_buckets(categorized_buckets.focused),
-                    newest: finalize_buckets(categorized_buckets.newest),
-                    outdated: finalize_buckets(categorized_buckets.outdated),
-                    ignored: finalize_buckets(categorized_buckets.ignored),
-                },
-            )
+            (project_name.into(), CategorizedDisplayVersions {
+                focused: finalize_buckets(categorized_buckets.focused),
+                newest: finalize_buckets(categorized_buckets.newest),
+                outdated: finalize_buckets(categorized_buckets.outdated),
+                ignored: finalize_buckets(categorized_buckets.ignored),
+            })
         })
         .collect()
 }

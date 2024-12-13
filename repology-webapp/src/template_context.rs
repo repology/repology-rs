@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::{anyhow, Error};
+use anyhow::{Error, anyhow};
 
 use crate::endpoints::{Endpoint, Section};
 use crate::static_files::STATIC_FILES;

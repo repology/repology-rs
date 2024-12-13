@@ -4,7 +4,7 @@
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use serde::Deserialize;
@@ -12,7 +12,7 @@ use sqlx::FromRow;
 
 use repology_common::PackageStatus;
 
-use crate::badges::{badge_color_for_package_status, render_generic_badge, Cell, CellAlignment};
+use crate::badges::{Cell, CellAlignment, badge_color_for_package_status, render_generic_badge};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
@@ -139,9 +139,11 @@ pub async fn badge_repository_big(
         }
     } else {
         // either no repository entry or repository inactive
-        cells.push(vec![Cell::new("Repository not known or was removed")
-            .align(CellAlignment::Center)
-            .color("#e00000")]);
+        cells.push(vec![
+            Cell::new("Repository not known or was removed")
+                .align(CellAlignment::Center)
+                .color("#e00000"),
+        ]);
     }
 
     let body = render_generic_badge(&cells, caption, 0, &state.font_measurer)?;

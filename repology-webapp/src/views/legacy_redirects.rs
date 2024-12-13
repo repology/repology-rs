@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use axum::extract::{Path, Query};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 
 use crate::endpoints::Endpoint;
@@ -10,10 +10,10 @@ use crate::result::EndpointResult;
 use crate::template_context::TemplateContext;
 
 fn redirect(target: String) -> EndpointResult {
-    Ok((
-        StatusCode::MOVED_PERMANENTLY,
-        [(header::LOCATION, HeaderValue::from_maybe_shared(target)?)],
-    )
+    Ok((StatusCode::MOVED_PERMANENTLY, [(
+        header::LOCATION,
+        HeaderValue::from_maybe_shared(target)?,
+    )])
         .into_response())
 }
 

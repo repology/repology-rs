@@ -29,16 +29,16 @@ use std::time::Instant;
 
 use anyhow::{Context, Error};
 use axum::{
+    Router,
     body::HttpBody,
     extract::{MatchedPath, Request},
     middleware::{self, Next},
     response::IntoResponse,
     routing::get,
-    Router,
 };
 use metrics::{counter, histogram};
 use sqlx::PgPool;
-use tracing::{error, info, info_span, Instrument as _};
+use tracing::{Instrument as _, error, info, info_span};
 
 use crate::font::FontMeasurer;
 use crate::repository_data::RepositoriesDataCache;

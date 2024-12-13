@@ -4,8 +4,8 @@
 use std::collections::HashMap;
 use std::sync::LazyLock;
 
-use flate2::{write::GzEncoder, Compression};
-use include_dir::{include_dir, Dir, DirEntry};
+use flate2::{Compression, write::GzEncoder};
+use include_dir::{Dir, DirEntry, include_dir};
 use tracing::info;
 
 static STATIC_FILES_RAW: Dir = include_dir!("$CARGO_MANIFEST_DIR/static");

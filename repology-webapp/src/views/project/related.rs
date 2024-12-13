@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use askama::Template;
 use axum::extract::{Path, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use sqlx::FromRow;
@@ -14,9 +14,9 @@ use crate::endpoints::Endpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
-use crate::views::projects::common::packages_to_categorized_display_versions_per_project;
 use crate::views::projects::common::CategorizedDisplayVersions;
 use crate::views::projects::common::PackageForListing;
+use crate::views::projects::common::packages_to_categorized_display_versions_per_project;
 
 use super::common::Project;
 use super::nonexistent::nonexisting_project;

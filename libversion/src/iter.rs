@@ -1,6 +1,6 @@
-use crate::component::Component;
-use crate::parse::{get_next_version_component, SomeComponents};
 use crate::Flags;
+use crate::component::Component;
+use crate::parse::{SomeComponents, get_next_version_component};
 use std::mem;
 
 pub struct VersionComponentIterator<'a> {

@@ -3,7 +3,7 @@
 
 use indexmap::IndexMap;
 
-use anyhow::{bail, Error};
+use anyhow::{Error, bail};
 
 pub struct UrlConstructor<'a> {
     pattern: &'static str,

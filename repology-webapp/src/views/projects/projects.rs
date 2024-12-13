@@ -5,7 +5,7 @@ use std::sync::Arc;
 
 use askama::Template;
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use serde::Deserialize;
@@ -17,10 +17,10 @@ use crate::state::AppState;
 use crate::template_context::TemplateContext;
 
 use super::common::{
-    packages_to_categorized_display_versions_per_project, CategorizedDisplayVersions,
-    PackageForListing, ProjectForListing,
+    CategorizedDisplayVersions, PackageForListing, ProjectForListing,
+    packages_to_categorized_display_versions_per_project,
 };
-use super::query::{query_listing_projects, ProjectsFilter};
+use super::query::{ProjectsFilter, query_listing_projects};
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {

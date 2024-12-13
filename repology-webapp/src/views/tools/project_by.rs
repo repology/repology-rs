@@ -7,7 +7,7 @@ use std::sync::Arc;
 use anyhow::Result;
 use askama::Template;
 use axum::extract::{Query, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use itertools::Itertools;
@@ -274,13 +274,10 @@ pub async fn project_by_perform(
         (0, _) => {
             return project_by_error(ctx, query, FailureReason::NotFound);
         }
-        (1, _) | (_, false) => (
-            StatusCode::FOUND,
-            [(
-                header::LOCATION,
-                HeaderValue::from_maybe_shared(target_projects[0].1.clone())?,
-            )],
-        )
+        (1, _) | (_, false) => (StatusCode::FOUND, [(
+            header::LOCATION,
+            HeaderValue::from_maybe_shared(target_projects[0].1.clone())?,
+        )])
             .into_response(),
         _ => {
             use serde_json::json;

@@ -7,7 +7,7 @@ use std::time::Instant;
 
 use askama::Template;
 use axum::extract::{Path, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use chrono::{DateTime, Utc};
 use indoc::indoc;

@@ -4,7 +4,7 @@
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use axum::http::{header, HeaderValue, StatusCode};
+use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use serde::Deserialize;
@@ -13,7 +13,7 @@ use sqlx::FromRow;
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::badges::{
-    badge_color_for_package_status, render_generic_badge, Cell, SpecialVersionStatus,
+    Cell, SpecialVersionStatus, badge_color_for_package_status, render_generic_badge,
 };
 use crate::package::processing::pick_representative_package;
 use crate::package::traits::{PackageWithFlags, PackageWithStatus, PackageWithVersion};

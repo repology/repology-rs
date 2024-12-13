@@ -14,10 +14,10 @@ mod vulnupdater;
 
 use std::cell::LazyCell;
 
-use anyhow::{bail, Context, Error};
+use anyhow::{Context, Error, bail};
 use clap::Parser as _;
-use sqlx::postgres::PgPoolOptions;
 use sqlx::Executor;
+use sqlx::postgres::PgPoolOptions;
 use tracing::info;
 
 use args::Args;
