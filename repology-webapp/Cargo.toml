@@ -7,10 +7,6 @@ edition = "2024"
 coverage = []  # used to calculate coverage correctly (see https://github.com/rust-lang/rust/issues/110486)
 snapshot-tests = []  # enable snapshot tests
 
-[profile.dev.package]
-insta.opt-level = 3
-similar.opt-level = 3
-
 [dependencies]
 anyhow = "1.0.94"
 askama = "0.12.1"
