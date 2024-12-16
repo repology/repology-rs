@@ -246,11 +246,6 @@ CREATE TABLE repositories (
 CREATE UNIQUE INDEX ON repositories(name);
 
 -- history
-CREATE TABLE repositories_history (
-	ts timestamp with time zone NOT NULL PRIMARY KEY,
-	snapshot jsonb NOT NULL
-);
-
 CREATE TABLE repositories_history_new (
 	repository_id smallint NOT NULL,
 	ts timestamp with time zone NOT NULL,
@@ -434,7 +429,11 @@ INSERT INTO statistics VALUES(DEFAULT);
 -- statistics_history
 CREATE TABLE statistics_history (
 	ts timestamp with time zone NOT NULL PRIMARY KEY,
-	snapshot jsonb NOT NULL
+	snapshot jsonb NOT NULL,
+	num_packages integer,
+	num_projects integer,
+	num_problems integer,
+	num_maintainers integer
 );
 
 --------------------------------------------------------------------------------
