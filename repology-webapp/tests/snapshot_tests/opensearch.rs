@@ -6,7 +6,11 @@ use sqlx::PgPool;
 use super::uri_snapshot_test;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
-async fn test_opensearch(pool: PgPool) {
+async fn test_maintainer(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/opensearch/maintainer.xml").await;
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_project(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/opensearch/project.xml").await;
 }

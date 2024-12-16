@@ -6,7 +6,7 @@ use sqlx::PgPool;
 use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
-async fn test_opensearch(pool: PgPool) {
+async fn test_maintainer(pool: PgPool) {
     check_response!(
         pool,
         "/opensearch/maintainer.xml",
@@ -15,7 +15,10 @@ async fn test_opensearch(pool: PgPool) {
         contains "={searchTerms}",
         xpath "string(/*[local-name()='OpenSearchDescription']/*[local-name()='ShortName'])" "Repology maintainers"
     );
+}
 
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_project(pool: PgPool) {
     check_response!(
         pool,
         "/opensearch/project.xml",
