@@ -29,37 +29,35 @@ async fn graph_generic(
         return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
     }
 
-    let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(
-        &format!(
-            indoc! {r#"
-                SELECT * FROM (
-                    (
-                        SELECT
-                            ts AS timestamp,
-                            {0}::real AS value
-                        FROM repositories_history_new
-                        WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts < now() - $2
-                        ORDER BY ts DESC
-                        LIMIT 1
-                    )
-                    UNION ALL
-                    (
-                        SELECT
-                            ts AS timestamp,
-                            {0}::real AS value
-                        FROM repositories_history_new
-                        WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts >= now() - $2
-                        ORDER BY ts
-                    )
-                ) WHERE value IS NOT NULL
-            "#},
-            field_name
-        )
-    )
-        .bind(repository_name)
-        .bind(GRAPH_PERIOD)
-        .fetch_all(&state.pool)
-        .await?;
+    let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(&format!(
+        indoc! {r#"
+            SELECT * FROM (
+                (
+                    SELECT
+                        ts AS timestamp,
+                        {0}::real AS value
+                    FROM repositories_history_new
+                    WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts < now() - $2
+                    ORDER BY ts DESC
+                    LIMIT 1
+                )
+                UNION ALL
+                (
+                    SELECT
+                        ts AS timestamp,
+                        {0}::real AS value
+                    FROM repositories_history_new
+                    WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts >= now() - $2
+                    ORDER BY ts
+                )
+            ) WHERE value IS NOT NULL
+        "#},
+        field_name
+    ))
+    .bind(repository_name)
+    .bind(GRAPH_PERIOD)
+    .fetch_all(&state.pool)
+    .await?;
 
     let now = Utc::now();
 
