@@ -430,10 +430,10 @@ INSERT INTO statistics VALUES(DEFAULT);
 CREATE TABLE statistics_history (
 	ts timestamp with time zone NOT NULL PRIMARY KEY,
 	snapshot jsonb NOT NULL,
-	num_packages integer,
-	num_projects integer,
-	num_problems integer,
-	num_maintainers integer
+	num_packages integer NOT NULL,
+	num_projects integer NOT NULL,
+	num_problems integer NOT NULL,
+	num_maintainers integer NOT NULL
 );
 
 --------------------------------------------------------------------------------

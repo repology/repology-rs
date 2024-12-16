@@ -17,29 +17,31 @@ use crate::state::AppState;
 use super::common::GRAPH_PERIOD;
 
 async fn graph_generic(pool: &PgPool, field_name: &str, stroke: &str) -> EndpointResult {
-    let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(indoc! {r#"
-        SELECT * FROM (
-            (
-                SELECT
-                    ts AS timestamp,
-                    (snapshot->>$1)::real AS value
-                FROM statistics_history
-                WHERE ts < now() - $2
-                ORDER BY ts DESC
-                LIMIT 1
-            )
-            UNION ALL
-            (
-                SELECT
-                    ts AS timestamp,
-                    (snapshot->>$1)::real AS value
-                FROM statistics_history
-                WHERE ts >= now() - $2
-                ORDER BY ts
-            )
-        ) WHERE value IS NOT NULL
-    "#})
-    .bind(field_name)
+    let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(&format!(
+        indoc! {r#"
+            SELECT * FROM (
+                (
+                    SELECT
+                        ts AS timestamp,
+                        {0}::real AS value
+                    FROM statistics_history
+                    WHERE ts < now() - $1
+                    ORDER BY ts DESC
+                    LIMIT 1
+                )
+                UNION ALL
+                (
+                    SELECT
+                        ts AS timestamp,
+                        {0}::real AS value
+                    FROM statistics_history
+                    WHERE ts >= now() - $1
+                    ORDER BY ts
+                )
+            ) WHERE value IS NOT NULL
+        "#},
+        field_name
+    ))
     .bind(GRAPH_PERIOD)
     .fetch_all(pool)
     .await?;
@@ -72,7 +74,7 @@ pub async fn graph_total_packages(State(state): State<Arc<AppState>>) -> Endpoin
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn graph_total_projects(State(state): State<Arc<AppState>>) -> EndpointResult {
-    graph_generic(&state.pool, "num_metapackages", "#000").await
+    graph_generic(&state.pool, "num_projects", "#000").await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
