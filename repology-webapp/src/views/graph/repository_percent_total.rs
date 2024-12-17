@@ -39,7 +39,7 @@ async fn graph_generic(
                             WHEN num_projects = 0 THEN NULL
                             ELSE 100.0::real * {0}::real / num_projects::real
                         END AS value
-                    FROM repositories_history_new
+                    FROM repositories_history
                     WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts < now() - $2
                     ORDER BY ts DESC
                     LIMIT 1
@@ -52,7 +52,7 @@ async fn graph_generic(
                             WHEN num_projects = 0 THEN NULL
                             ELSE 100.0::real * {0}::real / num_projects::real
                         END AS value
-                    FROM repositories_history_new
+                    FROM repositories_history
                     WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts >= now() - $2
                     ORDER BY ts
                 )

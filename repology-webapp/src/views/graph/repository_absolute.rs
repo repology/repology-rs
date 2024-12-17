@@ -36,7 +36,7 @@ async fn graph_generic(
                     SELECT
                         ts AS timestamp,
                         {0}::real AS value
-                    FROM repositories_history_new
+                    FROM repositories_history
                     WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts < now() - $2
                     ORDER BY ts DESC
                     LIMIT 1
@@ -46,7 +46,7 @@ async fn graph_generic(
                     SELECT
                         ts AS timestamp,
                         {0}::real AS value
-                    FROM repositories_history_new
+                    FROM repositories_history
                     WHERE repository_id = (SELECT id FROM repositories WHERE name = $1) AND ts >= now() - $2
                     ORDER BY ts
                 )
