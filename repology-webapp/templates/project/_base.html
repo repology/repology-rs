@@ -16,7 +16,7 @@
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectRelated) %} active{% endif %}">Related</a>
 	{% endif %}
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectBadges, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectBadges) %} active{% endif %}">Badges</a>
-	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectReport, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectReport) %} active{% endif %}"><span class="text-danger">Report</span></a>
+	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectReport, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectReport) %} active{% endif %}" rel="nofollow"><span class="text-danger">Report</span></a>
 </div>
 {% endif %}{% endif %}
 {% endblock %}
