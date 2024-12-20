@@ -8,6 +8,8 @@ pub mod __private {
     pub use mime;
     pub use pretty_assertions;
     pub use regex;
+    pub use serde;
+    pub use serde_urlencoded;
     pub use sxd_document;
     pub use sxd_xpath;
 
@@ -50,6 +52,34 @@ pub mod __private {
             request = request.header(k, v);
         }
         let request = request.body("".to_owned())?;
+
+        let mut app = create_app(pool, Default::default()).await?;
+        let response = app.call(request).await?;
+        let status = response.status();
+        let headers = response.headers().clone();
+        let body = axum::body::to_bytes(response.into_body(), 1000000).await?;
+        let text = std::str::from_utf8(&body).ok().map(|s| s.to_owned());
+        Ok(Response {
+            status,
+            headers,
+            body,
+            text,
+            xml: std::cell::OnceCell::new(),
+        })
+    }
+
+    pub async fn post_form<T: serde::Serialize>(
+        pool: sqlx::PgPool,
+        uri: &str,
+        headers: &[(&str, &str)],
+        form: T,
+    ) -> Result<Response, anyhow::Error> {
+        let mut request = axum::http::Request::builder().uri(uri).method("POST");
+        for &(k, v) in headers {
+            request = request.header(k, v);
+        }
+        request = request.header("content-type", "application/x-www-form-urlencoded");
+        let request = request.body(serde_urlencoded::to_string(form)?)?;
 
         let mut app = create_app(pool, Default::default()).await?;
         let response = app.call(request).await?;
@@ -311,6 +341,29 @@ macro_rules! check_condition {
 
 #[macro_export]
 macro_rules! check_response {
+    (
+        $pool:ident,
+        form $form:expr,
+        $(add_header $header_name:literal $header_value:literal, )*
+        $uri:literal
+        $(, $cond:tt $value:tt $($extra_value:literal)?)*
+        $(,)?
+    ) => {
+        let response = $crate::__private::post_form(
+            $pool.clone(),
+            $uri,
+            &[
+                $(
+                    ($header_name, $header_value),
+                )*
+            ],
+            $form
+        ).await.expect("request to web application failed");
+        dbg!(&response);
+        $(
+            $crate::check_condition!(response, $cond, $value $(, $extra_value)?);
+        )*
+    };
     (
         $pool:ident,
         $(add_header $header_name:literal $header_value:literal, )*
