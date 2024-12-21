@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![cfg(feature = "snapshot-tests")]
+#![allow(stable_features)] // for coverage_attribute, remove after switching to newer nighly on prod
 #![feature(coverage_attribute)]
 #![coverage(off)]
 
