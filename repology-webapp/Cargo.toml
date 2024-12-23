@@ -3,6 +3,9 @@ name = "repology-webapp"
 version = "0.1.0"
 edition = "2024"
 
+[lints.clippy]
+manual_let_else = "warn"
+
 [features]
 coverage = []  # used to calculate coverage correctly (see https://github.com/rust-lang/rust/issues/110486)
 snapshot-tests = []  # enable snapshot tests

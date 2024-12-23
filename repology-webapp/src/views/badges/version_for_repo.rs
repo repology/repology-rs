@@ -61,9 +61,7 @@ pub async fn badge_version_for_repo(
     State(state): State<Arc<AppState>>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
-    let project_name = if let Some(project_name) = project_name.strip_suffix(".svg") {
-        project_name
-    } else {
+    let Some(project_name) = project_name.strip_suffix(".svg") else {
         return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
     };
 

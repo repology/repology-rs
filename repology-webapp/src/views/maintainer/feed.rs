@@ -56,12 +56,9 @@ pub async fn maintainer_repo_feed(
 
     let repositories_data = state.repository_data_cache.snapshot();
 
-    let repository_data =
-        if let Some(repository_data) = repositories_data.active_repository(&repository_name) {
-            repository_data
-        } else {
-            return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
-        };
+    let Some(repository_data) = repositories_data.active_repository(&repository_name) else {
+        return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
+    };
 
     // XXX: this may be ineffective in some cases, as there may be a lot of events with a
     // single timestamp, and we only have index on (repository, ts), so postgres would have

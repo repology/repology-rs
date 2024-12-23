@@ -98,9 +98,7 @@ pub async fn log(
     .fetch_optional(&state.pool)
     .await?;
 
-    let run = if let Some(run) = run {
-        run
-    } else {
+    let Some(run) = run else {
         return Ok((StatusCode::NOT_FOUND, "run not found".to_owned()).into_response());
     };
 

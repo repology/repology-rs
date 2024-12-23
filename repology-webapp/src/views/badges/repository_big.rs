@@ -48,9 +48,7 @@ pub async fn badge_repository_big(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let repository_name = if let Some(repository_name) = repository_name.strip_suffix(".svg") {
-        repository_name
-    } else {
+    let Some(repository_name) = repository_name.strip_suffix(".svg") else {
         return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
     };
 

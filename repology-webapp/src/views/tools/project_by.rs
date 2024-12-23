@@ -194,35 +194,29 @@ pub async fn project_by_perform(
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::ToolProjectBy, vec![], gen_query.clone());
 
-    let name_type = if let Some(name_type) = query
+    let Some(name_type) = query
         .name_type
         .as_ref()
         .filter(|name_type| *name_type == "binname" || *name_type == "srcname")
-    {
-        name_type
-    } else {
+    else {
         // or else sql will fail; TODO: check this when parsing query
         return project_by_error(ctx, query, FailureReason::BadNameType);
     };
 
-    let repositories_data = state.repository_data_cache.snapshot();
-
-    let repository_data = if let Some(repository_name) = &query.repo {
-        if let Some(repository_data) = repositories_data.active_repository(repository_name) {
-            repository_data
-        } else {
-            return project_by_error(ctx, query, FailureReason::RepositoryNotFound);
-        }
-    } else {
+    let Some(repository_name) = &query.repo else {
         return project_by_error(ctx, query, FailureReason::RepositoryNotSpecified);
     };
 
-    let target_page = if let Some(target_page) = TARGET_PAGES
+    let repositories_data = state.repository_data_cache.snapshot();
+
+    let Some(repository_data) = repositories_data.active_repository(repository_name) else {
+        return project_by_error(ctx, query, FailureReason::RepositoryNotFound);
+    };
+
+    let Some(target_page) = TARGET_PAGES
         .iter()
         .find(|page| Some(page.alias) == query.target_page.as_deref())
-    {
-        target_page
-    } else {
+    else {
         return project_by_error(ctx, query, FailureReason::BadTargetPage);
     };
 
