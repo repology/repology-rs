@@ -1,0 +1,3 @@
+[submodule "repology-webapp/tests/snapshot_tests/snapshots"]
+	path = repology-webapp/tests/snapshot_tests/snapshots
+	url = ../repology-webapp-test-snapshots.git

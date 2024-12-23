@@ -8,7 +8,6 @@ manual_let_else = "warn"
 
 [features]
 coverage = []  # used to calculate coverage correctly (see https://github.com/rust-lang/rust/issues/110486)
-snapshot-tests = []  # enable snapshot tests
 
 [dependencies]
 anyhow = "1.0.94"
