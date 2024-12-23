@@ -328,7 +328,7 @@ mod tests {
     #[test]
     fn test_normalize_graph_data_empty() {
         assert_eq!(
-            normalize_graph_data(&vec![], GraphType::Integer, Duration::from_days(1), "pcs"),
+            normalize_graph_data(&[], GraphType::Integer, Duration::from_days(1), "pcs"),
             NormalizedGraphData {
                 points: vec![],
                 y_ticks: vec![]
@@ -340,7 +340,7 @@ mod tests {
     fn test_normalize_graph_data_one() {
         assert_eq!(
             normalize_graph_data(
-                &vec![(Duration::from_hours(12), 1.0)],
+                &[(Duration::from_hours(12), 1.0)],
                 GraphType::Integer,
                 Duration::from_days(1),
                 "pcs"
@@ -356,7 +356,7 @@ mod tests {
     fn test_normalize_graph_data_flat() {
         assert_eq!(
             normalize_graph_data(
-                &vec![
+                &[
                     (Duration::from_hours(18), 3.0),
                     (Duration::from_hours(6), 3.0)
                 ],
@@ -375,7 +375,7 @@ mod tests {
     fn test_normalize_graph_data_generic_base() {
         assert_eq!(
             normalize_graph_data(
-                &vec![
+                &[
                     (Duration::from_hours(24), 0.0),
                     (Duration::from_hours(12), 2.5),
                     (Duration::from_hours(0), 10.0)
@@ -408,7 +408,7 @@ mod tests {
         // still 10 ticks, and tick period is round
         assert_eq!(
             normalize_graph_data(
-                &vec![
+                &[
                     (Duration::from_hours(24), 0.0),
                     (Duration::from_hours(12), 2.25),
                     (Duration::from_hours(0), 9.0)
@@ -440,7 +440,7 @@ mod tests {
         // 11 ticks is too much so it doubles the interval and switches to 6 tocks
         assert_eq!(
             normalize_graph_data(
-                &vec![
+                &[
                     (Duration::from_hours(24), 0.0),
                     (Duration::from_hours(12), 2.75),
                     (Duration::from_hours(0), 11.0)
@@ -468,7 +468,7 @@ mod tests {
         // regression where tick count was calculated incorrectly
         // and there was an extra tick outside the graph
         let data = normalize_graph_data(
-            &vec![
+            &[
                 (Duration::from_hours(24), 6514.0),
                 (Duration::from_hours(0), 6745.0),
             ],
@@ -490,7 +490,7 @@ mod tests {
         // still whole ticks
         assert_eq!(
             normalize_graph_data(
-                &vec![
+                &[
                     (Duration::from_hours(24), 0.0),
                     (Duration::from_hours(12), 2.5),
                     (Duration::from_hours(0), 10.0)
@@ -523,7 +523,7 @@ mod tests {
         // switches to fractional ticks
         assert_eq!(
             normalize_graph_data(
-                &vec![
+                &[
                     (Duration::from_hours(24), 0.0),
                     (Duration::from_hours(12), 0.5),
                     (Duration::from_hours(0), 2.0)
