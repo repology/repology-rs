@@ -11,7 +11,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly
-          components: rustfmt,llvm-tools-preview
+          components: rustfmt,llvm-tools-preview,clippy
       - name: Install dependencies
         run: |
           curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
