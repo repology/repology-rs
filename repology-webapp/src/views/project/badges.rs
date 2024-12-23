@@ -24,7 +24,7 @@ use super::nonexistent::nonexisting_project;
 struct TemplateParams<'a> {
     ctx: TemplateContext,
     project_name: &'a str,
-    project: Option<Project>,
+    project: Project,
     containing_repositories_data: Vec<&'a RepositoryData>,
 }
 
@@ -48,11 +48,12 @@ pub async fn project_badges(
     .fetch_optional(&state.pool)
     .await?;
 
-    if project
-        .as_ref()
-        .is_none_or(|project| project.num_repos == 0)
-    {
-        return nonexisting_project(&state, ctx, project_name, project).await;
+    let Some(project) = project else {
+        return nonexisting_project(&state, ctx, project_name, None).await;
+    };
+
+    if project.is_orphaned() {
+        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
     }
 
     let containing_repository_names: HashSet<String> = sqlx::query_scalar(indoc! {"

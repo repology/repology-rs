@@ -3,11 +3,12 @@
 {% block keywords %}{% call super() %}, {{ project_name }}{% endblock %}
 
 {% block preheader %}
-{% if let Some(project) = project %}{% if project.num_repos > 0 %}
 <div class="btn-group pageheader-right">
+	{% if !project.is_orphaned() %}
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectVersions) %} active{% endif %}">Versions</a>
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectPackages, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectPackages) %} active{% endif %}">Packages</a>
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectInformation, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectInformation) %} active{% endif %}">Information</a>
+	{% endif %}
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectHistory, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectHistory) %} active{% endif %}">History</a>
 	{% if project.has_cves %}
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectCves) %} active{% endif %}">CVEs</a>
@@ -15,8 +16,10 @@
 	{% if project.has_related %}
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectRelated) %} active{% endif %}">Related</a>
 	{% endif %}
+	{% if !project.is_orphaned() %}
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectBadges, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectBadges) %} active{% endif %}">Badges</a>
+	{% endif %}
+	{# TODO: if project.has_reports #}
 	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectReport, [("project_name", project_name|as_ref)])? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::ProjectReport) %} active{% endif %}" rel="nofollow"><span class="text-danger">Report</span></a>
 </div>
-{% endif %}{% endif %}
 {% endblock %}

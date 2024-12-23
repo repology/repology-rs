@@ -40,7 +40,7 @@ pub struct ProjectListItem {
 struct TemplateParams {
     ctx: TemplateContext,
     project_name: String,
-    project: Option<Project>,
+    project: Project,
     projects_list: Vec<ProjectListItem>,
 }
 
@@ -64,11 +64,12 @@ pub async fn project_related(
     .fetch_optional(&state.pool)
     .await?;
 
-    if project
-        .as_ref()
-        .is_none_or(|project| project.num_repos == 0)
-    {
-        return nonexisting_project(&state, ctx, project_name, project).await;
+    let Some(project) = project else {
+        return nonexisting_project(&state, ctx, project_name, None).await;
+    };
+
+    if project.is_orphaned() {
+        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
     }
 
     let projects: Vec<RelatedProject> = sqlx::query_as(indoc! {"

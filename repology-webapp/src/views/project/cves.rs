@@ -137,7 +137,7 @@ struct CveVersionRange {
 struct TemplateParams<'a> {
     ctx: TemplateContext,
     project_name: String,
-    project: Option<Project>,
+    project: Project,
     num_cves: usize,
     highlighted_version: Option<&'a str>,
     aggregated_cves: IndexMap<CveAggregation, Vec<CveVersionRange>>,
@@ -163,6 +163,10 @@ pub async fn project_cves(
     .bind(&project_name)
     .fetch_optional(&state.pool)
     .await?;
+
+    let Some(project) = project else {
+        return nonexisting_project(&state, ctx, project_name, None).await;
+    };
 
     let mut cves: Vec<Cve> = sqlx::query_as(indoc! {r#"
         SELECT
@@ -240,14 +244,8 @@ pub async fn project_cves(
     .fetch_all(&state.pool)
     .await?;
 
-    // this is a bit different from other projects/ endpoints - we want
-    // to show history even for non-existing projects
-    if project
-        .as_ref()
-        .is_none_or(|project| project.num_repos == 0)
-        && cves.is_empty()
-    {
-        return nonexisting_project(&state, ctx, project_name, project).await;
+    if project.is_orphaned() && cves.is_empty() {
+        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
     }
 
     // sort by CVE number, then end version

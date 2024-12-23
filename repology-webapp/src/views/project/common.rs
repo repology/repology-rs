@@ -12,3 +12,9 @@ pub struct Project {
     pub has_related: bool,
     pub orphaned_at: Option<DateTime<Utc>>,
 }
+
+impl Project {
+    pub fn is_orphaned(&self) -> bool {
+        self.num_repos == 0
+    }
+}

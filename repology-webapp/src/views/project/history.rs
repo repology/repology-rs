@@ -209,7 +209,7 @@ fn translate_raw_event(
 struct TemplateParams<'a> {
     ctx: TemplateContext,
     project_name: String,
-    project: Option<Project>,
+    project: Project,
     events: Vec<Event>,
     repositories_data: &'a RepositoriesDataSnapshot,
     autorefresh: bool,
@@ -238,6 +238,10 @@ pub async fn project_history(
     .fetch_optional(&state.pool)
     .await?;
 
+    let Some(project) = project else {
+        return nonexisting_project(&state, ctx, project_name, None).await;
+    };
+
     let events: Vec<RawEvent> = sqlx::query_as(indoc! {"
         SELECT
             ts AS timestamp,
@@ -252,14 +256,8 @@ pub async fn project_history(
     .fetch_all(&state.pool)
     .await?;
 
-    // this is a bit different from other projects/ endpoints - we want
-    // to show history even for non-existing projects
-    if project
-        .as_ref()
-        .is_none_or(|project| project.num_repos == 0)
-        && events.is_empty()
-    {
-        return nonexisting_project(&state, ctx, project_name, project).await;
+    if project.is_orphaned() && events.is_empty() {
+        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
     }
 
     let repositories_data = state.repository_data_cache.snapshot();

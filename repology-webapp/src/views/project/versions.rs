@@ -55,7 +55,7 @@ impl PackageWithFlags for Package {
 struct TemplateParams<'a> {
     ctx: TemplateContext,
     project_name: String,
-    project: Option<Project>,
+    project: Project,
     num_packages: usize,
     packages_by_repo: HashMap<String, Vec<Package>>,
     repositories_data: &'a RepositoriesDataSnapshot,
@@ -81,11 +81,12 @@ pub async fn project_versions(
     .fetch_optional(&state.pool)
     .await?;
 
-    if project
-        .as_ref()
-        .is_none_or(|project| project.num_repos == 0)
-    {
-        return nonexisting_project(&state, ctx, project_name, project).await;
+    let Some(project) = project else {
+        return nonexisting_project(&state, ctx, project_name, None).await;
+    };
+
+    if project.is_orphaned() {
+        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
     }
 
     // TODO: try fetching project and packages in parallel tasks, see

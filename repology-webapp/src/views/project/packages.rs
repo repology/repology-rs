@@ -73,7 +73,7 @@ struct Link {
 struct TemplateParams<'a> {
     ctx: TemplateContext,
     project_name: &'a str,
-    project: Option<Project>,
+    project: Project,
     packages: Vec<Package>,
     links: HashMap<i32, Link>,
     repositories_data: &'a RepositoriesDataSnapshot,
@@ -99,11 +99,12 @@ pub async fn project_packages(
     .fetch_optional(&state.pool)
     .await?;
 
-    if project
-        .as_ref()
-        .is_none_or(|project| project.num_repos == 0)
-    {
-        return nonexisting_project(&state, ctx, project_name, project).await;
+    let Some(project) = project else {
+        return nonexisting_project(&state, ctx, project_name, None).await;
+    };
+
+    if project.is_orphaned() {
+        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
     }
 
     let packages: Vec<Package> = sqlx::query_as(indoc! {"
