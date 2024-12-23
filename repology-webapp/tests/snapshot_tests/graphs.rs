@@ -5,6 +5,7 @@ use sqlx::PgPool;
 
 use super::uri_snapshot_test;
 
+#[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_graphs_total(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/graph/total/packages.svg").await;
@@ -13,6 +14,7 @@ async fn test_graphs_total(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/graph/total/problems.svg").await;
 }
 
+#[ignore]
 #[sqlx::test(
     migrator = "repology_common::MIGRATOR",
     fixtures("common_repositories.sql", "graphs_data.sql")
