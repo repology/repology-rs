@@ -9,12 +9,19 @@ use repology_webapp_test_utils::check_response;
     migrator = "repology_common::MIGRATOR",
     fixtures("common_repositories", "common_packages", "problems_data")
 )]
-async fn test_problems(pool: PgPool) {
+async fn test_repository_nonexistent(pool: PgPool) {
     check_response!(
         pool,
         "/repository/nonexistent/problems",
         status NOT_FOUND,
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages", "problems_data")
+)]
+async fn test_repository_normal(pool: PgPool) {
     check_response!(
         pool,
         "/repository/freebsd/problems",
@@ -40,12 +47,25 @@ async fn test_problems(pool: PgPool) {
 
         contains_not "Unformatted problem of type",
     );
+}
 
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages", "problems_data")
+)]
+async fn test_maintainer_nonexistent_repository(pool: PgPool) {
     check_response!(
         pool,
         "/maintainer/johndoe@example.com/problems-for-repo/nonexistent",
         status NOT_FOUND,
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "common_packages", "problems_data")
+)]
+async fn test_maintainer_normal(pool: PgPool) {
     check_response!(
         pool,
         "/maintainer/johndoe@example.com/problems-for-repo/freebsd",
