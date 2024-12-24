@@ -24,6 +24,8 @@ jobs:
         run: |
           sudo sh -c "echo 'host all all samehost trust' > /etc/postgresql/$POSTGRESQL/main/pg_hba.conf"
           sudo pg_ctlcluster $POSTGRESQL main restart
+      - name: Save rust version for proper cache setup
+        run: rustc -V > .rustc.version
       - uses: actions/cache@v4
         with:
           path: |
@@ -31,8 +33,14 @@ jobs:
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
+          key: cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: cargo-
+      - uses: actions/cache@v4
+        with:
+          path: |
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-target-${{ hashFiles('.rustc.version') }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-target-${{ hashFiles('.rustc.version') }}-
       - name: Format check
         run: cargo fmt --check
       - name: Clippy check
