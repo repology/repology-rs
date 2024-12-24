@@ -1,5 +1,11 @@
 COVERAGE_FLAGS=-Cinstrument-coverage -Zcoverage-options=condition
 
+snapshots:
+	env INSTA_UPDATE=unseen cargo test
+
+snapshots-review:
+	cargo instal revirew
+
 coverage:
 	cargo llvm-cov --features=coverage --open
 
