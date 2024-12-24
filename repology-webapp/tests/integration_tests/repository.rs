@@ -6,7 +6,7 @@ use sqlx::PgPool;
 use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
-async fn test_repository(pool: PgPool) {
+async fn test_nonexistent(pool: PgPool) {
     check_response!(
         pool,
         "/repository/nonexistent",
@@ -16,6 +16,10 @@ async fn test_repository(pool: PgPool) {
         //html_ok "allow_empty_tags,warnings_fatal",
         //contains "Unknown repositry",
     );
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
+async fn test_orphaned(pool: PgPool) {
     check_response!(
         pool,
         "/repository/orphaned",
@@ -24,6 +28,10 @@ async fn test_repository(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         contains "Gone repository",
     );
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
+async fn test_empty(pool: PgPool) {
     check_response!(
         pool,
         "/repository/empty",
@@ -32,6 +40,13 @@ async fn test_repository(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         contains_not "Gone repository",
     );
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
+async fn test_stripped(pool: PgPool) {
+    // test handling minimal data in database: empty metadata, and
+    // no used_package_link_types; in prod this case is possible
+    // for repositories removed long time ago
     check_response!(
         pool,
         "/repository/stripped",
@@ -42,6 +57,10 @@ async fn test_repository(pool: PgPool) {
         contains "homepage or download links",
         contains "package recipes or sources",
     );
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
+async fn test_normal(pool: PgPool) {
     check_response!(
         pool,
         "/repository/good",

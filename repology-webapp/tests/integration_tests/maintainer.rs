@@ -9,7 +9,7 @@ use repology_webapp_test_utils::check_response;
     migrator = "repology_common::MIGRATOR",
     fixtures("common_repositories", "maintainer_data")
 )]
-async fn test_maintainer(pool: PgPool) {
+async fn test_nonexistent(pool: PgPool) {
     check_response!(
         pool,
         "/maintainer/nonexistent@example.com",
@@ -18,6 +18,13 @@ async fn test_maintainer(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         contains "Unknown maintainer",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "maintainer_data")
+)]
+async fn test_orphaned(pool: PgPool) {
     check_response!(
         pool,
         "/maintainer/orphaned@example.com",
@@ -26,6 +33,13 @@ async fn test_maintainer(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         contains "Gone maintainer",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "maintainer_data")
+)]
+async fn test_orphaned_in_future(pool: PgPool) {
     check_response!(
         pool,
         "/maintainer/orphaned-in-future@example.com",
@@ -34,7 +48,13 @@ async fn test_maintainer(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         contains "Gone maintainer",
     );
+}
 
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "maintainer_data")
+)]
+async fn test_active(pool: PgPool) {
     check_response!(
         pool,
         "/maintainer/active@example.com",
@@ -52,6 +72,13 @@ async fn test_maintainer(pool: PgPool) {
         // not testing similar maintainers for now
         // not testing projects list for now
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "maintainer_data")
+)]
+async fn test_fallback(pool: PgPool) {
     check_response!(
         pool,
         "/maintainer/fallback-mnt-foo@repology",
@@ -63,6 +90,15 @@ async fn test_maintainer(pool: PgPool) {
         // contact section
         contains_not "mailto:active@example.com",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "maintainer_data")
+)]
+async fn test_no_vuln_column(pool: PgPool) {
+    // Maintainer not updated for a long time, without vulnerable projects
+    // counter filled.
     check_response!(
         pool,
         "/maintainer/no-vuln-column@example.com",
