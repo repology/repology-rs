@@ -9,7 +9,7 @@ use repology_webapp_test_utils::check_response;
     migrator = "repology_common::MIGRATOR",
     fixtures("common_repositories")
 )]
-async fn test_project_by_construct(pool: PgPool) {
+async fn test_construct_empty(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by",
@@ -24,7 +24,13 @@ async fn test_project_by_construct(pool: PgPool) {
 
         contains_not r#"/tools/project-by?"#,
     );
+}
 
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories")
+)]
+async fn test_construct_filled(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_versions&noautoresolve=1",
@@ -39,8 +45,13 @@ async fn test_project_by_construct(pool: PgPool) {
 
         contains "/tools/project-by?repo=freebsd&amp;name_type=srcname&amp;target_page=project_versions&amp;noautoresolve=1&amp;name=&lt;NAME&gt;",
     );
+}
 
-    // still works when passed invalid params, the same way as if these were not specified
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories")
+)]
+async fn test_construct_ignores_invalid_params(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=invalid&name_type=invalid&target_page=invalid",
@@ -61,8 +72,7 @@ async fn test_project_by_construct(pool: PgPool) {
     migrator = "repology_common::MIGRATOR",
     fixtures("common_repositories", "project_by_data")
 )]
-async fn test_project_by_failures(pool: PgPool) {
-    // repository not specified
+async fn test_perform_failure_repository_not_specified(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?name_type=srcname&target_page=project_versions&name=shells/zsh",
@@ -71,8 +81,13 @@ async fn test_project_by_failures(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         matches "repository.*was not specified"
     );
+}
 
-    // repository not found
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_failure_repository_not_found(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=invalid&name_type=srcname&target_page=project_versions&name=shells/zsh",
@@ -81,8 +96,13 @@ async fn test_project_by_failures(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         contains "repository was removed"
     );
+}
 
-    // name type not specified
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_failure_name_type_not_specified(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&target_page=project_versions&name=shells/zsh",
@@ -91,7 +111,13 @@ async fn test_project_by_failures(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         matches "name type.*was not specified"
     );
+}
 
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_failure_name_type_invalid(pool: PgPool) {
     // name type invalid
     check_response!(
         pool,
@@ -101,8 +127,13 @@ async fn test_project_by_failures(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         matches "name type.*invalid"
     );
+}
 
-    // target page not specified
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_failure_target_page_not_specified(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&name=shells/zsh",
@@ -111,8 +142,13 @@ async fn test_project_by_failures(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         matches "target page.*was not specified"
     );
+}
 
-    // target page invalid
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_failure_target_page_invalid(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=invalid&name=shells/zsh",
@@ -121,8 +157,13 @@ async fn test_project_by_failures(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         matches "target page.*is invalid"
     );
+}
 
-    // package name not found
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_failure_package_name_not_found(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_versions&name=invalid/invalid",
@@ -131,7 +172,13 @@ async fn test_project_by_failures(pool: PgPool) {
         html_ok "allow_empty_tags,warnings_fatal",
         matches "package name.*not found"
     );
+}
 
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_failure_ambiguity_with_disabled_autoresolve_html(pool: PgPool) {
     // ambiguous without autoresolve
     check_response!(
         pool,
@@ -140,6 +187,13 @@ async fn test_project_by_failures(pool: PgPool) {
         content_type "text/html",
         html_ok "allow_empty_tags,warnings_fatal",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_failure_ambiguity_with_disabled_autoresolve_json(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=ubuntu_24&name_type=srcname&target_page=api_v1_project&name=iperf&noautoresolve=1",
@@ -161,90 +215,176 @@ async fn test_project_by_failures(pool: PgPool) {
     migrator = "repology_common::MIGRATOR",
     fixtures("common_repositories", "project_by_data")
 )]
-async fn test_project_by_ok(pool: PgPool) {
-    // all target page types
+async fn test_perform_success_target_project_versions(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_versions&name=shells/zsh",
         status FOUND,
         header_value "location" "/project/zsh/versions",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_project_packages(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_packages&name=shells/zsh",
         status FOUND,
         header_value "location" "/project/zsh/packages",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_project_information(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_information&name=shells/zsh",
         status FOUND,
         header_value "location" "/project/zsh/information",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_project_history(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_history&name=shells/zsh",
         status FOUND,
         header_value "location" "/project/zsh/history",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_project_badges(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_badges&name=shells/zsh",
         status FOUND,
         header_value "location" "/project/zsh/badges",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_project_reports(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=project_reports&name=shells/zsh",
         status FOUND,
         header_value "location" "/project/zsh/report",
     );
+}
 
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_badge_vertical_allrepos(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=badge_vertical_allrepos&name=shells/zsh",
         status FOUND,
         header_value "location" "/badge/vertical-allrepos/zsh.svg",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_badge_tiny_repos(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=badge_tiny_repos&name=shells/zsh",
         status FOUND,
         header_value "location" "/badge/tiny-repos/zsh.svg",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_badge_latest_versions(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=badge_latest_versions&name=shells/zsh",
         status FOUND,
         header_value "location" "/badge/latest-versions/zsh.svg",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_badge_version_for_repo(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=badge_version_for_repo&name=shells/zsh",
         status FOUND,
         header_value "location" "/badge/version-for-repo/freebsd/zsh.svg",
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_badge_version_for_repo_custom_title(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=badge_version_for_repo&name=shells/zsh&header=foo",
         status FOUND,
         header_value "location" "/badge/version-for-repo/freebsd/zsh.svg?header=foo",
     );
+}
 
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_target_api_v1_project(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=freebsd&name_type=srcname&target_page=api_v1_project&name=shells/zsh",
         status FOUND,
         header_value "location" "/api/v1/project/zsh",
     );
+}
 
-    // ambiguous with autoresolve
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_ambiguous_with_autoresolve_html(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=ubuntu_24&name_type=srcname&target_page=project_versions&name=iperf",
         status FOUND,
         header_value "location" "/project/iperf2/versions", // assumes sorting
     );
+}
+
+#[sqlx::test(
+    migrator = "repology_common::MIGRATOR",
+    fixtures("common_repositories", "project_by_data")
+)]
+async fn test_perform_success_ambiguous_with_autoresolve_json(pool: PgPool) {
     check_response!(
         pool,
         "/tools/project-by?repo=ubuntu_24&name_type=srcname&target_page=api_v1_project&name=iperf",
