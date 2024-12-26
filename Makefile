@@ -4,7 +4,7 @@ snapshots:
 	env INSTA_UPDATE=unseen cargo test snapshot_tests
 
 snapshots-review:
-	cargo instal review
+	cargo insta review
 
 coverage:
 	cargo llvm-cov --features=coverage --open
