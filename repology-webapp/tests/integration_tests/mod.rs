@@ -6,6 +6,7 @@ mod badge_tiny_repos;
 mod badges;
 mod feeds;
 mod graphs;
+mod graphs_map_repo_size_fresh;
 mod legacy_redirects;
 mod link;
 mod log;

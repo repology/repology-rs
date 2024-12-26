@@ -160,6 +160,9 @@ pub enum Endpoint {
     #[strum(props(path = "/graph/repo/:repository_name/projects_per_maintainer.svg"))]
     GraphRepoProjectsPerMaintainer,
 
+    #[strum(props(path = "/graph/map_repo_size_fresh.svg"))]
+    GraphMapRepoSizeFresh,
+
     // Opensearch
     #[strum(props(path = "/opensearch/project.xml"))]
     OpensearchProject,
@@ -273,13 +276,6 @@ pub enum Endpoint {
     // Graphs
     #[strum(props(path = "/graph/project/:project_name/releases.svg"))]
     GraphReleases,
-
-    #[strum(props(path = "/graph/map_repo_size_fresh.svg"))]
-    GraphMapRepoSizeFresh,
-    #[strum(props(path = "/graph/map_repo_size_fresh_nonunique.svg"))]
-    GraphMapRepoSizeFreshNonunique,
-    #[strum(props(path = "/graph/map_repo_size_freshness.svg"))]
-    GraphMapRepoSizeFreshness,
 
     // Badges
     #[strum(props(path = "/badge/versions-matrix.svg"))]

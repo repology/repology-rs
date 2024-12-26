@@ -6,6 +6,7 @@ mod badge_tiny_repos;
 mod badges;
 mod feeds;
 mod graphs; // XXX: may produce false positives due to moving timestamps
+mod graphs_map_repo_size_fresh;
 mod legacy_redirects;
 mod log;
 mod maintainer;

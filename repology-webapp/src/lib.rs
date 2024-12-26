@@ -164,6 +164,7 @@ pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
         .route(GraphRepoProjectsVulnerablePercent.path(), get(views::graph_repository_projects_vulnerable_percent))
         .route(GraphRepoProjectsPerMaintainer.path(), get(views::graph_repository_projects_per_maintainer))
         .route(GraphRepoProblemsPer1000Projects.path(), get(views::graph_repository_problems_per_1000_projects))
+        .route(GraphMapRepoSizeFresh.path(), get(views::graph_map_repo_size_fresh))
         .route(Link.path(), get(views::link))
         .route(Log.path(), get(views::log))
         .route(Maintainer.path(), get(views::maintainer))
