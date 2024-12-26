@@ -44,6 +44,7 @@ pub struct RepositoryData {
     pub status: RepositoryStatus,
     pub source_type: SourceType,
     pub order: i16,
+    pub brand_color: Option<String>,
 }
 
 /// Ready to use collection of Repository metadata.
@@ -194,7 +195,8 @@ impl RepositoriesDataCache {
                 (metadata->>'valid_till')::DATE AS eol_date,
                 state AS status,
                 COALESCE(metadata->>'type', 'repository') AS source_type,
-                (row_number() OVER (ORDER BY sortname))::SMALLINT AS order
+                (row_number() OVER (ORDER BY sortname))::SMALLINT AS order,
+                metadata->>'color' AS brand_color
             FROM repositories
             ORDER BY sortname
         "#})
