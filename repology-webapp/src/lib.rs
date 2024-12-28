@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![feature(iterator_try_collect)]
-#![allow(stable_features)] // for coverage_attribute, remove after switching to newer nighly on prod
 #![feature(coverage_attribute)]
 #![feature(stmt_expr_attributes)]
 #![feature(assert_matches)]
