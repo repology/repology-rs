@@ -1,10 +1,10 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::Error;
+use anyhow::Result;
 use chrono::{DateTime, NaiveDateTime, Utc};
 
-pub fn parse_utc_datetime(date: &str) -> Result<DateTime<Utc>, Error> {
+pub fn parse_utc_datetime(date: &str) -> Result<DateTime<Utc>> {
     Ok(NaiveDateTime::parse_from_str(date, "%Y-%m-%dT%H:%M:%S%.3f")?.and_utc())
 }
 

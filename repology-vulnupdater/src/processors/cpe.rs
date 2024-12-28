@@ -5,7 +5,7 @@ mod schema;
 
 use std::str::FromStr as _;
 
-use anyhow::Error;
+use anyhow::Result;
 use async_trait::async_trait;
 use indoc::indoc;
 use metrics::counter;
@@ -52,7 +52,7 @@ impl<'a> CpeProcessor<'a> {
 
 #[async_trait]
 impl DatasourceProcessor for CpeProcessor<'_> {
-    async fn process(&self, data: &str) -> Result<DatasourceProcessStatus, Error> {
+    async fn process(&self, data: &str) -> Result<DatasourceProcessStatus> {
         counter!("repology_vulnupdater_processor_runs_total", "processor" => "cpe", "stage" => "processing").increment(1);
         counter!("repology_vulnupdater_processor_data_bytes_total", "processor" => "cpe")
             .increment(data.len() as u64);
@@ -174,7 +174,7 @@ impl DatasourceProcessor for CpeProcessor<'_> {
         })
     }
 
-    async fn finalize(&self) -> Result<(), Error> {
+    async fn finalize(&self) -> Result<()> {
         if self.skip_finalization {
             return Ok(());
         }

@@ -3,7 +3,7 @@
 
 use indexmap::IndexMap;
 
-use anyhow::{Error, bail};
+use anyhow::{Result, bail};
 
 pub struct UrlConstructor<'a> {
     pattern: &'static str,
@@ -18,7 +18,7 @@ impl<'a> UrlConstructor<'a> {
         }
     }
 
-    pub fn construct(&self) -> Result<String, Error> {
+    pub fn construct(&self) -> Result<String> {
         let mut fields = self.fields.clone();
 
         let mut res = String::new();

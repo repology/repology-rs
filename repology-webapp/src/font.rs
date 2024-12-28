@@ -3,7 +3,7 @@
 
 use std::path::Path;
 
-use anyhow::Error;
+use anyhow::Result;
 use tracing::{error, info};
 
 #[allow(unused)]
@@ -55,12 +55,7 @@ impl FontMeasurer {
         }
     }
 
-    pub fn get_text_width(
-        &self,
-        text: &str,
-        size: usize,
-        style: FontStyle,
-    ) -> Result<usize, Error> {
+    pub fn get_text_width(&self, text: &str, size: usize, style: FontStyle) -> Result<usize> {
         // as ttf_parser documentation say, Face::parse is really fast so there's no
         // need to store it in Font
         let face = ttf_parser::Face::parse(

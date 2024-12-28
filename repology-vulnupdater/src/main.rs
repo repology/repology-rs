@@ -15,7 +15,7 @@ mod vulnupdater;
 
 use std::cell::LazyCell;
 
-use anyhow::{Context, Error, bail};
+use anyhow::{Context, Result, bail};
 use clap::Parser as _;
 use sqlx::Executor;
 use sqlx::postgres::PgPoolOptions;
@@ -30,7 +30,7 @@ use status_tracker::SourceUpdateStatusTracker;
 use vulnupdater::{Datasource, VulnUpdater};
 
 #[tokio::main]
-async fn main() -> Result<(), Error> {
+async fn main() -> Result<()> {
     let args = Args::parse();
 
     if let Some(log_directory) = &args.log_directory {

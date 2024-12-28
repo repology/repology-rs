@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::Error;
+use anyhow::Result;
 
 use repology_common::PackageStatus;
 
@@ -106,7 +106,7 @@ pub fn render_generic_badge(
     header: Option<&str>,
     min_width: usize,
     font_measurer: &FontMeasurer,
-) -> Result<String, Error> {
+) -> Result<String> {
     let num_rows = cells.len();
     let num_columns = if num_rows > 0 { cells[0].len() } else { 0 };
 

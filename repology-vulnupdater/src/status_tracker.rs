@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::Error;
+use anyhow::Result;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
 use sqlx::{FromRow, PgPool};
@@ -23,7 +23,7 @@ impl<'a> SourceUpdateStatusTracker<'a> {
         Self { pool }
     }
 
-    pub async fn get(&self, name: &str) -> Result<SourceUpdateStatus, Error> {
+    pub async fn get(&self, name: &str) -> Result<SourceUpdateStatus> {
         Ok(sqlx::query_as(indoc! {"
             SELECT current_full_update_offset, last_full_update_time, last_update_time
             FROM update_status
@@ -35,11 +35,7 @@ impl<'a> SourceUpdateStatusTracker<'a> {
         .unwrap_or_default())
     }
 
-    pub async fn register_update_attempt(
-        &self,
-        name: &str,
-        time: DateTime<Utc>,
-    ) -> Result<(), Error> {
+    pub async fn register_update_attempt(&self, name: &str, time: DateTime<Utc>) -> Result<()> {
         sqlx::query(indoc! {"
             INSERT INTO update_status(name, last_update_attempt_time)
             VALUES ($1, $2)
@@ -52,7 +48,7 @@ impl<'a> SourceUpdateStatusTracker<'a> {
         Ok(())
     }
 
-    pub async fn register_successful_update(&self, name: &str, is_full: bool) -> Result<(), Error> {
+    pub async fn register_successful_update(&self, name: &str, is_full: bool) -> Result<()> {
         sqlx::query(indoc! {"
             UPDATE update_status
             SET
@@ -72,7 +68,7 @@ impl<'a> SourceUpdateStatusTracker<'a> {
         &self,
         name: &str,
         current_offset: u64,
-    ) -> Result<(), Error> {
+    ) -> Result<()> {
         sqlx::query(indoc! {"
             UPDATE update_status
             SET current_full_update_offset = $2

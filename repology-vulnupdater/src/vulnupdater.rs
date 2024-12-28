@@ -3,7 +3,7 @@
 
 use std::time::Duration;
 
-use anyhow::Error;
+use anyhow::Result;
 use chrono::{DateTime, TimeDelta, Utc};
 use metrics::{counter, gauge};
 use tracing::{info, instrument, warn};
@@ -43,7 +43,7 @@ impl<'a> VulnUpdater<'a> {
         &self,
         datasource: &Datasource<'a>,
         now: DateTime<Utc>,
-    ) -> Result<Paginator, Error> {
+    ) -> Result<Paginator> {
         let pager = self.fetcher.paginate(datasource.url);
         self.status_tracker
             .register_update_attempt(datasource.name, now)
@@ -55,7 +55,7 @@ impl<'a> VulnUpdater<'a> {
         &self,
         datasource: &Datasource<'a>,
         offset: u64,
-    ) -> Result<Paginator, Error> {
+    ) -> Result<Paginator> {
         let mut pager = self.fetcher.paginate(datasource.url);
         pager.seek(offset);
         Ok(pager)
@@ -66,7 +66,7 @@ impl<'a> VulnUpdater<'a> {
         datasource: &Datasource<'a>,
         now: DateTime<Utc>,
         since: DateTime<Utc>,
-    ) -> Result<Paginator, Error> {
+    ) -> Result<Paginator> {
         let start_date = (since - INCREMENTAL_UPDATE_OVERLAP).min(now - INCREMENTAL_UPDATE_OVERLAP);
         let end_date = now + INCREMENTAL_UPDATE_OVERLAP;
         if (end_date - start_date) > MAX_INCREMENTAL_UPDATE_SPAN {
@@ -95,7 +95,7 @@ impl<'a> VulnUpdater<'a> {
         &self,
         datasource: &Datasource<'a>,
         update_period: Option<Duration>,
-    ) -> Result<Option<DateTime<Utc>>, Error> {
+    ) -> Result<Option<DateTime<Utc>>> {
         let source_status = self.status_tracker.get(datasource.name).await?;
 
         let now = Utc::now();
@@ -166,10 +166,7 @@ impl<'a> VulnUpdater<'a> {
     }
 
     #[instrument("oneshot", skip_all)]
-    pub async fn process_datasources_once(
-        &self,
-        datasources: &[Datasource<'a>],
-    ) -> Result<(), Error> {
+    pub async fn process_datasources_once(&self, datasources: &[Datasource<'a>]) -> Result<()> {
         for datasource in datasources {
             self.update_datasource(datasource, None).await?;
         }

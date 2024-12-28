@@ -4,7 +4,7 @@
 mod cpe_matches;
 mod schema;
 
-use anyhow::Error;
+use anyhow::Result;
 use async_trait::async_trait;
 use indoc::indoc;
 use metrics::counter;
@@ -36,7 +36,7 @@ impl<'a> CveProcessor<'a> {
 
 #[async_trait]
 impl DatasourceProcessor for CveProcessor<'_> {
-    async fn process(&self, data: &str) -> Result<DatasourceProcessStatus, Error> {
+    async fn process(&self, data: &str) -> Result<DatasourceProcessStatus> {
         counter!("repology_vulnupdater_processor_runs_total", "processor" => "cve", "stage" => "processing").increment(1);
         counter!("repology_vulnupdater_processor_data_bytes_total", "processor" => "cve")
             .increment(data.len() as u64);
@@ -124,7 +124,7 @@ impl DatasourceProcessor for CveProcessor<'_> {
         Ok(DatasourceProcessStatus { num_changes })
     }
 
-    async fn finalize(&self) -> Result<(), Error> {
+    async fn finalize(&self) -> Result<()> {
         if self.skip_finalization {
             return Ok(());
         }

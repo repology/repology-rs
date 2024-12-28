@@ -3,7 +3,7 @@
 
 mod config;
 
-use anyhow::{Context, Error};
+use anyhow::{Context, Result};
 use clap::Parser;
 use metrics::{counter, gauge};
 use sqlx::Executor;
@@ -64,7 +64,7 @@ fn collect_tokio_runtime_metrics() {
     }
 }
 
-async fn async_main() -> Result<(), Error> {
+async fn async_main() -> Result<()> {
     let config = Config::parse();
 
     if let Some(log_directory) = &config.log_directory {
@@ -143,7 +143,7 @@ async fn async_main() -> Result<(), Error> {
         .context("error starting HTTP server")
 }
 
-fn main() -> Result<(), Error> {
+fn main() -> Result<()> {
     tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .build()

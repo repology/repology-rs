@@ -4,7 +4,7 @@
 use std::borrow::Cow;
 use std::time::{Duration, Instant};
 
-use anyhow::{Error, bail};
+use anyhow::{Result, bail};
 use chrono::{TimeDelta, Utc};
 use metrics::counter;
 use serde::Deserialize;
@@ -31,7 +31,7 @@ pub struct NvdFetcher {
 }
 
 impl NvdFetcher {
-    pub fn new() -> Result<Self, Error> {
+    pub fn new() -> Result<Self> {
         let inner = Inner {
             client: reqwest::Client::builder()
                 .user_agent(USER_AGENT)
@@ -45,7 +45,7 @@ impl NvdFetcher {
         })
     }
 
-    async fn fetch(&self, url: &str) -> Result<String, Error> {
+    async fn fetch(&self, url: &str) -> Result<String> {
         let mut inner = self.inner.lock().await;
 
         if let Some(elapsed) = inner.last_request_time.map(|instant| instant.elapsed()) {
@@ -104,7 +104,7 @@ impl<'a> Paginator<'a> {
         }
     }
 
-    pub async fn fetch_next(&mut self) -> Result<Option<String>, Error> {
+    pub async fn fetch_next(&mut self) -> Result<Option<String>> {
         if let Some(total_results) = self.total_results {
             if self.start_index >= total_results {
                 return Ok(None);

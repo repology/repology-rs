@@ -4,7 +4,7 @@
 pub mod cpe;
 pub mod cve;
 
-use anyhow::Error;
+use anyhow::Result;
 use async_trait::async_trait;
 
 pub struct DatasourceProcessStatus {
@@ -13,6 +13,6 @@ pub struct DatasourceProcessStatus {
 
 #[async_trait]
 pub trait DatasourceProcessor {
-    async fn process(&self, data: &str) -> Result<DatasourceProcessStatus, Error>;
-    async fn finalize(&self) -> Result<(), Error>;
+    async fn process(&self, data: &str) -> Result<DatasourceProcessStatus>;
+    async fn finalize(&self) -> Result<()>;
 }

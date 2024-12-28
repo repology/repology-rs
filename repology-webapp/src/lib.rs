@@ -30,7 +30,7 @@ mod xmlwriter;
 use std::sync::Arc;
 use std::time::Instant;
 
-use anyhow::{Context, Error};
+use anyhow::{Context, Result};
 use axum::{
     Router,
     body::HttpBody,
@@ -90,7 +90,7 @@ async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> i
     not(feature = "coverage"),
     tracing::instrument(name = "app init", skip_all)
 )]
-pub async fn create_app(pool: PgPool) -> Result<Router, Error> {
+pub async fn create_app(pool: PgPool) -> Result<Router> {
     info!("initializing font measurer");
     let font_measurer = FontMeasurer::new();
 
