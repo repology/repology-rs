@@ -1,0 +1,183 @@
+---
+source: repology-webapp/tests/integration_tests/api_v1_problems.rs
+expression: response.json().unwrap()
+snapshot_kind: text
+---
+[
+  {
+    "data": {
+      "suggestions": [
+        {
+          "cpe_edition": "*",
+          "cpe_lang": "*",
+          "cpe_other": "*",
+          "cpe_product": "*",
+          "cpe_sw_edition": "*",
+          "cpe_target_hw": "*",
+          "cpe_target_sw": "*",
+          "cpe_vendor": "suggesion_a"
+        },
+        {
+          "cpe_edition": "*",
+          "cpe_lang": "*",
+          "cpe_other": "*",
+          "cpe_product": "*",
+          "cpe_sw_edition": "*",
+          "cpe_target_hw": "*",
+          "cpe_target_sw": "*",
+          "cpe_vendor": "suggestion_b"
+        }
+      ]
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "cpe_missing",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "suggestions": null
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "cpe_missing",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "cpe": {
+        "cpe_edition": "*",
+        "cpe_lang": "*",
+        "cpe_other": "*",
+        "cpe_product": "*",
+        "cpe_sw_edition": "*",
+        "cpe_target_hw": "*",
+        "cpe_target_sw": "*",
+        "cpe_vendor": "*"
+      },
+      "suggestions": [
+        {
+          "cpe_edition": "*",
+          "cpe_lang": "*",
+          "cpe_other": "*",
+          "cpe_product": "*",
+          "cpe_sw_edition": "*",
+          "cpe_target_hw": "*",
+          "cpe_target_sw": "*",
+          "cpe_vendor": "suggesion_a"
+        },
+        {
+          "cpe_edition": "*",
+          "cpe_lang": "*",
+          "cpe_other": "*",
+          "cpe_product": "*",
+          "cpe_sw_edition": "*",
+          "cpe_target_hw": "*",
+          "cpe_target_sw": "*",
+          "cpe_vendor": "suggestion_b"
+        }
+      ]
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "cpe_unreferenced",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "code": 404,
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "download_dead",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "target": "https://example.com/",
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "download_permanent_https_redirect",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "code": 404,
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "homepage_dead",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "homepage_discontinued_codeplex",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "homepage_discontinued_cpan",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "homepage_discontinued_gna",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "homepage_discontinued_google",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "target": "https://example.com/",
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "homepage_permanent_https_redirect",
+    "version": "1.1"
+  },
+  {
+    "data": {
+      "url": "https://example.com/"
+    },
+    "maintainer": "johndoe@example.com",
+    "project_name": "zsh",
+    "rawversion": "1.0",
+    "type": "homepage_sourceforge_missing_trailing_slash",
+    "version": "1.1"
+  }
+]

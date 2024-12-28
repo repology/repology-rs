@@ -142,6 +142,8 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
         .route(ApiV1Project.path(), get(views::api_v1_project))
         .route(ApiV1Projects.path(), get(views::api_v1_projects))
         .route(ApiV1ProjectsBounded.path(), get(views::api_v1_projects_bounded))
+        .route(ApiV1RepositoryProblems.path(), get(views::api_v1_repository_problems))
+        .route(ApiV1MaintainerProblems.path(), get(views::api_v1_maintainer_problems))
         .route(BadgeLatestVersions.path(), get(views::badge_latest_versions))
         .route(BadgeTinyRepos.path(), get(views::badge_tiny_repos))
         .route(BadgeVersionForRepo.path(), get(views::badge_version_for_repo))

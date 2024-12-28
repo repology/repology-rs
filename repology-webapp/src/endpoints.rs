@@ -132,6 +132,12 @@ pub enum Endpoint {
     ApiV1ProjectsBounded,
     #[strum(props(path = "/api/v1/project/{project_name}"))]
     ApiV1Project,
+    #[strum(props(path = "/api/v1/repository/{repository_name}/problems"))]
+    ApiV1RepositoryProblems,
+    #[strum(props(
+        path = "/api/v1/maintainer/{maintainer_name}/problems-for-repo/{repository_name}"
+    ))]
+    ApiV1MaintainerProblems,
 
     // Graph
     #[strum(props(path = "/graph/total/packages.svg"))]
@@ -265,12 +271,6 @@ pub enum Endpoint {
     Distromap,
 
     // API
-    #[strum(props(path = "/api/v1/repository/{repository_name}/problems"))]
-    ApiV1RepositoryProblems,
-    #[strum(props(
-        path = "/api/v1/maintainer/{maintainer_name}/problems-for-repo/{repository_name}"
-    ))]
-    ApiV1MaintainerProblems,
     #[strum(props(path = "/api/experimental/distromap"))]
     ApiExperimentalDistromap,
     #[strum(props(path = "/api/experimental/updates"))]
