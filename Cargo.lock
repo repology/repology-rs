@@ -192,14 +192,13 @@ checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 
 [[package]]
 name = "axum"
-version = "0.7.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "edca88bc138befd0323b20752846e6587272d3b03b0343c8ea28a6f819e6e71f"
+version = "0.8.1"
+source = "git+https://github.com/tokio-rs/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
 dependencies = [
- "async-trait",
  "axum-core",
  "axum-macros",
  "bytes",
+ "form_urlencoded",
  "futures-util",
  "http",
  "http-body",
@@ -227,11 +226,9 @@ dependencies = [
 
 [[package]]
 name = "axum-core"
-version = "0.4.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09f2bd6146b97ae3359fa0cc6d6b376d9539582c7b4220f041a33ec24c226199"
+version = "0.5.0"
+source = "git+https://github.com/tokio-rs/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
 dependencies = [
- "async-trait",
  "bytes",
  "futures-util",
  "http",
@@ -248,9 +245,8 @@ dependencies = [
 
 [[package]]
 name = "axum-macros"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57d123550fa8d071b7255cb0cc04dc302baa6c8c4a79f55701552684d8399bce"
+version = "0.5.0"
+source = "git+https://github.com/tokio-rs/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1454,9 +1450,9 @@ dependencies = [
 
 [[package]]
 name = "matchit"
-version = "0.7.3"
+version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e7465ac9959cc2b1404e8e2367b43684a6d13790fe23056cc8c6c5a6b7bcb94"
+checksum = "2f926ade0c4e170215ae43342bf13b9310a437609c81f29f86c5df6657582ef9"
 
 [[package]]
 name = "md-5"

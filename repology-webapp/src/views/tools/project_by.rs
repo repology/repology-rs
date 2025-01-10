@@ -255,7 +255,7 @@ pub async fn project_by_perform(
         .map(|project_name| -> Result<(String, String)> {
             let mut params = params.clone();
             params.push(("project_name", project_name.as_str()));
-            if target_page.endpoint.path().contains(":repository_name") {
+            if target_page.endpoint.path().contains("{repository_name}") {
                 params.push(("repository_name", repository_data.name.as_str()));
             }
 
