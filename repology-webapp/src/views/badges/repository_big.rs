@@ -4,7 +4,7 @@
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use axum::http::{HeaderValue, StatusCode, header};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use serde::Deserialize;
@@ -48,10 +48,6 @@ pub async fn badge_repository_big(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let Some(repository_name) = repository_name.strip_suffix(".svg") else {
-        return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
-    };
-
     let statistics: Option<RepositoryStatistics> = sqlx::query_as(indoc! {r#"
         SELECT
             num_metapackages AS num_projects,

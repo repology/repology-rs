@@ -4,7 +4,7 @@
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use axum::http::{HeaderValue, StatusCode, header};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use serde::Deserialize;
 
@@ -24,10 +24,6 @@ pub async fn badge_tiny_repos(
     State(state): State<Arc<AppState>>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
-    let Some(project_name) = project_name.strip_suffix(".svg") else {
-        return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
-    };
-
     let num_families: Option<i16> =
         sqlx::query_scalar("SELECT num_families FROM metapackages WHERE effname = $1")
             .bind(project_name)

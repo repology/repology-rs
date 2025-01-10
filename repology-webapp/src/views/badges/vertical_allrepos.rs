@@ -5,7 +5,7 @@ use std::collections::HashSet;
 use std::sync::Arc;
 
 use axum::extract::{Path, Query, State};
-use axum::http::{HeaderValue, StatusCode, header};
+use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use metrics::histogram;
@@ -101,10 +101,6 @@ pub async fn badge_vertical_allrepos(
     State(state): State<Arc<AppState>>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
-    let Some(project_name) = project_name.strip_suffix(".svg") else {
-        return Ok((StatusCode::NOT_FOUND, "path must end with .svg".to_owned()).into_response());
-    };
-
     let packages: Vec<Package> = sqlx::query_as(indoc! {"
         SELECT
             version,
