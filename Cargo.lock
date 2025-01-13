@@ -193,7 +193,7 @@ checksum = "ace50bade8e6234aa140d9a2f552bbee1db4d353f69b8217bc503490fc1a9f26"
 [[package]]
 name = "axum"
 version = "0.8.1"
-source = "git+https://github.com/tokio-rs/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
+source = "git+https://github.com/AMDmi3/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
 dependencies = [
  "axum-core",
  "axum-macros",
@@ -227,7 +227,7 @@ dependencies = [
 [[package]]
 name = "axum-core"
 version = "0.5.0"
-source = "git+https://github.com/tokio-rs/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
+source = "git+https://github.com/AMDmi3/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
 dependencies = [
  "bytes",
  "futures-util",
@@ -246,7 +246,7 @@ dependencies = [
 [[package]]
 name = "axum-macros"
 version = "0.5.0"
-source = "git+https://github.com/tokio-rs/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
+source = "git+https://github.com/AMDmi3/axum.git?branch=dm%2Fmatchit-8-6#61eab758f6396a1732c8db993ecf33df24c1007e"
 dependencies = [
  "proc-macro2",
  "quote",

@@ -7,7 +7,7 @@ edition = "2024"
 anyhow = "1.0.95"
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1" }
-axum = { git = "https://github.com/tokio-rs/axum.git", branch = "dm/matchit-8-6" }
+axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6" }
 bytes = "1.9.0"
 json = "0.12.4"
 mime = "0.3.17"
