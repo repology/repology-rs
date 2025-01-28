@@ -52,11 +52,11 @@ async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> i
 
     let path_for_metrics = {
         // normalize some paths which lead to the same endpoints; XXX this will hopefully be gone
-        // someday when endpoints are redesigned (e.g. /projects/:bound/ → /projects/?start=)
+        // someday when endpoints are redesigned (e.g. /projects/{bound}/ → /projects/?start=)
         let mut path = matched_path
             .as_str()
-            .trim_end_matches(":bound/")
-            .trim_end_matches("/:sorting");
+            .trim_end_matches("{bound}/")
+            .trim_end_matches("/{sorting}");
         if path.starts_with("/graph/total/") {
             path = "/graph/total/..."
         }
