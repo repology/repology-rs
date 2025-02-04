@@ -1,10 +1,12 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#![feature(iterator_try_collect)]
+#![feature(try_blocks)]
+
 mod config;
 
 use anyhow::{Context, Result};
-use clap::Parser;
 use metrics::{counter, gauge};
 use sqlx::Executor;
 use sqlx::postgres::PgPoolOptions;
@@ -65,7 +67,7 @@ fn collect_tokio_runtime_metrics() {
 }
 
 async fn async_main() -> Result<()> {
-    let config = Config::parse();
+    let config = Config::parse().with_context(|| "failed to process configuration")?;
 
     if let Some(log_directory) = &config.log_directory {
         use tracing_appender::rolling::{RollingFileAppender, Rotation};
