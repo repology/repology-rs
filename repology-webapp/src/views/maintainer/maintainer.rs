@@ -298,7 +298,7 @@ pub async fn maintainer(
         .record(all_queries_duration.as_secs_f64());
 
     let similar_maintainers_columns =
-        similar_maintainers.split_at((similar_maintainers.len() + 1) / 2);
+        similar_maintainers.split_at(similar_maintainers.len().div_ceil(2));
 
     Ok((
         [(

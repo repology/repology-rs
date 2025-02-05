@@ -312,7 +312,7 @@ pub async fn graph_map_repo_size_fresh(
     let points: Vec<_> = points
         .iter()
         .map(|(repository_name, x, y)| {
-            if let Some(repository_data) = repositories_data.repository(&repository_name) {
+            if let Some(repository_data) = repositories_data.repository(repository_name) {
                 Point {
                     label: repository_data.title.as_str(),
                     x: *x as u32,

@@ -10,7 +10,6 @@ use std::path::PathBuf;
 use anyhow::{Context, Result, anyhow};
 use clap::Parser;
 use ip_network::IpNetwork;
-use toml;
 
 use types::{MyIpNetwork, StaffAfkPeriod};
 
