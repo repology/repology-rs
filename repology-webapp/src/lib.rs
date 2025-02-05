@@ -6,9 +6,11 @@
 #![feature(stmt_expr_attributes)]
 #![feature(assert_matches)]
 #![feature(duration_constructors)]
+#![feature(try_blocks)]
 #![allow(clippy::module_inception)]
 
 mod badges;
+pub mod config;
 mod constants;
 mod endpoints;
 mod feeds;
@@ -42,6 +44,7 @@ use metrics::{counter, histogram};
 use sqlx::PgPool;
 use tracing::{Instrument as _, error, info, info_span};
 
+use crate::config::AppConfig;
 use crate::font::FontMeasurer;
 use crate::repository_data::RepositoriesDataCache;
 use crate::state::AppState;
@@ -89,7 +92,7 @@ async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> i
     not(feature = "coverage"),
     tracing::instrument(name = "app init", skip_all)
 )]
-pub async fn create_app(pool: PgPool) -> Result<Router> {
+pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
     info!("initializing font measurer");
     let font_measurer = FontMeasurer::new();
 
@@ -98,7 +101,12 @@ pub async fn create_app(pool: PgPool) -> Result<Router> {
         .await
         .context("initial repository data cache fill failed")?;
 
-    let state = Arc::new(AppState::new(pool, font_measurer, repository_data_cache));
+    let state = Arc::new(AppState::new(
+        pool,
+        font_measurer,
+        repository_data_cache,
+        config,
+    ));
 
     info!("initializing static files");
     let _ = &*STATIC_FILES;

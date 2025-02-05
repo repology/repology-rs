@@ -37,7 +37,9 @@ async fn uri_snapshot_test(pool: PgPool, uri: &str) {
         .method("GET")
         .body("".to_owned())
         .expect("cannot create request");
-    let mut app = create_app(pool).await.expect("create_app failed");
+    let mut app = create_app(pool, Default::default())
+        .await
+        .expect("create_app failed");
     let response = app.call(request).await.expect("all.call failed");
 
     let mut snapshot = format!("Status: {}\n", response.status().as_u16());

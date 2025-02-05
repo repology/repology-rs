@@ -51,7 +51,7 @@ pub mod __private {
         }
         let request = request.body("".to_owned())?;
 
-        let mut app = create_app(pool).await?;
+        let mut app = create_app(pool, Default::default()).await?;
         let response = app.call(request).await?;
         let status = response.status();
         let headers = response.headers().clone();

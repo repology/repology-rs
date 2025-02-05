@@ -62,6 +62,15 @@ struct FileConfig {
     staff_afk_periods: Vec<StaffAfkPeriod>,
 }
 
+#[derive(Debug, Default, Clone)]
+pub struct AppConfig {
+    pub spam_keywords: Vec<String>,
+    pub spam_networks: Vec<IpNetwork>,
+
+    pub disabled_reports: HashSet<String>,
+    pub staff_afk_periods: Vec<StaffAfkPeriod>,
+}
+
 #[derive(Debug)]
 pub struct Config {
     pub dsn: String,
@@ -69,15 +78,7 @@ pub struct Config {
     pub log_directory: Option<PathBuf>,
     pub prometheus_export: Option<SocketAddr>,
 
-    #[expect(dead_code)]
-    pub spam_keywords: Vec<String>,
-    #[expect(dead_code)]
-    pub spam_networks: Vec<IpNetwork>,
-
-    #[expect(dead_code)]
-    pub disabled_reports: HashSet<String>,
-    #[expect(dead_code)]
-    pub staff_afk_periods: Vec<StaffAfkPeriod>,
+    pub app_config: AppConfig,
 }
 
 impl Config {
@@ -106,14 +107,16 @@ impl Config {
             log_directory: config.log_directory.or(args.log_directory),
             prometheus_export: config.prometheus_export.or(args.prometheus_export),
 
-            spam_keywords: config.spam_keywords,
-            spam_networks: config
-                .spam_networks
-                .into_iter()
-                .map(|network| network.0)
-                .collect(),
-            disabled_reports: config.disabled_reports.into_iter().collect(),
-            staff_afk_periods: config.staff_afk_periods,
+            app_config: AppConfig {
+                spam_keywords: config.spam_keywords,
+                spam_networks: config
+                    .spam_networks
+                    .into_iter()
+                    .map(|network| network.0)
+                    .collect(),
+                disabled_reports: config.disabled_reports.into_iter().collect(),
+                staff_afk_periods: config.staff_afk_periods,
+            },
         })
     }
 }

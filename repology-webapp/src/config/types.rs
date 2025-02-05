@@ -37,14 +37,13 @@ impl<'de> Deserialize<'de> for MyIpNetwork {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct StaffAfkPeriod {
     from: chrono::NaiveDate,
     to: chrono::NaiveDate,
 }
 
 impl StaffAfkPeriod {
-    #[expect(dead_code)]
     pub fn is_active(&self) -> bool {
         let now = chrono::Utc::now().date_naive();
         self.from <= now && now <= self.to

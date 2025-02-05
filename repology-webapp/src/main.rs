@@ -4,15 +4,13 @@
 #![feature(iterator_try_collect)]
 #![feature(try_blocks)]
 
-mod config;
-
 use anyhow::{Context, Result};
 use metrics::{counter, gauge};
 use sqlx::Executor;
 use sqlx::postgres::PgPoolOptions;
 use tracing::info;
 
-use crate::config::Config;
+use repology_webapp::config::Config;
 use repology_webapp::create_app;
 
 #[allow(unexpected_cfgs)]
@@ -136,7 +134,7 @@ async fn async_main() -> Result<()> {
         .context("error creating PostgreSQL connection pool")?;
 
     info!("initializing application");
-    let app = create_app(pool).await?;
+    let app = create_app(pool, config.app_config).await?;
 
     info!("listening");
     let listener = tokio::net::TcpListener::bind(&config.listen).await.unwrap();
