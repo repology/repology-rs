@@ -68,10 +68,13 @@ mod tests {
     fn test_accepts_valid_html() {
         let valid_html = "<!DOCTYPE html><html><head><title>Test</title><body></body></html>";
         let res = validate_html(valid_html);
-        assert_eq!(res, ValidationResult {
-            status: ValidationStatus::Ok,
-            output: vec![]
-        });
+        assert_eq!(
+            res,
+            ValidationResult {
+                status: ValidationStatus::Ok,
+                output: vec![]
+            }
+        );
     }
 
     #[test]
@@ -79,20 +82,26 @@ mod tests {
         let valid_html =
             "<!DOCTYPE html><html><head><title>Test</title><body><nav>foo</nav></body></html>";
         let res = validate_html(valid_html);
-        assert_eq!(res, ValidationResult {
-            status: ValidationStatus::Ok,
-            output: vec![]
-        });
+        assert_eq!(
+            res,
+            ValidationResult {
+                status: ValidationStatus::Ok,
+                output: vec![]
+            }
+        );
     }
 
     #[test]
     fn test_supports_unicode() {
         let valid_html = "<!DOCTYPE html><html><head><title>Test</title><body>тест</body></html>";
         let res = validate_html(valid_html);
-        assert_eq!(res, ValidationResult {
-            status: ValidationStatus::Ok,
-            output: vec![]
-        });
+        assert_eq!(
+            res,
+            ValidationResult {
+                status: ValidationStatus::Ok,
+                output: vec![]
+            }
+        );
     }
 
     #[test]

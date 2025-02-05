@@ -66,20 +66,23 @@ mod tests {
 
         unicalize_feed_timestamps(&mut events);
 
-        assert_eq!(events, vec![
-            Event { timestamp: base },
-            Event {
-                timestamp: base - Duration::from_secs(5)
-            },
-            Event {
-                timestamp: base - Duration::from_secs(6)
-            },
-            Event {
-                timestamp: base - Duration::from_secs(7)
-            },
-            Event {
-                timestamp: base - Duration::from_secs(10)
-            },
-        ]);
+        assert_eq!(
+            events,
+            vec![
+                Event { timestamp: base },
+                Event {
+                    timestamp: base - Duration::from_secs(5)
+                },
+                Event {
+                    timestamp: base - Duration::from_secs(6)
+                },
+                Event {
+                    timestamp: base - Duration::from_secs(7)
+                },
+                Event {
+                    timestamp: base - Duration::from_secs(10)
+                },
+            ]
+        );
     }
 }

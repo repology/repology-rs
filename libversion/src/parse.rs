@@ -96,11 +96,14 @@ pub fn get_next_version_component(s: &str, flags: Flags) -> (SomeComponents, &st
             .is_some_and(|c| is_number(c))
         {
             return (
-                SomeComponents::Two(component, match classify_keyword(alpha, flags) {
-                    KeywordClass::Unknown => Component::LetterSuffix(to_lower(first_char)),
-                    KeywordClass::PreRelease => Component::PreRelease(to_lower(first_char)),
-                    KeywordClass::PostRelease => Component::PostRelease(to_lower(first_char)),
-                }),
+                SomeComponents::Two(
+                    component,
+                    match classify_keyword(alpha, flags) {
+                        KeywordClass::Unknown => Component::LetterSuffix(to_lower(first_char)),
+                        KeywordClass::PreRelease => Component::PreRelease(to_lower(first_char)),
+                        KeywordClass::PostRelease => Component::PostRelease(to_lower(first_char)),
+                    },
+                ),
                 rest_after_alpha,
             );
         }

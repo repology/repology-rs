@@ -10,10 +10,10 @@ use crate::result::EndpointResult;
 use crate::template_context::TemplateContext;
 
 fn redirect(target: String) -> EndpointResult {
-    Ok((StatusCode::MOVED_PERMANENTLY, [(
-        header::LOCATION,
-        HeaderValue::from_maybe_shared(target)?,
-    )])
+    Ok((
+        StatusCode::MOVED_PERMANENTLY,
+        [(header::LOCATION, HeaderValue::from_maybe_shared(target)?)],
+    )
         .into_response())
 }
 

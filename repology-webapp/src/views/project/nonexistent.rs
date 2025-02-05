@@ -94,12 +94,15 @@ pub async fn nonexisting_project(
             // we should instead check number of projects fetched
             // by redirect to exclude gone projects
             let project_name = &redirect_project_names[0][..];
-            return Ok((StatusCode::MOVED_PERMANENTLY, [(
-                header::LOCATION,
-                HeaderValue::from_maybe_shared(
-                    ctx.url_for(ctx.endpoint, &[("project_name", project_name)])?,
-                )?,
-            )])
+            return Ok((
+                StatusCode::MOVED_PERMANENTLY,
+                [(
+                    header::LOCATION,
+                    HeaderValue::from_maybe_shared(
+                        ctx.url_for(ctx.endpoint, &[("project_name", project_name)])?,
+                    )?,
+                )],
+            )
                 .into_response());
         }
         0 => Default::default(),
