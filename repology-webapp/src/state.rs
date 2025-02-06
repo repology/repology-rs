@@ -11,7 +11,6 @@ pub struct AppState {
     pub pool: PgPool,
     pub font_measurer: FontMeasurer,
     pub repository_data_cache: RepositoriesDataCache,
-    #[expect(dead_code)]
     pub config: AppConfig,
 }
 

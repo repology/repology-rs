@@ -216,3 +216,50 @@ async fn test_submit_report_meaningless_spam(pool: PgPool) {
     assert!(response.text().unwrap().contains("Could not add report"));
     assert!(response.text().unwrap().contains("spammers not welcome"));
 }
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
+async fn test_submit_report_spam_keyword(pool: PgPool) {
+    let form = ReportSubmission {
+        comment: "buy foobaria".to_owned(),
+        need_verignore: true,
+        need_split: true,
+        need_merge: true,
+        need_vuln: true,
+    };
+    let response = Request::new(pool, "/project/zsh/report").with_form(form).with_spam_keyword("foobar").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Could not add report"));
+    assert!(response.text().unwrap().contains("spammers not welcome"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
+async fn test_submit_report_disabled_project(pool: PgPool) {
+    let form = ReportSubmission {
+        comment: "".to_owned(),
+        need_verignore: true,
+        ..Default::default()
+    };
+    let response = Request::new(pool, "/project/zsh/report").with_form(form).with_reports_disabled("zsh").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Could not add report"));
+    assert!(response.text().unwrap().contains("new reports to this project are disabled"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
+async fn test_submit_report_spam_network(pool: PgPool) {
+    let form = ReportSubmission {
+        comment: "".to_owned(),
+        need_verignore: true,
+        ..Default::default()
+    };
+    let response = Request::new(pool, "/project/zsh/report").with_form(form).with_spam_network(&"0.0.0.0/0".parse().unwrap()).perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Could not add report"));
+    assert!(response.text().unwrap().contains("spammers not welcome"));
+}

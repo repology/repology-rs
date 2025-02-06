@@ -2139,6 +2139,7 @@ dependencies = [
  "cityhasher",
  "http",
  "insta",
+ "ip_network",
  "repology-webapp",
  "serde",
  "serde_json",

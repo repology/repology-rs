@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::net::IpAddr;
 use std::sync::Arc;
 
 use askama::Template;
@@ -14,6 +15,7 @@ use serde::Deserialize;
 use sqlx::FromRow;
 use tracing::error;
 
+use crate::config::AppConfig;
 use crate::endpoints::Endpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -65,15 +67,11 @@ fn check_new_report(
     project_name: &str,
     project_is_alive: bool,
     too_many_reports: bool,
-    client_address: &str,
+    client_address: &IpAddr,
     form: &ReportForm,
+    config: &AppConfig,
 ) -> std::result::Result<(), Vec<&'static str>> {
     const MAX_REPORT_COMMENT_LENGTH: usize = 10240;
-
-    // TODO: move these to config
-    const DISABLED_REPORTS_PROJECT_NAMES: Vec<&str> = vec![];
-    const SPAM_KEYWORDS: Vec<&str> = vec![];
-    const SPAM_NETWORKS: Vec<&str> = vec![];
 
     let mut errors: Vec<&str> = vec![];
     let mut is_spam = false;
@@ -82,20 +80,20 @@ fn check_new_report(
     if !project_is_alive {
         error!(
             project_name,
-            client_address, "report to gone or nonexisting project"
+            %client_address, "report to gone or nonexisting project"
         );
         errors.push("project does not exist or is gone");
     }
 
     if too_many_reports {
-        error!(project_name, client_address, "too many reports");
+        error!(project_name, %client_address, "too many reports");
         errors.push("too many reports for this project");
     }
 
     if form.comment.len() > MAX_REPORT_COMMENT_LENGTH {
         error!(
             project_name,
-            client_address,
+            %client_address,
             length = form.comment.len(),
             "report comment too long"
         );
@@ -108,48 +106,48 @@ fn check_new_report(
         && !form.need_vuln
         && form.comment.is_empty()
     {
-        error!(project_name, client_address, "report form is not filled");
+        error!(project_name, %client_address, "report form is not filled");
         errors.push("please fill out the form");
     }
 
     if form.comment.contains("<a href") {
-        error!(project_name, client_address, "report comment contains HTML");
+        error!(project_name, %client_address, "report comment contains HTML");
         errors.push("HTML not allowed");
     }
 
     if form.need_vuln && !form.comment.contains("nvd.nist.gov/vuln/detail/CVE-") {
         error!(
             project_name,
-            client_address, "missing vulnerability report does not contain NVD link"
+            %client_address, "missing vulnerability report does not contain NVD link"
         );
         errors.push("link to NVD entry (e.g. https://nvd.nist.gov/vuln/detail/CVE-*) for missing CVE is required; note that CVE must already have CPE(s) assigned");
     }
 
-    if DISABLED_REPORTS_PROJECT_NAMES.contains(&project_name) {
+    if config.disabled_reports.contains(project_name) {
         error!(
             project_name,
-            client_address, "report attempt to disabled project"
+            %client_address, "report attempt to disabled project"
         );
-        errors.push("new reports to this projects are disabled, probably due to a big number of incorrect reports");
+        errors.push("new reports to this project are disabled, probably due to a big number of incorrect reports or spam");
     }
 
     // spam checks
-    for keyword in SPAM_KEYWORDS {
+    for keyword in &config.spam_keywords {
         if form.comment.contains(keyword) {
             error!(
                 project_name,
-                client_address, keyword, "report comment contains spam keyword"
+                %client_address, keyword, "report comment contains spam keyword"
             );
             is_spam = true;
             break;
         }
     }
 
-    for spam_network in SPAM_NETWORKS {
-        if client_address == spam_network {
+    for spam_network in &config.spam_networks {
+        if spam_network.contains(client_address.clone()) {
             error!(
                 project_name,
-                client_address, spam_network, "report submitter is blacklisted"
+                %client_address, %spam_network, "report submitter is blacklisted"
             );
             is_spam = true;
             break;
@@ -164,7 +162,7 @@ fn check_new_report(
     {
         error!(
             project_name,
-            client_address, "report form filled in meaningless pattern"
+            %client_address, "report form filled in meaningless pattern"
         );
         is_spam = true;
     }
@@ -233,8 +231,9 @@ async fn project_report_generic(
             &project_name,
             !project.is_orphaned(),
             too_many_reports,
-            "",
+            &"127.0.0.1".parse().unwrap(), // XXX: stub, use real client address
             form,
+            &state.config,
         ) {
             errors
         } else {
@@ -266,10 +265,13 @@ async fn project_report_generic(
 
             // TODO: set flash cookie
 
-            return Ok((StatusCode::FOUND, [(
-                header::LOCATION,
-                HeaderValue::from_maybe_shared(ctx.url_for_self(&[("_fragment", "")])?)?,
-            )])
+            return Ok((
+                StatusCode::FOUND,
+                [(
+                    header::LOCATION,
+                    HeaderValue::from_maybe_shared(ctx.url_for_self(&[("_fragment", "")])?)?,
+                )],
+            )
                 .into_response());
         }
     } else {

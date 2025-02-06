@@ -99,6 +99,18 @@ impl Request {
         self
     }
 
+    pub fn with_spam_network(mut self, network: &ip_network::IpNetwork) -> Self {
+        self.config.spam_networks.push(network.clone());
+        self
+    }
+
+    pub fn with_reports_disabled(mut self, project_name: &str) -> Self {
+        self.config
+            .disabled_reports
+            .insert(project_name.to_string());
+        self
+    }
+
     pub fn with_xml_namespace(mut self, key: &str, value: &str) -> Self {
         self.xml_namespaces
             .insert(key.to_string(), value.to_string());
