@@ -1,0 +1,10 @@
+---
+source: repology-webapp-test-utils/tests/integration_tests/snapshot.rs
+expression: resp.as_snapshot().unwrap()
+snapshot_kind: text
+---
+Status: 200
+Header: content-type: text/plain
+Header: content-length: 3
+---
+abc

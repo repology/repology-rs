@@ -3,8 +3,9 @@
 
 #![feature(coverage_attribute)]
 
-pub mod http;
-pub mod tidy;
+pub mod legacy_macros;
+pub mod request_response;
+mod tidy;
 
-pub use http::*;
-pub use tidy::*;
+pub use legacy_macros::*;
+pub use request_response::*;
