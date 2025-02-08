@@ -48,6 +48,7 @@ url-escape = "0.1.1"
 
 [dev-dependencies]
 float-cmp = "0.10.0"
+http = "1.2.0"
 insta = "1.42.1"
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }
 tower-service = "0.3.3"

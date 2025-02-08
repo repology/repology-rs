@@ -2101,6 +2101,7 @@ dependencies = [
  "clap",
  "flate2",
  "float-cmp",
+ "http",
  "include_dir",
  "indexmap",
  "indoc",
