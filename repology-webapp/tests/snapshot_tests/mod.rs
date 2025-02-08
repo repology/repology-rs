@@ -25,34 +25,18 @@ mod security;
 mod tool_project_by;
 mod trivial_pages;
 
-use axum::http::Request;
 use sqlx::PgPool;
-use tower_service::Service;
 
-use repology_webapp::create_app;
+use repology_webapp_test_utils::Request;
 
+#[track_caller]
 async fn uri_snapshot_test(pool: PgPool, uri: &str) {
-    let request = Request::builder()
-        .uri(uri)
-        .method("GET")
-        .body("".to_owned())
-        .expect("cannot create request");
-    let mut app = create_app(pool, Default::default())
-        .await
-        .expect("create_app failed");
-    let response = app.call(request).await.expect("all.call failed");
-
-    let mut snapshot = format!("Status: {}\n", response.status().as_u16());
-    for (k, v) in response.headers() {
-        snapshot += &format!("Header: {}: {}\n", k, v.to_str().unwrap());
-    }
-    snapshot += "---\n";
-    snapshot += std::str::from_utf8(
-        &axum::body::to_bytes(response.into_body(), 1000000)
+    insta::assert_snapshot!(
+        uri,
+        Request::new(pool, uri)
+            .perform()
             .await
-            .expect("getting response body failed"),
-    )
-    .expect("body is not utf-8");
-
-    insta::assert_snapshot!(uri, snapshot);
+            .as_snapshot()
+            .unwrap()
+    );
 }
