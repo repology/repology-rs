@@ -3,63 +3,100 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_response;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
-async fn test_static_file(pool: PgPool) {
-    check_response!(pool, "/static/nonexistent", status NOT_FOUND);
-
-    check_response!(
-        pool,
-        "/static/repology.v1.6108dff405ea1a42.ico",
-        status OK,
-        content_type "image/x-icon",
-        body_length 22382,
-        body_cityhash64 0x6108dff405ea1a42,
-        header_value_contains "cache-control" "public",
-        header_value_contains "cache-control" "immutable",
-    );
-    check_response!(
-        pool,
-        "/static/repology.v1.ico",
-        status OK,
-        content_type "image/x-icon",
-        body_length 22382,
-        body_cityhash64 0x6108dff405ea1a42,
-        header_value_contains "cache-control" "public",
-        header_value_contains_not "cache-control" "immutable",
-    );
-    check_response!(
-        pool,
-        add_header "accept-encoding" "gzip",
-        "/static/repology.v1.6108dff405ea1a42.ico",
-        status OK,
-        content_type "image/x-icon",
-        body_length 3117,
-        body_cityhash64 10174067632225889947,
-        header_value_contains "cache-control" "public",
-        header_value_contains "cache-control" "immutable",
-    );
-    check_response!(
-        pool,
-        add_header "accept-encoding" "br;q=1.0, gzip;q=0.8, *;q=0.1",
-        "/static/repology.v1.6108dff405ea1a42.ico",
-        status OK,
-        content_type "image/x-icon",
-        body_length 3117,
-        body_cityhash64 10174067632225889947,
-        header_value_contains "cache-control" "public",
-        header_value_contains "cache-control" "immutable",
-    );
+async fn test_nonexistent(pool: PgPool) {
+    let response = Request::new(pool, "/static/nonexistent").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
-async fn test_mime_types(pool: PgPool) {
-    check_response!(pool, "/static/repology.v1.ico", status OK, content_type "image/x-icon");
-    check_response!(pool, "/static/repology.v2.js", status OK, content_type "application/javascript");
-    check_response!(pool, "/static/repology.v21.css", status OK, content_type "text/css");
-    check_response!(pool, "/static/repology40x40.v1.png", status OK, content_type "image/png");
-    check_response!(pool, "/static/vulnerable.v1.svg", status OK, content_type "image/svg+xml");
+async fn test_by_hashed_name(pool: PgPool) {
+    let response = Request::new(pool, "/static/repology.v1.6108dff405ea1a42.ico").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("image/x-icon"));
+    assert_eq!(response.body_length(), 22382);
+    assert_eq!(response.body_cityhash64(), 0x6108dff405ea1a42);
+    assert!(response.header_value_str("cache-control").unwrap().unwrap().contains("public"));
+    assert!(response.header_value_str("cache-control").unwrap().unwrap().contains("immutable"));
+}
 
-    check_response!(pool, "/favicon.ico", status OK, content_type "image/x-icon");
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_by_orig_name(pool: PgPool) {
+    let response = Request::new(pool, "/static/repology.v1.ico").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("image/x-icon"));
+    assert_eq!(response.body_length(), 22382);
+    assert_eq!(response.body_cityhash64(), 0x6108dff405ea1a42);
+    assert!(response.header_value_str("cache-control").unwrap().unwrap().contains("public"));
+    assert!(!response.header_value_str("cache-control").unwrap().unwrap().contains("immutable"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_transfer_encoding_gzip(pool: PgPool) {
+    let response = Request::new(pool, "/static/repology.v1.6108dff405ea1a42.ico").with_header("accept-encoding", "gzip").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("image/x-icon"));
+    assert_eq!(response.body_length(), 3117);
+    assert_eq!(response.body_cityhash64(), 10174067632225889947);
+    assert!(response.header_value_str("cache-control").unwrap().unwrap().contains("public"));
+    assert!(response.header_value_str("cache-control").unwrap().unwrap().contains("immutable"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_transfer_encoding_many(pool: PgPool) {
+    // client may accept multiple encodings but we only support gzip
+    let response = Request::new(pool, "/static/repology.v1.6108dff405ea1a42.ico")
+        .with_header("accept-encoding", "br;q=1.0, gzip;q=0.8, *;q=0.1")
+        .perform()
+        .await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("image/x-icon"));
+    assert_eq!(response.body_length(), 3117);
+    assert_eq!(response.body_cityhash64(), 10174067632225889947);
+    assert!(response.header_value_str("cache-control").unwrap().unwrap().contains("public"));
+    assert!(response.header_value_str("cache-control").unwrap().unwrap().contains("immutable"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_mime_type_icon(pool: PgPool) {
+    let response = Request::new(pool, "/static/repology.v1.ico").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("image/x-icon"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_mime_type_favicon(pool: PgPool) {
+    let response = Request::new(pool, "/favicon.ico").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("image/x-icon"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_mime_type_js(pool: PgPool) {
+    let response = Request::new(pool, "/static/repology.v2.js").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("application/javascript"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_mime_type_css(pool: PgPool) {
+    let response = Request::new(pool, "/static/repology.v21.css").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/css"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_mime_type_png(pool: PgPool) {
+    let response = Request::new(pool, "/static/repology40x40.v1.png").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("image/png"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR")]
+async fn test_mime_type_svg(pool: PgPool) {
+    let response = Request::new(pool, "/static/vulnerable.v1.svg").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("image/svg+xml"));
 }
