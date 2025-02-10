@@ -2115,6 +2115,8 @@ dependencies = [
  "mime",
  "num-traits",
  "permutation",
+ "pretty_assertions",
+ "regex",
  "repology-common",
  "repology-webapp-test-utils",
  "serde",

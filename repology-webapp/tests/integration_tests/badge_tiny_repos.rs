@@ -3,59 +3,51 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_response;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_nonexistent(pool: PgPool) {
-    check_response!(pool, "/badge/tiny-repos/nonexistent", status NOT_FOUND);
+    let response = Request::new(pool, "/badge/tiny-repos/nonexistent").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_nonexistent_svg(pool: PgPool) {
-    check_response!(
-        pool,
-        "/badge/tiny-repos/nonexistent.svg",
-        status OK,
-        content_type IMAGE_SVG,
-        svg_xpath "count(//svg:g[1]/svg:g[1]/svg:text)" 4_f64,
-        svg_xpath "string(//svg:g[1]/svg:g[1]/svg:text[1])" "in repositories",
-        svg_xpath "string(//svg:g[1]/svg:g[1]/svg:text[3])" "0",
-    );
+    let response = Request::new(pool, "/badge/tiny-repos/nonexistent.svg").with_xml_namespace("svg", "http://www.w3.org/2000/svg").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some(mime::IMAGE_SVG.as_ref()));
+    assert_eq!(response.xpath("count(//svg:g[1]/svg:g[1]/svg:text)").unwrap(), 4_f64);
+    assert_eq!(response.xpath("string(//svg:g[1]/svg:g[1]/svg:text[1])").unwrap(), "in repositories");
+    assert_eq!(response.xpath("string(//svg:g[1]/svg:g[1]/svg:text[3])").unwrap(), "0");
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_normal(pool: PgPool) {
-    check_response!(
-        pool,
-        "/badge/tiny-repos/zsh.svg",
-        status OK,
-        content_type IMAGE_SVG,
-        svg_xpath "count(//svg:g[1]/svg:g[1]/svg:text)" 4_f64,
-        svg_xpath "string(//svg:g[1]/svg:g[1]/svg:text[1])" "in repositories",
-        svg_xpath "string(//svg:g[1]/svg:g[1]/svg:text[3])" "3",
-    );
+    let response = Request::new(pool, "/badge/tiny-repos/zsh.svg").with_xml_namespace("svg", "http://www.w3.org/2000/svg").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some(mime::IMAGE_SVG.as_ref()));
+    assert_eq!(response.xpath("count(//svg:g[1]/svg:g[1]/svg:text)").unwrap(), 4_f64);
+    assert_eq!(response.xpath("string(//svg:g[1]/svg:g[1]/svg:text[1])").unwrap(), "in repositories");
+    assert_eq!(response.xpath("string(//svg:g[1]/svg:g[1]/svg:text[3])").unwrap(), "3");
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_header_flag(pool: PgPool) {
-    check_response!(
-        pool,
-        "/badge/tiny-repos/zsh.svg?header=Repository+Count",
-        status OK,
-        content_type IMAGE_SVG,
-        svg_xpath "string(//svg:g[1]/svg:g[1]/svg:text[1])" "Repository Count",
-        svg_xpath "string(//svg:g[1]/svg:g[1]/svg:text[3])" "3",
-    );
+    let response = Request::new(pool, "/badge/tiny-repos/zsh.svg?header=Repository+Count")
+        .with_xml_namespace("svg", "http://www.w3.org/2000/svg")
+        .perform()
+        .await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some(mime::IMAGE_SVG.as_ref()));
+    assert_eq!(response.xpath("string(//svg:g[1]/svg:g[1]/svg:text[1])").unwrap(), "Repository Count");
+    assert_eq!(response.xpath("string(//svg:g[1]/svg:g[1]/svg:text[3])").unwrap(), "3");
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_header_flag_empty(pool: PgPool) {
-    check_response!(
-        pool,
-        "/badge/tiny-repos/zsh.svg?header=",
-        status OK,
-        content_type IMAGE_SVG,
-        svg_xpath "count(//svg:g[1]/svg:g[1]/svg:text)" 2_f64,
-        svg_xpath "string(//svg:g[1]/svg:g[1]/svg:text[1])" "3",
-    );
+    let response = Request::new(pool, "/badge/tiny-repos/zsh.svg?header=").with_xml_namespace("svg", "http://www.w3.org/2000/svg").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some(mime::IMAGE_SVG.as_ref()));
+    assert_eq!(response.xpath("count(//svg:g[1]/svg:g[1]/svg:text)").unwrap(), 2_f64);
+    assert_eq!(response.xpath("string(//svg:g[1]/svg:g[1]/svg:text[1])").unwrap(), "3");
 }

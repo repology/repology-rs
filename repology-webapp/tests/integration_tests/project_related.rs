@@ -3,72 +3,57 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_response;
+use repology_webapp_test_utils::{HtmlValidationFlags, Request};
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/nonexistent/related",
-        status NOT_FOUND,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "Unknown project"
-    );
+    let response = Request::new(pool, "/project/nonexistent/related").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Unknown project"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_orphaned(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/orphaned/related",
-        status NOT_FOUND,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "Gone project"
-    );
+    let response = Request::new(pool, "/project/orphaned/related").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Gone project"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_no_relations(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/zsh/related",
-        status OK,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains_not "gcc",
-        contains_not "binutils",
-        contains_not "∗"
-    );
+    let response = Request::new(pool, "/project/zsh/related").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(!response.text().unwrap().contains("gcc"));
+    assert!(!response.text().unwrap().contains("binutils"));
+    assert!(!response.text().unwrap().contains("∗"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_has_relations_a(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/gcc/related",
-        status OK,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "binutils",
-        contains "/project/binutils/versions",
-        contains "/project/binutils/related",
-        contains "∗",
-    );
+    let response = Request::new(pool, "/project/gcc/related").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("binutils"));
+    assert!(response.text().unwrap().contains("/project/binutils/versions"));
+    assert!(response.text().unwrap().contains("/project/binutils/related"));
+    assert!(response.text().unwrap().contains("∗"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_has_relations_b(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/binutils/related",
-        status OK,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "gcc",
-        contains "/project/gcc/versions",
-        contains "/project/gcc/related",
-        contains "∗",
-    );
+    let response = Request::new(pool, "/project/binutils/related").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("gcc"));
+    assert!(response.text().unwrap().contains("/project/gcc/versions"));
+    assert!(response.text().unwrap().contains("/project/gcc/related"));
+    assert!(response.text().unwrap().contains("∗"));
 }

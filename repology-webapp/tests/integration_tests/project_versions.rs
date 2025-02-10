@@ -3,54 +3,42 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_response;
+use repology_webapp_test_utils::{HtmlValidationFlags, Request};
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_nonexistent(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/nonexistent/versions",
-        status NOT_FOUND,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "Unknown project"
-    );
+    let response = Request::new(pool, "/project/nonexistent/versions").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Unknown project"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_orphaned(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/orphaned/versions",
-        status NOT_FOUND,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "Gone project"
-    );
+    let response = Request::new(pool, "/project/orphaned/versions").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Gone project"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_normal(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/zsh/versions",
-        status OK,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "Versions for <strong>zsh",
-        contains "FreeBSD",
-        contains "1.1"
-    );
+    let response = Request::new(pool, "/project/zsh/versions").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Versions for <strong>zsh"));
+    assert!(response.text().unwrap().contains("FreeBSD"));
+    assert!(response.text().unwrap().contains("1.1"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_xss_attempt(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/%3Cmarquee%3E%26nbsp%3B/versions",
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains_not "<marquee>",
-        contains_not "&nbsp;"
-    );
+    let response = Request::new(pool, "/project/%3Cmarquee%3E%26nbsp%3B/versions").perform().await;
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(!response.text().unwrap().contains("<marquee>"));
+    assert!(!response.text().unwrap().contains("&nbsp;"));
 }

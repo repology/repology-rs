@@ -3,42 +3,33 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_response;
+use repology_webapp_test_utils::{HtmlValidationFlags, Request};
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_nonexistent(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/nonexistent/information",
-        status NOT_FOUND,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "Unknown project"
-    );
+    let response = Request::new(pool, "/project/nonexistent/information").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Unknown project"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_orphaned(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/orphaned/information",
-        status NOT_FOUND,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "Gone project"
-    );
+    let response = Request::new(pool, "/project/orphaned/information").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Gone project"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_normal(pool: PgPool) {
-    check_response!(
-        pool,
-        "/project/zsh/information",
-        status OK,
-        content_type "text/html",
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "Information for <strong>zsh",
-    );
+    let response = Request::new(pool, "/project/zsh/information").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Information for <strong>zsh"));
 }
 
 // XXX: more tests

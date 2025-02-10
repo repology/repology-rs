@@ -3,34 +3,46 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_response;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_version_only_for_repo(pool: PgPool) {
-    check_response!(pool, "/badge/version-only-for-repo/foo/bar.svg", status MOVED_PERMANENTLY, header_value "location" "/badge/version-for-repo/foo/bar.svg");
+    let response = Request::new(pool, "/badge/version-only-for-repo/foo/bar.svg").perform().await;
+    assert_eq!(response.status(), http::StatusCode::MOVED_PERMANENTLY);
+    assert_eq!(response.header_value_str("location").unwrap(), Some("/badge/version-for-repo/foo/bar.svg"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_version_only_for_repo_with_title(pool: PgPool) {
-    check_response!(pool, "/badge/version-only-for-repo/foo/bar.svg?header=baz", status MOVED_PERMANENTLY, header_value "location" "/badge/version-for-repo/foo/bar.svg?header=baz");
+    let response = Request::new(pool, "/badge/version-only-for-repo/foo/bar.svg?header=baz").perform().await;
+    assert_eq!(response.status(), http::StatusCode::MOVED_PERMANENTLY);
+    assert_eq!(response.header_value_str("location").unwrap(), Some("/badge/version-for-repo/foo/bar.svg?header=baz"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_project_root(pool: PgPool) {
-    check_response!(pool, "/project/zsh", status MOVED_PERMANENTLY, header_value "location" "/project/zsh/versions");
+    let response = Request::new(pool, "/project/zsh").perform().await;
+    assert_eq!(response.status(), http::StatusCode::MOVED_PERMANENTLY);
+    assert_eq!(response.header_value_str("location").unwrap(), Some("/project/zsh/versions"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_metapackage(pool: PgPool) {
-    check_response!(pool, "/metapackage/zsh", status MOVED_PERMANENTLY, header_value "location" "/project/zsh/versions");
+    let response = Request::new(pool, "/metapackage/zsh").perform().await;
+    assert_eq!(response.status(), http::StatusCode::MOVED_PERMANENTLY);
+    assert_eq!(response.header_value_str("location").unwrap(), Some("/project/zsh/versions"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_metapackage_versions(pool: PgPool) {
-    check_response!(pool, "/metapackage/zsh/versions", status MOVED_PERMANENTLY, header_value "location" "/project/zsh/versions");
+    let response = Request::new(pool, "/metapackage/zsh/versions").perform().await;
+    assert_eq!(response.status(), http::StatusCode::MOVED_PERMANENTLY);
+    assert_eq!(response.header_value_str("location").unwrap(), Some("/project/zsh/versions"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_metapackage_packages(pool: PgPool) {
-    check_response!(pool, "/metapackage/zsh/packages", status MOVED_PERMANENTLY, header_value "location" "/project/zsh/packages");
+    let response = Request::new(pool, "/metapackage/zsh/packages").perform().await;
+    assert_eq!(response.status(), http::StatusCode::MOVED_PERMANENTLY);
+    assert_eq!(response.header_value_str("location").unwrap(), Some("/project/zsh/packages"));
 }
