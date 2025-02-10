@@ -19,38 +19,14 @@ async fn test_repository_feed_atom(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "common_maintainers", "maintainer_feed_data"))]
 async fn test_maintainer_repo_feed(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/maintainer/nonexistent@example.com/feed-for-repo/freebsd",
-    )
-    .await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/maintainer/johndoe@example.com/feed-for-repo/nonexistent",
-    )
-    .await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/maintainer/johndoe@example.com/feed-for-repo/freebsd",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/maintainer/nonexistent@example.com/feed-for-repo/freebsd").await;
+    uri_snapshot_test(pool.clone(), "/maintainer/johndoe@example.com/feed-for-repo/nonexistent").await;
+    uri_snapshot_test(pool.clone(), "/maintainer/johndoe@example.com/feed-for-repo/freebsd").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "common_maintainers", "maintainer_feed_data"))]
 async fn test_maintainer_repo_feed_atom(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/maintainer/nonexistent@example.com/feed-for-repo/freebsd/atom",
-    )
-    .await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/maintainer/johndoe@example.com/feed-for-repo/nonexistent/atom",
-    )
-    .await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/maintainer/johndoe@example.com/feed-for-repo/freebsd/atom",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/maintainer/nonexistent@example.com/feed-for-repo/freebsd/atom").await;
+    uri_snapshot_test(pool.clone(), "/maintainer/johndoe@example.com/feed-for-repo/nonexistent/atom").await;
+    uri_snapshot_test(pool.clone(), "/maintainer/johndoe@example.com/feed-for-repo/freebsd/atom").await;
 }

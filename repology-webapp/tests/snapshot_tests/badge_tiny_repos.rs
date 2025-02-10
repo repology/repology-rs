@@ -22,11 +22,7 @@ async fn test_normal(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_header_flag(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/badge/tiny-repos/zsh.svg?header=Repository+Count",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/zsh.svg?header=Repository+Count").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]

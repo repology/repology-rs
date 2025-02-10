@@ -23,43 +23,15 @@ async fn test_graphs_repository(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/maintainers.svg").await;
     uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_total.svg").await;
     uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_unique.svg").await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/repo/freebsd/projects_unique_percent.svg",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_unique_percent.svg").await;
     uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_newest.svg").await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/repo/freebsd/projects_newest_percent.svg",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_newest_percent.svg").await;
     uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_outdated.svg").await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/repo/freebsd/projects_outdated_percent.svg",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_outdated_percent.svg").await;
     uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_problematic.svg").await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/repo/freebsd/projects_problematic_percent.svg",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_problematic_percent.svg").await;
     uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_vulnerable.svg").await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/repo/freebsd/projects_vulnerable_percent.svg",
-    )
-    .await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/repo/freebsd/problems_per_1000_projects.svg",
-    )
-    .await;
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/repo/freebsd/projects_per_maintainer.svg",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_vulnerable_percent.svg").await;
+    uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/problems_per_1000_projects.svg").await;
+    uri_snapshot_test(pool.clone(), "/graph/repo/freebsd/projects_per_maintainer.svg").await;
 }

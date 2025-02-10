@@ -18,27 +18,15 @@ async fn test_normal(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_limited(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/map_repo_size_fresh.svg?xlimit=10000&ylimit=10000",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/graph/map_repo_size_fresh.svg?xlimit=10000&ylimit=10000").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_over_limited(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/map_repo_size_fresh.svg?xlimit=1&ylimit=1",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/graph/map_repo_size_fresh.svg?xlimit=1&ylimit=1").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_zero_limited(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/graph/map_repo_size_fresh.svg?xlimit=0&ylimit=0",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/graph/map_repo_size_fresh.svg?xlimit=0&ylimit=0").await;
 }

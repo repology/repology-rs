@@ -12,11 +12,7 @@ async fn test_version_only_for_repo(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_version_only_for_repo_with_title(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/badge/version-only-for-repo/foo/bar.svg?header=baz",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/badge/version-only-for-repo/foo/bar.svg?header=baz").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]

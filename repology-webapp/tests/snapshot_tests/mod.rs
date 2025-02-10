@@ -31,12 +31,5 @@ use repology_webapp_test_utils::Request;
 
 #[track_caller]
 async fn uri_snapshot_test(pool: PgPool, uri: &str) {
-    insta::assert_snapshot!(
-        uri,
-        Request::new(pool, uri)
-            .perform()
-            .await
-            .as_snapshot()
-            .unwrap()
-    );
+    insta::assert_snapshot!(uri, Request::new(pool, uri).perform().await.as_snapshot().unwrap());
 }

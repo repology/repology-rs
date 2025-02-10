@@ -17,20 +17,12 @@ async fn test_construct_filled(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_construct_ignores_invalid_fields(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/tools/project-by?repo=invalid&name_type=invalid&target_page=invalid",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/tools/project-by?repo=invalid&name_type=invalid&target_page=invalid").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_repository_not_specified(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/tools/project-by?name_type=srcname&target_page=project_versions&name=shells/zsh",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/tools/project-by?name_type=srcname&target_page=project_versions&name=shells/zsh").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
@@ -40,11 +32,7 @@ async fn test_perform_failure_repository_not_found(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_name_type_not_specified(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/tools/project-by?repo=freebsd&target_page=project_versions&name=shells/zsh",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/tools/project-by?repo=freebsd&target_page=project_versions&name=shells/zsh").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
@@ -54,20 +42,12 @@ async fn test_perform_failure_name_type_invalid(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_target_page_not_specified(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/tools/project-by?repo=freebsd&name_type=srcname&name=shells/zsh",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/tools/project-by?repo=freebsd&name_type=srcname&name=shells/zsh").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_target_page_invalid(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/tools/project-by?repo=freebsd&name_type=srcname&target_page=invalid&name=shells/zsh",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/tools/project-by?repo=freebsd&name_type=srcname&target_page=invalid&name=shells/zsh").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
@@ -152,9 +132,5 @@ async fn test_perform_success_ambiguous_with_autoresolve_html(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_ambiguous_with_autoresolve_json(pool: PgPool) {
-    uri_snapshot_test(
-        pool.clone(),
-        "/tools/project-by?repo=ubuntu_24&name_type=srcname&target_page=api_v1_project&name=iperf",
-    )
-    .await;
+    uri_snapshot_test(pool.clone(), "/tools/project-by?repo=ubuntu_24&name_type=srcname&target_page=api_v1_project&name=iperf").await;
 }

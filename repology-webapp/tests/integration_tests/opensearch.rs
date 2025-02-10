@@ -13,17 +13,9 @@ async fn test_maintainer(pool: PgPool) {
         .perform()
         .await;
     assert_eq!(response.status(), http::StatusCode::OK);
-    assert_eq!(
-        response.header_value_str("content-type").unwrap(),
-        Some("application/xml")
-    );
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("application/xml"));
     assert!(response.text().unwrap().contains("={searchTerms}"));
-    assert_eq!(
-        response
-            .xpath("string(/os:OpenSearchDescription/os:ShortName)")
-            .unwrap(),
-        "Repology maintainers"
-    );
+    assert_eq!(response.xpath("string(/os:OpenSearchDescription/os:ShortName)").unwrap(), "Repology maintainers");
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
