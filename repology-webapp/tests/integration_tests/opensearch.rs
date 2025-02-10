@@ -8,10 +8,7 @@ use repology_webapp_test_utils::check_response;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_maintainer(pool: PgPool) {
-    let response = Request::new(pool, "/opensearch/maintainer.xml")
-        .with_xml_namespace("os", "http://a9.com/-/spec/opensearch/1.1/")
-        .perform()
-        .await;
+    let response = Request::new(pool, "/opensearch/maintainer.xml").with_xml_namespace("os", "http://a9.com/-/spec/opensearch/1.1/").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert_eq!(response.header_value_str("content-type").unwrap(), Some("application/xml"));
     assert!(response.text().unwrap().contains("={searchTerms}"));
