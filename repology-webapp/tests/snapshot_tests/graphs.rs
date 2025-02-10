@@ -15,10 +15,7 @@ async fn test_graphs_total(pool: PgPool) {
 }
 
 #[ignore]
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories.sql", "graphs_data.sql")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_graphs_repository(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/graph/repo/unknown/problems.svg").await;
     uri_snapshot_test(pool.clone(), "/graph/repo/ubuntu_10/problems.svg").await;

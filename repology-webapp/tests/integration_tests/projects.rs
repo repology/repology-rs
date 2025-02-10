@@ -5,10 +5,7 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_projects_params_retained_by_the_form(pool: PgPool) {
     for url in ["/projects/", "/projects/foo/", "/projects/..foo/"] {
         check_response!(
@@ -65,10 +62,7 @@ async fn test_projects_params_retained_by_the_form(pool: PgPool) {
     }
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "projects_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_projects_pagination(pool: PgPool) {
     check_response!(pool,
         "/projects/",
@@ -87,10 +81,7 @@ async fn test_projects_pagination(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "projects_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_projects_search(pool: PgPool) {
     check_response!(pool,
         "/projects/",
@@ -109,10 +100,7 @@ async fn test_projects_search(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "projects_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_projects_inrepo(pool: PgPool) {
     check_response!(pool,
         "/projects/",

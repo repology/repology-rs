@@ -5,10 +5,7 @@ use sqlx::PgPool;
 
 use super::uri_snapshot_test;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_badge_version_for_repo(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/badge/version-for-repo/freebsd/zsh").await;
     uri_snapshot_test(pool.clone(), "/badge/version-for-repo/freebsd/zsh.svg").await;
@@ -40,10 +37,7 @@ async fn test_badge_version_for_repo(pool: PgPool) {
     .await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_badge_vertical_allrepos(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/badge/vertical-allrepos/zsh").await;
     uri_snapshot_test(pool.clone(), "/badge/vertical-allrepos/unpackaged.svg").await;
@@ -97,10 +91,7 @@ async fn test_badge_vertical_allrepos(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/badge/vertical-allrepos/zsh.svg?columns=4").await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("badge_versions_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_versions_data"))]
 async fn test_badge_latest_versions(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/badge/latest-versions/nonexistent").await;
     uri_snapshot_test(pool.clone(), "/badge/latest-versions/nonexistent.svg").await;
@@ -114,10 +105,7 @@ async fn test_badge_latest_versions(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/badge/latest-versions/zsh.svg?header=").await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "badge_repository_big_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "badge_repository_big_data"))]
 async fn test_badge_repositry_big(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/badge/repository-big/nonexistent").await;
     uri_snapshot_test(pool.clone(), "/badge/repository-big/nonexistent.svg").await;

@@ -5,10 +5,7 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_history_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_history_data"))]
 async fn test_nonexistent(pool: PgPool) {
     check_response!(
         pool,
@@ -19,10 +16,7 @@ async fn test_nonexistent(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_history_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_history_data"))]
 async fn test_orphaned_without_history(pool: PgPool) {
     check_response!(
         pool,
@@ -33,10 +27,7 @@ async fn test_orphaned_without_history(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_history_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_history_data"))]
 async fn test_orphaned_with_history(pool: PgPool) {
     check_response!(
         pool,
@@ -47,10 +38,7 @@ async fn test_orphaned_with_history(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_history_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_history_data"))]
 async fn test_normal(pool: PgPool) {
     check_response!(
         pool,

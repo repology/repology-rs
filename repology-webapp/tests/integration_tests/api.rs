@@ -82,10 +82,7 @@ async fn test_api_v1_project(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "projects_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_api_v1_projects(pool: PgPool) {
     // just a small subset of conditions tested, see more tests in tests/projects.rs
     check_response!(

@@ -5,26 +5,17 @@ use sqlx::PgPool;
 
 use super::uri_snapshot_test;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_nonexistent(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/project/nonexistent/packages").await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_orphaned(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/project/orphaned/packages").await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_normal(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/project/zsh/packages").await;
 }

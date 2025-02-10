@@ -5,33 +5,19 @@ use sqlx::PgPool;
 
 use super::uri_snapshot_test;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages", "repository_feed_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "repository_feed_data"))]
 async fn test_repository_feed(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/repository/nonexistent/feed").await;
     uri_snapshot_test(pool.clone(), "/repository/freebsd/feed").await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages", "repository_feed_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "repository_feed_data"))]
 async fn test_repository_feed_atom(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/repository/nonexistent/feed/atom").await;
     uri_snapshot_test(pool.clone(), "/repository/freebsd/feed/atom").await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures(
-        "common_repositories",
-        "common_packages",
-        "common_maintainers",
-        "maintainer_feed_data"
-    )
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "common_maintainers", "maintainer_feed_data"))]
 async fn test_maintainer_repo_feed(pool: PgPool) {
     uri_snapshot_test(
         pool.clone(),
@@ -50,15 +36,7 @@ async fn test_maintainer_repo_feed(pool: PgPool) {
     .await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures(
-        "common_repositories",
-        "common_packages",
-        "common_maintainers",
-        "maintainer_feed_data"
-    )
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "common_maintainers", "maintainer_feed_data"))]
 async fn test_maintainer_repo_feed_atom(pool: PgPool) {
     uri_snapshot_test(
         pool.clone(),

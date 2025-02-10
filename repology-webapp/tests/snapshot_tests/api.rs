@@ -13,10 +13,7 @@ async fn test_api_v1_project(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/api/v1/project/vulnerable").await;
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "projects_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_api_v1_projects(pool: PgPool) {
     uri_snapshot_test(pool.clone(), "/api/v1/projects/pkg_foo/").await;
     uri_snapshot_test(pool.clone(), "/api/v1/projects/?search=bar").await;

@@ -5,10 +5,7 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages", "repository_feed_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "repository_feed_data"))]
 async fn test_repository_feed(pool: PgPool) {
     check_response!(
         pool,
@@ -31,10 +28,7 @@ async fn test_repository_feed(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages", "repository_feed_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "repository_feed_data"))]
 async fn test_repository_feed_atom(pool: PgPool) {
     check_response!(
         pool,
@@ -58,15 +52,7 @@ async fn test_repository_feed_atom(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures(
-        "common_repositories",
-        "common_packages",
-        "common_maintainers",
-        "maintainer_feed_data"
-    )
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "common_maintainers", "maintainer_feed_data"))]
 async fn test_maintainer_repo_feed(pool: PgPool) {
     check_response!(
         pool,
@@ -97,15 +83,7 @@ async fn test_maintainer_repo_feed(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures(
-        "common_repositories",
-        "common_packages",
-        "common_maintainers",
-        "maintainer_feed_data"
-    )
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "common_maintainers", "maintainer_feed_data"))]
 async fn test_maintainer_repo_feed_atom(pool: PgPool) {
     check_response!(
         pool,

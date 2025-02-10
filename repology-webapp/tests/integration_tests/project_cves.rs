@@ -5,10 +5,7 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_cves_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_nonexistent(pool: PgPool) {
     check_response!(
         pool,
@@ -19,10 +16,7 @@ async fn test_nonexistent(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_cves_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_orphaned_without_cves(pool: PgPool) {
     check_response!(
         pool,
@@ -33,10 +27,7 @@ async fn test_orphaned_without_cves(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_cves_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_orphaned_with_cves(pool: PgPool) {
     check_response!(
         pool,
@@ -48,10 +39,7 @@ async fn test_orphaned_with_cves(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_cves_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_ranges(pool: PgPool) {
     check_response!(
         pool,
@@ -70,10 +58,7 @@ async fn test_ranges(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_cves_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_version_not_highlighted(pool: PgPool) {
     check_response!(
         pool,
@@ -89,10 +74,7 @@ async fn test_version_not_highlighted(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_cves_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_open_range_version_not_highlighted(pool: PgPool) {
     check_response!(
         pool,
@@ -104,10 +86,7 @@ async fn test_open_range_version_not_highlighted(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_cves_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_version_highlighted(pool: PgPool) {
     check_response!(
         pool,

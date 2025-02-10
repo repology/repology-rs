@@ -5,10 +5,7 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages", "log_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "log_data"))]
 async fn test_nonexistent(pool: PgPool) {
     check_response!(
         pool,
@@ -17,10 +14,7 @@ async fn test_nonexistent(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages", "log_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "log_data"))]
 async fn test_invalid_id(pool: PgPool) {
     check_response!(
         pool,
@@ -29,10 +23,7 @@ async fn test_invalid_id(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages", "log_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "log_data"))]
 async fn test_ongoing(pool: PgPool) {
     check_response!(
         pool,
@@ -44,10 +35,7 @@ async fn test_ongoing(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "common_packages", "log_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "log_data"))]
 async fn test_finished(pool: PgPool) {
     check_response!(
         pool,

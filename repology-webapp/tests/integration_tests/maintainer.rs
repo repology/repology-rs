@@ -5,10 +5,7 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "maintainer_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_nonexistent(pool: PgPool) {
     check_response!(
         pool,
@@ -20,10 +17,7 @@ async fn test_nonexistent(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "maintainer_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_orphaned(pool: PgPool) {
     check_response!(
         pool,
@@ -35,10 +29,7 @@ async fn test_orphaned(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "maintainer_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_orphaned_in_future(pool: PgPool) {
     check_response!(
         pool,
@@ -50,10 +41,7 @@ async fn test_orphaned_in_future(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "maintainer_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_active(pool: PgPool) {
     check_response!(
         pool,
@@ -74,10 +62,7 @@ async fn test_active(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "maintainer_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_fallback(pool: PgPool) {
     check_response!(
         pool,
@@ -92,10 +77,7 @@ async fn test_fallback(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "maintainer_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_no_vuln_column(pool: PgPool) {
     // Maintainer not updated for a long time, without vulnerable projects
     // counter filled.

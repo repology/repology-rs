@@ -15,10 +15,7 @@ async fn test_empty(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("graphs_map_data.sql")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_normal(pool: PgPool) {
     check_response!(
         pool,
@@ -33,10 +30,7 @@ async fn test_normal(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("graphs_map_data.sql")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_limited(pool: PgPool) {
     check_response!(
         pool,
@@ -51,10 +45,7 @@ async fn test_limited(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("graphs_map_data.sql")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_over_limited(pool: PgPool) {
     check_response!(
         pool,
@@ -68,10 +59,7 @@ async fn test_over_limited(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("graphs_map_data.sql")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_zero_limited(pool: PgPool) {
     check_response!(
         pool,

@@ -5,10 +5,7 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::check_response;
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_construct_empty(pool: PgPool) {
     check_response!(
         pool,
@@ -26,10 +23,7 @@ async fn test_construct_empty(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_construct_filled(pool: PgPool) {
     check_response!(
         pool,
@@ -47,10 +41,7 @@ async fn test_construct_filled(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_construct_ignores_invalid_params(pool: PgPool) {
     check_response!(
         pool,
@@ -68,10 +59,7 @@ async fn test_construct_ignores_invalid_params(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_repository_not_specified(pool: PgPool) {
     check_response!(
         pool,
@@ -83,10 +71,7 @@ async fn test_perform_failure_repository_not_specified(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_repository_not_found(pool: PgPool) {
     check_response!(
         pool,
@@ -98,10 +83,7 @@ async fn test_perform_failure_repository_not_found(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_name_type_not_specified(pool: PgPool) {
     check_response!(
         pool,
@@ -113,10 +95,7 @@ async fn test_perform_failure_name_type_not_specified(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_name_type_invalid(pool: PgPool) {
     // name type invalid
     check_response!(
@@ -129,10 +108,7 @@ async fn test_perform_failure_name_type_invalid(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_target_page_not_specified(pool: PgPool) {
     check_response!(
         pool,
@@ -144,10 +120,7 @@ async fn test_perform_failure_target_page_not_specified(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_target_page_invalid(pool: PgPool) {
     check_response!(
         pool,
@@ -159,10 +132,7 @@ async fn test_perform_failure_target_page_invalid(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_package_name_not_found(pool: PgPool) {
     check_response!(
         pool,
@@ -174,10 +144,7 @@ async fn test_perform_failure_package_name_not_found(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_ambiguity_with_disabled_autoresolve_html(pool: PgPool) {
     // ambiguous without autoresolve
     check_response!(
@@ -189,10 +156,7 @@ async fn test_perform_failure_ambiguity_with_disabled_autoresolve_html(pool: PgP
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_failure_ambiguity_with_disabled_autoresolve_json(pool: PgPool) {
     check_response!(
         pool,
@@ -211,10 +175,7 @@ async fn test_perform_failure_ambiguity_with_disabled_autoresolve_json(pool: PgP
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_project_versions(pool: PgPool) {
     check_response!(
         pool,
@@ -224,10 +185,7 @@ async fn test_perform_success_target_project_versions(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_project_packages(pool: PgPool) {
     check_response!(
         pool,
@@ -237,10 +195,7 @@ async fn test_perform_success_target_project_packages(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_project_information(pool: PgPool) {
     check_response!(
         pool,
@@ -250,10 +205,7 @@ async fn test_perform_success_target_project_information(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_project_history(pool: PgPool) {
     check_response!(
         pool,
@@ -263,10 +215,7 @@ async fn test_perform_success_target_project_history(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_project_badges(pool: PgPool) {
     check_response!(
         pool,
@@ -276,10 +225,7 @@ async fn test_perform_success_target_project_badges(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_project_reports(pool: PgPool) {
     check_response!(
         pool,
@@ -289,10 +235,7 @@ async fn test_perform_success_target_project_reports(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_badge_vertical_allrepos(pool: PgPool) {
     check_response!(
         pool,
@@ -302,10 +245,7 @@ async fn test_perform_success_target_badge_vertical_allrepos(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_badge_tiny_repos(pool: PgPool) {
     check_response!(
         pool,
@@ -315,10 +255,7 @@ async fn test_perform_success_target_badge_tiny_repos(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_badge_latest_versions(pool: PgPool) {
     check_response!(
         pool,
@@ -328,10 +265,7 @@ async fn test_perform_success_target_badge_latest_versions(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_badge_version_for_repo(pool: PgPool) {
     check_response!(
         pool,
@@ -341,10 +275,7 @@ async fn test_perform_success_target_badge_version_for_repo(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_badge_version_for_repo_custom_title(pool: PgPool) {
     check_response!(
         pool,
@@ -354,10 +285,7 @@ async fn test_perform_success_target_badge_version_for_repo_custom_title(pool: P
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_target_api_v1_project(pool: PgPool) {
     check_response!(
         pool,
@@ -367,10 +295,7 @@ async fn test_perform_success_target_api_v1_project(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_ambiguous_with_autoresolve_html(pool: PgPool) {
     check_response!(
         pool,
@@ -380,10 +305,7 @@ async fn test_perform_success_ambiguous_with_autoresolve_html(pool: PgPool) {
     );
 }
 
-#[sqlx::test(
-    migrator = "repology_common::MIGRATOR",
-    fixtures("common_repositories", "project_by_data")
-)]
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
 async fn test_perform_success_ambiguous_with_autoresolve_json(pool: PgPool) {
     check_response!(
         pool,
