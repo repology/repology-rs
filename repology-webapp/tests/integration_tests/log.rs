@@ -3,46 +3,36 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_response;
+use repology_webapp_test_utils::{HtmlValidationFlags, Request};
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "log_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    check_response!(
-        pool,
-        "/log/10",
-        status NOT_FOUND
-    );
+    let response = Request::new(pool, "/log/10").perform().await;
+    assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "log_data"))]
 async fn test_invalid_id(pool: PgPool) {
-    check_response!(
-        pool,
-        "/log/foo",
-        status BAD_REQUEST
-    );
+    let response = Request::new(pool, "/log/foo").perform().await;
+    assert_eq!(response.status(), http::StatusCode::BAD_REQUEST);
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "log_data"))]
 async fn test_ongoing(pool: PgPool) {
-    check_response!(
-        pool,
-        "/log/1",
-        status OK,
-        content_type TEXT_HTML,
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "ongoing"
-    );
+    let response = Request::new(pool, "/log/1").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("ongoing"));
+    assert!(!response.text().unwrap().contains("successful"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "log_data"))]
 async fn test_finished(pool: PgPool) {
-    check_response!(
-        pool,
-        "/log/2",
-        status OK,
-        content_type TEXT_HTML,
-        html_ok "allow_empty_tags,warnings_fatal",
-        contains "successful"
-    );
+    let response = Request::new(pool, "/log/2").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("successful"));
+    assert!(!response.text().unwrap().contains("ongoing"));
 }
