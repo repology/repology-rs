@@ -3,131 +3,153 @@
 
 use sqlx::PgPool;
 
-use repology_webapp_test_utils::check_response;
+use repology_webapp_test_utils::{HtmlValidationFlags, Request};
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
-async fn test_projects_params_retained_by_the_form(pool: PgPool) {
+async fn test_params_retained_by_the_form(pool: PgPool) {
     for url in ["/projects/", "/projects/foo/", "/projects/..foo/"] {
-        check_response!(
-            pool,
-            url,
-            status OK,
-            content_type "text/html",
-            html_ok "allow_empty_tags,warnings_fatal",
-            contains_not "xsearchx",
-            contains_not "xmaintainerx",
-            contains_not "xcategoryx",
-            line_matches_not "freebsd.*selected",
-            line_matches_not "ubuntu_24.*selected",
-            contains_not "970",
-            contains_not "971",
-            contains_not "972",
-            contains_not "973",
-            contains_not "974",
-            contains_not "975",
-            contains_not "976",
-            contains_not "977",
-            line_matches_not "newest.*checked",
-            line_matches_not "outdated.*checked",
-            line_matches_not "problematic.*checked",
-            line_matches_not "vulnerable.*checked",
-            line_matches_not "has_related.*checked",
-        );
+        let parametrized_url = url.to_string()
+            + "?search=xsearchx&maintainer=xmaintainerx&category=xcategoryx&inrepo=freebsd&notinrepo=ubuntu_24&repos=970-971&families=972-973&repos_newest=974-975&families_newest=976-977&newest=1&outdated=1&problematic=1&vulnerable=1&has_related=1";
+        let naked_response = Request::new(pool.clone(), url).perform().await;
+        let param_response = Request::new(pool.clone(), &parametrized_url).perform().await;
 
-        check_response!(
-            pool,
-            &(url.to_string() + "?search=xsearchx&maintainer=xmaintainerx&category=xcategoryx&inrepo=freebsd&notinrepo=ubuntu_24&repos=970-971&families=972-973&repos_newest=974-975&families_newest=976-977&newest=1&outdated=1&problematic=1&vulnerable=1&has_related=1"),
-            status OK,
-            content_type "text/html",
-            html_ok "allow_empty_tags,warnings_fatal",
-            contains "xsearchx",
-            contains "xmaintainerx",
-            contains "xcategoryx",
-            line_matches "freebsd.*selected",
-            line_matches "ubuntu_24.*selected",
-            contains "970",
-            contains "971",
-            contains "972",
-            contains "973",
-            contains "974",
-            contains "975",
-            contains "976",
-            contains "977",
-            line_matches "newest.*checked",
-            line_matches "outdated.*checked",
-            line_matches "problematic.*checked",
-            line_matches "vulnerable.*checked",
-            line_matches "has_related.*checked",
-        );
+        assert_eq!(naked_response.status(), http::StatusCode::OK);
+        assert_eq!(param_response.status(), http::StatusCode::OK);
+        assert_eq!(naked_response.header_value_str("content-type").unwrap(), Some("text/html"));
+        assert_eq!(param_response.header_value_str("content-type").unwrap(), Some("text/html"));
+        assert!(naked_response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+        assert!(param_response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+
+        assert!(!naked_response.text().unwrap().contains("xsearchx"));
+        assert!(param_response.text().unwrap().contains("xsearchx"));
+        assert!(!naked_response.text().unwrap().contains("xmaintainerx"));
+        assert!(param_response.text().unwrap().contains("xmaintainerx"));
+        assert!(!naked_response.text().unwrap().contains("xcategoryx"));
+        assert!(param_response.text().unwrap().contains("xcategoryx"));
+
+        let re = regex::Regex::new(r"freebsd.*selected").unwrap();
+        assert!(!naked_response.text().unwrap().lines().any(|line| re.is_match(line)));
+        assert!(param_response.text().unwrap().lines().any(|line| re.is_match(line)));
+
+        let re = regex::Regex::new(r"ubuntu_24.*selected").unwrap();
+        assert!(!naked_response.text().unwrap().lines().any(|line| re.is_match(line)));
+        assert!(param_response.text().unwrap().lines().any(|line| re.is_match(line)));
+
+        assert!(!naked_response.text().unwrap().contains("970"));
+        assert!(param_response.text().unwrap().contains("970"));
+        assert!(!naked_response.text().unwrap().contains("971"));
+        assert!(param_response.text().unwrap().contains("971"));
+        assert!(!naked_response.text().unwrap().contains("972"));
+        assert!(param_response.text().unwrap().contains("972"));
+        assert!(!naked_response.text().unwrap().contains("973"));
+        assert!(param_response.text().unwrap().contains("973"));
+        assert!(!naked_response.text().unwrap().contains("974"));
+        assert!(param_response.text().unwrap().contains("974"));
+        assert!(!naked_response.text().unwrap().contains("975"));
+        assert!(param_response.text().unwrap().contains("975"));
+        assert!(!naked_response.text().unwrap().contains("976"));
+        assert!(param_response.text().unwrap().contains("976"));
+        assert!(!naked_response.text().unwrap().contains("977"));
+        assert!(param_response.text().unwrap().contains("977"));
+
+        let re = regex::Regex::new(r"newest.*checked").unwrap();
+        assert!(!naked_response.text().unwrap().lines().any(|line| re.is_match(line)));
+        assert!(param_response.text().unwrap().lines().any(|line| re.is_match(line)));
+
+        let re = regex::Regex::new(r"outdated.*checked").unwrap();
+        assert!(!naked_response.text().unwrap().lines().any(|line| re.is_match(line)));
+        assert!(param_response.text().unwrap().lines().any(|line| re.is_match(line)));
+
+        let re = regex::Regex::new(r"problematic.*checked").unwrap();
+        assert!(!naked_response.text().unwrap().lines().any(|line| re.is_match(line)));
+        assert!(param_response.text().unwrap().lines().any(|line| re.is_match(line)));
+
+        let re = regex::Regex::new(r"vulnerable.*checked").unwrap();
+        assert!(!naked_response.text().unwrap().lines().any(|line| re.is_match(line)));
+        assert!(param_response.text().unwrap().lines().any(|line| re.is_match(line)));
+
+        let re = regex::Regex::new(r"has_related.*checked").unwrap();
+        assert!(!naked_response.text().unwrap().lines().any(|line| re.is_match(line)));
+        assert!(param_response.text().unwrap().lines().any(|line| re.is_match(line)));
     }
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
-async fn test_projects_pagination(pool: PgPool) {
-    check_response!(pool,
-        "/projects/",
-        contains "pkg_barbar_",
-        contains "pkg_foofoo_"
-    );
-    check_response!(pool,
-        "/projects/pkg_foo/",
-        contains_not "pkg_barbar_",
-        contains "pkg_foofoo_"
-    );
-    check_response!(pool,
-        "/projects/..pkg_foo/",
-        contains "pkg_barbar_",
-        contains_not "pkg_foofoo_"
-    );
+async fn test_pagination_base(pool: PgPool) {
+    let response = Request::new(pool.clone(), "/projects/").perform().await;
+    assert!(response.text().unwrap().contains("pkg_barbar_"));
+    assert!(response.text().unwrap().contains("pkg_foofoo_"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
-async fn test_projects_search(pool: PgPool) {
-    check_response!(pool,
-        "/projects/",
-        contains "pkg_barbar_",
-        contains "pkg_foofoo_"
-    );
-    check_response!(pool,
-        "/projects/?search=bar",
-        contains "pkg_barbar_",
-        contains_not "pkg_foofoo_"
-    );
-    check_response!(pool,
-        "/projects/?search=foo",
-        contains_not "pkg_barbar_",
-        contains "pkg_foofoo_"
-    );
+async fn test_pagination_from(pool: PgPool) {
+    let response = Request::new(pool.clone(), "/projects/pkg_foo/").perform().await;
+    assert!(!response.text().unwrap().contains("pkg_barbar_"));
+    assert!(response.text().unwrap().contains("pkg_foofoo_"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
-async fn test_projects_inrepo(pool: PgPool) {
-    check_response!(pool,
-        "/projects/",
-        contains "pkg_12e",
-        contains "pkg_24e",
-        contains "pkg_1224e",
-    );
-    check_response!(pool,
-        "/projects/?inrepo=ubuntu_12",
-        contains "pkg_12e",
-        contains_not "pkg_24e",
-        contains "pkg_1224e",
-    );
-    check_response!(pool,
-        "/projects/?notinrepo=ubuntu_12",
-        contains_not "pkg_12e",
-        contains "pkg_24e",
-        contains_not "pkg_1224e",
-    );
-    check_response!(pool,
-        "/projects/?inrepo=ubuntu_12&newest=1",
-        contains "pkg_1224_newest_12",
-        contains_not "pkg_1224_newest_24"
-    );
-    check_response!(pool,
-        "/projects/?inrepo=ubuntu_12&outdated=1",
-        contains_not "pkg_1224_newest_12",
-        contains "pkg_1224_newest_24"
-    );
+async fn test_pagination_to(pool: PgPool) {
+    let response = Request::new(pool.clone(), "/projects/..pkg_foo/").perform().await;
+    assert!(response.text().unwrap().contains("pkg_barbar_"));
+    assert!(!response.text().unwrap().contains("pkg_foofoo_"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_search_base(pool: PgPool) {
+    let response = Request::new(pool.clone(), "/projects/").perform().await;
+    assert!(response.text().unwrap().contains("pkg_barbar_"));
+    assert!(response.text().unwrap().contains("pkg_foofoo_"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_search_a(pool: PgPool) {
+    let response = Request::new(pool.clone(), "/projects/?search=bar").perform().await;
+    assert!(response.text().unwrap().contains("pkg_barbar_"));
+    assert!(!response.text().unwrap().contains("pkg_foofoo_"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_search_b(pool: PgPool) {
+    let response = Request::new(pool.clone(), "/projects/?search=foo").perform().await;
+    assert!(!response.text().unwrap().contains("pkg_barbar_"));
+    assert!(response.text().unwrap().contains("pkg_foofoo_"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_repo_base(pool: PgPool) {
+    let response = Request::new(pool, "/projects/").perform().await;
+    assert!(response.text().unwrap().contains("pkg_12e"));
+    assert!(response.text().unwrap().contains("pkg_24e"));
+    assert!(response.text().unwrap().contains("pkg_1224e"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_inrepo(pool: PgPool) {
+    let response = Request::new(pool, "/projects/?inrepo=ubuntu_12").perform().await;
+    assert!(response.text().unwrap().contains("pkg_12e"));
+    assert!(!response.text().unwrap().contains("pkg_24e"));
+    assert!(response.text().unwrap().contains("pkg_1224e"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_notinrepo(pool: PgPool) {
+    let response = Request::new(pool, "/projects/?notinrepo=ubuntu_12").perform().await;
+    assert!(!response.text().unwrap().contains("pkg_12e"));
+    assert!(response.text().unwrap().contains("pkg_24e"));
+    assert!(!response.text().unwrap().contains("pkg_1224e"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_inrepo_newest(pool: PgPool) {
+    let response = Request::new(pool, "/projects/?inrepo=ubuntu_12&newest=1").perform().await;
+    assert!(response.text().unwrap().contains("pkg_1224_newest_12"));
+    assert!(!response.text().unwrap().contains("pkg_1224_newest_24"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_inrepo_outdated(pool: PgPool) {
+    let response = Request::new(pool, "/projects/?inrepo=ubuntu_12&outdated=1").perform().await;
+    assert!(!response.text().unwrap().contains("pkg_1224_newest_12"));
+    assert!(response.text().unwrap().contains("pkg_1224_newest_24"));
 }
