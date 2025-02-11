@@ -1,7 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-mod api;
+mod api_v1_project;
+mod api_v1_projects;
 mod badge_tiny_repos;
 mod badges;
 mod feeds;
