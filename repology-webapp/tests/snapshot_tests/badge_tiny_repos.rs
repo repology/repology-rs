@@ -6,26 +6,26 @@ use sqlx::PgPool;
 use super::uri_snapshot_test;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
+async fn test_missing_extension(pool: PgPool) {
+    uri_snapshot_test(pool, "/badge/tiny-repos/nonexistent").await;
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/nonexistent").await;
+    uri_snapshot_test(pool, "/badge/tiny-repos/nonexistent.svg").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_nonexistent_svg(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/nonexistent.svg").await;
+async fn test_base(pool: PgPool) {
+    uri_snapshot_test(pool, "/badge/tiny-repos/zsh.svg").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_normal(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/zsh.svg").await;
+async fn test_header_custom(pool: PgPool) {
+    uri_snapshot_test(pool, "/badge/tiny-repos/zsh.svg?header=Repository+Count").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_header_flag(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/zsh.svg?header=Repository+Count").await;
-}
-
-#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_header_flag_empty(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/badge/tiny-repos/zsh.svg?header=").await;
+async fn test_header_empty(pool: PgPool) {
+    uri_snapshot_test(pool, "/badge/tiny-repos/zsh.svg?header=").await;
 }

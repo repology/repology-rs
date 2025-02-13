@@ -3,8 +3,11 @@
 
 mod api_v1_project;
 mod api_v1_projects;
+mod badge_latest_versions;
+mod badge_repository_big;
 mod badge_tiny_repos;
-mod badges;
+mod badge_version_for_repo;
+mod badge_vertical_allrepos;
 mod feeds;
 mod graphs;
 mod graphs_map_repo_size_fresh;

@@ -6,13 +6,13 @@ use sqlx::PgPool;
 use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_nonexistent(pool: PgPool) {
+async fn test_missing_extension(pool: PgPool) {
     let response = Request::new(pool, "/badge/tiny-repos/nonexistent").perform().await;
     assert_eq!(response.status(), http::StatusCode::NOT_FOUND);
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_nonexistent_svg(pool: PgPool) {
+async fn test_nonexistent(pool: PgPool) {
     let response = Request::new(pool, "/badge/tiny-repos/nonexistent.svg").with_xml_namespace("svg", "http://www.w3.org/2000/svg").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert_eq!(response.header_value_str("content-type").unwrap(), Some(mime::IMAGE_SVG.as_ref()));
@@ -22,7 +22,7 @@ async fn test_nonexistent_svg(pool: PgPool) {
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_normal(pool: PgPool) {
+async fn test_base(pool: PgPool) {
     let response = Request::new(pool, "/badge/tiny-repos/zsh.svg").with_xml_namespace("svg", "http://www.w3.org/2000/svg").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert_eq!(response.header_value_str("content-type").unwrap(), Some(mime::IMAGE_SVG.as_ref()));
@@ -32,7 +32,7 @@ async fn test_normal(pool: PgPool) {
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_header_flag(pool: PgPool) {
+async fn test_header_custom(pool: PgPool) {
     let response = Request::new(pool, "/badge/tiny-repos/zsh.svg?header=Repository+Count")
         .with_xml_namespace("svg", "http://www.w3.org/2000/svg")
         .perform()
@@ -44,7 +44,7 @@ async fn test_header_flag(pool: PgPool) {
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
-async fn test_header_flag_empty(pool: PgPool) {
+async fn test_header_empty(pool: PgPool) {
     let response = Request::new(pool, "/badge/tiny-repos/zsh.svg?header=").with_xml_namespace("svg", "http://www.w3.org/2000/svg").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert_eq!(response.header_value_str("content-type").unwrap(), Some(mime::IMAGE_SVG.as_ref()));
