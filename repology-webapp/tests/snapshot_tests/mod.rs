@@ -12,8 +12,9 @@ mod feed_maintainer_atom;
 mod feed_maintainer_html;
 mod feed_repository_atom;
 mod feed_repository_html;
-mod graphs; // XXX: may produce false positives due to moving timestamps
 mod graphs_map_repo_size_fresh;
+mod graphs_repository;
+mod graphs_total;
 mod legacy_redirects;
 mod log;
 mod maintainer;
