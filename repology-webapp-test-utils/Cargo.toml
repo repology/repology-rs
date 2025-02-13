@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-anyhow = "1.0.95"
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1" }
 axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6" }
@@ -12,11 +11,6 @@ bitflags = "2.8.0"
 bytes = "1.9.0"
 cityhasher = "0.1.0"
 http = "1.2.0"
-json = "0.12.4"
-mime = "0.3.17"
-pretty_assertions = "1.4.1"
-regex = "1.11.1"
-repology-common = { path = "../repology-common" }
 repology-webapp = { path = "../repology-webapp" }
 serde = "1.0.217"
 serde_json = "1.0.138"
