@@ -7,15 +7,15 @@ use super::uri_snapshot_test;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/project/nonexistent/information").await;
+    uri_snapshot_test(pool, "/project/nonexistent/information").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_orphaned(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/project/orphaned/information").await;
+    uri_snapshot_test(pool, "/project/orphaned/information").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_normal(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/project/zsh/information").await;
+    uri_snapshot_test(pool, "/project/zsh/information").await;
 }

@@ -7,20 +7,20 @@ use super::uri_snapshot_test;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/api/v1/project/nonexistent").await;
+    uri_snapshot_test(pool, "/api/v1/project/nonexistent").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_full(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/api/v1/project/full").await;
+    uri_snapshot_test(pool, "/api/v1/project/full").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_minimal(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/api/v1/project/minimal").await;
+    uri_snapshot_test(pool, "/api/v1/project/minimal").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_vulnerable(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/api/v1/project/vulnerable").await;
+    uri_snapshot_test(pool, "/api/v1/project/vulnerable").await;
 }

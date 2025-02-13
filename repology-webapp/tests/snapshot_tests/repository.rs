@@ -7,25 +7,25 @@ use super::uri_snapshot_test;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/repository/nonexistent").await;
+    uri_snapshot_test(pool, "/repository/nonexistent").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_orphaned(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/repository/orphaned").await;
+    uri_snapshot_test(pool, "/repository/orphaned").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_empty(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/repository/empty").await;
+    uri_snapshot_test(pool, "/repository/empty").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_stripped(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/repository/stripped").await;
+    uri_snapshot_test(pool, "/repository/stripped").await;
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_normal(pool: PgPool) {
-    uri_snapshot_test(pool.clone(), "/repository/good").await;
+    uri_snapshot_test(pool, "/repository/good").await;
 }
