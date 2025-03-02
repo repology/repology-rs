@@ -14,3 +14,8 @@ INSERT INTO reports(effname, need_verignore, need_split, need_merge, need_vuln, 
 INSERT INTO reports(effname, need_verignore, need_split, need_merge, need_vuln, comment)
 SELECT 'many-reports', false, false, false, false, 'Spam'
 FROM generate_series(0, 200);
+
+UPDATE reports
+SET
+	created = created - interval '370 day',
+	updated = updated - interval '370 day';
