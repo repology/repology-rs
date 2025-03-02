@@ -150,7 +150,12 @@ async fn test_spam_network(pool: PgPool) {
         need_verignore: true,
         ..Default::default()
     };
-    let response = Request::new(pool, "/project/zsh/report").with_form(form).with_spam_network(&"0.0.0.0/0".parse().unwrap()).perform().await;
+    let response = Request::new(pool, "/project/zsh/report")
+        .with_form(form)
+        .with_spam_network(&"10.0.0.1/32".parse().unwrap())
+        .with_header("x-real-ip", "10.0.0.0, 10.0.0.1, 10.0.0.2")
+        .perform()
+        .await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
     assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));

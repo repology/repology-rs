@@ -17,6 +17,7 @@ use tracing::error;
 
 use crate::config::AppConfig;
 use crate::endpoints::Endpoint;
+use crate::extractors::PossibleClientAddresses;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -67,7 +68,7 @@ fn check_new_report(
     project_name: &str,
     project_is_alive: bool,
     too_many_reports: bool,
-    client_address: &IpAddr,
+    client_addresses: &[IpAddr],
     form: &ReportForm,
     config: &AppConfig,
 ) -> std::result::Result<(), Vec<&'static str>> {
@@ -80,20 +81,21 @@ fn check_new_report(
     if !project_is_alive {
         error!(
             project_name,
-            %client_address, "report to gone or nonexisting project"
+            ?client_addresses,
+            "report to gone or nonexisting project"
         );
         errors.push("project does not exist or is gone");
     }
 
     if too_many_reports {
-        error!(project_name, %client_address, "too many reports");
+        error!(project_name, ?client_addresses, "too many reports");
         errors.push("too many reports for this project");
     }
 
     if form.comment.len() > MAX_REPORT_COMMENT_LENGTH {
         error!(
             project_name,
-            %client_address,
+            ?client_addresses,
             length = form.comment.len(),
             "report comment too long"
         );
@@ -106,19 +108,24 @@ fn check_new_report(
         && !form.need_vuln
         && form.comment.is_empty()
     {
-        error!(project_name, %client_address, "report form is not filled");
+        error!(project_name, ?client_addresses, "report form is not filled");
         errors.push("please fill out the form");
     }
 
     if form.comment.contains("<a href") {
-        error!(project_name, %client_address, "report comment contains HTML");
+        error!(
+            project_name,
+            ?client_addresses,
+            "report comment contains HTML"
+        );
         errors.push("HTML not allowed");
     }
 
     if form.need_vuln && !form.comment.contains("nvd.nist.gov/vuln/detail/CVE-") {
         error!(
             project_name,
-            %client_address, "missing vulnerability report does not contain NVD link"
+            ?client_addresses,
+            "missing vulnerability report does not contain NVD link"
         );
         errors.push("link to NVD entry (e.g. https://nvd.nist.gov/vuln/detail/CVE-*) for missing CVE is required; note that CVE must already have CPE(s) assigned");
     }
@@ -126,7 +133,8 @@ fn check_new_report(
     if config.disabled_reports.contains(project_name) {
         error!(
             project_name,
-            %client_address, "report attempt to disabled project"
+            ?client_addresses,
+            "report attempt to disabled project"
         );
         errors.push("new reports to this project are disabled, probably due to a big number of incorrect reports or spam");
     }
@@ -136,7 +144,9 @@ fn check_new_report(
         if form.comment.contains(keyword) {
             error!(
                 project_name,
-                %client_address, keyword, "report comment contains spam keyword"
+                ?client_addresses,
+                keyword,
+                "report comment contains spam keyword"
             );
             is_spam = true;
             break;
@@ -144,10 +154,13 @@ fn check_new_report(
     }
 
     for spam_network in &config.spam_networks {
-        if spam_network.contains(client_address.clone()) {
+        if client_addresses
+            .iter()
+            .any(|address| spam_network.contains(*address))
+        {
             error!(
                 project_name,
-                %client_address, %spam_network, "report submitter is blacklisted"
+                ?client_addresses, %spam_network, "report submitter is blacklisted"
             );
             is_spam = true;
             break;
@@ -162,7 +175,8 @@ fn check_new_report(
     {
         error!(
             project_name,
-            %client_address, "report form filled in meaningless pattern"
+            ?client_addresses,
+            "report form filled in meaningless pattern"
         );
         is_spam = true;
     }
@@ -181,7 +195,7 @@ fn check_new_report(
 async fn project_report_generic(
     project_name: String,
     state: &AppState,
-    form: Option<ReportForm>,
+    input: Option<(&[std::net::IpAddr], ReportForm)>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new(
         Endpoint::ProjectReport,
@@ -226,12 +240,12 @@ async fn project_report_generic(
 
     let too_many_reports = reports.len() >= crate::constants::MAX_REPORTS;
 
-    let errors = if let Some(form) = &form {
+    let errors = if let Some((client_addresses, form)) = &input {
         if let Err(errors) = check_new_report(
             &project_name,
             !project.is_orphaned(),
             too_many_reports,
-            &"127.0.0.1".parse().unwrap(), // XXX: stub, use real client address
+            client_addresses,
             form,
             &state.config,
         ) {
@@ -295,7 +309,7 @@ async fn project_report_generic(
             reports_disabled: false,
             too_many_reports,
             afk_till: None,
-            form: form.unwrap_or(ReportForm::default()),
+            form: input.map(|(_, form)| form).unwrap_or(ReportForm::default()),
             errors,
         }
         .render()?,
@@ -307,9 +321,10 @@ async fn project_report_generic(
 pub async fn project_report_post(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
+    PossibleClientAddresses(addresses): PossibleClientAddresses,
     Form(form): Form<ReportForm>,
 ) -> EndpointResult {
-    project_report_generic(project_name, &state, Some(form)).await
+    project_report_generic(project_name, &state, Some((&addresses, form))).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]

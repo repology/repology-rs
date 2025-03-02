@@ -13,6 +13,7 @@ mod badges;
 pub mod config;
 mod constants;
 mod endpoints;
+mod extractors;
 mod feeds;
 mod font;
 mod graphs;
