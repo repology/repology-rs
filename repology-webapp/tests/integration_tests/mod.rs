@@ -32,6 +32,7 @@ mod project_report_submission;
 mod project_report_submission_failures;
 mod project_versions;
 mod projects;
+mod repositories;
 mod repository;
 mod security;
 mod static_file;

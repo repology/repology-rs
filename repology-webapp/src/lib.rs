@@ -193,6 +193,7 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
         .route(ProjectCves.path(), get(views::project_cves))
         .route(Projects.path(), get(views::projects))
         .route(ProjectsBounded.path(), get(views::projects_bounded))
+        .route(RepositoriesPackages.path(), get(views::repositories_packages))
         .route(Repository.path(), get(views::repository))
         .route(RepositoryFeed.path(), get(views::repository_feed))
         .route(RepositoryFeedAtom.path(), get(views::repository_feed_atom))

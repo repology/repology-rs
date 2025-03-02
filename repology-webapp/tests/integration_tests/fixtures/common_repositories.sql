@@ -5,3 +5,7 @@ INSERT INTO repositories(id, name, sortname, "desc", state, first_seen, last_see
 	(4, 'freshcode', 'freshcode', 'freshcode.club', 'active', now() + interval '5 seconds', now() + interval '5 seconds', '{"singular": "freshcode.club entry", "type": "site"}'::json),
 	-- legacy repositories may have meta not filled
 	(5, 'ubuntu_10', 'ubuntu_10', 'Ubuntu 10', 'legacy', now() + interval '5 seconds', now() + interval '5 seconds', '{}'::json);
+
+UPDATE repositories
+SET
+	num_packages = 12345;

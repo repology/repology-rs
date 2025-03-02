@@ -29,6 +29,7 @@ mod project_related;
 mod project_report;
 mod project_versions;
 mod projects;
+mod repositories;
 mod repository;
 mod security;
 mod tool_project_by;
