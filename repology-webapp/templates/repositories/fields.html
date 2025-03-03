@@ -1,8 +1,8 @@
 {% extends "repositories/_base.html" %}
-{% from "_macros/autorefresh.html" import autorefresh_toggler, enable_autorefresh with context %}
+{% import "_macros/autorefresh.html" as autorefresh %}
 
 {% block extrameta %}
-{{ enable_autorefresh(3600 + randrange(60)) }}
+	{% call autorefresh::enable_autorefresh(3600) %}
 {% endblock %}
 
 {% block title %}Repository support details - Repology{% endblock %}
@@ -13,14 +13,14 @@
 
 <p>A table of supported data fields for each repository. The more data is provided the better. Note that links information is crucial for distinguishing unrelated projects with similar names, so it's now mandatory.</p>
 
-{{ autorefresh_toggler() }}
+{% call autorefresh::autorefresh_toggler() %}
 
 <div class="table-responsive">
 <table class="table table-striped table-hover">
 	<thead>
-	{% for reponame in repometadata.active_names() %}
+	{% for repository in repositories %}
 	{% set headerevery = 20 %}
-	{% if loop.first or (headerevery != 0 and loop.index0 % headerevery == 0) %}
+	{% if loop.first || (headerevery != 0 && loop.index0 % headerevery == 0) %}
 		<tr>
 			<th class="text-right">Repository</th>
 			<th class="text-center">Summary</th>
@@ -36,40 +36,37 @@
 		</tr>
 	{% if loop.first %}</thead><tbody>{% endif %}
 	{% endif %}
-		<tr id="{{ reponame }}">
+		<tr id="{{ repository.name }}">
 			<th class="text-right">
-				<a href="{{ url_for(endpoint='repository', repo=reponame) }}">{{ repometadata[reponame].desc }}</a>
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository.name.as_str())])? }}">{{ repository.title }}</a>
 			</th>
 
-			{% set fields = repometadata[reponame].used_package_fields %}
-			{% set link_types = repometadata[reponame].used_package_link_types %}
-
-			<td class="text-center">{% if 'comment' in fields %}✔{% endif %}</td>
-			<td class="text-center">{% if 'maintainers' in fields %}✔{% endif %}</td>
-			<td class="text-center">{% if 'category' in fields %}✔{% endif %}</td>
-			<td class="text-center">{% if 'licenses' in fields %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.fields.contains("comment") %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.fields.contains("maintainers") %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.fields.contains("category") %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.fields.contains("licenses") %}✔{% endif %}</td>
 			<td class="text-center">
-				{%- if 0 in link_types or 1 in link_types %}✔
+				{%- if repository.link_types.contains(0|as_ref) || repository.link_types.contains(1|as_ref) %}✔
 				{%- else %}<span class="text-danger" title="Repository must provide link to upstream">✘</span>{% endif -%}
 			</td>
 			<td class="text-center">
-				{%- if 7 in link_types or 9 in link_types or 10 in link_types %}✔
-				{%- elif repometadata[reponame].type != 'repository' %}-
+				{%- if repository.link_types.contains(7|as_ref) || repository.link_types.contains(9|as_ref) || repository.link_types.contains(10|as_ref) %}✔
+				{%- else if repository.source_type != "repository" %}-
 				{%- else %}<span class="text-danger" title="Repository must provide link to package sources">✘</span>{% endif -%}
 			</td>
-			<td class="text-center">{% if 11 in link_types or 12 in link_types %}✔{% endif %}</td>
-			<td class="text-center">{% if 13 in link_types or 14 in link_types or 27 in link_types %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.link_types.contains(11|as_ref) || repository.link_types.contains(12|as_ref) %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.link_types.contains(13|as_ref) || repository.link_types.contains(14|as_ref) || repository.link_types.contains(27|as_ref) %}✔{% endif %}</td>
 			<td class="text-center">
-				{%- if 'srcname' in fields %}<abbr title="source (package) name">s</abbr>{% endif -%}
-				{%- if 'binname' in fields %}<abbr title="binary (package) name">b</abbr>{% endif -%}
-				{%- if 'binnames' in fields %}<abbr title="binary (package) names taken from source packages">B</abbr>{% endif -%}
+				{%- if repository.fields.contains("srcname") %}<abbr title="source (package) name">s</abbr>{% endif -%}
+				{%- if repository.fields.contains("binname") %}<abbr title="binary (package) name">b</abbr>{% endif -%}
+				{%- if repository.fields.contains("binnames") %}<abbr title="binary (package) names taken from source packages">B</abbr>{% endif -%}
 			</td>
-			<td class="text-center">{% if 'cpe_product' in fields or 'cpe_vendor' in fields %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.fields.contains("cpe_product") || repository.fields.contains("cpe_vendor") %}✔{% endif %}</td>
 		</tr>
 	{% endfor %}
 	</tbody>
 </table>
 </div>
 
-</div> {#- container #}
+</div>
 {% endblock %}

@@ -12,5 +12,12 @@ async fn test_repositories_packages(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_updates(pool: PgPool) {
+    // TODO: add some more fixure data, otherwise we're just testing an empty list
     uri_snapshot_test(pool, "/repositories/updates").await;
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
+async fn test_repositories_fields(pool: PgPool) {
+    // TODO: add some more fixure data, otherwise we're just testing an empty list
+    uri_snapshot_test(pool, "/repositories/fields").await;
 }
