@@ -10,7 +10,7 @@ manual_let_else = "warn"
 coverage = []  # used to calculate coverage correctly (see https://github.com/rust-lang/rust/issues/110486)
 
 [dependencies]
-anyhow = "1.0.96"
+anyhow = "1.0.97"
 askama = "0.12.1"
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1", features = ["macros"] }
