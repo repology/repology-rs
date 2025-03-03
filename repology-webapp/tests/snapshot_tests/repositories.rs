@@ -9,3 +9,8 @@ use super::uri_snapshot_test;
 async fn test_repositories_packages(pool: PgPool) {
     uri_snapshot_test(pool, "/repositories/packages").await;
 }
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
+async fn test_repositories_updates(pool: PgPool) {
+    uri_snapshot_test(pool, "/repositories/updates").await;
+}

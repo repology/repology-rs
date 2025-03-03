@@ -1,19 +1,19 @@
 {% extends "repositories/_base.html" %}
-{% from "_macros/autorefresh.html" import autorefresh_toggler, enable_autorefresh with context %}
-{% from "_macros/time.html" import format_time_interval_short %}
+{% import "_macros/autorefresh.html" as autorefresh %}
+{% import "_macros/time.html" as time %}
 
 {% block extrameta %}
-{{ enable_autorefresh(10) }}
+    {% call autorefresh::enable_autorefresh(3600) %}
 {% endblock %}
 
 {% block title %}Update status - Repology{% endblock %}
 {% block header %}Update status{% endblock %}
 
-{% macro update_run_info(run_id, ago, errors, warnings) -%}
-{%- if run_id -%}
-	<b><a href="{{ url_for(endpoint='log', run_id=run_id) }}" rel="nofollow">{{ format_time_interval_short(ago) }}</a> ago</b>
-	{%- if errors %}, <span class="text-danger">{{ errors }} err</span>{% endif -%}
-	{%- if warnings %}, <span class="text-warning">{{ warnings }} warn</span>{% endif -%}
+{% macro update_run_info(run_id, start, errors, warnings) -%}
+{%- if let Some(run_id) = run_id -%}
+	<b><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", run_id.to_string().as_ref())])? }}" rel="nofollow">{% call time::format_time_interval_short(Utc::now() - start.unwrap()) %}</a> ago</b>
+	{%- if let Some(errors) = errors %}{% if ctx.deref(ctx.deref(errors)) > 0 %}, <span class="text-danger">{{ errors }} err</span>{% endif %}{% endif -%}
+	{%- if let Some(warnings) = warnings %}{% if ctx.deref(ctx.deref(warnings)) > 0 %}, <span class="text-warning">{{ warnings }} warn</span>{% endif %}{% endif -%}
 {%- else -%}
 	-
 {%- endif -%}
@@ -24,7 +24,7 @@
 
 <p>A brief explanation of update process: each repository is updated in two phases: <em>fetch</em> (⬊), which only involves downloading new data, then <em>parse</em> (⬈), which involves converting upstream format into Repology packages and applying transformation rules. Each phase may fail independently. Also, fetch phase may return no new data (⬂) (e.g. HTTP 403 not modified, no new git commits etc.), in which case parse phase may be skipped as long as the ruleset hasn't changed either. Note that actual database update happens only after trying to fetch and parse all the repositories, so there's additional delay between times shown on this page and actual website update.</p>
 
-{{ autorefresh_toggler() }}
+{% call autorefresh::autorefresh_toggler() %}
 
 <table class="table table-striped">
 	<thead>
@@ -37,56 +37,56 @@
 		</tr>
 	</thead>
 	<tbody>
-	{% for repo in repos %}
-		<tr id="{{ repo.name }}">
-			<td class="text-right"><a href="{{ url_for(endpoint='repository', repo=repo.name) }}">{{ repometadata[repo.name].desc }}</a></td>
+	{% for repository in repositories %}
+		<tr id="{{ repository.name }}">
+			<td class="text-right"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository.name.as_str())])? }}">{{ repository.title }}</a></td>
 			<td class="text-center
-					{%- if repo.last_fetch_status == 'failed' %} danger
-					{%- elif repo.last_fetch_status == 'running' %} info
-					{%- endif -%}">{{
-				update_run_info(
-					repo.last_fetch_id,
-					repo.last_fetch_ago,
-					repo.last_fetch_errors,
-					repo.last_fetch_warnings
-				) }}</td>
+					{%- if repository.last_fetch_status.as_deref() == Some("failed") %} danger
+					{%- else if repository.last_fetch_status.as_deref() == Some("running") %} info
+					{%- endif -%}">{%
+				call update_run_info(
+					repository.last_fetch_id,
+					repository.last_fetch_start,
+					repository.last_fetch_errors,
+					repository.last_fetch_warnings
+				) %}</td>
 			<td class="text-center
-					{%- if repo.last_parse_status == 'failed' %} danger
-					{%- elif repo.last_parse_status == 'running' %} info
-					{%- endif %}">{{
-				update_run_info(
-					repo.last_parse_id,
-					repo.last_parse_ago,
-					repo.last_parse_errors,
-					repo.last_parse_warnings
-				) }}</td>
-			<td class="text-center{% if repo.last_failed_id %} warning{% endif %}">{{
-				update_run_info(
-					repo.last_failed_id,
-					repo.last_failed_ago,
-					repo.last_failed_errors,
-					repo.last_failed_warnings
-				) }}</td>
+					{%- if repository.last_parse_status.as_deref() == Some("failed") %} danger
+					{%- else if repository.last_parse_status.as_deref() == Some("running") %} info
+					{%- endif %}">{%
+				call update_run_info(
+					repository.last_parse_id,
+					repository.last_parse_start,
+					repository.last_parse_errors,
+					repository.last_parse_warnings
+				) %}</td>
+			<td class="text-center{% if repository.last_failed_id.is_some() %} warning{% endif %}">{%
+				call update_run_info(
+					repository.last_failed_id,
+					repository.last_failed_start,
+					repository.last_failed_errors,
+					repository.last_failed_warnings
+				) %}</td>
 			<td class="text-center">
-			{%- if repo.history -%}
-			{%- for histitem in repo.history -%}
+			{%- if !repository.history.is_empty() -%}
+			{%- for histitem in repository.history -%}
 
-			{%- if histitem.status == 'running' -%}
-				<a href="{{ url_for(endpoint='log', run_id=histitem.id) }}" rel="nofollow" class="update-running">▶</a>
-			{%- elif histitem.status == 'interrupted' -%}
-				<a href="{{ url_for(endpoint='log', run_id=histitem.id) }}" rel="nofollow" class="update-interrupted">◼</a>
-			{%- elif histitem.type == 'fetch' and histitem.status == 'successful' and histitem.no_changes -%}
-				<a href="{{ url_for(endpoint='log', run_id=histitem.id) }}" rel="nofollow" class="update-successful">⬂</a>
-			{%- elif histitem.type == 'fetch' and histitem.status == 'successful' -%}
-				<a href="{{ url_for(endpoint='log', run_id=histitem.id) }}" rel="nofollow" class="update-successful">⬊</a>
-			{%- elif histitem.type == 'fetch' and histitem.status == 'failed' -%}
-				<a href="{{ url_for(endpoint='log', run_id=histitem.id) }}" rel="nofollow" class="update-failed">⬂</a>
-			{%- elif histitem.type == 'parse' and histitem.status == 'successful' -%}
-				<a href="{{ url_for(endpoint='log', run_id=histitem.id) }}" rel="nofollow" class="update-successful">⬈</a>
-			{%- elif histitem.type == 'parse' and histitem.status == 'failed' -%}
-				<a href="{{ url_for(endpoint='log', run_id=histitem.id) }}" rel="nofollow" class="update-failed">⬀</a>
+			{%- if histitem.status == "running" -%}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-running">▶</a>
+			{%- else if histitem.status == "interrupted" -%}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-interrupted">◼</a>
+			{%- else if histitem.type == "fetch" && histitem.status == "successful" && histitem.no_changes -%}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-successful">⬂</a>
+			{%- else if histitem.type == "fetch" && histitem.status == "successful" -%}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-successful">⬊</a>
+			{%- else if histitem.type == "fetch" && histitem.status == "failed" -%}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-failed">⬂</a>
+			{%- else if histitem.type == "parse" && histitem.status == "successful" -%}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-successful">⬈</a>
+			{%- else if histitem.type == "parse" && histitem.status == "failed" -%}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-failed">⬀</a>
 			{%- else -%}
-				<a href="{{ url_for(endpoint='log', run_id=histitem.id) }}" rel="nofollow">?</a>
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow">?</a>
 			{%- endif -%}
 
 			{%- endfor -%}
@@ -99,5 +99,5 @@
 	</tbody>
 </table>
 
-</div> {#- container #}
+</div>
 {% endblock %}
