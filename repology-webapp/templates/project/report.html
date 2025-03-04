@@ -18,6 +18,12 @@
 </div>
 {% endif %}
 
+{% if report_added_message %}
+<div class="alert alert-success" role="alert">
+	<p>Report added successfully and will be processed in a few days, thank you!</p>
+</div>
+{% endif %}
+
 <p>While repology tries its best in matching packages across different repositories, this is quite a complex task:</p>
 <ul>
 	<li>Packages of a single software project may be named differently in some repositories (for instance, <b>libagg</b> vs. <b>agg</b>, <b>dungeoncrawl</b> vs. <b>dungeon-crawl</b>, <b>fonts-linuxlibertine</b> vs. <b>fonts-ttf-linuxlibertine</b> vs. <b>linux-libertine-fonts</b> vs. <b>linuxlibertine-fonts-ttf</b>).</li>

@@ -5,3 +5,7 @@ resolver = "3"
 [profile.dev.package]
 insta.opt-level = 3
 similar.opt-level = 3
+
+[patch.crates-io]
+# Using dev branch until mainline supports matchit >=0.8.6
+axum-core = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6" }

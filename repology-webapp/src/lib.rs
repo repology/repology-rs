@@ -214,5 +214,6 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
         .route(LegacyMetapackagePackages.path(), get(views::legacy_metapackage_packages))
         .route(ToolProjectBy.path(), get(views::project_by))
         .route_layer(middleware::from_fn(track_metrics))
+        .route_layer(tower_cookies::CookieManagerLayer::new())
         .with_state(state))
 }

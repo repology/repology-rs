@@ -13,6 +13,7 @@ use chrono::{DateTime, NaiveDate, Utc};
 use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
+use tower_cookies::Cookies;
 use tracing::error;
 
 use crate::config::AppConfig;
@@ -62,6 +63,7 @@ struct TemplateParams {
     afk_till: Option<NaiveDate>,
     form: ReportForm,
     errors: Vec<&'static str>,
+    report_added_message: bool,
 }
 
 fn check_new_report(
@@ -195,6 +197,7 @@ fn check_new_report(
 async fn project_report_generic(
     project_name: String,
     state: &AppState,
+    cookies: &Cookies,
     input: Option<(&[std::net::IpAddr], ReportForm)>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new(
@@ -239,6 +242,7 @@ async fn project_report_generic(
     .await?;
 
     let too_many_reports = reports.len() >= crate::constants::MAX_REPORTS;
+    let report_added_cookie_name = format!("rprt_{}", project_name);
 
     let errors = if let Some((client_addresses, form)) = &input {
         if let Err(errors) = check_new_report(
@@ -277,7 +281,11 @@ async fn project_report_generic(
             .execute(&state.pool)
             .await?;
 
-            // TODO: set flash cookie
+            cookies.add(
+                Cookie::build(report_added_cookie_name)
+                    .max_age(tower_cookies::cookie::time::Duration::seconds(60))
+                    .into(),
+            );
 
             return Ok((
                 StatusCode::FOUND,
@@ -305,6 +313,14 @@ async fn project_report_generic(
         .map(|period| period.to)
         .nth(0);
 
+    let report_added_message = {
+        let has_cookie = cookies.get(&report_added_cookie_name).is_some();
+        if has_cookie {
+            cookies.remove(report_added_cookie_name.into());
+        }
+        has_cookie
+    };
+
     Ok((
         [(
             header::CONTENT_TYPE,
@@ -320,6 +336,7 @@ async fn project_report_generic(
             afk_till,
             form: input.map(|(_, form)| form).unwrap_or(ReportForm::default()),
             errors,
+            report_added_message,
         }
         .render()?,
     )
@@ -330,16 +347,18 @@ async fn project_report_generic(
 pub async fn project_report_post(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
+    cookies: Cookies,
     PossibleClientAddresses(addresses): PossibleClientAddresses,
     Form(form): Form<ReportForm>,
 ) -> EndpointResult {
-    project_report_generic(project_name, &state, Some((&addresses, form))).await
+    project_report_generic(project_name, &state, &cookies, Some((&addresses, form))).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_report_get(
     Path(project_name): Path<String>,
+    cookies: Cookies,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    project_report_generic(project_name, &state, None).await
+    project_report_generic(project_name, &state, &cookies, None).await
 }
