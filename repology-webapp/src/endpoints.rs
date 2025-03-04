@@ -58,6 +58,8 @@ pub enum Endpoint {
     // Repositories
     #[strum(props(path = "/repositories/packages", section = "Repositories"))]
     RepositoriesPackages,
+    #[strum(props(path = "/repositories/graphs", section = "Repositories"))]
+    RepositoriesGraphs,
     #[strum(props(path = "/repositories/updates", section = "Repositories"))]
     RepositoriesUpdates,
     #[strum(props(path = "/repositories/fields", section = "Repositories"))]
@@ -229,8 +231,6 @@ pub enum Endpoint {
     RepositoriesStatistics,
     #[strum(props(path = "/repositories/statistics/{sorting}", section = "Repositories"))]
     RepositoriesStatisticsSorted,
-    #[strum(props(path = "/repositories/graphs", section = "Repositories"))]
-    RepositoriesGraphs,
 
     // Tools
     #[strum(props(path = "/tools/trending", section = "Tools"))]

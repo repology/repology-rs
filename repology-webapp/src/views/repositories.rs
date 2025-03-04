@@ -2,9 +2,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 pub mod fields;
+pub mod graphs;
 pub mod packages;
 pub mod updates;
 
 pub use fields::*;
+pub use graphs::*;
 pub use packages::*;
 pub use updates::*;

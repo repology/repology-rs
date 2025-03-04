@@ -194,6 +194,7 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
         .route(Projects.path(), get(views::projects))
         .route(ProjectsBounded.path(), get(views::projects_bounded))
         .route(RepositoriesPackages.path(), get(views::repositories_packages))
+        .route(RepositoriesGraphs.path(), get(views::repositories_graphs))
         .route(RepositoriesUpdates.path(), get(views::repositories_updates))
         .route(RepositoriesFields.path(), get(views::repositories_fields))
         .route(Repository.path(), get(views::repository))
