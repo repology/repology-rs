@@ -1,8 +1,10 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use chrono::NaiveDate;
 use sqlx::PgPool;
 
+use repology_webapp::config::StaffAfkPeriod;
 use repology_webapp_test_utils::{HtmlValidationFlags, Request};
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
@@ -59,4 +61,21 @@ async fn test_has_new_report_form(pool: PgPool) {
     assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
     assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
     assert!(response.text().unwrap().contains("New report"));
+    assert!(!response.text().unwrap().contains("Repology staff is not available"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
+async fn test_afk(pool: PgPool) {
+    let response = Request::new(pool, "/project/zsh/report")
+        .with_staff_afk_period(StaffAfkPeriod {
+            from: NaiveDate::from_ymd_opt(1900, 1, 1).unwrap(),
+            to: NaiveDate::from_ymd_opt(3000, 1, 1).unwrap(),
+        })
+        .perform()
+        .await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Repology staff is not available"));
+    assert!(response.text().unwrap().contains("3000-01-01"));
 }

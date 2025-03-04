@@ -39,8 +39,8 @@ impl<'de> Deserialize<'de> for MyIpNetwork {
 
 #[derive(Debug, Clone)]
 pub struct StaffAfkPeriod {
-    from: chrono::NaiveDate,
-    to: chrono::NaiveDate,
+    pub from: chrono::NaiveDate,
+    pub to: chrono::NaiveDate,
 }
 
 impl StaffAfkPeriod {

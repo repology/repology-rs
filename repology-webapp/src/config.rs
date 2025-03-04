@@ -11,7 +11,8 @@ use anyhow::{Context, Result, anyhow};
 use clap::Parser;
 use ip_network::IpNetwork;
 
-use types::{MyIpNetwork, StaffAfkPeriod};
+use types::MyIpNetwork;
+pub use types::StaffAfkPeriod;
 
 #[derive(clap::Parser, Debug)]
 #[command(version, about, long_about = None)]

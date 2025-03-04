@@ -7,7 +7,8 @@ use std::collections::HashMap;
 use thiserror::Error;
 use tower_service::Service;
 
-use repology_webapp::{config::AppConfig, create_app};
+use repology_webapp::create_app;
+use repology_webapp::config::{AppConfig, StaffAfkPeriod};
 
 #[derive(Default)]
 pub struct Request {
@@ -101,6 +102,11 @@ impl Request {
 
     pub fn with_spam_network(mut self, network: ip_network::IpNetwork) -> Self {
         self.config.spam_networks.push(network);
+        self
+    }
+
+    pub fn with_staff_afk_period(mut self, period: StaffAfkPeriod) -> Self {
+        self.config.staff_afk_periods.push(period);
         self
     }
 

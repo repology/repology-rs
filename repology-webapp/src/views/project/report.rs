@@ -9,7 +9,7 @@ use axum::Form;
 use axum::extract::{Path, State};
 use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
 use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
@@ -59,7 +59,7 @@ struct TemplateParams {
     reports: Vec<Report>,
     reports_disabled: bool,
     too_many_reports: bool,
-    afk_till: Option<DateTime<Utc>>,
+    afk_till: Option<NaiveDate>,
     form: ReportForm,
     errors: Vec<&'static str>,
 }
@@ -296,6 +296,15 @@ async fn project_report_generic(
         return nonexisting_project(&*state, ctx, project_name, Some(project)).await;
     }
 
+    let current_date = Utc::now().date_naive();
+    let afk_till = state
+        .config
+        .staff_afk_periods
+        .iter()
+        .filter(|period| period.from <= current_date && current_date <= period.to)
+        .map(|period| period.to)
+        .nth(0);
+
     Ok((
         [(
             header::CONTENT_TYPE,
@@ -308,7 +317,7 @@ async fn project_report_generic(
             reports,
             reports_disabled: false,
             too_many_reports,
-            afk_till: None,
+            afk_till,
             form: input.map(|(_, form)| form).unwrap_or(ReportForm::default()),
             errors,
         }

@@ -72,7 +72,7 @@
 {% else %}
 <h2 id="new_report_form">New report</h2>
 {% if let Some(afk_till) = afk_till %}
-<div class="alert alert-warning" role="alert">Repology staff is not available till <time datetime="{# TODO afk_till.strftime("%Y-%m-%d") #}">{# TODO afk_till.strftime("%Y-%m-%d") #}</time>. Please don't worry, your report will be processed after this date as soon as possible.</div>
+<div class="alert alert-warning" role="alert">Repology staff is not available till <time datetime="{{ afk_till.format("%Y-%m-%d") }}">{{ afk_till.format("%Y-%m-%d") }}</time>. Please don't worry, your report will be processed after this date as soon as possible.</div>
 {% endif %}
 
 <form action="{{ ctx.url_for_self([])? }}" method="POST">
