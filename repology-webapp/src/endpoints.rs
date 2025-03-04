@@ -56,6 +56,10 @@ pub enum Endpoint {
     MaintainerProblems,
 
     // Repositories
+    #[strum(props(path = "/repositories/statistics", section = "Repositories"))]
+    RepositoriesStatistics,
+    #[strum(props(path = "/repositories/statistics/{sorting}", section = "Repositories"))]
+    RepositoriesStatisticsSorted,
     #[strum(props(path = "/repositories/packages", section = "Repositories"))]
     RepositoriesPackages,
     #[strum(props(path = "/repositories/graphs", section = "Repositories"))]
@@ -225,12 +229,6 @@ pub enum Endpoint {
     Maintainers,
     #[strum(props(path = "/maintainers/{bound}/", section = "Maintainers"))]
     MaintainersBounded,
-
-    // Repositories
-    #[strum(props(path = "/repositories/statistics", section = "Repositories"))]
-    RepositoriesStatistics,
-    #[strum(props(path = "/repositories/statistics/{sorting}", section = "Repositories"))]
-    RepositoriesStatisticsSorted,
 
     // Tools
     #[strum(props(path = "/tools/trending", section = "Tools"))]

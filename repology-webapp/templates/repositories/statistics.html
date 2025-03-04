@@ -1,9 +1,8 @@
 {% extends "repositories/_base.html" %}
-{% from "_macros/autorefresh.html" import autorefresh_toggler, enable_autorefresh with context %}
-{% from "_macros/numeric.html" import safe_percent %}
+{% import "_macros/autorefresh.html" as autorefresh %}
 
 {% block extrameta %}
-{{ enable_autorefresh(3600 + randrange(60)) }}
+	{% call autorefresh::enable_autorefresh(3600) %}
 {% endblock %}
 
 {% block title %}Repository statistics - Repology{% endblock %}
@@ -19,23 +18,23 @@
 			<span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="statisticsSortMenu">
-			<li><a href="{{ url_for_self(sorting=None, autorefresh=autorefresh) }}" class="{% if sorting == "alpha" %} active{% endif %}">Name</a></li>
-			<li><a href="{{ url_for_self(sorting="newest", autorefresh=autorefresh) }}" class="{% if sorting == "newest" %} active{% endif %}">Projects up to date</a></li>
-			<li><a href="{{ url_for_self(sorting="pnewest", autorefresh=autorefresh) }}" class="{% if sorting == "pnewest" %} active{% endif %}">Percent projects up to date</a></li>
-			<li><a href="{{ url_for_self(sorting="outdated", autorefresh=autorefresh) }}" class="{% if sorting == "outdated" %} active{% endif %}">Projects outdated</a></li>
-			<li><a href="{{ url_for_self(sorting="poutdated", autorefresh=autorefresh) }}" class="{% if sorting == "poutdated" %} active{% endif %}">Percent projects outdated</a></li>
-			<li><a href="{{ url_for_self(sorting="total", autorefresh=autorefresh) }}" class="{% if sorting == "total" %} active{% endif %}">Total projects</a></li>
-			<li><a href="{{ url_for_self(sorting="nonunique", autorefresh=autorefresh) }}" class="{% if sorting == "nonunique" %} active{% endif %}">Non-unique projects</a></li>
-			<li><a href="{{ url_for_self(sorting="vulnerable", autorefresh=autorefresh) }}" class="{% if sorting == "vulnerable" %} active{% endif %}">Potentially vulnerable projects</a></li>
-			<li><a href="{{ url_for_self(sorting="pvulnerable", autorefresh=autorefresh) }}" class="{% if sorting == "pvulnerable" %} active{% endif %}">Percent potentially vulnerable projects</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}"{% if sorting == "name" %} class="active"{% endif %}>Name</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatisticsSorted, [("sorting", "newest")])? }}"{% if sorting == "newest" %} class="active"{% endif %}>Projects up to date</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatisticsSorted, [("sorting", "pnewest")])? }}"{% if sorting == "pnewest" %} class="active"{% endif %}>Percent projects up to date</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatisticsSorted, [("sorting", "outdated")])? }}"{% if sorting == "outdated" %} class="active"{% endif %}>Projects outdated</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatisticsSorted, [("sorting", "poutdated")])? }}"{% if sorting == "poutdated" %} class="active"{% endif %}>Percent projects outdated</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatisticsSorted, [("sorting", "total")])? }}"{% if sorting == "total" %} class="active"{% endif %}>Total projects</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatisticsSorted, [("sorting", "nonunique")])? }}"{% if sorting == "nonunique" %} class="active"{% endif %}>Non-unique projects</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatisticsSorted, [("sorting", "vulnerable")])? }}"{% if sorting == "vulnerable" %} class="active"{% endif %}>Potentially vulnerable projects</a></li>
+			<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatisticsSorted, [("sorting", "pvulnerable")])? }}"{% if sorting == "pvulnerable" %} class="active"{% endif %}>Percent potentially vulnerable projects</a></li>
 		</ul>
 	</div>
 
-	<p>Total projects known to repology: <b>{{ counts.num_metapackages }}</b>, total individual packages: <b>{{ counts.num_packages }}</b>.</p>
+	<p>Total projects known to repology: <b>{{ total_projects }}</b>, total individual packages: <b>{{ total_packages }}</b>.</p>
 
 	<p>Note that sum of columns does not need to match total count, as there may be packages with different status for a single project in a repository. Percentages are also calculated differently.</p>
 
-	{{ autorefresh_toggler() }}
+	{% call autorefresh::autorefresh_toggler() %}
 </div>
 
 <div class="table-responsive">
@@ -58,89 +57,89 @@
 		</tr>
 	</thead>
 	<tbody>
-	{% for repostat in repostats %}
-		<tr id="{{ repostat.name }}">
+	{% for repository in repositories %}
+		<tr id="{{ repository.name }}">
 			<th class="text-right">
-				<a href="{{ url_for(endpoint='repository', repo=repostat.name) }}">{{ repometadata[repostat.name].desc }}</a>
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository.name.as_str())])? }}">{{ repository.title }}</a>
 			</th>
 
 			<td class="text-center total-cell" title="Total number of projects packaged in this repository">
-				<a href="{{ url_for(endpoint='projects', inrepo=repostat.name) }}">
-					{{- repostat.num_metapackages -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str())])? }}">
+					{{- repository.num_projects -}}
 				</a>
 			</td>
 
 			<td class="text-center total-cell" title="Number of non-unique projects packaged in this repository">
-				<a href="{{ url_for(endpoint='projects', inrepo=repostat.name, families='2-') }}">
-					{{- repostat.num_metapackages - repostat.num_metapackages_unique -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("families", "2-")])? }}">
+					{{- repository.num_projects - repository.num_projects_unique -}}
 				</a>
 			</td>
 
 			<td class="text-center version-cell version-big version-newest">
-				<a href="{{ url_for(endpoint='projects', inrepo=repostat.name, newest=1) }}">
-					{{- repostat.num_metapackages_newest -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("newest", "1")])? }}">
+					{{- repository.num_projects_newest -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-newest">
-				{{- safe_percent(repostat.num_metapackages_newest, repostat.num_metapackages_comparable) -}}
+				{{- ctx.format_percent(repository.num_projects_newest, repository.num_projects_comparable) -}}
 			</td>
 
 			<td class="text-center version-cell version-big version-outdated">
-				<a href="{{ url_for(endpoint='projects', inrepo=repostat.name, outdated=1) }}">
-					{{- repostat.num_metapackages_outdated -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("outdated", "1")])? }}">
+					{{- repository.num_projects_outdated -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
-				{{- safe_percent(repostat.num_metapackages_outdated, repostat.num_metapackages_comparable) -}}
+				{{- ctx.format_percent(repository.num_projects_outdated, repository.num_projects_comparable) -}}
 			</td>
 
 			<td class="text-center version-cell version-big version-unique">
-			{% if repometadata[repostat.name].shadow %}
+			{% if repository.is_shadow %}
 				<span title="This is a shadow repo, e.g. unique packages in it are ignored">n/a</span>
 			{% else %}
-				<a href="{{ url_for(endpoint='projects', inrepo=repostat.name, families=1) }}">
-					{{- repostat.num_metapackages_unique -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("families", "1")])? }}">
+					{{- repository.num_projects_unique -}}
 				</a>
 			{% endif %}
 			</td>
 			<td class="text-center version-cell version-big version-unique">
-			{%- if repometadata[repostat.name].shadow -%}
+			{% if repository.is_shadow %}
 				<span title="This is a shadow repo, e.g. unique packages in it are ignored">n/a</span>
 			{%- else -%}
-				{{ safe_percent(repostat.num_metapackages_unique, repostat.num_metapackages) }}
+				{{ ctx.format_percent(repository.num_projects_unique, repository.num_projects) }}
 			{%- endif -%}
 			</td>
 
 			<td class="text-center version-cell version-big version-ignored">
-				<a href="{{ url_for(endpoint='projects', inrepo=repostat.name, problematic=1) }}">
-					{{- repostat.num_metapackages_problematic -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("problematic", "1")])? }}">
+					{{- repository.num_projects_problematic -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-ignored">
-				{{- safe_percent(repostat.num_metapackages_problematic, repostat.num_metapackages) -}}
+				{{- ctx.format_percent(repository.num_projects_problematic, repository.num_projects) -}}
 			</td>
 
-			<td class="text-center{% if repostat.num_metapackages_vulnerable %} vulnerable-cell{% endif %}">
-				<a href="{{ url_for(endpoint='projects', inrepo=repostat.name, vulnerable=1) }}">
-					{{- repostat.num_metapackages_vulnerable -}}
+			<td class="text-center{% if repository.num_projects_vulnerable > 0 %} vulnerable-cell{% endif %}">
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("vulnerable", "1")])? }}">
+					{{- repository.num_projects_vulnerable -}}
 				</a>
 			</td>
-			<td class="text-center{% if repostat.num_metapackages_vulnerable %} vulnerable-cell{% endif %}">
-				{{- safe_percent(repostat.num_metapackages_vulnerable, repostat.num_metapackages, 2) -}}
+			<td class="text-center{% if repository.num_projects_vulnerable > 0 %} vulnerable-cell{% endif %}">
+				{{- ctx.format_percent_longer(repository.num_projects_vulnerable, repository.num_projects) -}}
 			</td>
 
 			<td class="text-center">
-			{%- if repostat.num_maintainers -%}
-				{{- repostat.num_maintainers -}}
+				{%- if repository.num_maintainers > 0 -%}
+				{{- repository.num_maintainers -}}
 			{%- else -%}
 				?
 			{%- endif -%}
 			</td>
 
 			<td class="text-center">
-			{%- if repostat.num_problems -%}
-				<a href="{{ url_for(endpoint="repository_problems", repo=repostat.name) }}">
-					{{- repostat.num_problems -}}
+			{%- if repository.num_problems > 0 -%}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoryProblems, [("repository_name", repository.name.as_str())])? }}">
+					{{- repository.num_problems -}}
 				</a>
 			{%- else -%}
 				0
@@ -152,5 +151,5 @@
 </table>
 </div>
 
-</div> {#- container #}
+</div>
 {% endblock %}
