@@ -152,7 +152,7 @@ async fn test_spam_network(pool: PgPool) {
     };
     let response = Request::new(pool, "/project/zsh/report")
         .with_form(form)
-        .with_spam_network(&"10.0.0.1/32".parse().unwrap())
+        .with_spam_network("10.0.0.1/32".parse().unwrap())
         .with_header("x-real-ip", "10.0.0.0, 10.0.0.1, 10.0.0.2")
         .perform()
         .await;

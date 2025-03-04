@@ -99,8 +99,8 @@ impl Request {
         self
     }
 
-    pub fn with_spam_network(mut self, network: &ip_network::IpNetwork) -> Self {
-        self.config.spam_networks.push(network.clone());
+    pub fn with_spam_network(mut self, network: ip_network::IpNetwork) -> Self {
+        self.config.spam_networks.push(network);
         self
     }
 
