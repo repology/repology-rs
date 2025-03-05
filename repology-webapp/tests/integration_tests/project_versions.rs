@@ -42,3 +42,12 @@ async fn test_xss_attempt(pool: PgPool) {
     assert!(!response.text().unwrap().contains("<marquee>"));
     assert!(!response.text().unwrap().contains("&nbsp;"));
 }
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
+async fn test_redirect(pool: PgPool) {
+    let response = Request::new(pool, "/project/zsh-old/versions").perform().await;
+    assert_eq!(response.status(), http::StatusCode::MOVED_PERMANENTLY);
+    assert_eq!(response.header_value_str("location").unwrap(), Some("/project/zsh/versions"));
+    assert!(response.header_value_str("set-cookie").unwrap().unwrap().contains("rdr_zsh=zsh-old"));
+    // TODO: implement support for passing cookies between requests and check redirect notification handling
+}

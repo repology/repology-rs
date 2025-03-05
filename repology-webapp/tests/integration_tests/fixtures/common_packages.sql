@@ -7,4 +7,9 @@ INSERT INTO packages(id, effname, version, versionclass, flags, repo, family, tr
 
 INSERT INTO metapackages(id, effname, num_repos, num_families) VALUES
 	(1, 'zsh', 4, 3),
-	(2, 'orphaned', 0, 0);
+	(2, 'orphaned', 0, 0),
+	(3, 'zsh-old', 0, 0);
+
+INSERT INTO project_redirects(project_id, repository_id, is_actual, trackname) VALUES
+	(1, 1, true, 'shells/zsh'),
+	(3, 1, false, 'shells/zsh');
