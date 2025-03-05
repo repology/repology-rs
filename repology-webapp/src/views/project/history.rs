@@ -13,6 +13,7 @@ use indoc::indoc;
 use libversion::version_compare;
 use serde::Deserialize;
 use sqlx::FromRow;
+use tower_cookies::{Cookie, Cookies};
 
 use crate::endpoints::Endpoint;
 use crate::repository_data::RepositoriesDataSnapshot;
@@ -213,6 +214,7 @@ struct TemplateParams<'a> {
     events: Vec<Event>,
     repositories_data: &'a RepositoriesDataSnapshot,
     autorefresh: bool,
+    redirect_from: Option<String>,
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -222,8 +224,18 @@ pub async fn project_history(
     Path(project_name): Path<String>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
+    cookies: Cookies,
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::ProjectHistory, gen_path, gen_query);
+
+    let redirect_from_cookie_name = format!("rdr_{}", project_name);
+    let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
+        let value = cookie.value().to_string();
+        cookies.remove(Cookie::build(redirect_from_cookie_name).path("/").into());
+        Some(value)
+    } else {
+        None
+    };
 
     let project: Option<Project> = sqlx::query_as(indoc! {"
         SELECT
@@ -239,7 +251,7 @@ pub async fn project_history(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&state, ctx, project_name, None).await;
+        return nonexisting_project(&state, &cookies, ctx, project_name, None).await;
     };
 
     let events: Vec<RawEvent> = sqlx::query_as(indoc! {"
@@ -257,7 +269,7 @@ pub async fn project_history(
     .await?;
 
     if project.is_orphaned() && events.is_empty() {
-        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
+        return nonexisting_project(&state, &cookies, ctx, project_name, Some(project)).await;
     }
 
     let repositories_data = state.repository_data_cache.snapshot();
@@ -277,6 +289,7 @@ pub async fn project_history(
                 .collect(),
             repositories_data: &repositories_data,
             autorefresh: query.autorefresh,
+            redirect_from,
         }
         .render()?,
     )

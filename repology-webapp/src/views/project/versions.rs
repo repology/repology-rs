@@ -11,6 +11,7 @@ use axum::response::IntoResponse;
 use indoc::indoc;
 use itertools::Itertools;
 use sqlx::FromRow;
+use tower_cookies::{Cookie, Cookies};
 
 use repology_common::{PackageFlags, PackageStatus};
 
@@ -59,14 +60,25 @@ struct TemplateParams<'a> {
     num_packages: usize,
     packages_by_repo: HashMap<String, Vec<Package>>,
     repositories_data: &'a RepositoriesDataSnapshot,
+    redirect_from: Option<String>,
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn project_versions(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
+    cookies: Cookies,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectVersions);
+
+    let redirect_from_cookie_name = format!("rdr_{}", project_name);
+    let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
+        let value = cookie.value().to_string();
+        cookies.remove(Cookie::build(redirect_from_cookie_name).path("/").into());
+        Some(value)
+    } else {
+        None
+    };
 
     let project: Option<Project> = sqlx::query_as(indoc! {"
         SELECT
@@ -82,11 +94,11 @@ pub async fn project_versions(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&state, ctx, project_name, None).await;
+        return nonexisting_project(&state, &cookies, ctx, project_name, None).await;
     };
 
     if project.is_orphaned() {
-        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
+        return nonexisting_project(&state, &cookies, ctx, project_name, Some(project)).await;
     }
 
     // TODO: try fetching project and packages in parallel tasks, see
@@ -155,6 +167,7 @@ pub async fn project_versions(
             num_packages,
             packages_by_repo,
             repositories_data: &state.repository_data_cache.snapshot(),
+            redirect_from,
         }
         .render()?,
     )

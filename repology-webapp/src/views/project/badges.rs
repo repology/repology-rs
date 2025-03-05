@@ -9,6 +9,7 @@ use axum::extract::{Path, State};
 use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
+use tower_cookies::{Cookie, Cookies};
 
 use crate::endpoints::Endpoint;
 use crate::repository_data::RepositoryData;
@@ -26,14 +27,25 @@ struct TemplateParams<'a> {
     project_name: &'a str,
     project: Project,
     containing_repositories_data: Vec<&'a RepositoryData>,
+    redirect_from: Option<String>,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state, cookies)))]
 pub async fn project_badges(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
+    cookies: Cookies,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectBadges);
+
+    let redirect_from_cookie_name = format!("rdr_{}", project_name);
+    let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
+        let value = cookie.value().to_string();
+        cookies.remove(Cookie::build(redirect_from_cookie_name).path("/").into());
+        Some(value)
+    } else {
+        None
+    };
 
     let project: Option<Project> = sqlx::query_as(indoc! {"
         SELECT
@@ -49,11 +61,11 @@ pub async fn project_badges(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&state, ctx, project_name, None).await;
+        return nonexisting_project(&state, &cookies, ctx, project_name, None).await;
     };
 
     if project.is_orphaned() {
-        return nonexisting_project(&state, ctx, project_name, Some(project)).await;
+        return nonexisting_project(&state, &cookies, ctx, project_name, Some(project)).await;
     }
 
     let containing_repository_names: HashSet<String> = sqlx::query_scalar(indoc! {"
@@ -82,6 +94,7 @@ pub async fn project_badges(
             project_name: &project_name,
             project,
             containing_repositories_data,
+            redirect_from,
         }
         .render()?,
     )

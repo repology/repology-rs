@@ -6,6 +6,7 @@ use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 use sqlx::FromRow;
+use tower_cookies::{Cookie, Cookies};
 
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
@@ -55,6 +56,7 @@ pub struct ProjectListItem {
 )]
 pub async fn nonexisting_project(
     state: &AppState,
+    cookies: &Cookies,
     ctx: TemplateContext,
     project_name: String,
     project: Option<Project>,
@@ -93,13 +95,19 @@ pub async fn nonexisting_project(
             // TODO: we check redirect count here, however
             // we should instead check number of projects fetched
             // by redirect to exclude gone projects
-            let project_name = &redirect_project_names[0][..];
+            let target_project_name = &redirect_project_names[0][..];
+            cookies.add(
+                Cookie::build((format!("rdr_{}", target_project_name), project_name))
+                    .path("/")
+                    .max_age(tower_cookies::cookie::time::Duration::seconds(60))
+                    .into(),
+            );
             return Ok((
                 StatusCode::MOVED_PERMANENTLY,
                 [(
                     header::LOCATION,
                     HeaderValue::from_maybe_shared(
-                        ctx.url_for(ctx.endpoint, &[("project_name", project_name)])?,
+                        ctx.url_for(ctx.endpoint, &[("project_name", target_project_name)])?,
                     )?,
                 )],
             )

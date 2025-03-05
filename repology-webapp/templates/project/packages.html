@@ -9,6 +9,12 @@
 {% block content %}
 <div class="container">
 
+{% if let Some(source_project) = redirect_from %}
+<div class="alert alert-info" role="alert">
+	<p>You were redirected from project {{source_project}}, which was moved or merged here</p>
+</div>
+{% endif %}
+
 <p><b>{{ packages.len() }}</b> package(s) known</p>
 
 <div class="row">

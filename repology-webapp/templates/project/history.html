@@ -14,6 +14,12 @@
 {% block content %}
 <div class="container">
 
+{% if let Some(source_project) = redirect_from %}
+<div class="alert alert-info" role="alert">
+	<p>You were redirected from project {{source_project}}, which was moved or merged here</p>
+</div>
+{% endif %}
+
 <p>Please note that this history is still an experimental feature
 and may be reset at any time.</p>
 

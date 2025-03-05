@@ -7,6 +7,12 @@
 {% block content %}
 <div class="container">
 
+{% if let Some(source_project) = redirect_from %}
+<div class="alert alert-info" role="alert">
+	<p>You were redirected from project {{source_project}}, which was moved or merged here</p>
+</div>
+{% endif %}
+
 {% if !errors.is_empty() %}
 <div class="alert alert-danger" role="alert">
 	<p>Could not add report:</p>

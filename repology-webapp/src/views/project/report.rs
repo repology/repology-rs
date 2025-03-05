@@ -13,7 +13,7 @@ use chrono::{DateTime, NaiveDate, Utc};
 use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
-use tower_cookies::Cookies;
+use tower_cookies::{Cookie, Cookies};
 use tracing::error;
 
 use crate::config::AppConfig;
@@ -64,6 +64,7 @@ struct TemplateParams {
     form: ReportForm,
     errors: Vec<&'static str>,
     report_added_message: bool,
+    redirect_from: Option<String>,
 }
 
 fn check_new_report(
@@ -206,6 +207,15 @@ async fn project_report_generic(
         vec![],
     );
 
+    let redirect_from_cookie_name = format!("rdr_{}", project_name);
+    let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
+        let value = cookie.value().to_string();
+        cookies.remove(Cookie::build(redirect_from_cookie_name).path("/").into());
+        Some(value)
+    } else {
+        None
+    };
+
     let project: Option<Project> = sqlx::query_as(indoc! {"
         SELECT
             num_repos,
@@ -220,7 +230,7 @@ async fn project_report_generic(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&*state, ctx, project_name, None).await;
+        return nonexisting_project(&*state, cookies, ctx, project_name, None).await;
     };
 
     let reports: Vec<Report> = sqlx::query_as(indoc! {"
@@ -301,7 +311,7 @@ async fn project_report_generic(
     };
 
     if project.is_orphaned() && reports.is_empty() {
-        return nonexisting_project(&*state, ctx, project_name, Some(project)).await;
+        return nonexisting_project(&*state, cookies, ctx, project_name, Some(project)).await;
     }
 
     let current_date = Utc::now().date_naive();
@@ -337,6 +347,7 @@ async fn project_report_generic(
             form: input.map(|(_, form)| form).unwrap_or(ReportForm::default()),
             errors,
             report_added_message,
+            redirect_from,
         }
         .render()?,
     )

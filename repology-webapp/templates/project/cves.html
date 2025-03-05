@@ -9,6 +9,12 @@
 {% block content %}
 <div class="container">
 
+{% if let Some(source_project) = redirect_from %}
+<div class="alert alert-info" role="alert">
+	<p>You were redirected from project {{source_project}}, which was moved or merged here</p>
+</div>
+{% endif %}
+
 {% if aggregated_cves.is_empty() %}
 <div class="alert alert-success" role="alert">No CVEs known for this project. This is not reliable though and may be caused by lacking CPE information or our simplified CVE configurations parsing. Feel free to submit a <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectReport, [("project_name", project_name.as_str())])? }}">report</a>.</div>
 {% else %}
