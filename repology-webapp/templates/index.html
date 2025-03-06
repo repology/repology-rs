@@ -1,0 +1,274 @@
+{% extends "_base.html" %}
+{% from "_macros/projects_table.html" import projects_table %}
+
+{% block title %}Repology{% endblock %}
+{% block pageheader %}{% endblock %}
+
+{% block content %}
+<div class="container">
+	<header class="jumbotron">
+		<h1>Repology, the packaging hub</h1>
+		<p>Repology monitors a huge number of
+		<a href="https://en.wikipedia.org/wiki/Package_(package_management_system)">package</a>
+		<a href="https://en.wikipedia.org/wiki/Software_repository">repositories</a> and other
+		<a href="#repos-footnote">sources</a>
+		comparing packages versions across them and gathering other information. Repology shows you in which
+		repositories a given project is packaged, which version is the latest and which needs updating, who
+		maintains the package, and other related information. Repology might be useful</p>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading text-center">
+						<h3 class="panel-title">For package maintainers</h3>
+					</div>
+					<div class="panel-body">
+						<ul class="list-jumbotron-items">
+							<li>Discover new releases of software you maintain packages for</li>
+							<li>Find new projects to package</li>
+							<li>Get in touch with fellow maintainers to improve packages together</li>
+							<li>Keep package naming and versioning schemes in sync to other repos</li>
+							<li>Fix problems detected by repology, such as broken links</li>
+							<li>Get notified of vulnerable software versions</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading text-center">
+						<h3 class="panel-title">For software authors</h3>
+					</div>
+					<div class="panel-body">
+						<ul class="list-jumbotron-items">
+							<li>Keep track of where and how well your project is packaged</li>
+							<li>Keep in touch with your product package maintainers</li>
+							<li>Use packaging badges like this one:
+								<img class="jumbotron-badge" src="{{ url_for_static(file="demobadge.v1.svg") }}" alt="Repology badge example">
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading text-center">
+						<h3 class="panel-title">For users</h3>
+					</div>
+					<div class="panel-body">
+						<ul class="list-jumbotron-items">
+							<li>Discover new releases of software you use</li>
+							<li>Pick distribution most suitable for you, in terms of package quantity, freshness or stability</li>
+							<li>Keep in touch with maintainers of software you use</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<section>
+		<h2>News highlights</h2>
+
+		<div class="row">
+			<div class="col-md-4">
+				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2024-09-23">2024-09-23</time>
+						added <a href="{{ url_for(endpoint='repository', repo='openvsx') }}">Open VSX</a> registry</li>
+					<li><time class="news-summary-time" datetime="2024-09-17">2024-09-17</time>
+						added <a href="{{ url_for(endpoint='repository', repo='tur') }}">Termux User Repository</a></li>
+					<li><time class="news-summary-time" datetime="2024-07-23">2024-07-23</time>
+						added <a href="{{ url_for(endpoint='repository', repo='opam') }}">opam</a> repository</li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2024-07-18">2024-07-18</time>
+						added <a href="{{ url_for(endpoint='repository', repo='serpentos') }}">Serpent OS</a> repository</li>
+					<li><time class="news-summary-time" datetime="2024-07-08">2024-07-08</time>
+						added <a href="{{ url_for(endpoint='repository', repo='chromebrew') }}">Chromebrew</a> repository</li>
+					<li><time class="news-summary-time" datetime="2024-04-09">2024-04-09</time>
+						added <a href="{{ url_for(endpoint='repository', repo='chimera') }}">Chimera Linux</a> repository</li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2023-08-28">2023-08-28</time>
+						added <a href="{{ url_for(endpoint='repository', repo='buildroot_master') }}">Buildroot</a> repository</li>
+					<li><time class="news-summary-time" datetime="2023-06-01">2023-06-01</time>
+						added <a href="{{ url_for(endpoint='repository', repo='bioarch') }}">BioArch</a> repository</li>
+					<li><time class="news-summary-time" datetime="2023-03-28">2023-03-28</time>
+						added <a href="{{ url_for(endpoint='repository', repo='wakemeops') }}">WakeMeOps</a> repository</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<h2>Quick navigation</h2>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Search <b>packages</b>
+					</div>
+					<div class="panel-body">
+						<form action="{{ url_for(endpoint='projects') }}" method="GET">
+							<div class="input-group">
+								<input type="text" class="form-control" name="search" placeholder="e.g. &quot;firefox&quot;">
+								<div class="input-group-btn">
+									<button type="submit" class="btn btn-default">Go</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="panel-footer">
+						or <a href="{{ url_for(endpoint='projects') }}">browse</a> list of all packages
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Search <b>maintainers</b>
+					</div>
+					<div class="panel-body">
+						<form action="{{ url_for(endpoint="maintainers") }}" method="GET">
+							<div class="input-group">
+								<input type="text" class="form-control" name="search" placeholder="e.g. &quot;foo@bar.com&quot;">
+								<div class="input-group-btn">
+									<button type="submit" class="btn btn-default">Go</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="panel-footer">
+						or <a href="{{ url_for(endpoint="maintainers") }}">browse</a> list of all maintainers
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						...or
+					</div>
+					<div class="panel-body">
+						See some <a href="{{ url_for(endpoint="maintainers") }}">statistics</a> and a list of all
+						supported <a href="{{ url_for(endpoint="repositories_statistics") }}">repositories</a>, and navigate
+						to per-repository package lists from there.
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<h2>Top repositories</h2>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						By <b>total</b> number of packaged projects
+					</div>
+					<div class="panel-body">
+						{% macro toplist(topitems, format='{}') -%}
+						<ol>
+						{% for topitem in topitems %}
+							{% if topitem.group == repometadata[topitem.name].desc %}
+							<li><a href="{{ url_for(endpoint='repository', repo=topitem.name) }}">{{ repometadata[topitem.name].desc }}</a> - {{ format.format(topitem.value) }}</li>
+							{% else %}
+							<li>{{ topitem.group }} (<a href="{{ url_for(endpoint='repository', repo=topitem.name) }}">{{ repometadata[topitem.name].desc }}</a>) - {{ format.format(topitem.value) }}</li>
+							{% endif %}
+						{% endfor %}
+						</ol>
+						{%- endmacro %}
+						{{ toplist(top_by_total) }}
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						By number of <b>non-unique</b><sup><a href="#top-footnote-1">1</a></sup> packaged projects
+					</div>
+					<div class="panel-body">
+						{{ toplist(top_by_nonunique) }}
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						By number of <b>maintainers</b>
+					</div>
+					<div class="panel-body">
+						{{ toplist(top_by_maintainers) }}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						By number of projects <b>per maintainer</b><sup><a href="#top-footnote-2">2</a>,<a href="#top-footnote-3">3</a></sup>
+					</div>
+					<div class="panel-body">
+						{{ toplist(top_by_ppm, '{:.1f}') }}
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						By number of projects with <b>up to date</b> packages
+					</div>
+					<div class="panel-body">
+						{{ toplist(top_by_newest) }}
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						By percentage of <b>up to date</b> projects<sup><a href="#top-footnote-2">2</a></sup>
+					</div>
+					<div class="panel-body">
+						{{ toplist(top_by_pnewest, '{:.2f}%') }}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<ol>
+			<li id="top-footnote-1">Projects packaged in multiple repository families, e.g. not unique to single repository</li>
+			<li id="top-footnote-2">Only repositories with more than 1000 projects are counted</li>
+			<li id="top-footnote-3">Less is better</li>
+		</ol>
+
+		<p>For repositories which belong to a group (e.g. CentOS versions), best repository is always considered.</p>
+	</section>
+
+	<section>
+		<h2>Popular packages</h2>
+
+		{% include "_includes/versionclass/legend.html" %}
+
+		{{ projects_table(metapackages, metapackagedata) }}
+
+	</section>
+
+	<section>
+		<h2>Footnotes</h2>
+
+		<p id="repos-footnote">
+			* "a lot of package repositories and other sources" include:
+		</p>
+
+		{% include "_includes/supported_repos.html" %}
+	</section>
+
+</div> {# container #}
+{% endblock %}
