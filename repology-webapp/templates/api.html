@@ -132,7 +132,7 @@ and then replace <code>{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [])?
 {{ ctx.url_for(crate::endpoints::Endpoint::ApiV1MaintainerProblems, [("maintainer_name", "ports@freebsd.org"), ("repository_name", "freebsd")])? }}
 </pre>
 
-Output is an array of entries of the following format:
+<p>Output is an array of entries of the following format:</p>
 
 <pre>
 {
@@ -160,6 +160,8 @@ Output is an array of entries of the following format:
 	<dt>binname</dt><dd>repository (binary) package name</dd>
 	<dt>rawversion</dt><dd>repository package version</dd>
 </dl>
+
+<p>This API returns limited number of problems and supports pagination by project name via <code>?start=&lt;project_name&gt;</code> parameter.</p>
 
 </article>
 
