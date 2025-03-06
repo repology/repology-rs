@@ -7,8 +7,8 @@ use std::collections::HashMap;
 use thiserror::Error;
 use tower_service::Service;
 
-use repology_webapp::create_app;
 use repology_webapp::config::{AppConfig, StaffAfkPeriod};
+use repology_webapp::create_app;
 
 #[derive(Default)]
 pub struct Request {
