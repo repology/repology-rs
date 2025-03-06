@@ -14,7 +14,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
-use tracing::error;
+use tracing::{error, info};
 
 use crate::config::AppConfig;
 use crate::endpoints::Endpoint;
@@ -82,25 +82,19 @@ fn check_new_report(
 
     // sanity checks
     if !project_is_alive {
-        error!(
-            project_name,
-            ?client_addresses,
-            "report to gone or nonexisting project"
-        );
+        error!("bad report: report to gone or nonexisting project");
         errors.push("project does not exist or is gone");
     }
 
     if too_many_reports {
-        error!(project_name, ?client_addresses, "too many reports");
+        error!("bad report: too many reports for project");
         errors.push("too many reports for this project");
     }
 
     if form.comment.len() > MAX_REPORT_COMMENT_LENGTH {
         error!(
-            project_name,
-            ?client_addresses,
-            length = form.comment.len(),
-            "report comment too long"
+            comment_length = form.comment.len(),
+            "bad report: comment too long"
         );
         errors.push("comment is too long");
     }
@@ -111,46 +105,29 @@ fn check_new_report(
         && !form.need_vuln
         && form.comment.is_empty()
     {
-        error!(project_name, ?client_addresses, "report form is not filled");
+        error!("bad report: report form is not filled");
         errors.push("please fill out the form");
     }
 
     if form.comment.contains("<a href") {
-        error!(
-            project_name,
-            ?client_addresses,
-            "report comment contains HTML"
-        );
+        error!("bad report: report comment contains HTML");
         errors.push("HTML not allowed");
     }
 
     if form.need_vuln && !form.comment.contains("nvd.nist.gov/vuln/detail/CVE-") {
-        error!(
-            project_name,
-            ?client_addresses,
-            "missing vulnerability report does not contain NVD link"
-        );
+        error!("bad report: missing vulnerability report does not contain NVD link");
         errors.push("link to NVD entry (e.g. https://nvd.nist.gov/vuln/detail/CVE-*) for missing CVE is required; note that CVE must already have CPE(s) assigned");
     }
 
     if config.disabled_reports.contains(project_name) {
-        error!(
-            project_name,
-            ?client_addresses,
-            "report attempt to disabled project"
-        );
+        error!("bad report: report attempt to disabled project");
         errors.push("new reports to this project are disabled, probably due to a big number of incorrect reports or spam");
     }
 
     // spam checks
     for keyword in &config.spam_keywords {
         if form.comment.contains(keyword) {
-            error!(
-                project_name,
-                ?client_addresses,
-                keyword,
-                "report comment contains spam keyword"
-            );
+            error!(keyword, "bad report: report comment contains spam keyword");
             is_spam = true;
             break;
         }
@@ -162,8 +139,7 @@ fn check_new_report(
             .any(|address| spam_network.contains(*address))
         {
             error!(
-                project_name,
-                ?client_addresses, %spam_network, "report submitter is blacklisted"
+                %spam_network, "bad report: report submitter is blacklisted"
             );
             is_spam = true;
             break;
@@ -176,11 +152,7 @@ fn check_new_report(
         && form.need_vuln
         && form.comment.is_empty()
     {
-        error!(
-            project_name,
-            ?client_addresses,
-            "report form filled in meaningless pattern"
-        );
+        error!("bad report: report form filled in meaningless pattern");
         is_spam = true;
     }
 
@@ -290,6 +262,8 @@ async fn project_report_generic(
             .bind(&form.comment)
             .execute(&state.pool)
             .await?;
+
+            info!("new report added");
 
             cookies.add(
                 Cookie::build(report_added_cookie_name)
