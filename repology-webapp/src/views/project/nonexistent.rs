@@ -52,7 +52,7 @@ pub struct ProjectListItem {
 
 #[cfg_attr(
     not(feature = "coverage"),
-    tracing::instrument(skip(state, ctx, project))
+    tracing::instrument(skip_all, fields(project_name = project_name))
 )]
 pub async fn nonexisting_project(
     state: &AppState,

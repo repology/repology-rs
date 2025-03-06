@@ -217,7 +217,7 @@ struct TemplateParams<'a> {
     redirect_from: Option<String>,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_history(
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,

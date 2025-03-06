@@ -38,7 +38,7 @@ pub struct Report {
     accepted: Option<bool>,
 }
 
-#[derive(Deserialize, Default)]
+#[derive(Deserialize, Default, Debug)]
 pub struct ReportForm {
     #[serde(default, deserialize_with = "crate::query::deserialize_bool_flag")]
     need_verignore: bool,
@@ -354,7 +354,7 @@ async fn project_report_generic(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state, form)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, method = "POST", form = ?form)))]
 pub async fn project_report_post(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -365,7 +365,7 @@ pub async fn project_report_post(
     project_report_generic(project_name, &state, &cookies, Some((&addresses, form))).await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, method = "GET")))]
 pub async fn project_report_get(
     Path(project_name): Path<String>,
     cookies: Cookies,
