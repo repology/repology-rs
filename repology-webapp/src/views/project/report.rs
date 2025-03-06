@@ -328,7 +328,7 @@ async fn project_report_generic(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, method = "POST", form = ?form, addresses = ?addresses)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, form = ?form, addresses = ?addresses)))]
 pub async fn project_report_post(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -339,7 +339,7 @@ pub async fn project_report_post(
     project_report_generic(project_name, &state, &cookies, Some((&addresses, form))).await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, method = "GET")))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_report_get(
     Path(project_name): Path<String>,
     cookies: Cookies,
