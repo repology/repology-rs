@@ -230,7 +230,7 @@ async fn project_report_generic(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&*state, cookies, ctx, project_name, None).await;
+        return nonexisting_project(state, cookies, ctx, project_name, None).await;
     };
 
     let reports: Vec<Report> = sqlx::query_as(indoc! {"
@@ -283,10 +283,10 @@ async fn project_report_generic(
                 );
             "})
             .bind(&project_name)
-            .bind(&form.need_verignore)
-            .bind(&form.need_split)
-            .bind(&form.need_merge)
-            .bind(&form.need_vuln)
+            .bind(form.need_verignore)
+            .bind(form.need_split)
+            .bind(form.need_merge)
+            .bind(form.need_vuln)
             .bind(&form.comment)
             .execute(&state.pool)
             .await?;
@@ -311,7 +311,7 @@ async fn project_report_generic(
     };
 
     if project.is_orphaned() && reports.is_empty() {
-        return nonexisting_project(&*state, cookies, ctx, project_name, Some(project)).await;
+        return nonexisting_project(state, cookies, ctx, project_name, Some(project)).await;
     }
 
     let current_date = Utc::now().date_naive();
@@ -321,7 +321,7 @@ async fn project_report_generic(
         .iter()
         .filter(|period| period.from <= current_date && current_date <= period.to)
         .map(|period| period.to)
-        .nth(0);
+        .next();
 
     let report_added_message = {
         let has_cookie = cookies.get(&report_added_cookie_name).is_some();
@@ -344,7 +344,7 @@ async fn project_report_generic(
             reports_disabled: false,
             too_many_reports,
             afk_till,
-            form: input.map(|(_, form)| form).unwrap_or(ReportForm::default()),
+            form: input.map(|(_, form)| form).unwrap_or_default(),
             errors,
             report_added_message,
             redirect_from,
