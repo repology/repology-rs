@@ -7,7 +7,7 @@ use std::net::IpAddr;
 use anyhow::Result;
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
-use tracing::{error, info};
+use tracing::error;
 
 /// axum extractor for all possible client IP addresses
 ///
@@ -63,7 +63,6 @@ where
                 }
             }
         }
-        info!(?parts.headers, "headers dump in PossibleClientAddresses extractor");
         Ok(Self(addresses))
     }
 }
