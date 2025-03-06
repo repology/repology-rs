@@ -354,7 +354,7 @@ async fn project_report_generic(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, method = "POST", form = ?form)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, method = "POST", form = ?form, addresses = ?addresses)))]
 pub async fn project_report_post(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,

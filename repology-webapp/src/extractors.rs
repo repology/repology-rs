@@ -7,7 +7,7 @@ use std::net::IpAddr;
 use anyhow::Result;
 use axum::extract::FromRequestParts;
 use axum::http::request::Parts;
-use tracing::{debug, error};
+use tracing::{error, info};
 
 /// axum extractor for all possible client IP addresses
 ///
@@ -29,6 +29,7 @@ use tracing::{debug, error};
 /// good enough job for how repology is currently deployed. If someone deploys
 /// repology another way, and suffers from spam problems, this implementation
 /// may be extended.
+#[derive(Debug)]
 pub struct PossibleClientAddresses(pub Vec<IpAddr>);
 
 impl<S> FromRequestParts<S> for PossibleClientAddresses
@@ -62,7 +63,7 @@ where
                 }
             }
         }
-        debug!(?parts.headers, "headers dump in PossibleClientAddresses extractor");
+        info!(?parts.headers, "headers dump in PossibleClientAddresses extractor");
         Ok(Self(addresses))
     }
 }
