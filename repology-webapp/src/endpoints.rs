@@ -12,6 +12,10 @@ pub enum Endpoint {
     #[strum(props(path = "/static/{file_name}"))]
     StaticFile,
 
+    // Index
+    #[strum(props(path = "/"))]
+    Index,
+
     // Projects
     #[strum(props(path = "/projects/", section = "Projects"))]
     Projects,
@@ -218,10 +222,6 @@ pub enum Endpoint {
     //
     // not implemented yet
     //
-
-    // Index
-    #[strum(props(path = "/"))]
-    Index,
 
     // Project
     #[strum(props(

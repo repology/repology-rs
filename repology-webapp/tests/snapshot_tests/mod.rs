@@ -15,6 +15,7 @@ mod feed_repository_html;
 mod graphs_map_repo_size_fresh;
 mod graphs_repository;
 mod graphs_total;
+mod index;
 mod legacy_redirects;
 mod log;
 mod maintainer;
