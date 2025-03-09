@@ -1,38 +1,34 @@
 {% extends "_base.html" %}
-{% from "_macros/numeric.html" import safe_percent %}
-{% from "_macros/time.html" import format_time_interval %}
+{% import "_macros/time.html" as time %}
 
 {% block title %}Maintainers list - Repology{% endblock %}
 {% block header %}Maintainers{% endblock %}
 {% block description %}Package maintainers listing{% endblock %}
-{% block keywords %}{{ super()}}, maintainer, maintainers{% endblock %}
+{% block keywords %}{% call super() %}, maintainer, maintainers{% endblock %}
 
 {% block content %}
 <div class="container">
-
 <nav>
 	<div class="form-group">
-		<form class="form-inline" action="{{ url_for_self(bound=None) }}" method="GET">
+		<form class="form-inline" action="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainers, [])? }}" method="GET">
 			<div class="btn-group">
-			{% if search %}
-				{% if maintainers %}
-				<a href="{{ url_for_self(bound=(maintainers|first).maintainer+"..") }}" class="btn btn-default">Clear</a>
-				{% else %}
-				<a href="{{ url_for_self(bound=None) }}" class="btn btn-default">Clear</a>
+			{% if query.search.is_empty() %}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainers, [])? }}" class="btn btn-default">&laquo;&laquo;</a>
+				{% if let (Some(first_maintainer), Some(last_maintainer)) = (maintainers.first(), maintainers.last()) %}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainersBounded, [("bound", ("..".to_string() + first_maintainer.name.as_str()).as_str())])? }}" class="btn btn-default" rel="prev">&laquo;</a>
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainersBounded, [("bound", last_maintainer.name.as_str())])? }}" class="btn btn-default" rel="next">&raquo;</a>
 				{% endif %}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainersBounded, [("bound", "..\u{10FFFF}")])? }}" class="btn btn-default">&raquo;&raquo;</a>
 			{% else %}
-				<a href="{{ url_for_self(bound=None) }}" class="btn btn-default {% if firstpage %} disabled{% endif %}">&laquo;&laquo;</a>
-				{% if maintainers %}
-				<a href="{{ url_for_self(bound=".."+(maintainers|first).maintainer, search=search) }}" class="btn btn-default{% if firstpage %} disabled{% endif %}" rel="prev">&laquo;</a>
-				<a href="{{ url_for_self(bound=(maintainers|last).maintainer+"..", search=search) }}" class="btn btn-default{% if lastpage %} disabled{% endif %}" rel="next">&raquo;</a>
-				{% endif %}
-				{% if maxmaintainer %}
-				<a href="{{ url_for_self(bound=".."+maxmaintainer) }}" class="btn btn-default {% if lastpage %} disabled{% endif %}">&raquo;&raquo;</a>
+				{% if let Some(first_maintainer) = maintainers.first() %}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainersBounded, [("bound", first_maintainer.name.as_str())])? }}" class="btn btn-default">Clear</a>
+				{% else %}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainers, [])? }}" class="btn btn-default">Clear</a>
 				{% endif %}
 			{% endif %}
 			</div>
 			<div class="input-group">
-				<input class="form-control" type="text" name="search" value="{{ search|default('', true) }}" placeholder="Search maintainers">
+				<input class="form-control" type="text" name="search" value="{{ query.search }}" placeholder="Search maintainers">
 				<div class="input-group-btn">
 					<button type="submit" class="btn btn-default">Go</button>
 				</div>
@@ -40,8 +36,7 @@
 		</form>
 	</div>
 </nav>
-
-{% if maintainers %}
+{% if !maintainers.is_empty() %}
 <table class="table table-striped table-condensed">
 	<thead>
 		<tr>
@@ -62,61 +57,67 @@
 	{% for maintainer in maintainers %}
 		<tr>
 			<td class="text-right break-word">
-				<a href="{{ url_for(endpoint='maintainer', maintainer=maintainer.maintainer) }}">
-					{{- maintainer.maintainer -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer.name.as_str())])? }}">
+					{{- maintainer.name -}}
 				</a>
 			</td>
 			<td class="text-center">
-				<a href="{{ url_for(endpoint='repository', repo=maintainer.bestrepo) }}">
-					{{- repometadata[maintainer.bestrepo].desc -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", maintainer.best_repository_name.as_str())])? }}">
+					{{- repositories_data.repository_title(maintainer.best_repository_name) -}}
 				</a>
-				{%- if maintainer.num_repos > 1 -%}
-					<sup>+{{ maintainer.num_repos - 1 }}</sup>
+				{%- if maintainer.num_repositories > 1 -%}
+					<sup>+{{ maintainer.num_repositories - 1 }}</sup>
 				{%- endif %}
 			</td>
 			<td class="text-center total-cell">
-				<a href="{{ url_for(endpoint='projects', maintainer=maintainer.maintainer, inrepo=maintainer.bestrepo) }}">
-					{{- maintainer.bestrepo_num_projects -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer.name.as_str()), ("inrepo", maintainer.best_repository_name.as_str())])? }}">
+					{{- maintainer.best_repository_counters.num_projects -}}
 				</a>
 			</td>
-			{%- if maintainer.bestrepo_num_projects_newest -%}
+			{%- if maintainer.best_repository_counters.num_projects_newest > 0 -%}
 			<td class="text-center version-cell version-big version-newest">
-				<a href="{{ url_for(endpoint='projects', maintainer=maintainer.maintainer, inrepo=maintainer.bestrepo, newest=1) }}">
-					{{- maintainer.bestrepo_num_projects_newest -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer.name.as_str()), ("inrepo", maintainer.best_repository_name.as_str()), ("newest", "1")])? }}">
+					{{- maintainer.best_repository_counters.num_projects_newest -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-newest">
-				<a href="{{ url_for(endpoint='projects', maintainer=maintainer.maintainer, inrepo=maintainer.bestrepo, newest=1) }}">
-					{{- safe_percent(maintainer.bestrepo_num_projects_newest, maintainer.bestrepo_num_projects) -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer.name.as_str()), ("inrepo", maintainer.best_repository_name.as_str()), ("newest", "1")])? }}">
+					{{- ctx.format_percent(maintainer.best_repository_counters.num_projects_newest, maintainer.best_repository_counters.num_projects) -}}
 				</a>
 			</td>
-			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
-			{%- if maintainer.bestrepo_num_projects_outdated -%}
+			{%- else -%}
+			<td class="text-center" colspan="2">-</td>
+			{%- endif -%}
+			{%- if maintainer.best_repository_counters.num_projects_outdated > 0 -%}
 			<td class="text-center version-cell version-big version-outdated">
-				<a href="{{ url_for(endpoint='projects', maintainer=maintainer.maintainer, inrepo=maintainer.bestrepo, outdated=1) }}">
-					{{- maintainer.bestrepo_num_projects_outdated -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer.name.as_str()), ("inrepo", maintainer.best_repository_name.as_str()), ("outdated", "1")])? }}">
+					{{- maintainer.best_repository_counters.num_projects_outdated -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
-				<a href="{{ url_for(endpoint='projects', maintainer=maintainer.maintainer, inrepo=maintainer.bestrepo, outdated=1) }}">
-					{{- safe_percent(maintainer.bestrepo_num_projects_outdated, maintainer.bestrepo_num_projects) -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer.name.as_str()), ("inrepo", maintainer.best_repository_name.as_str()), ("outdated", "1")])? }}">
+					{{- ctx.format_percent(maintainer.best_repository_counters.num_projects_outdated, maintainer.best_repository_counters.num_projects) -}}
 				</a>
 			</td>
-			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
-			{%- if maintainer.bestrepo_num_projects_problematic -%}
+			{%- else -%}
+			<td class="text-center" colspan="2">-</td>
+			{%- endif -%}
+			{%- if maintainer.best_repository_counters.num_projects_problematic > 0 -%}
 			<td class="text-center version-cell version-big version-ignored">
-				<a href="{{ url_for(endpoint='projects', maintainer=maintainer.maintainer, inrepo=maintainer.bestrepo, problematic=1) }}">
-					{{- maintainer.bestrepo_num_projects_problematic -}}
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer.name.as_str()), ("inrepo", maintainer.best_repository_name.as_str()), ("problematic", "1")])? }}">
+					{{- maintainer.best_repository_counters.num_projects_problematic -}}
 				</a>
 			</td>
-			{%- else -%}<td class="text-center">-</td>{%- endif -%}
+			{%- else -%}
+			<td class="text-center">-</td>
+			{%- endif -%}
 			<td class="text-center total-cell">
-				<a href="{{ url_for(endpoint='projects', maintainer=maintainer.maintainer) }}">
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer.name.as_str())])? }}">
 					{{- maintainer.num_projects -}}
 				</a>
 			</td>
 			<td class="text-center">
-				{{- format_time_interval(maintainer.first_seen_ago) -}}
+				{%- call time::format_time_interval(Utc::now() - maintainer.first_seen) -%}
 			</td>
 		</tr>
 	{% endfor %}
@@ -128,12 +129,11 @@
 	<ul>
 		<li>The maintainer you are looking for no longer maintains any packages.</li>
 		<li>The maintainer you are looking for obfuscates his email in package metadata, so repology cannot parse it.</li>
-		<li>Repology does not support or no longer supports any repositories the maintainer you are looking for is active in. Check <a href="{{ url_for(endpoint='repositories_statistics') }}">the list</a> of supported repositories.</li>
-		<li>The maintainer identifier (email) is misspelled, or have changed.{% if search and '@' in search %} It is quite common for only domain part to change, so try <a href="{{ url_for_self(search=search.split('@')[0]) }}">searching</a> without domain name.{% endif %}</li>
-		<li>Repology is unable or no longer able to parse maintainer information for repositories this maintainer is active in. Check <a href="{{ url_for(endpoint='repositories_fields') }}">repository support table</a>. This can be fixed if repositories in question setup a more complete dump of information on their packages.</li>
+		<li>Repology does not support or no longer supports any repositories the maintainer you are looking for is active in. Check <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}">the list</a> of supported repositories.</li>
+		<li>The maintainer identifier (email) is misspelled, or have changed.{% if let Some((user, domain)) = query.search.split_once("@") %} It is quite common for only domain part to change, so try <a href="{{ ctx.url_for_self([("search", user)])? }}">searching</a> without domain name.{% endif %}</li>
+		<li>Repology is unable or no longer able to parse maintainer information for repositories this maintainer is active in. Check <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesFields, [])? }}">repository support table</a>. This can be fixed if repositories in question setup a more complete dump of information on their packages.</li>
 	</ul>
 </div>
 {% endif %}
-
 </div>
 {% endblock %}

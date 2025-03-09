@@ -19,6 +19,7 @@ mod index;
 mod legacy_redirects;
 mod log;
 mod maintainer;
+mod maintainers;
 mod opensearch;
 mod problems;
 mod project_badges;

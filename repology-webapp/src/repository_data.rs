@@ -45,6 +45,7 @@ pub struct RepositoryData {
     pub source_type: SourceType,
     pub order: i16,
     pub brand_color: Option<String>,
+    pub num_projects_newest: i32,
 }
 
 /// Ready to use collection of Repository metadata.
@@ -196,7 +197,8 @@ impl RepositoriesDataCache {
                 state AS status,
                 COALESCE(metadata->>'type', 'repository') AS source_type,
                 (row_number() OVER (ORDER BY sortname))::SMALLINT AS order,
-                metadata->>'color' AS brand_color
+                metadata->>'color' AS brand_color,
+                num_metapackages_newest AS num_projects_newest
             FROM repositories
             ORDER BY sortname
         "#})

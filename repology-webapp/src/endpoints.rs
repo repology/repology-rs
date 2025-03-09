@@ -40,6 +40,12 @@ pub enum Endpoint {
     #[strum(props(path = "/project/{project_name}/cves", section = "Projects"))]
     ProjectCves,
 
+    // Maintainers
+    #[strum(props(path = "/maintainers/", section = "Maintainers"))]
+    Maintainers,
+    #[strum(props(path = "/maintainers/{bound}/", section = "Maintainers"))]
+    MaintainersBounded,
+
     // Maintainer
     #[strum(props(path = "/maintainer/{maintainer_name}", section = "Maintainers"))]
     Maintainer,
@@ -229,12 +235,6 @@ pub enum Endpoint {
         section = "Projects"
     ))]
     ProjectVersionsCompact,
-
-    // Maintainers
-    #[strum(props(path = "/maintainers/", section = "Maintainers"))]
-    Maintainers,
-    #[strum(props(path = "/maintainers/{bound}/", section = "Maintainers"))]
-    MaintainersBounded,
 
     // Tools
     #[strum(props(path = "/tools/trending", section = "Tools"))]
