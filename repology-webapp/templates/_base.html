@@ -51,7 +51,6 @@
 				<li{% if ctx.is_section(crate::endpoints::Section::Repositories) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}">Repositories</a></li>
 				<li{% if ctx.is_section(crate::endpoints::Section::Tools) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Tools, [])? }}">Tools</a></li>
 				<li{% if ctx.is_section(crate::endpoints::Section::Security) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::SecurityRecentCves, [])? }}">Security</a></li>
-				{% if ctx.admin() %}<li{% if ctx.is_section(crate::endpoints::Section::Admin) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Admin, [])? }}">Admin</a></li>{% endif %}
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				{% if ctx.experimental_enabled() %}

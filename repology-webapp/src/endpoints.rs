@@ -242,26 +242,6 @@ pub enum Endpoint {
     #[strum(props(path = "/tools/important_updates", section = "Experimental"))]
     ImportantUpdates,
 
-    // Admin
-    #[strum(props(path = "/admin", section = "Admin"))] // GET + POST
-    Admin,
-    #[strum(props(path = "/admin/reports/unprocessed/", section = "Admin"))] // GET + POST
-    AdminReportsUnprocessed,
-    #[strum(props(path = "/admin/reports/recent/", section = "Admin"))] // GET + POST
-    AdminReportsRecent,
-    #[strum(props(path = "/admin/updates", section = "Admin"))]
-    AdminUpdates,
-    #[strum(props(path = "/admin/redirects", section = "Admin"))] // GET + POST
-    AdminRedirects,
-    #[strum(props(path = "/admin/name_samples", section = "Admin"))]
-    AdminNameSamples,
-    #[strum(props(path = "/admin/cpes", section = "Admin"))] // GET + POST
-    AdminCpes,
-    #[strum(props(path = "/admin/cve_misses", section = "Admin"))] // GET + POST
-    AdminCveMisses,
-    #[strum(props(path = "/admin/omni_cves", section = "Admin"))]
-    AdminOmniCves,
-
     // Experimental
     #[strum(props(path = "/experimental/", section = "Experimental"))] // GET + POST
     Experimental,

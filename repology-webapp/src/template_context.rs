@@ -94,10 +94,6 @@ impl TemplateContext {
         false
     }
 
-    pub fn admin(&self) -> bool {
-        false
-    }
-
     pub fn experimental_enabled(&self) -> bool {
         false
     }
