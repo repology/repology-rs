@@ -70,20 +70,6 @@
 </div>
 {% endblock %}
 
-{#
-{% let flashed_messages = ctx.get_flashed_messages_with_categories() %}
-{% if flashed_messages || messages %}
-<div class="container">
-{% for (category, message) in flashed_messages %}
-	<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
-{% endfor %}
-{% for (category, message) in messages %}
-	<div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
-{% endfor %}
-</div>
-{% endif %}
-#}
-
 {% block content %}
 {% endblock %}
 
