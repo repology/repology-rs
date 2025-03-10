@@ -40,7 +40,7 @@ pub struct RepositoryData {
     pub name: String,
     pub title: String,
     pub singular: String,
-    pub eol_date: Option<chrono::NaiveDate>, // TODO: convert to chrono
+    pub eol_date: Option<chrono::NaiveDate>,
     pub status: RepositoryStatus,
     pub source_type: SourceType,
     pub order: i16,
