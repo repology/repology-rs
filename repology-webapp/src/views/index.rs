@@ -5,12 +5,13 @@ mod top;
 
 use std::sync::Arc;
 
+use anyhow::Result;
 use askama::Template;
 use axum::extract::State;
 use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
-use sqlx::FromRow;
+use sqlx::{FromRow, PgPool};
 
 use crate::endpoints::Endpoint;
 use crate::result::EndpointResult;
@@ -183,6 +184,54 @@ const IMPORTANT_PROJECTS: &[&str] = &[
     "zsh",
 ];
 
+pub async fn get_important_projects(pool: &PgPool) -> Result<Vec<ProjectListItem>> {
+    let projects: Vec<ImportantProject> = sqlx::query_as(indoc! {"
+        SELECT
+            effname,
+            num_families,
+            has_related
+        FROM metapackages
+        WHERE effname = ANY($1)
+        ORDER BY effname
+    "})
+    .bind(&IMPORTANT_PROJECTS)
+    .fetch_all(pool)
+    .await?;
+
+    // XXX: we don't need to fetch repo and maintainers here as these are never used
+    // in packages_to_categorized_display_versions_per_project(..., None, None). In
+    // fact, we need to add specialization for focusless case.
+    let packages: Vec<PackageForListing> = sqlx::query_as(indoc! {"
+        SELECT
+            '' AS repo,
+            family,
+            visiblename,
+            effname,
+            version,
+            versionclass AS status,
+            flags,
+            '{}'::text[] AS maintainers
+        FROM packages
+        WHERE effname = ANY($1)
+    "})
+    .bind(&IMPORTANT_PROJECTS)
+    .fetch_all(pool)
+    .await?;
+
+    let mut versions_per_project =
+        packages_to_categorized_display_versions_per_project(&packages, None, None);
+
+    Ok(projects
+        .into_iter()
+        .map(|project| {
+            let versions = versions_per_project
+                .remove(&project.effname)
+                .unwrap_or_default();
+            ProjectListItem { project, versions }
+        })
+        .collect())
+}
+
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn index(State(state): State<Arc<AppState>>) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Index);
@@ -288,51 +337,7 @@ pub async fn index(State(state): State<Arc<AppState>>) -> EndpointResult {
         }
     }
 
-    let projects: Vec<ImportantProject> = sqlx::query_as(indoc! {"
-        SELECT
-            effname,
-            num_families,
-            has_related
-        FROM metapackages
-        WHERE effname = ANY($1)
-        ORDER BY effname
-    "})
-    .bind(&IMPORTANT_PROJECTS)
-    .fetch_all(&state.pool)
-    .await?;
-
-    // XXX: we don't need to fetch repo and maintainers here as these are never used
-    // in packages_to_categorized_display_versions_per_project(..., None, None). In
-    // fact, we need to add specialization for focusless case.
-    let packages: Vec<PackageForListing> = sqlx::query_as(indoc! {"
-        SELECT
-            '' AS repo,
-            family,
-            visiblename,
-            effname,
-            version,
-            versionclass AS status,
-            flags,
-            '{}'::text[] AS maintainers
-        FROM packages
-        WHERE effname = ANY($1)
-    "})
-    .bind(&IMPORTANT_PROJECTS)
-    .fetch_all(&state.pool)
-    .await?;
-
-    let mut versions_per_project =
-        packages_to_categorized_display_versions_per_project(&packages, None, None);
-
-    let projects_list: Vec<_> = projects
-        .into_iter()
-        .map(|project| {
-            let versions = versions_per_project
-                .remove(&project.effname)
-                .unwrap_or_default();
-            ProjectListItem { project, versions }
-        })
-        .collect();
+    let projects_list = get_important_projects(&state.pool).await?;
 
     Ok((
         StatusCode::OK,
