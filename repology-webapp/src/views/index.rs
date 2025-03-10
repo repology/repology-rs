@@ -66,7 +66,7 @@ struct TemplateParams<'a> {
     top_by_newest: Vec<top::Item<&'a str, TopRepository<'a>>>,
     top_by_pnewest: Vec<top::Item<&'a str, TopRepository<'a>>>,
 
-    projects_list: Vec<ProjectListItem>,
+    projects_list: &'a [ProjectListItem],
 }
 
 const IMPORTANT_PROJECTS: &[&str] = &[
@@ -337,7 +337,7 @@ pub async fn index(State(state): State<Arc<AppState>>) -> EndpointResult {
         }
     }
 
-    let projects_list = get_important_projects(&state.pool).await?;
+    let projects_list = state.important_projects_cache.get_cloned()?;
 
     Ok((
         StatusCode::OK,
@@ -354,7 +354,7 @@ pub async fn index(State(state): State<Arc<AppState>>) -> EndpointResult {
             top_by_ppm: top_by_ppm.get().collect(),
             top_by_newest: top_by_newest.get().collect(),
             top_by_pnewest: top_by_pnewest.get().collect(),
-            projects_list,
+            projects_list: projects_list.as_ref(),
         }
         .render()?,
     )

@@ -7,6 +7,7 @@
 #![feature(assert_matches)]
 #![feature(duration_constructors)]
 #![feature(try_blocks)]
+#![feature(lock_value_accessors)]
 #![allow(clippy::module_inception)]
 
 mod badges;
@@ -102,11 +103,17 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
         .await
         .context("initial repository data cache fill failed")?;
 
+    info!("initializing important projects cache");
+    let important_projects_cache = crate::views::get_important_projects(&pool)
+        .await
+        .context("initial important projects cache fill failed")?;
+
     let state = Arc::new(AppState::new(
-        pool,
+        pool.clone(),
         font_measurer,
         repository_data_cache,
         config,
+        important_projects_cache,
     ));
 
     info!("initializing static files");
@@ -130,7 +137,39 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
                 }
             }
         };
-        tokio::task::spawn(task.instrument(info_span!(parent: None, "background task")));
+        tokio::task::spawn(
+            task.instrument(info_span!(parent: None, "repository data cache background task")),
+        );
+    }
+    {
+        let state = Arc::downgrade(&state);
+        let task = async move {
+            loop {
+                tokio::time::sleep(crate::constants::IMPORTANT_PROJECTS_CACHE_REFRESH_PERIOD).await;
+
+                if let Some(state) = state.upgrade() {
+                    let important_projects_cache =
+                        match crate::views::get_important_projects(&pool).await {
+                            Ok(important_projects_cache) => Arc::new(important_projects_cache),
+                            Err(e) => {
+                                error!("important projects cache update failed {:?}", e);
+                                continue;
+                            }
+                        };
+                    let num_entries = important_projects_cache.len();
+                    if let Err(e) = state.important_projects_cache.set(important_projects_cache) {
+                        error!("important projects cache update failed {:?}", e);
+                        continue;
+                    }
+                    info!("updated important projects cache, {} entries", num_entries);
+                } else {
+                    break;
+                }
+            }
+        };
+        tokio::task::spawn(
+            task.instrument(info_span!(parent: None, "important projects cache background task")),
+        );
     }
 
     info!("initializing routes");
