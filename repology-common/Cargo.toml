@@ -5,8 +5,8 @@ edition = "2024"
 
 [dependencies]
 bitflags = "2.9.0"
-serde = { version = "1.0.218", features = ["derive"] }
-serde_repr = "0.1.19"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_repr = "0.1.20"
 sqlx = { version = "0.8.3", default-features = false, features = ["derive", "migrate", "macros"] }
 strum = { version = "0.27.1", features = ["strum_macros"] }
 strum_macros = "0.27.1"
