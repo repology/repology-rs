@@ -49,11 +49,11 @@ pub struct QueryParams {
 }
 
 #[derive(FromRow)]
-pub struct Package {
-    pub version: String,
-    pub status: PackageStatus,
-    pub flags: i32,
-    pub repository_name: String,
+struct Package {
+    version: String,
+    status: PackageStatus,
+    flags: i32,
+    repository_name: String,
 }
 
 impl PackageWithVersion for Package {

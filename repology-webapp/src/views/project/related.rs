@@ -23,7 +23,7 @@ use super::common::Project;
 use super::nonexistent::nonexisting_project;
 
 #[derive(Debug, FromRow)]
-pub struct RelatedProject {
+struct RelatedProject {
     pub effname: String,
     pub rank: f64,
     #[sqlx(try_from = "i16")]

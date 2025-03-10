@@ -22,20 +22,20 @@ use crate::state::AppState;
 use crate::template_context::TemplateContext;
 
 #[derive(FromRow)]
-pub struct Maintainer {
-    pub num_packages: i32,
+struct Maintainer {
+    num_packages: i32,
 
-    pub num_projects: i32,
-    pub num_projects_newest: i32,
-    pub num_projects_outdated: i32,
-    pub num_projects_problematic: i32,
-    pub num_projects_vulnerable: i32,
+    num_projects: i32,
+    num_projects_newest: i32,
+    num_projects_outdated: i32,
+    num_projects_problematic: i32,
+    num_projects_vulnerable: i32,
 
-    pub counts_per_repo: sqlx::types::Json<HashMap<String, Vec<i32>>>,
+    counts_per_repo: sqlx::types::Json<HashMap<String, Vec<i32>>>,
 
-    pub num_projects_per_category: sqlx::types::Json<HashMap<String, i32>>,
+    num_projects_per_category: sqlx::types::Json<HashMap<String, i32>>,
 
-    pub orphaned_at: Option<DateTime<Utc>>,
+    orphaned_at: Option<DateTime<Utc>>,
 }
 
 fn generate_maintainer_links(maintainer_name: &str) -> Vec<String> {

@@ -27,17 +27,17 @@ use super::common::Project;
 use super::nonexistent::nonexisting_project;
 
 #[derive(FromRow)]
-pub struct Package {
-    pub repo: String,
-    pub subrepo: Option<String>,
-    pub visiblename: String,
-    pub origversion: String,
-    pub maintainers: Vec<String>,
-    pub category: Option<String>,
-    pub url: Option<String>,
-    pub version: String,
-    pub status: PackageStatus,
-    pub flags: i32,
+struct Package {
+    repo: String,
+    subrepo: Option<String>,
+    visiblename: String,
+    origversion: String,
+    maintainers: Vec<String>,
+    category: Option<String>,
+    url: Option<String>,
+    version: String,
+    status: PackageStatus,
+    flags: i32,
 }
 
 impl PackageWithVersion for Package {

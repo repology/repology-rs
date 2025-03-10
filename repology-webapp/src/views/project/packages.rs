@@ -27,7 +27,7 @@ use super::common::Project;
 use super::nonexistent::nonexisting_project;
 
 #[derive(FromRow)]
-pub struct Package {
+struct Package {
     pub repo: String,
     pub subrepo: Option<String>,
     pub visiblename: String,

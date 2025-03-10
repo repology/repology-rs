@@ -27,7 +27,7 @@ use super::common::Project;
 use super::nonexistent::nonexisting_project;
 
 #[derive(FromRow)]
-pub struct Report {
+struct Report {
     created: DateTime<Utc>,
     need_verignore: bool,
     need_split: bool,

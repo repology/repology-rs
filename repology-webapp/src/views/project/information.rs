@@ -32,18 +32,18 @@ use self::accumulators::SlicesAccumulator;
 use self::slices::*;
 
 #[derive(FromRow)]
-pub struct Package {
-    pub repo: String,
-    pub family: String,
-    pub projectname_seed: String,
-    pub version: String,
-    pub status: PackageStatus,
-    pub flags: i32,
-    pub summary: Option<String>,
-    pub maintainers: Vec<String>,
-    pub licenses: Vec<String>,
-    pub categories: Vec<String>,
-    pub links: sqlx::types::Json<Vec<(LinkType, i32, Option<String>)>>,
+struct Package {
+    repo: String,
+    family: String,
+    projectname_seed: String,
+    version: String,
+    status: PackageStatus,
+    flags: i32,
+    summary: Option<String>,
+    maintainers: Vec<String>,
+    licenses: Vec<String>,
+    categories: Vec<String>,
+    links: sqlx::types::Json<Vec<(LinkType, i32, Option<String>)>>,
 }
 
 impl PackageWithVersion for Package {

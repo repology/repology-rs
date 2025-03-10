@@ -23,14 +23,14 @@ pub struct QueryParams {
 }
 
 #[derive(FromRow)]
-pub struct RepositoryStatistics {
-    pub num_projects: i32,
-    pub num_projects_comparable: i32,
-    pub num_projects_newest: i32,
-    pub num_projects_outdated: i32,
-    pub num_projects_vulnerable: i32,
-    pub num_projects_problematic: i32,
-    pub num_maintainers: i32,
+struct RepositoryStatistics {
+    num_projects: i32,
+    num_projects_comparable: i32,
+    num_projects_newest: i32,
+    num_projects_outdated: i32,
+    num_projects_vulnerable: i32,
+    num_projects_problematic: i32,
+    num_maintainers: i32,
 }
 
 fn format_percentage(divident: i32, divisor: i32) -> String {

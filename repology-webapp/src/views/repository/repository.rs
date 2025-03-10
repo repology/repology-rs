@@ -29,30 +29,30 @@ pub struct QueryParams {
 }
 
 #[derive(Deserialize)]
-pub struct RepositoryLink {
+struct RepositoryLink {
     url: String,
     #[serde(rename = "desc")]
     title: String,
 }
 
 #[derive(FromRow)]
-pub struct Repository {
-    pub title: String,
-    pub source_type: SourceType,
-    pub num_packages: i32,
-    pub num_packages_newest: i32,
-    pub num_packages_outdated: i32,
-    pub num_packages_ignored: i32,
-    pub num_projects: i32,
-    pub num_projects_newest: i32,
-    pub num_projects_outdated: i32,
-    pub num_projects_unique: i32,
-    pub num_problems: i32,
-    pub num_maintainers: i32,
-    pub repository_links: sqlx::types::Json<Vec<RepositoryLink>>,
-    pub used_package_link_types: Vec<LinkType>,
-    pub last_seen: Option<DateTime<Utc>>,
-    pub is_active: bool,
+struct Repository {
+    title: String,
+    source_type: SourceType,
+    num_packages: i32,
+    num_packages_newest: i32,
+    num_packages_outdated: i32,
+    num_packages_ignored: i32,
+    num_projects: i32,
+    num_projects_newest: i32,
+    num_projects_outdated: i32,
+    num_projects_unique: i32,
+    num_problems: i32,
+    num_maintainers: i32,
+    repository_links: sqlx::types::Json<Vec<RepositoryLink>>,
+    used_package_link_types: Vec<LinkType>,
+    last_seen: Option<DateTime<Utc>>,
+    is_active: bool,
 }
 
 #[derive(Template)]

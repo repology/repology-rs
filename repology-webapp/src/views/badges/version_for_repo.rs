@@ -33,7 +33,7 @@ pub struct QueryParams {
 }
 
 #[derive(FromRow)]
-pub struct Package {
+struct Package {
     pub version: String,
     pub status: PackageStatus,
     pub flags: i32,

@@ -16,7 +16,7 @@ use crate::state::AppState;
 use crate::template_context::TemplateContext;
 
 #[derive(Debug, FromRow)]
-pub struct Problem {
+struct Problem {
     effname: String,
     url: Option<String>,
     visiblename: String,
