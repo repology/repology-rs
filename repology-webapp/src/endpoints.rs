@@ -250,16 +250,6 @@ pub enum Endpoint {
     #[strum(props(path = "/experimental/distromap", section = "Experimental"))]
     Distromap,
 
-    // API
-    #[strum(props(path = "/api/experimental/distromap"))]
-    ApiExperimentalDistromap,
-    #[strum(props(path = "/api/experimental/updates"))]
-    ApiExperimentalUpdates,
-
-    // Graphs
-    #[strum(props(path = "/graph/project/{project_name}/releases.svg"))]
-    GraphReleases,
-
     // Badges
     #[strum(props(path = "/badge/versions-matrix.svg"))]
     BadgeVersionsMatrix,
