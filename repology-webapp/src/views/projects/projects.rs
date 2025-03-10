@@ -179,11 +179,13 @@ pub async fn projects(
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn projects_bounded(
+    Path(gen_path): Path<Vec<(String, String)>>,
+    Query(gen_query): Query<Vec<(String, String)>>,
     Path(bound): Path<String>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new_without_params(Endpoint::ProjectsBounded);
+    let ctx = TemplateContext::new(Endpoint::ProjectsBounded, gen_path, gen_query);
 
     if let Some(end) = bound.strip_prefix("..") {
         projects_generic(ctx, None, Some(end), query, &state).await
