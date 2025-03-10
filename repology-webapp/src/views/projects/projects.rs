@@ -153,9 +153,9 @@ impl QueryParams {
     }
 }
 
-pub struct ProjectListItem {
-    pub project: ProjectForListing,
-    pub versions: CategorizedDisplayVersions,
+struct ProjectListItem {
+    project: ProjectForListing,
+    versions: CategorizedDisplayVersions,
 }
 
 #[derive(Template)]

@@ -31,9 +31,9 @@ pub struct RelatedProject {
     pub has_related: bool,
 }
 
-pub struct ProjectListItem {
-    pub project: RelatedProject,
-    pub versions: CategorizedDisplayVersions,
+struct ProjectListItem {
+    project: RelatedProject,
+    versions: CategorizedDisplayVersions,
 }
 
 #[derive(Template)]
