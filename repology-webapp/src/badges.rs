@@ -15,6 +15,9 @@ const CELL_FONT_SIZE: usize = 11;
 const CELL_HORIZONTAL_PADDING: usize = 5;
 const FONT_FAMILY: &str = "DejaVu Sans,Verdana,Geneva,sans-serif";
 
+// visual length is implied here, as we use it to account for ellipsis in truncated string
+const ELLIPSIS_VISUAL_WIDTH_CHARS: usize = 1;
+
 #[derive(Default)]
 #[expect(dead_code)]
 pub enum CellAlignment {
@@ -55,14 +58,19 @@ impl Cell {
     }
 
     pub fn truncate(mut self, length: usize) -> Self {
-        // XXX: copied from python impl, but change to 2 as it's
-        // visual width is much closer to 2 chars
-        const ELLIPSIS_LENGTH_CHARS: usize = 3;
-        if self.text.len() > length {
-            // this takes appended elipsis length into account
-            self.text
-                .truncate(length.max(ELLIPSIS_LENGTH_CHARS) - ELLIPSIS_LENGTH_CHARS);
-            self.text += "…";
+        let char_len = self.text.chars().count();
+        if char_len <= length {
+            return self;
+        }
+        for (char_pos, (byte_pos, _)) in self.text.char_indices().enumerate() {
+            if char_pos + ELLIPSIS_VISUAL_WIDTH_CHARS >= length {
+                self.text.truncate(byte_pos);
+                while self.text.ends_with('.') {
+                    self.text.pop();
+                }
+                self.text += "…";
+                return self;
+            }
         }
         self
     }
@@ -283,5 +291,45 @@ pub fn badge_color_for_package_status(
             Newest | Unique | Devel => "#4c1",
             _ => "#9f9f9f",
         }
+    }
+}
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_cell_truncate() {
+        // will need update if ELLIPSIS_VISUAL_WIDTH_CHARS is changed
+        assert_eq!(Cell::new("abcde").truncate(0).text, "…");
+        assert_eq!(Cell::new("abcde").truncate(1).text, "…");
+        assert_eq!(Cell::new("abcde").truncate(2).text, "a…");
+        assert_eq!(Cell::new("abcde").truncate(3).text, "ab…");
+        assert_eq!(Cell::new("abcde").truncate(4).text, "abc…");
+        assert_eq!(Cell::new("abcde").truncate(5).text, "abcde");
+        assert_eq!(Cell::new("abcde").truncate(6).text, "abcde");
+    }
+
+    #[test]
+    fn test_cell_truncate_dot() {
+        // don't leave handing dot before ellipsis
+        assert_eq!(
+            Cell::new("ab.cdefg")
+                .truncate(3 + ELLIPSIS_VISUAL_WIDTH_CHARS)
+                .text,
+            "ab…"
+        );
+    }
+
+    #[test]
+    fn test_cell_truncate_unicode() {
+        // make sure we are unicode aware and don't truncate mid-codepoint
+        assert_eq!(
+            Cell::new("абвгдеж")
+                .truncate(3 + ELLIPSIS_VISUAL_WIDTH_CHARS)
+                .text,
+            "абв…"
+        );
     }
 }
