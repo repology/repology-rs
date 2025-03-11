@@ -31,6 +31,7 @@ mod project_packages;
 mod project_related;
 mod project_report;
 mod project_versions;
+mod project_versions_compact;
 mod projects;
 mod repositories;
 mod repository;

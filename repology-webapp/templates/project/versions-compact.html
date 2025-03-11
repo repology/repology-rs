@@ -1,28 +1,37 @@
 {% extends "project/_base.html" %}
 
-{% block title %}{{ name }} package versions (compact view) - Repology{% endblock %}
-{% block header %}Versions (compact view) for <strong>{{ name }}</strong>{% endblock %}
-{% block description %}List of package versions (compact view) for project {{ name }} in all repositories{% endblock %}
+{% block title %}{{ project_name }} package versions (compact view) - Repology{% endblock %}
+{% block header %}Versions (compact view) for <strong>{{ project_name }}</strong>{% endblock %}
+{% block description %}List of package versions (compact view) for project {{ project_name }} in all repositories{% endblock %}
 
 {% block content %}
 <div class="container">
 
-<p><b>{{ packages|length }}</b> package(s) known</p>
+{% if let Some(source_project) = redirect_from %}
+<div class="alert alert-info" role="alert">
+	<p>You were redirected from project {{source_project}}, which was moved or merged here</p>
+</div>
+{% endif %}
+
+<p><b>{{ num_packages }}</b> package(s) known</p>
 
 <table class="table table-striped table-condensed">
 	<tr>
 		<th class="text-right">Repository</th>
 		<th class="text-left">Version(s)</th>
 	</tr>
-{% for reponame in repometadata.active_names() %}
-{% if reponame in versions %}
-	<tr id="{{ reponame }}">
+{% for repository_data in repositories_data.active_repositories() %}
+{% if let Some(versions) = versions_by_repo.get(repository_data.name) %}
+	<tr id="{{ repository_data.name }}">
 		<td class="text-right minimal-column">
-			<a href="{{ url_for(endpoint='repository', repo=reponame) }}">{{ repometadata[reponame].desc }}</a>
+			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_data.name.as_str())])? }}">{{ repository_data.title }}</a>
 		</td>
 		<td>
-		{% for version in versions[reponame] %}
-			<span class="version version-{{ version.versionclass|css_for_versionclass }}">{{ version.version }}</span>
+		{% for version in versions %}
+			<span class="version version-{{ version.status.as_ref() }}{% if version.recalled %} version-property-recalled{% endif %}">
+				{{- version.version -}}
+				{%- if version.vulnerable %}<span class="vulnerable">▲</span>{% endif -%}
+			</span>
 		{% endfor %}
 		</td>
 	</tr>

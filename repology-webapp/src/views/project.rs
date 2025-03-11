@@ -12,6 +12,7 @@ pub mod packages;
 pub mod related;
 pub mod report;
 pub mod versions;
+pub mod versions_compact;
 
 pub use badges::*;
 pub use cves::*;
@@ -21,3 +22,4 @@ pub use packages::*;
 pub use related::*;
 pub use report::*;
 pub use versions::*;
+pub use versions_compact::*;

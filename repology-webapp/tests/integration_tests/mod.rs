@@ -35,6 +35,7 @@ mod project_report;
 mod project_report_submission;
 mod project_report_submission_failures;
 mod project_versions;
+mod project_versions_compact;
 mod projects;
 mod repositories;
 mod repository;
