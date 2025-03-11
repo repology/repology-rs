@@ -8,6 +8,7 @@
 #![feature(duration_constructors)]
 #![feature(try_blocks)]
 #![feature(lock_value_accessors)]
+#![feature(iter_collect_into)]
 #![allow(clippy::module_inception)]
 
 mod badges;
@@ -188,6 +189,7 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
         .route(BadgeVersionForRepo.path(), get(views::badge_version_for_repo))
         .route(BadgeVerticalAllRepos.path(), get(views::badge_vertical_allrepos))
         .route(BadgeRepositoryBig.path(), get(views::badge_repository_big))
+        .route(BadgeVersionsMatrix.path(), get(views::badge_versions_matrix))
         .route(Docs.path(), get(views::docs))
         .route(DocsAbout.path(), get(views::docs_about))
         .route(DocsBots.path(), get(views::docs_bots))

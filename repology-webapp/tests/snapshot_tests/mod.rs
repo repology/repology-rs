@@ -7,6 +7,7 @@ mod badge_latest_versions;
 mod badge_repository_big;
 mod badge_tiny_repos;
 mod badge_version_for_repo;
+mod badge_versions_matrix;
 mod badge_vertical_allrepos;
 mod feed_maintainer_atom;
 mod feed_maintainer_html;
