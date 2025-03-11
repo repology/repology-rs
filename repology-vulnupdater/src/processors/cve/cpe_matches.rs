@@ -56,8 +56,9 @@ pub struct CpeMatches<'a> {
 }
 
 const OS_VENDOR_PRODUCT_WHITELIST: &[(&str, &str)] = &[
-    ("linux", "linux_kernel"),
+    ("coreboot", "coreboot"),
     ("linux", "linux"),
+    ("linux", "linux_kernel"),
     ("xen", "xen"),
 ];
 
