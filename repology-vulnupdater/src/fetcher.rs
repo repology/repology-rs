@@ -120,8 +120,12 @@ impl<'a> Paginator<'a> {
                 counter!("repology_vulnupdater_fetcher_requests_failed_total").increment(1)
             })?;
         let pagination: Pagination = serde_json::from_str(&text)?;
-        if (parse_utc_datetime(&pagination.timestamp)? - Utc::now()).abs() > MAX_TIME_OFFSET {
-            bail!("too big time offset between client and server");
+        let time_offset = parse_utc_datetime(&pagination.timestamp)? - Utc::now();
+        if time_offset.abs() > MAX_TIME_OFFSET {
+            bail!(
+                "too big time offset between client and server {}",
+                time_offset
+            );
         }
         self.start_index += pagination.results_per_page;
         self.total_results = Some(pagination.total_results);
