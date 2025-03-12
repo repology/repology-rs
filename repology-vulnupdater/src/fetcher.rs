@@ -124,7 +124,11 @@ impl<'a> Paginator<'a> {
         let client_time = Utc::now();
         let time_offset = (server_time - client_time).abs();
         if time_offset > MAX_TIME_OFFSET {
-            bail!(
+            // XXX: ATOW (2025-03-12) cves API timestamp is offset by 4 hours to the past,
+            // while cpes API timestamp is correct UTC time. So for now ignore time
+            // difference
+            //bail!(
+            tracing::error!(
                 "too big time offset ({}) between client ({:?}) and server ({:?})",
                 time_offset,
                 client_time,
