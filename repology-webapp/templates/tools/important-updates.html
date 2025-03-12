@@ -1,0 +1,43 @@
+{% extends "_base.html" %}
+{% from "_macros/time.html" import format_time_interval %}
+
+{% block title %}Important updates - Repology{% endblock %}
+{% block header %}Important updates{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<p>These are 100 updates of the most widely spread projects in the latest 24 hours.</p>
+<p>Note that version rollbacks are also included, so this is not yet production ready.</p>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th class="text-nowrap minimal-column">Project</th>
+			<th class="text-center text-nowrap minimal-column">Spread</th>
+			<th>Version(s)</th>
+			<th class="text-center text-nowrap minimal-column">Ago</th>
+		</tr>
+	</thead>
+	<tbody>
+	{% for update in updates %}
+		<tr>
+			<td class="text-nowrap minimal-column">
+				<a href="{{ url_for(endpoint='project_versions', name=update.effname) }}">{{ update.effname }}</a>
+			</td>
+			<td class="text-center text-nowrap minimal-column"><b>{{ update.spread }}</b></td>
+			<td>
+				{%- for version in update.versions -%}
+				<span class="version version-big version-newest">{{version }}</span>
+				{%- endfor -%}
+			</td>
+			<td class="text-nowrap minimal-column">
+				{{- format_time_interval(update.age) -}}
+			</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+</div> {#- container #}
+{% endblock %}
