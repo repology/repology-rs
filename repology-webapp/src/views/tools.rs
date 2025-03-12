@@ -3,6 +3,8 @@
 
 mod important_updates;
 mod project_by;
+mod trending;
 
 pub use important_updates::*;
 pub use project_by::*;
+pub use trending::*;

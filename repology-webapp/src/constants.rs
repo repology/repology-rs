@@ -16,8 +16,9 @@ pub const API_PROBLEMS_PER_PAGE: usize = 200;
 pub const PROJECTS_PER_PAGE: usize = 200;
 pub const REDIRECTS_PER_PAGE: usize = 200;
 pub const MAX_REPORTS: usize = 100;
-#[expect(unused)]
-pub const TRENDING_PER_PAGE: usize = 25;
+pub const TRENDING_PROJECTS_PERIOD: Duration = Duration::from_days(31);
+pub const DECLINING_PROJECTS_PERIOD: Duration = Duration::from_days(91);
+pub const MAX_TRENDING_PROJECTS: usize = 25;
 #[expect(unused)]
 pub const TURNOVER_PER_PAGE: usize = 350;
 pub const HTML_FEED_MAX_ENTRIES: usize = 500;

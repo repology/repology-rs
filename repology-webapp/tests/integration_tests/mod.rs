@@ -43,4 +43,5 @@ mod repository;
 mod security;
 mod static_file;
 mod tool_project_by;
+mod trending;
 mod trivial_pages;

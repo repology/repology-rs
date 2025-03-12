@@ -38,4 +38,5 @@ mod repositories;
 mod repository;
 mod security;
 mod tool_project_by;
+mod trending;
 mod trivial_pages;

@@ -1,11 +1,13 @@
 {% extends "_base.html" %}
-{% from "_macros/time.html" import format_time_interval %}
+{% import "_macros/time.html" as time %}
+{% import "_macros/autorefresh.html" as autorefresh %}
+
+{% block extrameta %}
+{% call autorefresh::enable_autorefresh(600) %}
+{% endblock %}
 
 {% block title %}Trending projects - Repology{% endblock %}
 {% block header %}Trending projects{% endblock %}
-
-{% block content %}
-<div class="container">
 
 {% macro trending_table(projects) -%}
 		<table class="table table-striped">
@@ -17,40 +19,45 @@
 				</tr>
 			</thead>
 			<tbody>
-			{% for project in projects %}
+			{%- for project in projects %}
 				<tr>
 					<td class="text-center text-nowrap minimal-column">
 					{%- if project.delta > 0 -%}
-						<b class="delta-positive">▲</b><b>{{ project.delta|abs }}</b>
-					{%- elif project.delta < 0 -%}
-						<b class="delta-negative">▼</b><b>{{ project.delta|abs }}</b>
+						<b class="delta-positive">▲</b><b>{{ project.delta.abs() }}</b>
+					{%- else if project.delta < 0 -%}
+						<b class="delta-negative">▼</b><b>{{ project.delta.abs() }}</b>
 					{%- endif -%}
 					</td>
 					<td>{#--#}
-						<a href="{{ url_for(endpoint='project_versions', name=project.effname) }}">{{ project.effname }}</a>
+						<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project.project_name.as_str())])? }}">{{ project.project_name }}</a>
 					{%- if project.has_related -%}
-						<a href="{{ url_for(endpoint='project_related', name=project.effname) }}">∗</a>
+						<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", project.project_name.as_str())])? }}">∗</a>
 					{%- endif -%}
 					</td>
 					<td>
-						{{- format_time_interval(project.age_since_last_change) -}}
+						{%- call time::format_time_interval(Utc::now() - project.last_change_timestamp) -%}
 					</td>
 				</tr>
-			{% endfor %}
+			{%- endfor %}
 			</tbody>
 		</table>
 {%- endmacro %}
 
+{% block content %}
+<div class="container">
+
+{% call autorefresh::autorefresh_toggler() %}
+
 <div class="row">
 	<div class="col-md-6">
 		<h3>Trending past month</h3>
-		{{ trending_table(trending) }}
+		{% call trending_table(trending_projects) %}
 	</div>
 	<div class="col-md-6">
 		<h3>Declining past 3 months</h3>
-		{{ trending_table(declining) }}
+		{% call trending_table(declining_projects) %}
 	</div>
 </div>
 
-</div> {#- container #}
+</div>
 {% endblock %}
