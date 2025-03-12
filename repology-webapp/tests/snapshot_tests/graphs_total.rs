@@ -3,28 +3,33 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_packages(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/total/packages.svg").await;
+    let response = Request::new(pool, "/graph/total/packages.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_projects(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/total/projects.svg").await;
+    let response = Request::new(pool, "/graph/total/projects.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_maintainers(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/total/maintainers.svg").await;
+    let response = Request::new(pool, "/graph/total/maintainers.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_problems(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/total/problems.svg").await;
+    let response = Request::new(pool, "/graph/total/problems.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

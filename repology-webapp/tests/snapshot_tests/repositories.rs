@@ -3,71 +3,85 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics").await;
+    let response = Request::new(pool, "/repositories/statistics").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics_sorted_newest(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics/newest").await;
+    let response = Request::new(pool, "/repositories/statistics/newest").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics_sorted_pnewest(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics/pnewest").await;
+    let response = Request::new(pool, "/repositories/statistics/pnewest").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics_sorted_outdated(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics/outdated").await;
+    let response = Request::new(pool, "/repositories/statistics/outdated").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics_sorted_poutdated(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics/poutdated").await;
+    let response = Request::new(pool, "/repositories/statistics/poutdated").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics_sorted_total(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics/total").await;
+    let response = Request::new(pool, "/repositories/statistics/total").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics_sorted_nonunique(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics/nonunique").await;
+    let response = Request::new(pool, "/repositories/statistics/nonunique").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics_sorted_vulnerable(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics/vulnerable").await;
+    let response = Request::new(pool, "/repositories/statistics/vulnerable").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_statistics_sorted_pvulnerable(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/statistics/pvulnerable").await;
+    let response = Request::new(pool, "/repositories/statistics/pvulnerable").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_packages(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/packages").await;
+    let response = Request::new(pool, "/repositories/packages").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_graphs(pool: PgPool) {
-    uri_snapshot_test(pool, "/repositories/graphs").await;
+    let response = Request::new(pool, "/repositories/graphs").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_updates(pool: PgPool) {
     // TODO: add some more fixure data, otherwise we're just testing an empty list
-    uri_snapshot_test(pool, "/repositories/updates").await;
+    let response = Request::new(pool, "/repositories/updates").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
 async fn test_repositories_fields(pool: PgPool) {
     // TODO: add some more fixure data, otherwise we're just testing an empty list
-    uri_snapshot_test(pool, "/repositories/fields").await;
+    let response = Request::new(pool, "/repositories/fields").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

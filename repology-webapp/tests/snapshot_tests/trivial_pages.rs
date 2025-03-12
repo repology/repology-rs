@@ -3,49 +3,59 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_api(pool: PgPool) {
-    uri_snapshot_test(pool, "/api").await;
+    let response = Request::new(pool, "/api").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_api_v1(pool: PgPool) {
-    uri_snapshot_test(pool, "/api/v1").await;
+    let response = Request::new(pool, "/api/v1").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_docs_about(pool: PgPool) {
-    uri_snapshot_test(pool, "/docs/about").await;
+    let response = Request::new(pool, "/docs/about").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_docs_bots(pool: PgPool) {
-    uri_snapshot_test(pool, "/docs/bots").await;
+    let response = Request::new(pool, "/docs/bots").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_docs(pool: PgPool) {
-    uri_snapshot_test(pool, "/docs").await;
+    let response = Request::new(pool, "/docs").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_docs_not_supported(pool: PgPool) {
-    uri_snapshot_test(pool, "/docs/not_supported").await;
+    let response = Request::new(pool, "/docs/not_supported").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_docs_requirements(pool: PgPool) {
-    uri_snapshot_test(pool, "/docs/requirements").await;
+    let response = Request::new(pool, "/docs/requirements").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_news(pool: PgPool) {
-    uri_snapshot_test(pool, "/news").await;
+    let response = Request::new(pool, "/news").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_tools(pool: PgPool) {
-    uri_snapshot_test(pool, "/tools").await;
+    let response = Request::new(pool, "/tools").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

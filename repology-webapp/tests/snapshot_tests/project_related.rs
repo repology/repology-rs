@@ -3,29 +3,35 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/nonexistent/related").await;
+    let response = Request::new(pool, "/project/nonexistent/related").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_orphaned(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/orphaned/related").await;
+    let response = Request::new(pool, "/project/orphaned/related").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_no_relations(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/zsh/related").await;
+    let response = Request::new(pool, "/project/zsh/related").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_has_relations_a(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/gcc/related").await;
+    let response = Request::new(pool, "/project/gcc/related").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "related_data"))]
 async fn test_has_relations_b(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/binutils/related").await;
+    let response = Request::new(pool, "/project/binutils/related").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

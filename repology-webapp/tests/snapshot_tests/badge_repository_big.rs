@@ -3,39 +3,47 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "badge_repository_big_data"))]
 async fn test_missing_extension(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/repository-big/nonexistent").await;
+    let response = Request::new(pool, "/badge/repository-big/nonexistent").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "badge_repository_big_data"))]
 async fn test_nonexistent_repository(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/repository-big/nonexistent.svg").await;
+    let response = Request::new(pool, "/badge/repository-big/nonexistent.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "badge_repository_big_data"))]
 async fn test_legacy_repository(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/repository-big/ubuntu_10.svg").await;
+    let response = Request::new(pool, "/badge/repository-big/ubuntu_10.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "badge_repository_big_data"))]
 async fn test_active_repository_without_packages(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/repository-big/freshcode.svg").await;
+    let response = Request::new(pool, "/badge/repository-big/freshcode.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "badge_repository_big_data"))]
 async fn test_active_repository(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/repository-big/freebsd.svg").await;
+    let response = Request::new(pool, "/badge/repository-big/freebsd.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "badge_repository_big_data"))]
 async fn test_header_custom(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/repository-big/freebsd.svg?header=FreeBSD").await;
+    let response = Request::new(pool, "/badge/repository-big/freebsd.svg?header=FreeBSD").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "badge_repository_big_data"))]
 async fn test_header_empty(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/repository-big/freebsd.svg?header=").await;
+    let response = Request::new(pool, "/badge/repository-big/freebsd.svg?header=").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

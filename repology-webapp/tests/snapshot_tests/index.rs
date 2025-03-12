@@ -3,9 +3,11 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_index(pool: PgPool) {
-    uri_snapshot_test(pool, "/").await;
+    let response = Request::new(pool, "/").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

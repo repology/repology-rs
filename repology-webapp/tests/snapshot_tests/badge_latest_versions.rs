@@ -3,34 +3,41 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_versions_data"))]
 async fn test_missing_extension(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/latest-versions/nonexistent").await;
+    let response = Request::new(pool, "/badge/latest-versions/nonexistent").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_versions_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/latest-versions/nonexistent.svg").await;
+    let response = Request::new(pool, "/badge/latest-versions/nonexistent.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_versions_data"))]
 async fn test_multiple_versions(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/latest-versions/zsh.svg").await;
+    let response = Request::new(pool, "/badge/latest-versions/zsh.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_versions_data"))]
 async fn test_single_version(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/latest-versions/bash.svg").await;
+    let response = Request::new(pool, "/badge/latest-versions/bash.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_versions_data"))]
 async fn test_header_custom(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/latest-versions/zsh.svg?header=VERSIONS").await;
+    let response = Request::new(pool, "/badge/latest-versions/zsh.svg?header=VERSIONS").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("badge_versions_data"))]
 async fn test_header_empty(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/latest-versions/zsh.svg?header=").await;
+    let response = Request::new(pool, "/badge/latest-versions/zsh.svg?header=").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

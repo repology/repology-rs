@@ -3,34 +3,41 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_version_only_for_repo(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/version-only-for-repo/foo/bar.svg").await;
+    let response = Request::new(pool, "/badge/version-only-for-repo/foo/bar.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_version_only_for_repo_with_title(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/version-only-for-repo/foo/bar.svg?header=baz").await;
+    let response = Request::new(pool, "/badge/version-only-for-repo/foo/bar.svg?header=baz").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_project_root(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/zsh").await;
+    let response = Request::new(pool, "/project/zsh").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_metapackage(pool: PgPool) {
-    uri_snapshot_test(pool, "/metapackage/zsh").await;
+    let response = Request::new(pool, "/metapackage/zsh").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_metapackage_versions(pool: PgPool) {
-    uri_snapshot_test(pool, "/metapackage/zsh/versions").await;
+    let response = Request::new(pool, "/metapackage/zsh/versions").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_metapackage_packages(pool: PgPool) {
-    uri_snapshot_test(pool, "/metapackage/zsh/packages").await;
+    let response = Request::new(pool, "/metapackage/zsh/packages").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

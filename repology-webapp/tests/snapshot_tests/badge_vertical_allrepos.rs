@@ -3,16 +3,19 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_missing_extension(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh").await;
+    let response = Request::new(pool, "/badge/vertical-allrepos/zsh").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_base(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg").await;
+    let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 mod test_header {
@@ -20,38 +23,45 @@ mod test_header {
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_custom(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?header=Packages").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?header=Packages").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_custom_empty(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?header=").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?header=").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_no_packages(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/unpackaged.svg").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/unpackaged.svg").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_no_packages_custom(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/unpackaged.svg?header=Packages").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/unpackaged.svg?header=Packages").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_no_packages_custom_empty(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/unpackaged.svg?header=").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/unpackaged.svg?header=").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_allow_ignored(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?allow_ignored=1").await;
+    let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?allow_ignored=1").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_minversion(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?minversion=1.0").await;
+    let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?minversion=1.0").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 mod test_repository_filters {
@@ -59,26 +69,31 @@ mod test_repository_filters {
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_exclude_unsupported(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?exclude_unsupported=1").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?exclude_unsupported=1").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_exclude_sources_site(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?exclude_sources=site").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?exclude_sources=site").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_exclude_sources_repositry(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?exclude_sources=repository").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?exclude_sources=repository").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 
     #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
     async fn test_exclude_sources_many(pool: PgPool) {
-        uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?exclude_sources=repository,site").await;
+        let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?exclude_sources=repository,site").perform().await;
+        assert_snapshot!(response.as_snapshot().unwrap());
     }
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages"))]
 async fn test_columns(pool: PgPool) {
-    uri_snapshot_test(pool, "/badge/vertical-allrepos/zsh.svg?columns=4").await;
+    let response = Request::new(pool, "/badge/vertical-allrepos/zsh.svg?columns=4").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

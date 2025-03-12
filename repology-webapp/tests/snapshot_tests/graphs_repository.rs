@@ -3,106 +3,124 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_problems_nonexistent_repository(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/unknown/problems.svg").await;
+    let response = Request::new(pool, "/graph/repo/unknown/problems.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_problems_legacy_repository(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/ubuntu_10/problems.svg").await;
+    let response = Request::new(pool, "/graph/repo/ubuntu_10/problems.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_problems(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/problems.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/problems.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_maintainers(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/maintainers.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/maintainers.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_total(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_total.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_total.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_unique(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_unique.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_unique.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_unique_percent(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_unique_percent.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_unique_percent.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_newest(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_newest.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_newest.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_newest_percent(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_newest_percent.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_newest_percent.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_outdated(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_outdated.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_outdated.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_outdated_percent(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_outdated_percent.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_outdated_percent.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_problematic(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_problematic.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_problematic.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_problematic_percent(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_problematic_percent.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_problematic_percent.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_vulnerable(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_vulnerable.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_vulnerable.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_vulnerable_percent(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_vulnerable_percent.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_vulnerable_percent.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_problems_per_projects(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/problems_per_1000_projects.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/problems_per_1000_projects.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[ignore]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories.sql", "graphs_data.sql"))]
 async fn test_projects_per_maintainer(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/repo/freebsd/projects_per_maintainer.svg").await;
+    let response = Request::new(pool, "/graph/repo/freebsd/projects_per_maintainer.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

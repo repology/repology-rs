@@ -3,14 +3,17 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("project_cves_data"))]
 async fn test_recent_cves(pool: PgPool) {
-    uri_snapshot_test(pool, "/security/recent-cves").await;
+    let response = Request::new(pool, "/security/recent-cves").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("project_cves_data"))]
 async fn test_recent_cpes(pool: PgPool) {
-    uri_snapshot_test(pool, "/security/recent-cpes").await;
+    let response = Request::new(pool, "/security/recent-cpes").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

@@ -3,14 +3,17 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_maintainer(pool: PgPool) {
-    uri_snapshot_test(pool, "/opensearch/maintainer.xml").await;
+    let response = Request::new(pool, "/opensearch/maintainer.xml").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_project(pool: PgPool) {
-    uri_snapshot_test(pool, "/opensearch/project.xml").await;
+    let response = Request::new(pool, "/opensearch/project.xml").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

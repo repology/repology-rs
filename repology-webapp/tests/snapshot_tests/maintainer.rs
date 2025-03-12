@@ -3,34 +3,41 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainer/nonexistent@example.com").await;
+    let response = Request::new(pool, "/maintainer/nonexistent@example.com").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_orphaned(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainer/orphaned@example.com").await;
+    let response = Request::new(pool, "/maintainer/orphaned@example.com").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_orphaned_in_future(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainer/orphaned-in-future@example.com").await;
+    let response = Request::new(pool, "/maintainer/orphaned-in-future@example.com").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_active(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainer/active@example.com").await;
+    let response = Request::new(pool, "/maintainer/active@example.com").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_fallback(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainer/fallback-mnt-foo@repology").await;
+    let response = Request::new(pool, "/maintainer/fallback-mnt-foo@repology").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_no_vuln_column(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainer/no-vuln-column@example.com").await;
+    let response = Request::new(pool, "/maintainer/no-vuln-column@example.com").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

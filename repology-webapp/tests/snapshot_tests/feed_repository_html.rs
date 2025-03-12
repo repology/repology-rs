@@ -3,14 +3,17 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "repository_feed_data"))]
 async fn test_nonexistent_repository(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/nonexistent/feed").await;
+    let response = Request::new(pool, "/repository/nonexistent/feed").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "repository_feed_data"))]
 async fn test_base(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/freebsd/feed").await;
+    let response = Request::new(pool, "/repository/freebsd/feed").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

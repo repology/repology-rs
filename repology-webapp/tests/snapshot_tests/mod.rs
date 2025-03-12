@@ -39,12 +39,3 @@ mod repository;
 mod security;
 mod tool_project_by;
 mod trivial_pages;
-
-use sqlx::PgPool;
-
-use repology_webapp_test_utils::Request;
-
-#[track_caller]
-async fn uri_snapshot_test(pool: PgPool, uri: &str) {
-    insta::assert_snapshot!(uri, Request::new(pool, uri).perform().await.as_snapshot().unwrap());
-}

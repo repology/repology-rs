@@ -3,39 +3,47 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/nonexistent/cves").await;
+    let response = Request::new(pool, "/project/nonexistent/cves").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_orphaned_without_cves(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/orphaned-without-cves/cves").await;
+    let response = Request::new(pool, "/project/orphaned-without-cves/cves").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_orphaned_with_cves(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/orphaned-with-cves/cves").await;
+    let response = Request::new(pool, "/project/orphaned-with-cves/cves").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_ranges(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/manyranges/cves").await;
+    let response = Request::new(pool, "/project/manyranges/cves").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_version_not_highlighted(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/tworanges/cves").await;
+    let response = Request::new(pool, "/project/tworanges/cves").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_open_range_version_not_highlighted(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/tworanges/cves?version=1.3").await;
+    let response = Request::new(pool, "/project/tworanges/cves?version=1.3").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_cves_data"))]
 async fn test_version_highlighted(pool: PgPool) {
-    uri_snapshot_test(pool, "/project/tworanges/cves?version=1.4").await;
+    let response = Request::new(pool, "/project/tworanges/cves?version=1.4").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

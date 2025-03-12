@@ -3,29 +3,35 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_base(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainers/").await;
+    let response = Request::new(pool, "/maintainers/").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_pagination_from(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainers/aaa/").await;
+    let response = Request::new(pool, "/maintainers/aaa/").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_pagination_to(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainers/..zzz/").await;
+    let response = Request::new(pool, "/maintainers/..zzz/").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_search(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainers/?search=ctiv").await;
+    let response = Request::new(pool, "/maintainers/?search=ctiv").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_search_nomatch(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainers/?search=nonononono").await;
+    let response = Request::new(pool, "/maintainers/?search=nonononono").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

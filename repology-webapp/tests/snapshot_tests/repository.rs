@@ -3,29 +3,35 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/nonexistent").await;
+    let response = Request::new(pool, "/repository/nonexistent").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_orphaned(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/orphaned").await;
+    let response = Request::new(pool, "/repository/orphaned").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_empty(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/empty").await;
+    let response = Request::new(pool, "/repository/empty").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_stripped(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/stripped").await;
+    let response = Request::new(pool, "/repository/stripped").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("repository_data"))]
 async fn test_normal(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/good").await;
+    let response = Request::new(pool, "/repository/good").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

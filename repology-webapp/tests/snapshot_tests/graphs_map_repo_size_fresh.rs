@@ -3,30 +3,36 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR")]
 async fn test_empty(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/map_repo_size_fresh.svg").await;
+    let response = Request::new(pool, "/graph/map_repo_size_fresh.svg").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_normal(pool: PgPool) {
     // XXX: forcing different different url
-    uri_snapshot_test(pool, "/graph/map_repo_size_fresh.svg?").await;
+    let response = Request::new(pool, "/graph/map_repo_size_fresh.svg?").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_limited(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/map_repo_size_fresh.svg?xlimit=10000&ylimit=10000").await;
+    let response = Request::new(pool, "/graph/map_repo_size_fresh.svg?xlimit=10000&ylimit=10000").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_over_limited(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/map_repo_size_fresh.svg?xlimit=1&ylimit=1").await;
+    let response = Request::new(pool, "/graph/map_repo_size_fresh.svg?xlimit=1&ylimit=1").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_map_data.sql"))]
 async fn test_zero_limited(pool: PgPool) {
-    uri_snapshot_test(pool, "/graph/map_repo_size_fresh.svg?xlimit=0&ylimit=0").await;
+    let response = Request::new(pool, "/graph/map_repo_size_fresh.svg?xlimit=0&ylimit=0").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

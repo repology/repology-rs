@@ -3,44 +3,53 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_pagination_from(pool: PgPool) {
-    uri_snapshot_test(pool, "/projects/pkg_foo/").await;
+    let response = Request::new(pool, "/projects/pkg_foo/").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_pagination_to(pool: PgPool) {
-    uri_snapshot_test(pool, "/projects/..pkg_foo/").await;
+    let response = Request::new(pool, "/projects/..pkg_foo/").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_search_a(pool: PgPool) {
-    uri_snapshot_test(pool, "/projects/?search=bar").await;
+    let response = Request::new(pool, "/projects/?search=bar").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_search_b(pool: PgPool) {
-    uri_snapshot_test(pool, "/projects/?search=foo").await;
+    let response = Request::new(pool, "/projects/?search=foo").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_inrepo(pool: PgPool) {
-    uri_snapshot_test(pool, "/projects/?inrepo=ubuntu_12").await;
+    let response = Request::new(pool, "/projects/?inrepo=ubuntu_12").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_notinrepo(pool: PgPool) {
-    uri_snapshot_test(pool, "/projects/?notinrepo=ubuntu_12").await;
+    let response = Request::new(pool, "/projects/?notinrepo=ubuntu_12").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_inrepo_newest(pool: PgPool) {
-    uri_snapshot_test(pool, "/projects/?inrepo=ubuntu_12&newest=1").await;
+    let response = Request::new(pool, "/projects/?inrepo=ubuntu_12&newest=1").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_inrepo_outdated(pool: PgPool) {
-    uri_snapshot_test(pool, "/projects/?inrepo=ubuntu_12&outdated=1").await;
+    let response = Request::new(pool, "/projects/?inrepo=ubuntu_12&outdated=1").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

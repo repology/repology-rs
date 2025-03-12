@@ -3,49 +3,49 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/nonexistent").await;
+    let response = Request::new(pool, "/link/https://example.com/nonexistent").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_not_checked(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/not-checked").await;
+    let response = Request::new(pool, "/link/https://example.com/not-checked").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_ipv4_failure(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/ipv4-failure").await;
+    let response = Request::new(pool, "/link/https://example.com/ipv4-failure").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_ipv4_success(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/ipv4-success").await;
+    let response = Request::new(pool, "/link/https://example.com/ipv4-success").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_ipv4_redirect(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/ipv4-redirect").await;
+    let response = Request::new(pool, "/link/https://example.com/ipv4-redirect").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_ipv6_failure(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/ipv6-failure").await;
+    let response = Request::new(pool, "/link/https://example.com/ipv6-failure").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_ipv6_success(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/ipv6-success").await;
+    let response = Request::new(pool, "/link/https://example.com/ipv6-success").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_ipv6_redirect(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/ipv6-redirect").await;
+    let response = Request::new(pool, "/link/https://example.com/ipv6-redirect").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_ssl_failure(pool: PgPool) {
-    uri_snapshot_test(pool, "/link/https://example.com/ssl-failure").await;
+    let response = Request::new(pool, "/link/https://example.com/ssl-failure").perform().await; assert_snapshot!(response.as_snapshot().unwrap());
 }

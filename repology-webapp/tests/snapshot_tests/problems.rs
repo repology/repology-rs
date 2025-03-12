@@ -3,24 +3,29 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "problems_data"))]
 async fn test_repository_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/nonexistent/problems").await;
+    let response = Request::new(pool, "/repository/nonexistent/problems").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "problems_data"))]
 async fn test_repository_normal(pool: PgPool) {
-    uri_snapshot_test(pool, "/repository/freebsd/problems").await;
+    let response = Request::new(pool, "/repository/freebsd/problems").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "problems_data"))]
 async fn test_maintainer_nonexistent_repository(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainer/johndoe@example.com/problems-for-repo/nonexistent").await;
+    let response = Request::new(pool, "/maintainer/johndoe@example.com/problems-for-repo/nonexistent").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "common_packages", "problems_data"))]
 async fn test_maintainer_normal(pool: PgPool) {
-    uri_snapshot_test(pool, "/maintainer/johndoe@example.com/problems-for-repo/freebsd").await;
+    let response = Request::new(pool, "/maintainer/johndoe@example.com/problems-for-repo/freebsd").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }

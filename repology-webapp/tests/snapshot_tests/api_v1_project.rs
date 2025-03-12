@@ -3,24 +3,29 @@
 
 use sqlx::PgPool;
 
-use super::uri_snapshot_test;
+use insta::assert_snapshot;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_nonexistent(pool: PgPool) {
-    uri_snapshot_test(pool, "/api/v1/project/nonexistent").await;
+    let response = Request::new(pool, "/api/v1/project/nonexistent").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_full(pool: PgPool) {
-    uri_snapshot_test(pool, "/api/v1/project/full").await;
+    let response = Request::new(pool, "/api/v1/project/full").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_minimal(pool: PgPool) {
-    uri_snapshot_test(pool, "/api/v1/project/minimal").await;
+    let response = Request::new(pool, "/api/v1/project/minimal").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("api_data"))]
 async fn test_vulnerable(pool: PgPool) {
-    uri_snapshot_test(pool, "/api/v1/project/vulnerable").await;
+    let response = Request::new(pool, "/api/v1/project/vulnerable").perform().await;
+    assert_snapshot!(response.as_snapshot().unwrap());
 }
