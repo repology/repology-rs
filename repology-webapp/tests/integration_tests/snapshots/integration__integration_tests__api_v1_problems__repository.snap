@@ -1,7 +1,6 @@
 ---
 source: repology-webapp/tests/integration_tests/api_v1_problems.rs
 expression: response.json().unwrap()
-snapshot_kind: text
 ---
 [
   {
