@@ -19,8 +19,6 @@ pub const MAX_REPORTS: usize = 100;
 pub const TRENDING_PROJECTS_PERIOD: Duration = Duration::from_days(31);
 pub const DECLINING_PROJECTS_PERIOD: Duration = Duration::from_days(91);
 pub const MAX_TRENDING_PROJECTS: usize = 25;
-#[expect(unused)]
-pub const TURNOVER_PER_PAGE: usize = 350;
 pub const HTML_FEED_MAX_ENTRIES: usize = 500;
 pub const ATOM_FEED_MAX_ENTRIES: usize = 500;
 pub const ATOM_FEED_MAX_AGE: Duration = Duration::from_days(31);
