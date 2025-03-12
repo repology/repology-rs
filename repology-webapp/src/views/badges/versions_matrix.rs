@@ -124,8 +124,8 @@ impl VersionRestriction<'_> {
 /// three parts - left hand side, operator, and right hand side. Allowed
 /// operators are `>=`, `>`, `<=`, and `<`.
 fn split_inequality(text: &str) -> Option<(&str, &str, &str)> {
-    if let Some(op_pos) = text.find(|c| c == '<' || c == '>') {
-        let op_len: usize = if text.bytes().nth(op_pos + 1) == Some(b'=') {
+    if let Some(op_pos) = text.find(['<', '>']) {
+        let op_len: usize = if text.as_bytes().get(op_pos + 1) == Some(&b'=') {
             2
         } else {
             1
@@ -160,7 +160,7 @@ pub async fn badge_versions_matrix(
                 _ => unreachable!(),
             });
         } else {
-            project_names.push(&project);
+            project_names.push(project);
             project_version_restrictions.push(VersionRestriction::None);
         }
     }
@@ -196,7 +196,7 @@ pub async fn badge_versions_matrix(
         .map(|(project_name, packages)| {
             (
                 project_name.as_str(),
-                pick_representative_package_per_repository(&packages, false),
+                pick_representative_package_per_repository(packages, false),
             )
         })
         .collect();

@@ -157,7 +157,7 @@ async fn maintainers_generic(
     let maintainers = maintainers
         .into_iter()
         .filter_map(|maintainer| {
-            let Some(best_repository) = maintainer.per_repository_counters.0.into_iter().max_by(
+            let best_repository = maintainer.per_repository_counters.0.into_iter().max_by(
                 |(repository_name_a, repository_counters_a),
                  (repository_name_b, repository_counters_b)| {
                     repository_counters_a
@@ -181,11 +181,9 @@ async fn maintainers_generic(
 
                             num_projects_newest_a.cmp(&num_projects_newest_b)
                         })
-                        .then_with(|| repository_name_a.cmp(&repository_name_b))
+                        .then_with(|| repository_name_a.cmp(repository_name_b))
                 },
-            ) else {
-                return None;
-            };
+            )?;
 
             Some(Maintainer {
                 name: maintainer.name,

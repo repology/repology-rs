@@ -194,7 +194,7 @@ pub async fn get_important_projects(pool: &PgPool) -> Result<Vec<ProjectListItem
         WHERE effname = ANY($1)
         ORDER BY effname
     "})
-    .bind(&IMPORTANT_PROJECTS)
+    .bind(IMPORTANT_PROJECTS)
     .fetch_all(pool)
     .await?;
 
@@ -214,7 +214,7 @@ pub async fn get_important_projects(pool: &PgPool) -> Result<Vec<ProjectListItem
         FROM packages
         WHERE effname = ANY($1)
     "})
-    .bind(&IMPORTANT_PROJECTS)
+    .bind(IMPORTANT_PROJECTS)
     .fetch_all(pool)
     .await?;
 

@@ -129,7 +129,7 @@ pub async fn project_versions_compact(
                 packages
                     .into_iter()
                     .map(|package| DisplayVersion::from_package(&package))
-                    .sorted_by(|a, b| a.cmp(&b).reverse())
+                    .sorted_by(|a, b| a.cmp(b).reverse())
                     .dedup()
                     .collect(),
             )
