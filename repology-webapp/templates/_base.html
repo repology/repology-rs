@@ -53,9 +53,6 @@
 				<li{% if ctx.is_section(crate::endpoints::Section::Security) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::SecurityRecentCves, [])? }}">Security</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				{% if ctx.experimental_enabled() %}
-				<li{% if ctx.is_section(crate::endpoints::Section::Experimental) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Experimental, [])? }}">Experimental</a></li>
-				{% endif %}
 				<li{% if ctx.is_section(crate::endpoints::Section::News) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::News, [])? }}">News</a></li>
 				<li{% if ctx.is_section(crate::endpoints::Section::Docs) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Docs, [])? }}">Docs</a></li>
 			</ul>

@@ -3,12 +3,12 @@
 
 mod common;
 
-pub mod map;
-pub mod repository_absolute;
-pub mod repository_misc;
-pub mod repository_percent_comparable;
-pub mod repository_percent_total;
-pub mod total;
+mod map;
+mod repository_absolute;
+mod repository_misc;
+mod repository_percent_comparable;
+mod repository_percent_total;
+mod total;
 
 pub use map::*;
 pub use repository_absolute::*;

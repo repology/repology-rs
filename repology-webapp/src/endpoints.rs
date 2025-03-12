@@ -242,14 +242,6 @@ pub enum Endpoint {
     #[strum(props(path = "/tools/trending", section = "Tools"))]
     Trending,
 
-    // Experimental
-    #[strum(props(path = "/experimental/", section = "Experimental"))] // GET + POST
-    Experimental,
-    #[strum(props(path = "/experimental/turnover/maintainers", section = "Experimental"))]
-    MaintainersTurnover,
-    #[strum(props(path = "/experimental/distromap", section = "Experimental"))]
-    Distromap,
-
     // Sitemaps
     #[strum(props(path = "/sitemaps/index.xml"))]
     SitemapIndex,

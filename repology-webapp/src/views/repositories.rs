@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pub mod fields;
-pub mod graphs;
-pub mod packages;
-pub mod statistics;
-pub mod updates;
+mod fields;
+mod graphs;
+mod packages;
+mod statistics;
+mod updates;
 
 pub use fields::*;
 pub use graphs::*;

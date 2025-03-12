@@ -1,18 +1,18 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-pub mod common;
-pub mod nonexistent;
+mod common;
+mod nonexistent;
 
-pub mod badges;
-pub mod cves;
-pub mod history;
-pub mod information;
-pub mod packages;
-pub mod related;
-pub mod report;
-pub mod versions;
-pub mod versions_compact;
+mod badges;
+mod cves;
+mod history;
+mod information;
+mod packages;
+mod related;
+mod report;
+mod versions;
+mod versions_compact;
 
 pub use badges::*;
 pub use cves::*;
