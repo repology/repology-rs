@@ -258,9 +258,7 @@ pub enum Endpoint {
 
 #[derive(EnumString, Clone, Copy, PartialEq, Eq)]
 pub enum Section {
-    Admin,
     Docs,
-    Experimental,
     Maintainers,
     News,
     Projects,
