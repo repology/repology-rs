@@ -9,7 +9,8 @@
 <ul>
 	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::ToolProjectBy, [])? }}">Project by package name</a> - generate link to Repology project pages and badges by given package name in specific repository</li>
 	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Trending, [])? }}">Trending and declining projects</a> - list of projects added to or removed from a lot of repositories recently</li>
+	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::ImportantUpdates, [])? }}">Important updates</a> - new releases of most widely spread projects</li>
 </ul>
 
-</div> {#- container #}
+</div>
 {% endblock %}
