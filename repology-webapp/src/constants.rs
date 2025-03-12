@@ -36,3 +36,4 @@ pub const REPOSITORY_TOP_SIZE: usize = 10;
 pub const MIN_REPOSITORY_SIZE_FOR_TOP: usize = 1000;
 pub const IMPORTANT_UPDATES_AGE: Duration = Duration::from_days(1);
 pub const IMPORTANT_UPDATES_MAX_COUNT: usize = 100;
+pub const MAX_SITEMAP_ITEMS: usize = 50000; // as per spec

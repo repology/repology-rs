@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<sitemap><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::SitemapMain, [])? }}</loc></sitemap>
+<sitemap><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::SitemapRepositories, [])? }}</loc></sitemap>
+<sitemap><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::SitemapMaintainers, [])? }}</loc></sitemap>
+<sitemap><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::SitemapProjects, [])? }}</loc></sitemap>
+</sitemapindex>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for project_name in project_names %}
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name.as_str())])? }}</loc><changefreq>daily</changefreq></url>
+{%- endfor %}
+</urlset>

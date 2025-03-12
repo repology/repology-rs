@@ -41,6 +41,7 @@ mod projects;
 mod repositories;
 mod repository;
 mod security;
+mod sitemaps;
 mod static_file;
 mod tool_project_by;
 mod trending;

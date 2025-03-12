@@ -236,10 +236,6 @@ pub enum Endpoint {
     #[strum(props(path = "/metapackage/{project_name}/packages"))]
     LegacyMetapackagePackages,
 
-    //
-    // not implemented yet
-    //
-
     // Sitemaps
     #[strum(props(path = "/sitemaps/index.xml"))]
     SitemapIndex,
@@ -249,8 +245,7 @@ pub enum Endpoint {
     SitemapRepositories,
     #[strum(props(path = "/sitemaps/maintainers.xml"))]
     SitemapMaintainers,
-    // XXX: this path from flask is not compatible with axum, replace
-    #[strum(props(path = "/sitemaps/projects_{page}.xml"))]
+    #[strum(props(path = "/sitemaps/projects.xml"))]
     SitemapProjects,
 }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::Docs, [])? }}</loc><changefreq>weekly</changefreq></url>
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::DocsAbout, [])? }}</loc><changefreq>weekly</changefreq></url>
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::DocsRequirements, [])? }}</loc><changefreq>weekly</changefreq></url>
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::ApiV1, [])? }}</loc><changefreq>weekly</changefreq></url>
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::Index, [])? }}</loc><changefreq>hourly</changefreq></url>
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::News, [])? }}</loc><changefreq>daily</changefreq></url>
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}</loc><changefreq>hourly</changefreq></url>
+<url><loc>{{ ctx.external_url_for(crate::endpoints::Endpoint::Trending, [])? }}</loc><changefreq>hourly</changefreq></url>
+</urlset>
