@@ -8,7 +8,6 @@ use indoc::indoc;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
 
-use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
