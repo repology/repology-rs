@@ -167,8 +167,123 @@ mod tests {
     use super::*;
 
     #[test]
-    #[ignore]
-    fn test_packages_to_categorized_display_versions_per_project() {
-        assert!(false);
+    fn test_categorize_packages() {
+        #[derive(Debug, PartialEq, Eq)]
+        struct SimplifiedCategorizedVersions<'a> {
+            focused: Vec<&'a str>,
+            newest: Vec<&'a str>,
+            outdated: Vec<&'a str>,
+            ignored: Vec<&'a str>,
+        }
+
+        impl<'a> SimplifiedCategorizedVersions<'a> {
+            fn from(input: &'a CategorizedDisplayVersions) -> Self {
+                Self {
+                    focused: input.focused.iter().map(|v| v.version.as_str()).collect(),
+                    newest: input.newest.iter().map(|v| v.version.as_str()).collect(),
+                    outdated: input.outdated.iter().map(|v| v.version.as_str()).collect(),
+                    ignored: input.ignored.iter().map(|v| v.version.as_str()).collect(),
+                }
+            }
+        }
+
+        let gen_package =
+            |version: i32, status: PackageStatus, repo: &str, maintainers: &[&str]| {
+                PackageForListing {
+                    repo: repo.to_string(),
+                    family: "".to_string(),
+                    visiblename: "".to_string(),
+                    effname: "myproject".to_string(),
+                    version: format!("{}", version),
+                    status,
+                    flags: 0,
+                    maintainers: maintainers.iter().map(|m| m.to_string()).collect(),
+                }
+            };
+
+        let packages = vec![
+            // duplicated entry, should not be repeated in the output
+            gen_package(10, PackageStatus::Newest, "repo_a", &["bar@bar", "foo@foo"]),
+            gen_package(10, PackageStatus::Newest, "repo_a", &["bar@bar", "foo@foo"]),
+            gen_package(11, PackageStatus::Outdated, "repo_a", &["foo@foo"]),
+            gen_package(12, PackageStatus::Incorrect, "repo_a", &["foo@foo"]),
+            gen_package(20, PackageStatus::Newest, "repo_a", &["bar@bar"]),
+            gen_package(21, PackageStatus::Outdated, "repo_a", &[]),
+            gen_package(22, PackageStatus::Incorrect, "repo_a", &[]),
+            gen_package(30, PackageStatus::Newest, "repo_b", &["bar@bar", "foo@foo"]),
+            gen_package(31, PackageStatus::Outdated, "repo_b", &["foo@foo"]),
+            gen_package(32, PackageStatus::Incorrect, "repo_b", &["foo@foo"]),
+            gen_package(40, PackageStatus::Newest, "repo_b", &["bar@bar"]),
+            gen_package(41, PackageStatus::Outdated, "repo_b", &[]),
+            gen_package(42, PackageStatus::Incorrect, "repo_b", &[]),
+        ];
+
+        assert_eq!(
+            SimplifiedCategorizedVersions::from(
+                &packages_to_categorized_display_versions_per_project(&packages, None, None)
+                    .remove("myproject")
+                    .unwrap()
+            ),
+            SimplifiedCategorizedVersions {
+                focused: vec![],
+                newest: vec!["40", "30", "20", "10"],
+                outdated: vec!["41", "31", "21", "11"],
+                ignored: vec!["42", "32", "22", "12"],
+            }
+        );
+
+        assert_eq!(
+            SimplifiedCategorizedVersions::from(
+                &packages_to_categorized_display_versions_per_project(
+                    &packages,
+                    Some("repo_a"),
+                    None
+                )
+                .remove("myproject")
+                .unwrap()
+            ),
+            SimplifiedCategorizedVersions {
+                focused: vec!["22", "21", "20", "12", "11", "10"],
+                newest: vec!["40", "30"],
+                outdated: vec!["41", "31"],
+                ignored: vec!["42", "32"],
+            }
+        );
+
+        assert_eq!(
+            SimplifiedCategorizedVersions::from(
+                &packages_to_categorized_display_versions_per_project(
+                    &packages,
+                    None,
+                    Some("foo@foo")
+                )
+                .remove("myproject")
+                .unwrap()
+            ),
+            SimplifiedCategorizedVersions {
+                focused: vec!["32", "31", "30", "12", "11", "10"],
+                newest: vec!["40", "20"],
+                outdated: vec!["41", "21"],
+                ignored: vec!["42", "22"],
+            }
+        );
+
+        assert_eq!(
+            SimplifiedCategorizedVersions::from(
+                &packages_to_categorized_display_versions_per_project(
+                    &packages,
+                    Some("repo_a"),
+                    Some("foo@foo")
+                )
+                .remove("myproject")
+                .unwrap()
+            ),
+            SimplifiedCategorizedVersions {
+                focused: vec!["12", "11", "10"],
+                newest: vec!["40", "30", "20"],
+                outdated: vec!["41", "31", "21"],
+                ignored: vec!["42", "32", "22"],
+            }
+        );
     }
 }
