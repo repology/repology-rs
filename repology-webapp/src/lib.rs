@@ -11,6 +11,7 @@
 #![feature(iter_collect_into)]
 #![allow(clippy::module_inception)]
 
+mod background_tasks;
 mod badges;
 pub mod config;
 mod constants;
@@ -45,8 +46,9 @@ use axum::{
 };
 use metrics::{counter, histogram};
 use sqlx::PgPool;
-use tracing::{Instrument as _, error, info, info_span};
+use tracing::info;
 
+use crate::background_tasks::*;
 use crate::config::AppConfig;
 use crate::font::FontMeasurer;
 use crate::repository_data::RepositoriesDataCache;
@@ -121,57 +123,8 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
     let _ = &*STATIC_FILES;
 
     info!("starting background tasks");
-    {
-        let state = Arc::downgrade(&state);
-        let task = async move {
-            loop {
-                tokio::time::sleep(crate::constants::REPOSITORY_CACHE_REFRESH_PERIOD).await;
-
-                if let Some(state) = state.upgrade() {
-                    state
-                        .repository_data_cache
-                        .update()
-                        .await
-                        .unwrap_or_else(|e| error!("repository data cache update failed {:?}", e));
-                } else {
-                    break;
-                }
-            }
-        };
-        tokio::task::spawn(
-            task.instrument(info_span!(parent: None, "repository data cache background task")),
-        );
-    }
-    {
-        let state = Arc::downgrade(&state);
-        let task = async move {
-            loop {
-                tokio::time::sleep(crate::constants::IMPORTANT_PROJECTS_CACHE_REFRESH_PERIOD).await;
-
-                if let Some(state) = state.upgrade() {
-                    let important_projects_cache =
-                        match crate::views::get_important_projects(&pool).await {
-                            Ok(important_projects_cache) => Arc::new(important_projects_cache),
-                            Err(e) => {
-                                error!("important projects cache update failed {:?}", e);
-                                continue;
-                            }
-                        };
-                    let num_entries = important_projects_cache.len();
-                    if let Err(e) = state.important_projects_cache.set(important_projects_cache) {
-                        error!("important projects cache update failed {:?}", e);
-                        continue;
-                    }
-                    info!("updated important projects cache, {} entries", num_entries);
-                } else {
-                    break;
-                }
-            }
-        };
-        tokio::task::spawn(
-            task.instrument(info_span!(parent: None, "important projects cache background task")),
-        );
-    }
+    start_repository_data_cache_task(state.clone());
+    start_important_projects_cache_task(state.clone(), pool);
 
     info!("initializing routes");
     use crate::endpoints::Endpoint::*;
