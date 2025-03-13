@@ -2,8 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use sqlx::PgPool;
+use insta::assert_snapshot;
 
-use insta::assert_snapshot;use repology_webapp_test_utils::Request;
+use repology_webapp_test_utils::Request;
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
 async fn test_nonexistent(pool: PgPool) {
