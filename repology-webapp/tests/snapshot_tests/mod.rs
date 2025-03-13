@@ -19,6 +19,7 @@ mod graphs_total;
 mod important_updates;
 mod index;
 mod legacy_redirects;
+mod link;
 mod log;
 mod maintainer;
 mod maintainers;
