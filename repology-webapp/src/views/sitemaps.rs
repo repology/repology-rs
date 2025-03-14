@@ -101,6 +101,7 @@ pub async fn sitemap_maintainers(State(state): State<Arc<AppState>>) -> Endpoint
 
     let ctx = TemplateContext::new_without_params(Endpoint::SitemapMaintainers);
 
+    // XXX: query takes 580ms, candidate for in-state caching
     let maintainer_names = sqlx::query_scalar(indoc! {"
         SELECT maintainer
         FROM maintainers
@@ -136,6 +137,7 @@ pub async fn sitemap_projects(State(state): State<Arc<AppState>>) -> EndpointRes
 
     let ctx = TemplateContext::new_without_params(Endpoint::SitemapProjects);
 
+    // XXX: query takes 620ms, candidate for in-state caching
     let project_names = sqlx::query_scalar(indoc! {"
         SELECT effname
         FROM metapackages

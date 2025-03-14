@@ -50,6 +50,8 @@ pub async fn trending(
 ) -> EndpointResult {
     let ctx = TemplateContext::new(Endpoint::Trending, gen_path, gen_query);
 
+    // XXX: two queries take around 190ms, so this endpoint is a candidate
+    // for in-state caching or executing both queries in parallel
     let trending_projects: Vec<Project> = sqlx::query_as(indoc! {r#"
         SELECT
             effname AS project_name,
