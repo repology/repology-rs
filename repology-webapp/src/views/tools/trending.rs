@@ -60,7 +60,7 @@ pub async fn trending(
         WHERE ts >= now() - $1
         GROUP BY effname
         HAVING sum(delta) > 1
-        ORDER BY delta DESC, last_change_timestamp, effname
+        ORDER BY delta DESC, last_change_timestamp DESC, effname
         LIMIT $2
     "#})
     .bind(crate::constants::TRENDING_PROJECTS_PERIOD)
@@ -78,7 +78,7 @@ pub async fn trending(
         WHERE ts >= now() - $1
         GROUP BY effname
         HAVING sum(delta) < -1
-        ORDER BY delta, last_change_timestamp, effname
+        ORDER BY delta, last_change_timestamp DESC, effname
         LIMIT $2
     "#})
     .bind(crate::constants::DECLINING_PROJECTS_PERIOD)
