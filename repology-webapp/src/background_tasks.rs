@@ -18,7 +18,7 @@ pub fn start_repository_data_cache_task(state: Arc<AppState>) {
                     .repository_data_cache
                     .update()
                     .await
-                    .unwrap_or_else(|e| error!("repository data cache update failed {:?}", e));
+                    .unwrap_or_else(|e| error!("repository data cache update failed: {:?}", e));
             } else {
                 break;
             }
@@ -40,13 +40,13 @@ pub fn start_important_projects_cache_task(state: Arc<AppState>, pool: PgPool) {
                     match crate::views::get_important_projects(&pool).await {
                         Ok(important_projects_cache) => Arc::new(important_projects_cache),
                         Err(e) => {
-                            error!("important projects cache update failed {:?}", e);
+                            error!("important projects cache update failed: {:?}", e);
                             continue;
                         }
                     };
                 let num_entries = important_projects_cache.len();
                 if let Err(e) = state.important_projects_cache.set(important_projects_cache) {
-                    error!("important projects cache update failed {:?}", e);
+                    error!("important projects cache update failed: {:?}", e);
                     continue;
                 }
                 info!("updated important projects cache, {} entries", num_entries);
