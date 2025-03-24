@@ -1,0 +1,16 @@
+/* sticky footer */
+body {
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
+ 
+#wrapper {
+	flex: 1;
+}
+
+/* bulma overrides */
+.footer {
+	--bulma-footer-padding: 1rem;
+	--body-background-color: hsl(221,14%,90%);
+}

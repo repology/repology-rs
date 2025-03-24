@@ -26,7 +26,7 @@ struct CliArgs {
     )]
     dsn: Option<String>,
 
-    /// Ignore rules tagged with these values
+    /// Socket address for serving the webapp
     #[arg(short = 'l', long = "listen", value_name = "ADDR:PORT")]
     listen: Option<String>,
 
@@ -37,11 +37,11 @@ struct CliArgs {
     #[arg(long, value_name = "PATH")]
     log_directory: Option<PathBuf>,
 
-    /// Host/port for Prometheus metrics export endpoint
-    #[arg(long, value_name = "HOST:PORT")]
+    /// Socket address for serving Prometheus metrics
+    #[arg(long, value_name = "ADDR:PORT")]
     prometheus_export: Option<SocketAddr>,
 
-    /// Path to configuration file
+    /// Path to configuration file with default and/or additional settings
     #[arg(short = 'c', long, value_name = "PATH")]
     config: Option<PathBuf>,
 }
