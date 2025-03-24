@@ -123,8 +123,8 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
     let _ = &*STATIC_FILES;
 
     info!("starting background tasks");
-    start_repository_data_cache_task(state.clone());
-    start_important_projects_cache_task(state.clone(), pool);
+    start_repository_data_cache_task(Arc::clone(&state));
+    start_important_projects_cache_task(Arc::clone(&state), pool);
 
     info!("initializing routes");
     use crate::endpoints::Endpoint::*;

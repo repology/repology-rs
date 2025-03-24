@@ -5,6 +5,7 @@ edition = "2024"
 
 [lints.clippy]
 manual_let_else = "warn"
+clone_on_ref_ptr = "warn"
 
 [features]
 coverage = []  # used to calculate coverage correctly (see https://github.com/rust-lang/rust/issues/110486)
