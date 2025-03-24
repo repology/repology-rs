@@ -60,15 +60,19 @@ pub async fn nonexisting_project(
     project_name: String,
     project: Option<Project>,
 ) -> EndpointResult {
-    // note that we don't indicate to used that number of redirects per page is exceeded
+    // note that we don't indicate to user that number of redirects per page is exceeded
     // as it's natually limited and cannot really exceed a few dozen
     let redirect_project_names: Vec<String> = sqlx::query_scalar(indoc! {"
             SELECT DISTINCT
                 (SELECT effname FROM metapackages WHERE id = new.project_id)
-            FROM project_redirects AS old INNER JOIN project_redirects AS new USING(repository_id, trackname)
+            FROM project_redirects AS old
+            INNER JOIN project_redirects AS new USING (repository_id, trackname)
+            INNER JOIN metapackages ON(metapackages.id = new.project_id)
             WHERE
-                old.project_id = (SELECT id FROM metapackages WHERE effname = $1) AND
-                NOT old.is_actual AND new.is_actual
+                old.project_id = (SELECT id FROM metapackages WHERE effname = $1)
+                AND NOT old.is_actual
+                AND new.is_actual
+                AND metapackages.num_repos > 0
         UNION
             SELECT
                 newname
