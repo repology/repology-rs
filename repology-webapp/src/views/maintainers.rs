@@ -137,7 +137,7 @@ async fn maintainers_generic(
                 num_packages > 0
                 AND ($1 IS NULL OR maintainer >= $1)
                 AND ($2 IS NULL OR maintainer <= $2)
-                AND ($3 IS NULL OR maintainer LIKE ('%%' || $3 || '%%'))
+                AND ($3 IS NULL OR maintainer LIKE ('%' || $3 || '%'))
             ORDER BY
                 CASE WHEN $2 IS NULL THEN maintainer ELSE NULL END,
                 CASE WHEN $2 IS NOT NULL THEN maintainer ELSE NULL END DESC

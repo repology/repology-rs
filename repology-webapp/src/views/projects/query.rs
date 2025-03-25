@@ -75,7 +75,7 @@ pub async fn query_listing_projects(
 
     // substring
     if filter.project_name_substring.is_some() {
-        query_conditions.push("effname ILIKE ('%%' || $3 || '%%')");
+        query_conditions.push("effname ILIKE ('%' || $3 || '%')");
     }
 
     // count ranges
