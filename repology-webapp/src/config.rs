@@ -98,15 +98,15 @@ impl Config {
             .unwrap_or_default();
 
         Ok(Config {
-            dsn: config
+            dsn: args
                 .dsn
-                .or(args.dsn)
+                .or(config.dsn)
                 .ok_or_else(|| anyhow!("missing required argument or config paramater \"dsn\""))?,
-            listen: config.listen.or(args.listen).ok_or_else(|| {
+            listen: args.listen.or(config.listen).ok_or_else(|| {
                 anyhow!("missing required argument or config parameter \"listen\"")
             })?,
-            log_directory: config.log_directory.or(args.log_directory),
-            prometheus_export: config.prometheus_export.or(args.prometheus_export),
+            log_directory: args.log_directory.or(config.log_directory),
+            prometheus_export: args.prometheus_export.or(config.prometheus_export),
 
             app_config: AppConfig {
                 spam_keywords: config.spam_keywords,
