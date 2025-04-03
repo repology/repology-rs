@@ -37,7 +37,7 @@ async fn test_construct_filled(pool: PgPool) {
         response
             .text()
             .unwrap()
-            .contains("/tools/project-by?repo=freebsd&amp;name_type=srcname&amp;target_page=project_versions&amp;noautoresolve=1&amp;name=&lt;NAME&gt;")
+            .contains("/tools/project-by?repo=freebsd&#38;name_type=srcname&#38;target_page=project_versions&#38;noautoresolve=1&#38;name=&#60;NAME&#62;")
     );
 }
 

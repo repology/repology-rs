@@ -16,8 +16,8 @@
 {% call autorefresh::autorefresh_toggler() %}
 
 {% if
-	!used_package_link_types.contains(repology_common::LinkType::UpstreamHomepage|as_ref) &&
-	!used_package_link_types.contains(repology_common::LinkType::UpstreamDownload|as_ref) &&
+	!used_package_link_types.contains(repology_common::LinkType::UpstreamHomepage|ref) &&
+	!used_package_link_types.contains(repology_common::LinkType::UpstreamDownload|ref) &&
 	repository.num_projects > 0 &&
 	repository.source_type == SourceType::Repository
 %}
@@ -25,9 +25,9 @@
 {% endif %}
 
 {% if
-	!used_package_link_types.contains(repology_common::LinkType::PackageSources|as_ref) &&
-	!used_package_link_types.contains(repology_common::LinkType::PackageRecipe|as_ref) &&
-	!used_package_link_types.contains(repology_common::LinkType::PackageRecipeRaw|as_ref) &&
+	!used_package_link_types.contains(repology_common::LinkType::PackageSources|ref) &&
+	!used_package_link_types.contains(repology_common::LinkType::PackageRecipe|ref) &&
+	!used_package_link_types.contains(repology_common::LinkType::PackageRecipeRaw|ref) &&
 	repository.num_projects > 0 &&
 	repository.source_type == SourceType::Repository
 %}

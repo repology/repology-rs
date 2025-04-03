@@ -12,7 +12,7 @@ coverage = []  # used to calculate coverage correctly (see https://github.com/ru
 
 [dependencies]
 anyhow = "1.0.97"
-askama = "0.12.1"
+askama = "0.13.0"
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1", features = ["macros"] }
 axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6", features = ["macros"] }

@@ -19,7 +19,7 @@
 		<li{% if first_item.is_some() && "0123456789".contains(first_item.unwrap().project.effname.chars().nth(0).unwrap_or(' ')) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, query.to_params(None).as_slice())? }}">0-9</a></li>
 		{% for letter in "abcdefghijklmnopqrstuvwxyz".chars() %}
 		<li{% if first_item.is_some() && first_item.unwrap().project.effname.starts_with(ctx.deref(letter)) %} class="active"{% endif %}>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(letter.to_string()|as_ref)).as_slice())? }}">
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(letter.to_string()|ref)).as_slice())? }}">
 					{{- letter.to_ascii_uppercase() -}}
 				</a>
 		</li>
@@ -157,7 +157,7 @@
 
 {% call pagination() %}
 
-{% call projects_table::projects_table_with_focus(projects_list, repo=query.inrepo|as_ref, maintainer=query.maintainer|as_ref, target_project_endpoint=crate::endpoints::Endpoint::ProjectVersions) %}
+{% call projects_table::projects_table_with_focus(projects_list, repo=query.inrepo|ref, maintainer=query.maintainer|ref, target_project_endpoint=crate::endpoints::Endpoint::ProjectVersions) %}
 
 {% call pagination() %}
 

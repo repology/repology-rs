@@ -23,14 +23,14 @@
 				<li>
 					<span class="version version-big version-{{ version.status.as_ref() }}">
 						{{- version.version -}}
-						{%- if version.vulnerable %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|as_ref()), ("version", version.version|as_ref)])? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
+						{%- if version.vulnerable %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|ref()), ("version", version.version|ref)])? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
 					</span>
 					{%- if version.spread > 1 %} <b>({{ version.spread }})</b>{% endif -%}
 				</li>
 			{% endfor %}
 			</ul>
 		</section>
-		{% if let Some(slice) = slices.string_slices.get(StringSliceType::Name|as_ref) %}
+		{% if let Some(slice) = slices.string_slices.get(StringSliceType::Name|ref) %}
 		<section id="Package_names">
 			<h2>Package names</h2>
 			<ul>
@@ -50,7 +50,7 @@
 			</ul>
 		</section>
 
-		{% if let Some(slice) = slices.string_slices.get(StringSliceType::Category|as_ref) %}
+		{% if let Some(slice) = slices.string_slices.get(StringSliceType::Category|ref) %}
 		<section id="Categories">
 			<h2>Categories</h2>
 			<ul>
@@ -61,7 +61,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.string_slices.get(StringSliceType::License|as_ref) %}
+		{% if let Some(slice) = slices.string_slices.get(StringSliceType::License|ref) %}
 		<section id="Licenses">
 			<h2>Licenses</h2>
 			<ul>
@@ -73,7 +73,7 @@
 		{% endif %}
 	</div>
 	<div class="col-md-8">
-		{% if let Some(slice) = slices.string_slices.get(StringSliceType::Summary|as_ref) %}
+		{% if let Some(slice) = slices.string_slices.get(StringSliceType::Summary|ref) %}
 		<section id="Summaries">
 			<h2>Summaries</h2>
 			<ul>
@@ -84,12 +84,12 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.string_slices.get(StringSliceType::Maintainer|as_ref) %}
+		{% if let Some(slice) = slices.string_slices.get(StringSliceType::Maintainer|ref) %}
 		<section id="Maintainers">
 			<h2>Maintainers</h2>
 			<ul>
 			{% for item in slice %}
-				<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", item.value|as_ref)])? }}">{{ item.value }}</a>{% if item.spread > 1 %} <b>({{ item.spread }})</b>{% endif %}</li>
+				<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", item.value|ref)])? }}">{{ item.value }}</a>{% if item.spread > 1 %} <b>({{ item.spread }})</b>{% endif %}</li>
 			{% endfor %}
 			</ul>
 
@@ -101,7 +101,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Homepage|as_ref) %}
+		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Homepage|ref) %}
 		<section id="Homepage_links">
 			<h2>Homepage links</h2>
 			<ul>
@@ -112,7 +112,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Issues|as_ref) %}
+		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Issues|ref) %}
 		<section id="Issue_tracker_links">
 			<h2>Issue tracker links</h2>
 			<ul>
@@ -123,7 +123,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Repository|as_ref) %}
+		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Repository|ref) %}
 		<section id="Repository_links">
 			<h2>Repository links</h2>
 			<ul>
@@ -134,7 +134,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Documentation|as_ref) %}
+		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Documentation|ref) %}
 		<section id="Documentation_links">
 			<h2>Documentation links</h2>
 			<ul>
@@ -145,7 +145,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Recipe|as_ref) %}
+		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Recipe|ref) %}
 		<section id="All_package_recipes">
 			<h2>All package recipes</h2>
 			<ul>
@@ -156,7 +156,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Download|as_ref) %}
+		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Download|ref) %}
 		<section id="Downloads">
 			<h2>Downloads</h2>
 			<ul>
@@ -167,7 +167,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Patch|as_ref) %}
+		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::Patch|ref) %}
 		<section id="Patches">
 			<h2>Patches</h2>
 			<ul>
@@ -178,7 +178,7 @@
 		</section>
 		{% endif %}
 
-		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::BuildLog|as_ref) %}
+		{% if let Some(slice) = slices.link_slices.get(LinkSliceType::BuildLog|ref) %}
 		<section id="Build_logs">
 			<h2>Build logs</h2>
 			<ul>

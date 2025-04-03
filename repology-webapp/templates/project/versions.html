@@ -28,7 +28,7 @@
 {% for package in packages %}
 	<tr{% if loop.first %} id="{{ repository_data.name }}"{% endif %}>
 		<td class="text-right">
-			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_data.name|as_ref)])? }}">{{ repository_data.title }}</a>
+			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_data.name|ref)])? }}">{{ repository_data.title }}</a>
 			{%- if let Some(subrepo) = package.subrepo -%}
 				<br><sup>{{ subrepo }}</sup>
 			{%- endif -%}
@@ -41,8 +41,8 @@
 			{%- endif -%}
 		</td>
 		<td class="text-center">
-			{%- let is_vulnerable = (package.flags & (1<<16)) != 0 -%}
-			{%- let is_recalled = (package.flags & (1<<20)) != 0 -%}
+			{%- let is_vulnerable = (package.flags bitand (1<<16)) != 0 -%}
+			{%- let is_recalled = (package.flags bitand (1<<20)) != 0 -%}
 			{%- let is_fixed = package.origversion != package.version -%}
 			<span class="version version-big version-{{ package.status.as_ref() }}
 				{%- if is_fixed %} version-property-fixed{% endif -%}
@@ -56,7 +56,7 @@
 				{%- else -%}
 				{{ package.version }}
 				{%- endif -%}
-				{%- if is_vulnerable %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|as_ref), ("version", package.version|as_ref)])? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
+				{%- if is_vulnerable %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|ref), ("version", package.version|ref)])? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
 			</span>{#- -#}
 		</td>
 		<td class="text-center">
@@ -66,7 +66,7 @@
 		{%- if !package.maintainers.is_empty() -%}
 			{%- for maintainer in package.maintainers -%}
 				{%- if !loop.first %}, {% endif -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer|as_ref)])? }}">{{ maintainer }}</a>
+				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer|ref)])? }}">{{ maintainer }}</a>
 			{%- endfor -%}
 		{%- else -%}
 			-

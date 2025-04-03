@@ -32,15 +32,15 @@
 	{% endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|as_ref)])? }}">{{ item.project.effname }}</a>
+				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|ref)])? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|as_ref)])? }}">∗</a>
+				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|ref)])? }}">∗</a>
 				{% endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
-			<td>{% call versions_list(item.versions.newest|as_ref, "") %}</td>
-			<td>{% call versions_list(item.versions.outdated|as_ref, "") %}</td>
-			<td>{% call versions_list(item.versions.ignored|as_ref, "") %}</td>
+			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
+			<td>{% call versions_list(item.versions.outdated|ref, "") %}</td>
+			<td>{% call versions_list(item.versions.ignored|ref, "") %}</td>
 			{#% if 'rank' in metapackage %}
 			<td>{{ metapackage.rank|round(2) }}</td>
 			{% endif %#}
@@ -73,15 +73,15 @@
 	{% endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|as_ref)])? }}">{{ item.project.effname }}</a>
+				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|ref)])? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|as_ref)])? }}">∗</a>
+				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|ref)])? }}">∗</a>
 				{% endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
-			<td>{% call versions_list(item.versions.newest|as_ref, "") %}</td>
-			<td>{% call versions_list(item.versions.outdated|as_ref, "") %}</td>
-			<td>{% call versions_list(item.versions.ignored|as_ref, "") %}</td>
+			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
+			<td>{% call versions_list(item.versions.outdated|ref, "") %}</td>
+			<td>{% call versions_list(item.versions.ignored|ref, "") %}</td>
 			<td>{{ item.project.rank|fmt("{:.2}") }}</td>
 		</tr>
 	{% endfor %}
@@ -117,18 +117,18 @@
 	{% endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|as_ref)])? }}">{{ item.project.effname }}</a>
+				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|ref)])? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|as_ref)])? }}">∗</a>
+				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|ref)])? }}">∗</a>
 				{% endif %}
 			</td>
 			{% if !repo.is_empty() || !maintainer.is_empty() %}
-			<td>{% call versions_list(item.versions.focused|as_ref, "-") %}</td>
+			<td>{% call versions_list(item.versions.focused|ref, "-") %}</td>
 			{% endif %}
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
-			<td>{% call versions_list(item.versions.newest|as_ref, "") %}</td>
-			<td>{% call versions_list(item.versions.outdated|as_ref, "") %}</td>
-			<td>{% call versions_list(item.versions.ignored|as_ref, "") %}</td>
+			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
+			<td>{% call versions_list(item.versions.outdated|ref, "") %}</td>
+			<td>{% call versions_list(item.versions.ignored|ref, "") %}</td>
 		</tr>
 	{% endfor %}
 	</tbody>

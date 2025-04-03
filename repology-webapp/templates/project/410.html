@@ -22,9 +22,9 @@
 	{% endif %}
 	{% if leftovers_summary.has_history || leftovers_summary.has_reports || leftovers_summary.has_cves %}
 	<p>Also, some historical data is still available for the gone project, which may be of interest:
-		{%- if leftovers_summary.has_history %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectHistory, [("project_name", project_name|as_ref)])? }}">history</a>{% endif -%}
-		{%- if leftovers_summary.has_reports %}{% if leftovers_summary.has_history %},{% endif %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectReport, [("project_name", project_name|as_ref)])?  }}">reports</a>{% endif -%}
-		{%- if leftovers_summary.has_cves %}{% if leftovers_summary.has_history || leftovers_summary.has_reports %},{% endif %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|as_ref)])? }}">CVEs</a>{% endif -%}
+		{%- if leftovers_summary.has_history %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectHistory, [("project_name", project_name|ref)])? }}">history</a>{% endif -%}
+		{%- if leftovers_summary.has_reports %}{% if leftovers_summary.has_history %},{% endif %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectReport, [("project_name", project_name|ref)])?  }}">reports</a>{% endif -%}
+		{%- if leftovers_summary.has_cves %}{% if leftovers_summary.has_history || leftovers_summary.has_reports %},{% endif %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|ref)])? }}">CVEs</a>{% endif -%}
 	.</p>
 	{% endif %}
 </div>

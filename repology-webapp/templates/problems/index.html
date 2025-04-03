@@ -19,8 +19,8 @@
 			<div class="btn-group">
 				<a href="{{ ctx.url_for_self([("start", ""), ("end", "")])? }}" class="btn btn-default {% if pagination.is_first_page() %} disabled{% endif %}">&laquo;&laquo;</a>
 				{% if let Some(page_range) = pagination.page_range %}
-				<a href="{{ ctx.url_for_self([("start", ""), ("end", page_range.first|as_ref)])? }}" class="btn btn-default{% if pagination.is_first_page() %} disabled{% endif %}" rel="prev">&laquo;</a>
-				<a href="{{ ctx.url_for_self([("start", page_range.last|as_ref), ("end", "")])? }}" class="btn btn-default{% if pagination.is_last_page() %} disabled{% endif %}" rel="next">&raquo;</a>
+				<a href="{{ ctx.url_for_self([("start", ""), ("end", page_range.first|ref)])? }}" class="btn btn-default{% if pagination.is_first_page() %} disabled{% endif %}" rel="prev">&laquo;</a>
+				<a href="{{ ctx.url_for_self([("start", page_range.last|ref), ("end", "")])? }}" class="btn btn-default{% if pagination.is_last_page() %} disabled{% endif %}" rel="next">&raquo;</a>
 				{% endif %}
 				<a href="{{ ctx.url_for_self([("start", ""), ("end", pagination.whole_range.last)])? }}" class="btn btn-default {% if pagination.is_last_page() %} disabled{% endif %}">&raquo;&raquo;</a>
 			</div>
@@ -46,7 +46,7 @@
 	<tbody>
 	{% for problem in problems %}
 		<tr>
-			<td class="text-center"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", problem.effname|as_ref)])? }}">{{ problem.effname }}</a></td>
+			<td class="text-center"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", problem.effname|ref)])? }}">{{ problem.effname }}</a></td>
 			<td class="text-center">
 				{%- if let Some(url) = problem.url %}
 				<a href="{{ url }}">{{ problem.visiblename }}</a>
@@ -67,7 +67,7 @@
 			{% if problem.kind == "homepage_dead" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				{%- let code = problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? %}
-				Homepage link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|as_ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status_code(code) %}</b>)
+				Homepage link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status_code(code|deref) %}</b>)
 				for more than a month and should be replaced by alive link (see other packages for hints, or link to <a href="https://archive.org/">archive.org</a> as a last resort).
 			{% else if problem.kind == "homepage_permanent_https_redirect" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
@@ -96,7 +96,7 @@
 				CPE information defined for the package:<div>{% call cpes::cpe_components(cpe, true) %}</div>was not found neither among known CVEs nor in NVD CPE dictionary, so it may be invalid.
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
 				{% if let Some(suggestions) = suggestions.as_array() %}
-				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|as_ref)])? }}">CVEs</a>):
+				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|ref)])? }}">CVEs</a>):
 				<ul class="list-unstyled">
 				{% for suggestion in suggestions %}
 					<li>{% call cpes::cpe_components(suggestion, true) %}</li>
@@ -108,7 +108,7 @@
 				CPE information is missing for this package, while repository defines it for other packages.
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
 				{% if let Some(suggestions) = suggestions.as_array() %}
-				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|as_ref)])? }}">CVEs</a>):
+				Suggested CPEs (as per known <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", problem.effname|ref)])? }}">CVEs</a>):
 				<ul class="list-unstyled">
 				{% for suggestion in suggestions %}
 					<li>{% call cpes::cpe_components(suggestion, true) %}</li>
@@ -119,7 +119,7 @@
 			{% else if problem.kind == "download_dead" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				{%- let code = problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? %}
-				Download link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|as_ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status_code(code) %}</b>)
+				Download link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status_code(code|deref) %}</b>)
 				for more than a month and should be replaced by alive link (see other packages for hints).
 			{% else if problem.kind == "download_permanent_https_redirect" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}

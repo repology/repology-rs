@@ -36,8 +36,8 @@
 					{{- package.visiblename -}}
 				</h3>
 				<div class="package-version">
-					{%- let is_vulnerable = (package.flags & (1<<16)) != 0 -%}
-					{%- let is_recalled = (package.flags & (1<<20)) != 0 -%}
+					{%- let is_vulnerable = (package.flags bitand (1<<16)) != 0 -%}
+					{%- let is_recalled = (package.flags bitand (1<<20)) != 0 -%}
 					{%- let is_fixed = package.version != package.origversion -%}
 					<span class="
 						{%- if is_fixed %} version-property-fixed{% endif -%}

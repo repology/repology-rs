@@ -13,7 +13,7 @@ IPv4      Ok | redir from v6 | ok | mixed: v4 ok, no v6    | ok
 
 {%- macro link_status(link, use_archive) -%}
 {%- if link.ipv4_success.is_some() || link.ipv6_success.is_some() -%}
-	<sup class="link-status non-selectable"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", link.url|as_ref)])? }}" rel="nofollow">
+	<sup class="link-status non-selectable"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", link.url|ref)])? }}" rel="nofollow">
 		{%- if link.ipv6_success.unwrap_or(false) && link.has_ipv6_permanent_redirect -%}
 			<span class="link-redirect">redir</span>
 		{%- else if link.ipv6_success.unwrap_or(false) -%}

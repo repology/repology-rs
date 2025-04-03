@@ -46,16 +46,16 @@
 			<td class="text-center">{% if repository.fields.contains("category") %}✔{% endif %}</td>
 			<td class="text-center">{% if repository.fields.contains("licenses") %}✔{% endif %}</td>
 			<td class="text-center">
-				{%- if repository.link_types.contains(0|as_ref) || repository.link_types.contains(1|as_ref) %}✔
+				{%- if repository.link_types.contains(0|ref) || repository.link_types.contains(1|ref) %}✔
 				{%- else %}<span class="text-danger" title="Repository must provide link to upstream">✘</span>{% endif -%}
 			</td>
 			<td class="text-center">
-				{%- if repository.link_types.contains(7|as_ref) || repository.link_types.contains(9|as_ref) || repository.link_types.contains(10|as_ref) %}✔
+				{%- if repository.link_types.contains(7|ref) || repository.link_types.contains(9|ref) || repository.link_types.contains(10|ref) %}✔
 				{%- else if repository.source_type != "repository" %}-
 				{%- else %}<span class="text-danger" title="Repository must provide link to package sources">✘</span>{% endif -%}
 			</td>
-			<td class="text-center">{% if repository.link_types.contains(11|as_ref) || repository.link_types.contains(12|as_ref) %}✔{% endif %}</td>
-			<td class="text-center">{% if repository.link_types.contains(13|as_ref) || repository.link_types.contains(14|as_ref) || repository.link_types.contains(27|as_ref) %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.link_types.contains(11|ref) || repository.link_types.contains(12|ref) %}✔{% endif %}</td>
+			<td class="text-center">{% if repository.link_types.contains(13|ref) || repository.link_types.contains(14|ref) || repository.link_types.contains(27|ref) %}✔{% endif %}</td>
 			<td class="text-center">
 				{%- if repository.fields.contains("srcname") %}<abbr title="source (package) name">s</abbr>{% endif -%}
 				{%- if repository.fields.contains("binname") %}<abbr title="binary (package) name">b</abbr>{% endif -%}
