@@ -229,7 +229,7 @@
 		{{- project_name -}}
 	</a>
 {%- endfor -%}
-{%- if projects.len() < maintainer.num_projects.try_into().unwrap() -%}
+{%- if projects.len() < usize::try_from(ctx.deref(maintainer.num_projects)).expect("number of projects is expected to be non-negative") -%}
 	, <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name)])? }}">…</a>
 {%- endif -%}
 </p>
