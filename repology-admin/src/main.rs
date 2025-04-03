@@ -130,7 +130,7 @@ async fn async_main() -> Result<()> {
     let pool = PgPoolOptions::new()
         .after_connect(|conn, _meta| {
             Box::pin(async move {
-                conn.execute("SET application_name = 'repology-webapp'")
+                conn.execute("SET application_name = 'repology-admin'")
                     .await?;
                 Ok(())
             })
