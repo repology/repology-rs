@@ -1,0 +1,111 @@
+// SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+use std::collections::HashMap;
+use std::time::Duration;
+
+use serde::Deserialize;
+
+use crate::checker::CheckPriority;
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct HostSettings {
+    pub delay: Duration,
+    pub timeout: Duration,
+    pub recheck_manual: Duration,
+    pub recheck_generated: Duration,
+    pub recheck_splay: f32,
+    pub skip: bool,
+    pub aggregate: bool,
+    pub blacklist: bool,
+    pub skip_ipv6: bool,
+}
+
+impl Default for HostSettings {
+    fn default() -> Self {
+        Self {
+            delay: Duration::from_secs(3),
+            timeout: Duration::from_mins(1),
+            recheck_manual: Duration::from_days(7),
+            recheck_generated: Duration::from_days(14),
+            recheck_splay: 1.0,
+            skip: false,
+            aggregate: false,
+            blacklist: false,
+            skip_ipv6: false,
+        }
+    }
+}
+
+impl HostSettings {
+    pub fn generate_recheck_time(&self, priority: CheckPriority) -> Duration {
+        let recheck_period = match priority {
+            CheckPriority::Manual => self.recheck_manual,
+            CheckPriority::Generated => self.recheck_generated,
+        };
+        // [recheck, recheck + splay)
+        recheck_period.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>())
+    }
+
+    pub fn generate_defer_time(&self, priority: CheckPriority) -> Duration {
+        let recheck_period = match priority {
+            CheckPriority::Manual => self.recheck_manual,
+            CheckPriority::Generated => self.recheck_generated,
+        };
+        // [0, recheck + splay), because we don't want to produce gaps
+        recheck_period.mul_f32((1.0 + self.recheck_splay) * rand::random::<f32>())
+    }
+}
+
+pub struct Hosts {
+    default_host_settings: HostSettings,
+    host_settings: HashMap<String, HostSettings>,
+}
+
+impl Hosts {
+    pub fn new(
+        default_host_settings: HostSettings,
+        host_settings: HashMap<String, HostSettings>,
+    ) -> Self {
+        Self {
+            default_host_settings,
+            host_settings,
+        }
+    }
+
+    pub fn get_settings<'a, 'b>(&'a self, hostname: &'b str) -> &'a HostSettings {
+        let mut current_hostname = hostname;
+        loop {
+            if let Some(host_settings) = self.host_settings.get(current_hostname) {
+                return host_settings;
+            }
+            if let Some(separator_pos) = current_hostname.find('.') {
+                current_hostname = &current_hostname[separator_pos + 1..];
+            } else {
+                return &self.default_host_settings;
+            };
+        }
+    }
+
+    pub fn get_default_settings(&self) -> &HostSettings {
+        &self.default_host_settings
+    }
+
+    pub fn get_aggregation<'a>(&'a self, hostname: &'a str) -> &'a str {
+        let mut current_hostname = hostname;
+        loop {
+            if self
+                .host_settings
+                .get(current_hostname)
+                .is_some_and(|host_settings| host_settings.aggregate)
+            {
+                return current_hostname;
+            }
+            if let Some(separator_pos) = current_hostname.find('.') {
+                current_hostname = &current_hostname[separator_pos + 1..];
+            } else {
+                return hostname;
+            };
+        }
+    }
+}

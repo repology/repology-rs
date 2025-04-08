@@ -1,5 +1,5 @@
 [workspace]
-members = ["repology-admin", "repology-common", "repology-webapp", "libversion", "repology-webapp-test-utils", "repology-vulnupdater"]
+members = ["repology-admin", "repology-common", "repology-webapp", "libversion", "repology-webapp-test-utils", "repology-vulnupdater", "repology-linkchecker"]
 resolver = "3"
 
 [profile.dev.package]

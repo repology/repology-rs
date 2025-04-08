@@ -1,0 +1,82 @@
+[hosts]
+default.delay = 3
+default.recheck_manual = 7
+default.recheck_generated = 14
+
+# for module hosting facilities (rubygems, pypi, cpan) we set larger recheck time
+# since there are a lot of links, but the links are unlikely to change status
+"abf.io".recheck_generated = 21
+"aur.archlinux.org".recheck_generated = 45
+"build.debian.org".delay = 60               # sensitive to load
+"build.debian.org".recheck_generated = 400  # because of huge delay
+"build.opensuse.org".recheck_generated = 21
+"cpan.metacpan.org".recheck_manual = 14
+"crates.io".recheck = 60
+"crates.io".skip = true                     # misconfigured crap, always 404; XXX = this is true only for crate pages, not for e.g. https://crates.io/api/v1/crates/abscissa_core/0.5.2/download
+"dev.exherbo.org".delay = 1                 # broken (ipv6?), 60+ sec checks
+"dev.exherbo.org".recheck_manual = 30       # broken (ipv6?), 60+ sec checks
+"dev.gentoo.org".delay = 1
+"files.pythonhosted.org".delay = 1
+"files.pythonhosted.org".recheck = 30
+"github.com".delay = 1.1                    # occasional 429s when set to 1 sec
+"github.com".recheck_generated = 45
+"github.com".recheck_manual = 21
+"github.io".aggregate = true
+"github.io".delay = 1
+"gitlab.com".delay = 1
+"hydra.nixos.org".recheck = 60
+"hydra.nixos.org".skip = true               # nix build logs, tons of these, no need to check
+"kojipkgs.fedoraproject.org".recheck_generated = 45
+"mran.revolutionanalytics.com".recheck_manual = 14
+"notabug.org".delay = 60
+"npmjs.com".delay = 10
+"npmjs.org".delay = 10
+"pkgs.alpinelinux.org".recheck_generated = 45
+"pypi.org".delay = 1                        # lots of links, claims (XXX: source?) to handle much trafic
+"pypi.org".recheck_manual = 14
+"raw.githubusercontent.com".delay = 1
+"readthedocs.io".aggregate = true
+"rubygems.org".delay = 1
+"rubygems.org".recheck_manual = 14
+"search.cpan.org".recheck_manual = 14
+"sf.net".aggregate = true
+"sourceforge.net".aggregate = true
+"src.fedoraproject.org".recheck_generated = 90   # very big
+"sting.dragonflybsd.org".recheck_generated = 21  # ipv6 always times out; XXX = need a way to disable IPv6 or lower the timeout for it, see #31 #32
+
+# blacklist (domain for sale, overtaken, spam etc.)
+"antigrain.com".blacklist = true
+"aseman.co".blacklist = true
+"astroid.org".blacklist = true
+"beryl-project.org".blacklist = true
+"boutell.co.uk".blacklist = true
+"conduit-project.org".blacklist = true
+"coolreader.org".blacklist = true
+"cross-pcg.com".blacklist = true
+"dejavu-fonts.org".blacklist = true
+"ekg2.org".blacklist = true
+"ferite.org".blacklist = true
+"glimpse-editor.org".blacklist = true
+"gnugadu.org".blacklist = true
+"htdig.org".blacklist = true
+"htpc-forum.de".blacklist = true
+"jnickelsen.de".blacklist = true
+"junoplay.com".blacklist = true
+"kermit-project.org".blacklist = true
+"kmldonkey.org".blacklist = true
+"konst.org.ua".blacklist = true
+"libcapn.org".blacklist = true
+"mandriva.com".blacklist = true
+"mepis.org".blacklist = true
+"nimuh.com".blacklist = true
+"ofset.org".blacklist = true
+"opensync.org".blacklist = true
+"opentnl.org".blacklist = true
+"qtoctave.wordpress.com".blacklist = true
+"somethingaboutorange.com".blacklist = true
+"svn.mandriva.com".blacklist = true
+"thekonst.net".blacklist = true
+"tkzinc.org".blacklist = true
+"topfx.com".blacklist = true
+"wmii.de".blacklist = true
+"yafray.org".blacklist = true
