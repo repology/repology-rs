@@ -21,7 +21,11 @@
 			<ul class="list-sparse">
 			{% for version in slices.versions %}
 				<li>
-					<span class="version version-big version-{{ version.status.as_ref() }}">
+					<span class="version version-big version-{{ version.status.as_ref() }}
+						{%- if version.recalled %} version-property-recalled{% endif -%}
+						" title="{{ version.status.as_ref() }} version
+						{%- if version.recalled %}; version is recalled{% endif -%}
+					">
 						{{- version.version -}}
 						{%- if version.vulnerable %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name|ref()), ("version", version.version|ref)])? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
 					</span>
