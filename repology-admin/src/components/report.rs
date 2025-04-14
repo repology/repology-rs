@@ -151,7 +151,7 @@ impl Report {
                         button .card-footer-item .has-text-success type="submit" name="accepted" value="true" { "Accept" }
                         button .card-footer-item .has-text-danger type="submit" name="accepted" value="false"{ "Reject" }
                         button .card-footer-item type="submit" name="accepted" value="undefined" { "Pending" }
-                        button .card-footer-item hx-delete={"/parts/report/" (self.id)} hx-confirm="Really delete this report?" hx-swap="delete" { "Delete" }
+                        button .card-footer-item hx-delete={"/parts/reports/" (self.id)} hx-confirm="Really delete this report?" hx-swap="delete" { "Delete" }
                     }
                 }
             }
