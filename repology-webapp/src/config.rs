@@ -14,16 +14,18 @@ use ip_network::IpNetwork;
 use types::MyIpNetwork;
 pub use types::StaffAfkPeriod;
 
+const DEFAULT_DSN: &str = "postgresql://repology@localhost/repology";
+
+// Note: do not use default values for args which are also present in
+// FileConfig, otherwise config settings will always be overwritten
+// by default clap value.
 #[derive(clap::Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct CliArgs {
     /// PostgreSQL database DSN
-    #[arg(
-        short = 'd',
-        long = "dsn",
-        value_name = "DSN",
-        default_value = "postgresql://repology@localhost/repology"
-    )]
+    ///
+    /// [default: postgresql://repology@localhost/repology]
+    #[arg(short = 'd', long = "dsn", value_name = "DSN")]
     dsn: Option<String>,
 
     /// Socket address for serving the webapp
@@ -97,11 +99,15 @@ impl Config {
             .transpose()?
             .unwrap_or_default();
 
+        let dsn = args
+            .dsn
+            .as_deref()
+            .or(config.dsn.as_deref())
+            .unwrap_or(DEFAULT_DSN)
+            .to_string();
+
         Ok(Config {
-            dsn: args
-                .dsn
-                .or(config.dsn)
-                .ok_or_else(|| anyhow!("missing required argument or config paramater \"dsn\""))?,
+            dsn,
             listen: args.listen.or(config.listen).ok_or_else(|| {
                 anyhow!("missing required argument or config parameter \"listen\"")
             })?,
