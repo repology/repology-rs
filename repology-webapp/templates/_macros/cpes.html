@@ -16,14 +16,14 @@
 	{%- let target_sw = fields_json.get("cpe_target_sw").ok_or("cpe_target_sw missing")?.as_str().ok_or("cpe_target_sw is not a string")? -%}
 	{%- let target_hw = fields_json.get("cpe_target_hw").ok_or("cpe_target_hw missing")?.as_str().ok_or("cpe_target_hw is not a string")? -%}
 	{%- let other = fields_json.get("cpe_other").ok_or("cpe_other missing")?.as_str().ok_or("cpe_other is not a string")? -%}
-	{% call panel("vendor", vendor|deref, hide_asterisks) %}
-	{% call panel("product", product|deref, hide_asterisks) %}
-	{% call panel("edition", edition|deref, hide_asterisks) %}
-	{% call panel("lang", lang|deref, hide_asterisks) %}
-	{% call panel("sw_edition", sw_edition|deref, hide_asterisks) %}
-	{% call panel("target_sw", target_sw|deref, hide_asterisks) %}
-	{% call panel("target_hw", target_hw|deref, hide_asterisks) %}
-	{% call panel("other", other|deref, hide_asterisks) %}
+	{% call panel("vendor", vendor, hide_asterisks) %}
+	{% call panel("product", product, hide_asterisks) %}
+	{% call panel("edition", edition, hide_asterisks) %}
+	{% call panel("lang", lang, hide_asterisks) %}
+	{% call panel("sw_edition", sw_edition, hide_asterisks) %}
+	{% call panel("target_sw", target_sw, hide_asterisks) %}
+	{% call panel("target_hw", target_hw, hide_asterisks) %}
+	{% call panel("other", other, hide_asterisks) %}
 {%- endmacro -%}
 
 {%- macro cpe_components_struct(fields, hide_asterisks) -%}
