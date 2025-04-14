@@ -114,7 +114,7 @@ fn check_new_report(
         errors.push("HTML not allowed");
     }
 
-    if form.need_vuln && !form.comment.contains("nvd.nist.gov/vuln/detail/CVE-") {
+    if form.need_vuln && !form.comment.contains("nvd.nist.gov/vuln/detail/CVE-20") {
         error!("bad report: missing vulnerability report does not contain NVD link");
         errors.push("link to NVD entry (e.g. https://nvd.nist.gov/vuln/detail/CVE-*) for missing CVE is required; note that CVE must already have CPE(s) assigned");
     }
