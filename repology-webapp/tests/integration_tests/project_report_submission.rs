@@ -24,8 +24,10 @@ pub struct ReportSubmission {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_submit_report_success(pool: PgPool) {
+    let comment = "Test report — with LÖVE";
     let form = ReportSubmission {
-        comment: "My Test Report".to_owned(),
+        // check small percentage of non-latin characters
+        comment: comment.to_owned(),
         ..Default::default()
     };
     let response = Request::new(pool.clone(), "/project/zsh/report").with_form(form).perform().await;
@@ -36,13 +38,14 @@ async fn test_submit_report_success(pool: PgPool) {
     assert_eq!(response.status(), http::StatusCode::OK);
     assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
     assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
-    assert!(response.text().unwrap().contains("My Test Report"));
+    assert!(response.text().unwrap().contains(comment));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_submit_report_success_vunl(pool: PgPool) {
+    let comment = "nvd.nist.gov/vuln/detail/CVE-2025-12345";
     let form = ReportSubmission {
-        comment: "nvd.nist.gov/vuln/detail/CVE-2025-12345".to_owned(),
+        comment: comment.to_owned(),
         need_vuln: true,
         ..Default::default()
     };
@@ -54,5 +57,5 @@ async fn test_submit_report_success_vunl(pool: PgPool) {
     assert_eq!(response.status(), http::StatusCode::OK);
     assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
     assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
-    assert!(response.text().unwrap().contains("nvd.nist.gov/vuln/detail/CVE-2025-12345"));
+    assert!(response.text().unwrap().contains(comment));
 }
