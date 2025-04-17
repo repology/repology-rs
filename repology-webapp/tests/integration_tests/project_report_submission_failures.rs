@@ -162,3 +162,17 @@ async fn test_spam_network(pool: PgPool) {
     assert!(response.text().unwrap().contains("Could not add report"));
     assert!(response.text().unwrap().contains("spammers not welcome"));
 }
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
+async fn test_non_english(pool: PgPool) {
+    let form = ReportSubmission {
+        comment: "Пусть все пользуются переводчиками".to_owned(),
+        ..Default::default()
+    };
+    let response = Request::new(pool, "/project/zsh/report").with_form(form).with_spam_keyword("foobar").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("Could not add report"));
+    assert!(response.text().unwrap().contains("in English"));
+}

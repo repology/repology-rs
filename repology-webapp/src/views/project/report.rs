@@ -67,6 +67,24 @@ struct TemplateParams {
     redirect_from: Option<String>,
 }
 
+fn count_non_english_ratio(text: &str) -> f32 {
+    let mut num_alphabetic = 0;
+    let mut num_alphabetic_non_ascii = 0;
+    for ch in text.chars() {
+        if ch.is_alphabetic() {
+            num_alphabetic += 1;
+            if !ch.is_ascii() {
+                num_alphabetic_non_ascii += 1;
+            }
+        }
+    }
+    if num_alphabetic == 0 {
+        0.0
+    } else {
+        num_alphabetic_non_ascii as f32 / num_alphabetic as f32
+    }
+}
+
 fn check_new_report(
     project_name: &str,
     project_is_alive: bool,
@@ -76,6 +94,7 @@ fn check_new_report(
     config: &AppConfig,
 ) -> std::result::Result<(), Vec<&'static str>> {
     const MAX_REPORT_COMMENT_LENGTH: usize = 10240;
+    const MAX_REPORT_NON_ENGLISH_RATIO: f32 = 0.25;
 
     let mut errors: Vec<&str> = vec![];
     let mut is_spam = false;
@@ -112,6 +131,15 @@ fn check_new_report(
     if form.comment.contains("<a href") {
         error!("bad report: report comment contains HTML");
         errors.push("HTML not allowed");
+    }
+
+    let nonlatin_ratio = count_non_english_ratio(&form.comment);
+    if nonlatin_ratio > MAX_REPORT_NON_ENGLISH_RATIO {
+        error!(
+            nonlatin_ratio,
+            "bad report: report comment contains too many non-latin letters"
+        );
+        errors.push("only reports in English are accepted");
     }
 
     if form.need_vuln && !form.comment.contains("nvd.nist.gov/vuln/detail/CVE-20") {
@@ -346,4 +374,18 @@ pub async fn project_report_get(
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     project_report_generic(project_name, &state, &cookies, None).await
+}
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_count_non_english_ratio() {
+        assert!(count_non_english_ratio("test test test") < 0.001);
+        assert!(count_non_english_ratio("test test test →—█😡😡😡") < 0.001);
+        assert!(count_non_english_ratio("мама мыла раму") > 0.999);
+        assert!(count_non_english_ratio("мама мыла раму 1+2-3*4/5?6&7|8.9") > 0.999);
+    }
 }
