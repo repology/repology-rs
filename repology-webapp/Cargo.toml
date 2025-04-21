@@ -20,7 +20,7 @@ askama = { git = "https://github.com/askama-rs/askama.git", commit = "4a17df55b5
 axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6", features = ["macros"] }
 chrono = { version = "0.4.40", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
-clap = { version = "4.5.36", features = ["derive"] }
+clap = { version = "4.5.37", features = ["derive"] }
 flate2 = "1.1.1"
 include_dir = { version = "0.7.4", features = ["glob", "nightly"] }
 indexmap = "2.9.0"
