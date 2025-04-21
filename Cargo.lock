@@ -118,7 +118,7 @@ checksum = "e16d2d3311acee920a9eb8d33b8cbc1787ce4a264e85f964c2404b969bdcd487"
 [[package]]
 name = "askama"
 version = "0.13.0"
-source = "git+https://github.com/askama-rs/askama.git#4a17df55b51ef5253db5c48e6e4f063594ca1747"
+source = "git+https://github.com/askama-rs/askama.git#12db32bd2d4b7636aa98af910187ee4a151d2bff"
 dependencies = [
  "askama_derive",
  "itoa",
@@ -130,7 +130,7 @@ dependencies = [
 [[package]]
 name = "askama_derive"
 version = "0.13.0"
-source = "git+https://github.com/askama-rs/askama.git#4a17df55b51ef5253db5c48e6e4f063594ca1747"
+source = "git+https://github.com/askama-rs/askama.git#12db32bd2d4b7636aa98af910187ee4a151d2bff"
 dependencies = [
  "askama_parser",
  "basic-toml",
@@ -146,7 +146,7 @@ dependencies = [
 [[package]]
 name = "askama_parser"
 version = "0.13.0"
-source = "git+https://github.com/askama-rs/askama.git#4a17df55b51ef5253db5c48e6e4f063594ca1747"
+source = "git+https://github.com/askama-rs/askama.git#12db32bd2d4b7636aa98af910187ee4a151d2bff"
 dependencies = [
  "memchr",
  "serde",
