@@ -14,7 +14,7 @@ coverage = []  # used to calculate coverage correctly (see https://github.com/ru
 anyhow = "1.0.98"
 # Need a release containing https://github.com/askama-rs/askama/pull/400
 #askama = "0.13.0"
-askama = { git = "https://github.com/askama-rs/askama.git", commit = "4a17df55b51ef5253db5c48e6e4f063594ca1747" }
+askama = { git = "https://github.com/askama-rs/askama.git", rev = "4a17df55b51ef5253db5c48e6e4f063594ca1747" }
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1", features = ["macros"] }
 axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6", features = ["macros"] }
