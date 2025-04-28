@@ -24,5 +24,5 @@ tidy-sys = "0.8.2"
 tower-service = "0.3.3"
 
 [dev-dependencies]
-insta = "1.42.2"
+insta = "1.43.0"
 tokio = "1.44.2"
