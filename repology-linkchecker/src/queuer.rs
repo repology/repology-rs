@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::{Arc, Mutex, Weak};
 use std::time::{Duration, Instant};
 
@@ -25,6 +25,7 @@ const OLD_BUCKET_LOG_PERIOD: Duration = Duration::from_secs(60);
 
 struct Bucket {
     tasks: VecDeque<CheckTask>,
+    task_ids: HashSet<i32>,
     create_time: Instant,
     num_deferred: usize,
 }
@@ -33,6 +34,7 @@ impl Default for Bucket {
     fn default() -> Self {
         Self {
             tasks: Default::default(),
+            task_ids: Default::default(),
             create_time: Instant::now(),
             num_deferred: 0,
         }
@@ -209,7 +211,18 @@ where
                 task
             };
 
+            let task_id = task.id;
+
             updater.push(checker.check(task).await).await;
+
+            state
+                .lock()
+                .unwrap()
+                .buckets
+                .get_mut(&bucket_key)
+                .expect("bucket we've just retrieved task from should still exist")
+                .task_ids
+                .remove(&task_id);
 
             num_processed += 1;
             counter!("repology_linkchecker_queuer_tasks_processed_total").increment(1);
@@ -249,6 +262,10 @@ where
                 };
 
             let bucket = if let Some(bucket) = state.buckets.get_mut(bucket_key) {
+                if bucket.task_ids.contains(&task.id) {
+                    // already in the queue
+                    return false;
+                }
                 if bucket.tasks.len() >= self.max_queued_urls_per_bucket {
                     // Some hosts are just too slow to check, and their queues are quickly
                     // overflown. We don't want to block here, instead we defer tasks
@@ -290,7 +307,9 @@ where
                 continue;
             };
 
+            let task_id = task.id;
             bucket.tasks.push_back(task);
+            bucket.task_ids.insert(task_id);
             state.num_queued_tasks += 1;
             gauge!("repology_linkchecker_queuer_tasks_queued_total")
                 .set(state.num_queued_tasks as f64);
