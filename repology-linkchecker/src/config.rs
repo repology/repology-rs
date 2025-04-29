@@ -16,7 +16,7 @@ const DEFAULT_DSN: &str = "postgresql://repology@localhost/repology";
 const DEFAULT_REPOLOGY_HOST: &str = "https://repology.org";
 
 // feeder
-pub const DEFAULT_BATCH_SIZE: usize = 10000;
+pub const DEFAULT_BATCH_SIZE: usize = 1000;
 pub const DEFAULT_BATCH_PERIOD: Duration = Duration::from_secs(60);
 pub const DEFAULT_DATABASE_RETRY_PERIOD: Duration = Duration::from_secs(60);
 
