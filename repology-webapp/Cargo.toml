@@ -18,7 +18,7 @@ askama = { git = "https://github.com/askama-rs/askama.git", rev = "4a17df55b51ef
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1", features = ["macros"] }
 axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6", features = ["macros"] }
-chrono = { version = "0.4.40", default-features = false, features = ["std", "now"] }
+chrono = { version = "0.4.41", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
 clap = { version = "4.5.37", features = ["derive"] }
 flate2 = "1.1.1"
