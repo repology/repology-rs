@@ -109,31 +109,32 @@ where
                 delayer
                     .reserve(hosts.get_aggregation(host), host_settings.delay)
                     .await;
-                let head_response = requester
+
+                if !host_settings.skip_head {
+                    let head_response = requester
+                        .request(HttpRequest {
+                            url: url.as_str().to_string(),
+                            method: HttpMethod::Head,
+                            address,
+                            timeout: host_settings.timeout,
+                        })
+                        .await;
+
+                    if head_response.status
+                        != HttpStatus::Http(StatusCode::METHOD_NOT_ALLOWED.as_u16())
+                    {
+                        return Ok(head_response);
+                    }
+                }
+
+                Ok(requester
                     .request(HttpRequest {
                         url: url.as_str().to_string(),
-                        method: HttpMethod::Head,
+                        method: HttpMethod::Get,
                         address,
                         timeout: host_settings.timeout,
                     })
-                    .await;
-
-                Ok(
-                    if head_response.status
-                        == HttpStatus::Http(StatusCode::METHOD_NOT_ALLOWED.as_u16())
-                    {
-                        requester
-                            .request(HttpRequest {
-                                url: url.as_str().to_string(),
-                                method: HttpMethod::Get,
-                                address,
-                                timeout: host_settings.timeout,
-                            })
-                            .await
-                    } else {
-                        head_response
-                    },
-                )
+                    .await)
             }
             Err(resolve_error) => Err(HttpStatus::from_resolve_error(&resolve_error)),
         }

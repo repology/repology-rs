@@ -19,6 +19,7 @@ pub struct HostSettings {
     pub aggregate: bool,
     pub blacklist: bool,
     pub skip_ipv6: bool,
+    pub skip_head: bool,
 }
 
 impl Default for HostSettings {
@@ -33,6 +34,7 @@ impl Default for HostSettings {
             aggregate: false,
             blacklist: false,
             skip_ipv6: false,
+            skip_head: false,
         }
     }
 }
