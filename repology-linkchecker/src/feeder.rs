@@ -110,14 +110,17 @@ impl Feeder {
         };
         let urls: Vec<LinkToCheck> = query.fetch_all(&self.pool).await?;
 
-        if let Some(last_url) = urls.last() {
-            self.last_key = Some((last_url.next_check, last_url.id));
-            counter!("repology_linkchecker_feeder_tasks_this_loop_total")
-                .increment(urls.len() as u64);
-        } else {
-            self.last_key = None;
-            counter!("repology_linkchecker_feeder_tasks_this_loop_total").absolute(0);
-        }
+        self.last_key =
+            if let Some(last_url) = urls.last().filter(|_| urls.len() == self.batch_size) {
+                counter!("repology_linkchecker_feeder_tasks_this_loop_total")
+                    .increment(urls.len() as u64);
+                Some((last_url.next_check, last_url.id))
+            } else {
+                info!("restarting feeder loop");
+                counter!("repology_linkchecker_feeder_tasks_this_loop_total").absolute(0);
+                counter!("repology_linkchecker_feeder_tasks_loops_total").increment(1);
+                None
+            };
 
         info!(
             count = urls.len(),
