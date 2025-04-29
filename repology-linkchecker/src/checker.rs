@@ -184,7 +184,7 @@ where
                 url = target;
             } else {
                 return HttpStatusWithRedirect {
-                    status: status,
+                    status,
                     // only save redirects for successes
                     redirect: permanent_redirect_target.filter(|_| status.is_success()),
                 };
@@ -311,8 +311,8 @@ where
                 && new.is_some_and(|status| status.is_success());
 
             if is_new_failure || is_recovery {
-                let formatted_old = old.map(HttpStatus::to_string).unwrap_or_else(|| "-".into());
-                let formatted_new = new.map(HttpStatus::to_string).unwrap_or_else(|| "-".into());
+                let formatted_old = old.map(|s| s.to_string()).unwrap_or_else(|| "-".into());
+                let formatted_new = new.map(|s| s.to_string()).unwrap_or_else(|| "-".into());
 
                 if is_new_failure {
                     counter!("repology_linkchecker_checker_status_changes_total", "kind" => "Failure").increment(1);

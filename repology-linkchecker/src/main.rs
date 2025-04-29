@@ -53,7 +53,7 @@ fn collect_tokio_runtime_metrics() {
 
     #[cfg(tokio_unstable)]
     for nworker in 0..metrics.num_workers() {
-        let labels = [("worker", format!("{}", nworker))];
+        let labels = [("worker", format!("{nworker}"))];
         gauge!("tokio_worker_local_queue_depth", &labels)
             .set(metrics.worker_local_queue_depth(nworker) as f64);
         counter!("tokio_worker_local_schedule_count_total", &labels)

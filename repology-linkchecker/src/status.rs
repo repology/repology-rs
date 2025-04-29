@@ -86,17 +86,11 @@ impl HttpStatus {
     }
 
     pub fn is_redirect(self) -> bool {
-        match self {
-            Self::Http(code) if code >= 300 && code < 400 => true,
-            _ => false,
-        }
+        matches!(self, Self::Http(code) if (300..400).contains(&code))
     }
 
     pub fn is_permanent_redirect(self) -> bool {
-        match self {
-            Self::Http(code) if code == 301 || code == 308 => true,
-            _ => false,
-        }
+        matches!(self, Self::Http(code) if code == 301 || code == 308)
     }
 
     pub fn code(self) -> i16 {
@@ -268,13 +262,17 @@ impl HttpStatus {
             ipv4
         }
     }
+}
 
-    pub fn to_string(self) -> String {
+impl std::fmt::Display for HttpStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::Http(code) => format!("{}", code),
+            Self::Http(code) => {
+                write!(f, "{code}")
+            }
             _ => {
                 let s: &'static str = HttpStatusDiscriminants::from(self).into();
-                s.to_owned()
+                write!(f, "{s}")
             }
         }
     }

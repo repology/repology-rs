@@ -75,7 +75,7 @@ impl Hosts {
         }
     }
 
-    pub fn get_settings<'a, 'b>(&'a self, hostname: &'b str) -> &'a HostSettings {
+    pub fn get_settings<'a>(&'a self, hostname: &str) -> &'a HostSettings {
         let mut current_hostname = hostname;
         loop {
             if let Some(host_settings) = self.host_settings.get(current_hostname) {

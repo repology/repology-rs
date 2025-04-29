@@ -66,7 +66,7 @@ mod tests {
             let delayer = Arc::clone(&delayer);
             tasks.push(tokio::spawn(async move {
                 delayer
-                    .reserve(&format!("{}", n), Duration::from_millis(100))
+                    .reserve(&format!("{n}"), Duration::from_millis(100))
                     .await;
             }));
         }
