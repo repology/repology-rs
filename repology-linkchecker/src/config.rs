@@ -153,8 +153,8 @@ struct HostSettingsPatch {
     skip: Option<bool>,
     aggregate: Option<bool>,
     blacklist: Option<bool>,
-    skip_ipv6: Option<bool>,
-    skip_head: Option<bool>,
+    disable_ipv6: Option<bool>,
+    disable_head: Option<bool>,
 }
 
 impl HostSettings {
@@ -181,8 +181,8 @@ impl HostSettings {
         self.skip = patch.skip.unwrap_or(self.skip);
         self.aggregate = patch.aggregate.unwrap_or(self.aggregate);
         self.blacklist = patch.blacklist.unwrap_or(self.blacklist);
-        self.skip_ipv6 = patch.skip_ipv6.unwrap_or(self.skip_ipv6);
-        self.skip_head = patch.skip_head.unwrap_or(self.skip_head);
+        self.disable_ipv6 = patch.disable_ipv6.unwrap_or(self.disable_ipv6);
+        self.disable_head = patch.disable_head.unwrap_or(self.disable_head);
         self
     }
 }

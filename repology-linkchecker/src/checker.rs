@@ -110,7 +110,7 @@ where
                     .reserve(hosts.get_aggregation(host), host_settings.delay)
                     .await;
 
-                if !host_settings.skip_head {
+                if !host_settings.disable_head {
                     let head_response = requester
                         .request(HttpRequest {
                             url: url.as_str().to_string(),
@@ -242,7 +242,7 @@ where
             } else {
                 let mut skip_ipv4 = false;
 
-                if !self.disable_ipv6 && !host_settings.skip_ipv6 {
+                if !self.disable_ipv6 && !host_settings.disable_ipv6 {
                     let status = Self::handle_one_check(
                         url.clone(),
                         self.hosts,
