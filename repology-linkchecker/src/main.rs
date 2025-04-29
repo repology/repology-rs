@@ -79,7 +79,8 @@ fn collect_tokio_runtime_metrics() {
     }
 }
 
-async fn async_main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
     let config = Config::parse().with_context(|| "failed to process configuration")?;
 
     if let Some(log_directory) = &config.log_directory {
@@ -168,14 +169,4 @@ async fn async_main() -> Result<()> {
     info!("starting main loop");
     link_check_loop(pool, config).await?;
     Ok(())
-}
-
-fn main() -> Result<()> {
-    tokio::runtime::Builder::new_multi_thread()
-        .enable_all()
-        // XXX: only supported in current thread runtime
-        //.unhandled_panic(tokio::runtime::UnhandledPanic::ShutdownRuntime)
-        .build()
-        .unwrap()
-        .block_on(async_main())
 }
