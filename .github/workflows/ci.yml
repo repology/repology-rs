@@ -20,6 +20,7 @@ jobs:
           sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main $POSTGRESQL" > /etc/apt/sources.list.d/pgdg.list'
           sudo apt-get update
           sudo apt-get install postgresql-$POSTGRESQL postgresql-server-dev-$POSTGRESQL
+          pip install aiohttp dataclasses-json  # for python http-client of linkchecker, remove after completing rewrite to rust
       - name: Prepare postgresql
         run: |
           sudo sh -c "echo 'host all all samehost trust' > /etc/postgresql/$POSTGRESQL/main/pg_hba.conf"
