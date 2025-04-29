@@ -245,7 +245,7 @@ where
             let mut state = self.state.lock().unwrap();
 
             if state.num_queued_tasks >= self.max_queued_urls {
-                info!("total queued URLs limit reached");
+                // total queued URLs limit reached
                 continue;
             }
 
@@ -303,7 +303,7 @@ where
 
                 bucket
             } else {
-                info!("buckets limit reached");
+                // buckets limit reached
                 continue;
             };
 
