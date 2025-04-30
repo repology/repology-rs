@@ -34,13 +34,11 @@ struct Link {
 
     ipv4_last_success: Option<DateTime<Utc>>,
     ipv4_last_failure: Option<DateTime<Utc>>,
-    ipv4_success: Option<bool>,
     ipv4_status_code: Option<i16>,
     ipv4_permanent_redirect_target: Option<String>,
 
     ipv6_last_success: Option<DateTime<Utc>>,
     ipv6_last_failure: Option<DateTime<Utc>>,
-    ipv6_success: Option<bool>,
     ipv6_status_code: Option<i16>,
     ipv6_permanent_redirect_target: Option<String>,
 }
@@ -57,13 +55,11 @@ pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -
 
             ipv4_last_success,
             ipv4_last_failure,
-            ipv4_success,
             ipv4_status_code,
             ipv4_permanent_redirect_target,
 
             ipv6_last_success,
             ipv6_last_failure,
-            ipv6_success,
             ipv6_status_code,
             ipv6_permanent_redirect_target
         FROM links

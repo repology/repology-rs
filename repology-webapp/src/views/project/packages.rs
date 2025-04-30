@@ -157,9 +157,9 @@ pub async fn project_packages(
             id,
             url,
             last_checked,
-            ipv4_success,
+            ipv4_status_code = 200 AS ipv4_success,
             ipv4_permanent_redirect_target IS NOT NULL AS has_ipv4_permanent_redirect,
-            ipv6_success,
+            ipv6_status_code = 200 AS ipv6_success,
             ipv6_permanent_redirect_target IS NOT NULL AS has_ipv6_permanent_redirect
         FROM links WHERE id = ANY($1)
     "})

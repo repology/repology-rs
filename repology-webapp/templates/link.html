@@ -21,7 +21,7 @@
 	<li>Not yet checked</li>
 	{%- endif %}
 </ul>
-{%- if let Some(is_success) = link.ipv6_success %}
+{%- if let Some(status_code) = link.ipv6_status_code %}
 <h3>IPv6</h3>
 <ul class="list-unstyled">
 	<li>Last success:
@@ -41,17 +41,15 @@
 	{%- endif %}
 	</li>
 	<li>Status:
-	{%- if is_success %}
+	{%- if *status_code == 200 %}
 		{%- if let Some(target) = link.ipv6_permanent_redirect_target %}
 			<b class="link-redirect">permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
 		{%- else %}
-			<b class="link-ok">OK{% if let Some(status_code) = link.ipv6_status_code %} ({{ status_code }}){% endif %}</b>
+			<b class="link-ok">OK ({{ status_code }})</b>
 		{%- endif %}
-	{%- else if let Some(status_code) = link.ipv6_status_code %}
+	{%- else %}
 		<b class="link-error">{% call links::format_link_status_code(ctx.deref(ctx.deref(status_code))) %}</b>
 		{% call links::format_link_suggestions(ctx.deref(ctx.deref(status_code)), link.url) %}
-	{%- else %}
-		<b class="link-error">???</b>
 	{%- endif %}
 	</li>
 </ul>
@@ -59,7 +57,7 @@
 <p>IPv6 was not checked</p>
 {%- endif -%}
 
-{%- if let Some(is_success) = link.ipv4_success %}
+{%- if let Some(status_code) = link.ipv4_status_code %}
 <h3>IPv4</h3>
 <ul class="list-unstyled">
 	<li>Last success:
@@ -79,25 +77,19 @@
 	{%- endif %}
 	</li>
 	<li>Status:
-	{%- if let Some(is_success) = link.ipv4_success %}
-		{%- if is_success %}
-			{%- if let Some(target) = link.ipv4_permanent_redirect_target %}
-				<b class="link-redirect">permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
-			{%- else %}
-				<b class="link-ok">OK{% if let Some(status_code) = link.ipv4_status_code %} ({{ status_code }}){% endif %}</b>
-			{%- endif %}
-		{%- else if let Some(status_code) = link.ipv4_status_code %}
-			<b class="link-error">{% call links::format_link_status_code(ctx.deref(ctx.deref(status_code))) %}</b>
-			{% call links::format_link_suggestions(ctx.deref(ctx.deref(status_code)), link.url) %}
+	{%- if *status_code == 200 %}
+		{%- if let Some(target) = link.ipv4_permanent_redirect_target %}
+			<b class="link-redirect">permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
 		{%- else %}
-			<b class="link-error">???</b>
+			<b class="link-ok">OK ({{ status_code }})</b>
 		{%- endif %}
 	{%- else %}
-		<b>-</b>
+		<b class="link-error">{% call links::format_link_status_code(ctx.deref(ctx.deref(status_code))) %}</b>
+		{% call links::format_link_suggestions(ctx.deref(ctx.deref(status_code)), link.url) %}
 	{%- endif %}
 	</li>
 </ul>
-{%- else if link.ipv6_success == Some(true) %}
+{%- else if link.ipv6_status_code == Some(200) %}
 <p>Legacy IPv4 check was skipped because IPv6 check succeeded</p>
 {%- else %}
 <p>IPv4 was not checked</p>
