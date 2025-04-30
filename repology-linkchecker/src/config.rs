@@ -140,6 +140,10 @@ pub struct CliArgs {
     /// Omit IPv4 check if IPv6 check succeeds
     #[arg(long, help_heading = "Internet protocol versions")]
     pub satisfy_with_ipv6: bool,
+
+    /// Disable embedded hosts config
+    #[arg(long, help_heading = "Internet protocol versions")]
+    pub disable_builtin_hosts_config: bool,
 }
 
 #[derive(Deserialize)]
@@ -159,7 +163,7 @@ struct HostSettingsPatch {
 }
 
 impl HostSettings {
-    fn merge(mut self, patch: HostSettingsPatch) -> Self {
+    fn merge(&mut self, patch: HostSettingsPatch) {
         self.delay = patch
             .delay
             .map(Duration::from_secs_f32)
@@ -189,7 +193,6 @@ impl HostSettings {
         self.generated_sampling_percentage = patch
             .generated_sampling_percentage
             .unwrap_or(self.generated_sampling_percentage);
-        self
     }
 }
 
@@ -214,6 +217,7 @@ struct FileConfig {
     disable_ipv4: Option<bool>,
     disable_ipv6: Option<bool>,
     satisfy_with_ipv6: Option<bool>,
+    disable_builtin_hosts_config: Option<bool>,
 }
 
 #[derive(Debug)]
@@ -267,21 +271,34 @@ impl Config {
             .trim_end_matches('/')
             .to_string();
 
-        let mut default_host_settings = HostSettings::default();
-        if let Some(default_host_settings_patch) = config.hosts.remove("default") {
-            default_host_settings = default_host_settings.merge(default_host_settings_patch)
-        }
+        let disable_builtin_hosts_config = args.disable_builtin_hosts_config
+            || config.disable_builtin_hosts_config.unwrap_or(false);
 
-        let host_settings: HashMap<_, _> = config
-            .hosts
+        let mut builtin_hosts = if !disable_builtin_hosts_config {
+            const BUILTIN_HOSTS_CONFIG: &str = include_str!("../hosts.toml");
+            toml::from_str::<HashMap<String, HostSettingsPatch>>(BUILTIN_HOSTS_CONFIG)
+                .expect("builtin hosts.toml should be parsable")
+        } else {
+            Default::default()
+        };
+
+        let mut default_host_settings = HostSettings::default();
+        builtin_hosts
+            .remove("default")
             .into_iter()
-            .map(|(hostname, host_settings_patch)| {
-                (
-                    hostname,
-                    default_host_settings.clone().merge(host_settings_patch),
-                )
-            })
-            .collect();
+            .chain(config.hosts.remove("default"))
+            .for_each(|patch| default_host_settings.merge(patch));
+
+        let mut host_settings: HashMap<String, HostSettings> = Default::default();
+        builtin_hosts
+            .into_iter()
+            .chain(config.hosts)
+            .for_each(|(hostname, patch)| {
+                host_settings
+                    .entry(hostname)
+                    .or_insert_with(|| default_host_settings.clone())
+                    .merge(patch)
+            });
 
         Ok(Config {
             dsn,

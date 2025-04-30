@@ -1,4 +1,3 @@
-[hosts]
 default.delay = 3
 default.recheck_manual = 7
 default.recheck_generated = 14
