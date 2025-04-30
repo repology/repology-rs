@@ -19,6 +19,7 @@ default.recheck_generated = 14
 "dev.exherbo.org".recheck_manual = 30       # broken (ipv6?), 60+ sec checks
 "dev.gentoo.org".delay = 1
 "files.pythonhosted.org".delay = 1
+"files.pythonhosted.org".generated_sampling_percentage = 1  # no real need to recheck links provided by pypi itself, right?
 "files.pythonhosted.org".recheck = 30
 "github.com".delay = 1.1                    # occasional 429s when set to 1 sec
 "github.com".recheck_generated = 45
@@ -26,9 +27,8 @@ default.recheck_generated = 14
 "github.io".aggregate = true
 "github.io".delay = 1
 "gitlab.com".delay = 1
-"hydra.nixos.org".recheck = 60
-"hydra.nixos.org".skip = true               # nix build logs, tons of these, no need to check
-"kojipkgs.fedoraproject.org".recheck_generated = 45
+"hydra.nixos.org".generated_sampling_percentage = 10
+"kojipkgs.fedoraproject.org".generated_sampling_percentage = 10
 "mran.revolutionanalytics.com".recheck_manual = 14
 "notabug.org".delay = 60
 "npmjs.com".delay = 10
@@ -43,7 +43,7 @@ default.recheck_generated = 14
 "search.cpan.org".recheck_manual = 14
 "sf.net".aggregate = true
 "sourceforge.net".aggregate = true
-"src.fedoraproject.org".recheck_generated = 90   # very big
+"src.fedoraproject.org".generated_sampling_percentage = 10
 
 # Blacklist (domain for sale, overtaken, spam etc.)
 # This list is |sort friendly, please keep sorted
