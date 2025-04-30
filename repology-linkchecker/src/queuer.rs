@@ -120,6 +120,9 @@ where
         self
     }
 
+    // many args is legal here IMO, however may be reducer a bit by
+    // grouping parameters which are only passed through to Checker
+    #[allow(clippy::too_many_arguments)]
     async fn handle_bucket(
         bucket_key: String,
         state: Weak<Mutex<State>>,
@@ -229,6 +232,8 @@ where
         }
     }
 
+    // silences false positive, see the code
+    #[expect(clippy::await_holding_lock)]
     pub async fn try_put(&self, task: CheckTask) -> bool {
         counter!("repology_linkchecker_queuer_tasks_puts_total").increment(1);
 
@@ -271,7 +276,10 @@ where
                     // overflown. We don't want to block here, instead we defer tasks
                     bucket.num_deferred += 1;
                     counter!("repology_linkchecker_queuer_tasks_deferred_total", "bucket" => bucket_key.to_string()).increment(1);
-                    drop(state); // don't needlessly hold a lock across await point
+                    drop(state); // no longer needed, and don't hold a lock across await point
+                    // clippy::await_holding_lock false positive about holding a lock across await
+                    // (but we don't as the lock is dropped a line above), silenced at function level
+                    // See https://github.com/rust-lang/rust-clippy/issues/9683
                     self.updater
                         .defer_by(task.id, host_settings.generate_defer_time(task.priority))
                         .await;
