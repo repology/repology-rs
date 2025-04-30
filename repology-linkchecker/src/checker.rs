@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use chrono::Utc;
 use http::status::StatusCode;
@@ -37,7 +37,6 @@ pub struct CheckTask {
     pub id: i32,
     pub url: String,
     pub priority: CheckPriority,
-    pub overdue: Duration,
     pub prev_ipv4_status: Option<HttpStatus>,
     pub prev_ipv6_status: Option<HttpStatus>,
 }
@@ -233,12 +232,14 @@ where
                 //  hg+http   |        1
                 //  git+http  |        1
                 //  irc       |        1
+                counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "InvalidScheme").increment(1);
             } else if host_settings.skip {
-                // do nothing; check result will be empty
+                counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Skipped").increment(1);
             } else if task.priority == CheckPriority::Generated
                 && task.id % 100 >= host_settings.generated_sampling_percentage as i32
             {
                 recheck_case = RecheckCase::Unsampled;
+                counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Unsampled").increment(1);
             } else if host_settings.blacklist {
                 check_result.ipv4 =
                     Some(HttpStatus::Blacklisted.into()).filter(|_| !self.disable_ipv4);
@@ -272,10 +273,15 @@ where
                         .await,
                     );
                 }
+
+                histogram!("repology_linkchecker_checker_check_duration_seconds")
+                    .record((Instant::now() - check_start).as_secs_f64());
+                counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Checked").increment(1);
             }
         } else {
             check_result.ipv4 = Some(HttpStatus::InvalidUrl.into()).filter(|_| !self.disable_ipv4);
             check_result.ipv6 = Some(HttpStatus::InvalidUrl.into()).filter(|_| !self.disable_ipv6);
+            counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "InvalidUrl").increment(1);
         };
 
         check_result.id = task.id;
@@ -283,24 +289,25 @@ where
         check_result.next_check =
             check_result.check_time + host_settings.generate_recheck_time(recheck_case);
 
-        histogram!("repology_linkchecker_checker_check_duration_seconds")
-            .record((Instant::now() - check_start).as_secs_f64());
-        histogram!("repology_linkchecker_checker_check_overdue_age_seconds")
-            .record(task.overdue.as_secs_f64());
-
-        counter!("repology_linkchecker_checker_checks_total", "priority" => task.priority.as_str())
+        if let Some(status) = &check_result.ipv4 {
+            counter!(
+                "repology_linkchecker_checker_statuses_total",
+                "protocol" => "ipv4",
+                "status" => status.status.to_string(),
+                "priority" => task.priority.as_str()
+            )
             .increment(1);
+        }
 
-        counter!(
-            "repology_linkchecker_checker_statuses_ipv4_total",
-            "status" => check_result.ipv4.as_ref().map(|status| status.status.to_string()).unwrap_or_else(|| "-".to_string()),
-            "priority" => task.priority.as_str()
-        ).increment(1);
-        counter!(
-            "repology_linkchecker_checker_statuses_ipv6_total",
-            "status" => check_result.ipv6.as_ref().map(|status| status.status.to_string()).unwrap_or_else(|| "-".to_string()),
-            "priority" => task.priority.as_str()
-        ).increment(1);
+        if let Some(status) = &check_result.ipv6 {
+            counter!(
+                "repology_linkchecker_checker_statuses_total",
+                "protocol" => "ipv6",
+                "status" => status.status.to_string(),
+                "priority" => task.priority.as_str()
+            )
+            .increment(1);
+        }
 
         {
             // note that we only compare statuses here
@@ -310,26 +317,36 @@ where
                 check_result.ipv6.as_ref().map(|status| status.status),
             );
 
-            let is_new_failure = old.is_none_or(|status| status.is_success())
+            let is_breakage = old.is_some_and(|status| status.is_success())
                 && new.is_some_and(|status| !status.is_success());
+            let is_new_broken = old.is_none() && new.is_some_and(|status| !status.is_success());
             let is_recovery = old.is_some_and(|status| !status.is_success())
                 && new.is_some_and(|status| status.is_success());
 
-            if is_new_failure || is_recovery {
+            if is_breakage || is_new_broken || is_recovery {
                 let formatted_old = old.map(|s| s.to_string()).unwrap_or_else(|| "-".into());
                 let formatted_new = new.map(|s| s.to_string()).unwrap_or_else(|| "-".into());
 
-                if is_new_failure {
-                    counter!("repology_linkchecker_checker_status_changes_total", "kind" => "Failure").increment(1);
+                if is_breakage {
+                    counter!("repology_linkchecker_checker_status_changes_total", "kind" => "Link breakage").increment(1);
                     warn!(
                         url = task.url,
                         old = formatted_old,
                         new = formatted_new,
-                        "new dead link"
+                        "link broke"
+                    );
+                }
+                if is_new_broken {
+                    counter!("repology_linkchecker_checker_status_changes_total", "kind" => "New broken link").increment(1);
+                    warn!(
+                        url = task.url,
+                        old = formatted_old,
+                        new = formatted_new,
+                        "new broken link"
                     );
                 }
                 if is_recovery {
-                    counter!("repology_linkchecker_checker_status_changes_total", "kind" => "Recovery").increment(1);
+                    counter!("repology_linkchecker_checker_status_changes_total", "kind" => "Link recovery").increment(1);
                     info!(
                         url = task.url,
                         old = formatted_old,

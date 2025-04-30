@@ -6,7 +6,7 @@ use std::time::{Duration, Instant};
 use anyhow::Result;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
-use metrics::counter;
+use metrics::{counter, histogram};
 use sqlx::{FromRow, PgPool};
 use tracing::{error, info};
 
@@ -128,23 +128,29 @@ impl Feeder {
             "got batch of check tasks"
         );
 
+        let now = Utc::now();
+
         Ok(urls
             .into_iter()
-            .map(|link| CheckTask {
-                id: link.id,
-                url: link.url,
-                priority: if link.priority {
-                    CheckPriority::Manual
-                } else {
-                    CheckPriority::Generated
-                },
-                overdue: (Utc::now() - link.next_check).to_std().unwrap_or_default(),
-                prev_ipv4_status: link
-                    .ipv4_status_code
-                    .map(HttpStatus::from_code_with_fallback),
-                prev_ipv6_status: link
-                    .ipv6_status_code
-                    .map(HttpStatus::from_code_with_fallback),
+            .map(|link| {
+                histogram!("repology_linkchecker_task_overdue_age_seconds")
+                    .record((now - link.next_check).as_seconds_f64());
+
+                CheckTask {
+                    id: link.id,
+                    url: link.url,
+                    priority: if link.priority {
+                        CheckPriority::Manual
+                    } else {
+                        CheckPriority::Generated
+                    },
+                    prev_ipv4_status: link
+                        .ipv4_status_code
+                        .map(HttpStatus::from_code_with_fallback),
+                    prev_ipv6_status: link
+                        .ipv6_status_code
+                        .map(HttpStatus::from_code_with_fallback),
+                }
             })
             .collect())
     }
