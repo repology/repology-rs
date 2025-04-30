@@ -22,6 +22,7 @@ pub struct HostSettings {
     pub disable_ipv6: bool,
     pub disable_head: bool,
     pub generated_sampling_percentage: u8,
+    pub aggregation: Option<String>,
 }
 
 impl Default for HostSettings {
@@ -39,6 +40,7 @@ impl Default for HostSettings {
             disable_ipv6: false,
             disable_head: false,
             generated_sampling_percentage: 100,
+            aggregation: None,
         }
     }
 }
@@ -116,12 +118,13 @@ impl Hosts {
     pub fn get_aggregation<'a>(&'a self, hostname: &'a str) -> &'a str {
         let mut current_hostname = hostname;
         loop {
-            if self
-                .host_settings
-                .get(current_hostname)
-                .is_some_and(|host_settings| host_settings.aggregate)
-            {
-                return current_hostname;
+            if let Some(host_settings) = self.host_settings.get(current_hostname) {
+                if let Some(aggregation) = &host_settings.aggregation {
+                    return &aggregation;
+                }
+                if host_settings.aggregate {
+                    return current_hostname;
+                }
             }
             if let Some(separator_pos) = current_hostname.find('.') {
                 current_hostname = &current_hostname[separator_pos + 1..];
@@ -129,5 +132,54 @@ impl Hosts {
                 return hostname;
             };
         }
+    }
+}
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_aggregation() {
+        let mut hosts: HashMap<String, HostSettings> = Default::default();
+        hosts.insert(
+            "github.io".to_string(),
+            HostSettings {
+                aggregate: true,
+                ..Default::default()
+            },
+        );
+        hosts.insert(
+            "raw.githubusercontent.com".to_string(),
+            HostSettings {
+                aggregation: Some("github.com".to_string()),
+                ..Default::default()
+            },
+        );
+
+        let hosts = Hosts::new(HostSettings::default(), hosts);
+
+        // by default, no aggregation
+        assert_eq!(hosts.get_aggregation("example.com"), "example.com");
+        assert_eq!(hosts.get_aggregation("foo.example.com"), "foo.example.com");
+
+        // aggregation enabled
+        assert_eq!(hosts.get_aggregation("github.io"), "github.io");
+        assert_eq!(hosts.get_aggregation("foo.github.io"), "github.io");
+
+        // manually specified aggregation
+        assert_eq!(
+            hosts.get_aggregation("githubusercontent.com"),
+            "githubusercontent.com"
+        );
+        assert_eq!(
+            hosts.get_aggregation("raw.githubusercontent.com"),
+            "github.com"
+        );
+        assert_eq!(
+            hosts.get_aggregation("foo.raw.githubusercontent.com"),
+            "github.com"
+        );
     }
 }

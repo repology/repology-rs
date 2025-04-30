@@ -160,6 +160,7 @@ struct HostSettingsPatch {
     disable_ipv6: Option<bool>,
     disable_head: Option<bool>,
     generated_sampling_percentage: Option<u8>,
+    aggregation: Option<String>,
 }
 
 impl HostSettings {
@@ -193,6 +194,9 @@ impl HostSettings {
         self.generated_sampling_percentage = patch
             .generated_sampling_percentage
             .unwrap_or(self.generated_sampling_percentage);
+        if patch.aggregation.is_some() {
+            self.aggregation = patch.aggregation;
+        }
     }
 }
 
