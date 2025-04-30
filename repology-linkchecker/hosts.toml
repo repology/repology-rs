@@ -3,8 +3,9 @@ default.delay = 3
 default.recheck_manual = 7
 default.recheck_generated = 14
 
-# for module hosting facilities (rubygems, pypi, cpan) we set larger recheck time
+# For module hosting facilities (rubygems, pypi, cpan) we set larger recheck time
 # since there are a lot of links, but the links are unlikely to change status
+# This list is |sort friendly, please keep sorted
 "abf.io".recheck_generated = 21
 "aur.archlinux.org".recheck_generated = 45
 "build.debian.org".delay = 60               # sensitive to load
@@ -44,7 +45,8 @@ default.recheck_generated = 14
 "src.fedoraproject.org".recheck_generated = 90   # very big
 "sting.dragonflybsd.org".recheck_generated = 21  # ipv6 always times out; XXX = need a way to disable IPv6 or lower the timeout for it, see #31 #32
 
-# blacklist (domain for sale, overtaken, spam etc.)
+# Blacklist (domain for sale, overtaken, spam etc.)
+# This list is |sort friendly, please keep sorted
 "antigrain.com".blacklist = true
 "aseman.co".blacklist = true
 "astroid.org".blacklist = true
