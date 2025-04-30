@@ -11,6 +11,7 @@ default.recheck_generated = 14
 "build.debian.org".delay = 60               # sensitive to load
 "build.debian.org".recheck_generated = 400  # because of huge delay
 "build.opensuse.org".recheck_generated = 21
+"bugs.freebsd.org".delay = 30               # 429s @ 3sec
 "community.chocolatey.org".disable_head = true
 "cpan.metacpan.org".recheck_manual = 14
 "crates.io".recheck = 60
