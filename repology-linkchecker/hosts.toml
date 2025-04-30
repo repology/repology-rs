@@ -45,7 +45,7 @@
 "search.cpan.org".recheck_manual = 14
 "sf.net".aggregate = true
 "sourceforge.net".aggregate = true
-"src.fedoraproject.org".generated_sampling_percentage = 10
+"src.fedoraproject.org".generated_sampling_percentage = 1
 
 # Blacklist (domain for sale, overtaken, spam etc.)
 # This list is |sort friendly, please keep sorted
