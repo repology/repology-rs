@@ -235,7 +235,7 @@ where
             } else if host_settings.skip {
                 // do nothing; check result will be empty
             } else if task.priority == CheckPriority::Generated
-                && task.id % 100 < host_settings.generated_sampling_percentage as i32
+                && task.id % 100 >= host_settings.generated_sampling_percentage as i32
             {
                 // do nothing; check result will be empty
             } else if host_settings.blacklist {
