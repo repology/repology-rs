@@ -30,6 +30,7 @@
 "gitlab.com".delay = 1
 "hydra.nixos.org".generated_sampling_percentage = 1
 "kojipkgs.fedoraproject.org".generated_sampling_percentage = 10
+"madoguchi.fyralabs.com".delay = 5          # 429s @ 3 sec
 "mran.revolutionanalytics.com".recheck_manual = 14
 "notabug.org".delay = 60
 "npmjs.com".delay = 10
