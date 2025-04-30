@@ -20,6 +20,7 @@ pub struct HostSettings {
     pub blacklist: bool,
     pub disable_ipv6: bool,
     pub disable_head: bool,
+    pub generated_sampling_percentage: u8,
 }
 
 impl Default for HostSettings {
@@ -35,6 +36,7 @@ impl Default for HostSettings {
             blacklist: false,
             disable_ipv6: false,
             disable_head: false,
+            generated_sampling_percentage: 100,
         }
     }
 }
