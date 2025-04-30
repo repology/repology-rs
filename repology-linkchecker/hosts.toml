@@ -44,7 +44,6 @@ default.recheck_generated = 14
 "sf.net".aggregate = true
 "sourceforge.net".aggregate = true
 "src.fedoraproject.org".recheck_generated = 90   # very big
-"sting.dragonflybsd.org".recheck_generated = 21  # ipv6 always times out; XXX = need a way to disable IPv6 or lower the timeout for it, see #31 #32
 
 # Blacklist (domain for sale, overtaken, spam etc.)
 # This list is |sort friendly, please keep sorted
