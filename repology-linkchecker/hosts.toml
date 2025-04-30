@@ -7,18 +7,20 @@ default.recheck_unsampled = 60
 # since there are a lot of links, but the links are unlikely to change status
 # This list is |sort friendly, please keep sorted
 "abf.io".recheck_generated = 21
+"abf.io".generated_sampling_percentage = 10
 "aur.archlinux.org".recheck_generated = 45
 "build.debian.org".delay = 60               # sensitive to load
 "build.debian.org".recheck_generated = 400  # because of huge delay
 "build.opensuse.org".recheck_generated = 21
+"build.opensuse.org".generated_sampling_percentage = 10
 "bugs.freebsd.org".delay = 30               # 429s @ 3sec
 "community.chocolatey.org".disable_head = true
 "cpan.metacpan.org".recheck_manual = 14
 "crates.io".recheck_manual = 60
 "crates.io".recheck_generated = 60
 "crates.io".skip = true                     # misconfigured crap, always 404; XXX = this is true only for crate pages, not for e.g. https://crates.io/api/v1/crates/abscissa_core/0.5.2/download
-"dev.exherbo.org".delay = 1                 # broken (ipv6?), 60+ sec checks
-"dev.exherbo.org".recheck_manual = 30       # broken (ipv6?), 60+ sec checks
+"dev.exherbo.org".recheck_manual = 30       # broken, 60+ sec checks
+"dev.exherbo.org".timeout = 5               # broken, 60+ sec checks
 "dev.gentoo.org".delay = 1
 "files.pythonhosted.org".delay = 1
 "files.pythonhosted.org".generated_sampling_percentage = 1  # no real need to recheck links provided by pypi itself, right?
@@ -27,10 +29,11 @@ default.recheck_unsampled = 60
 "github.com".delay = 1.1                    # occasional 429s when set to 1 sec
 "github.com".recheck_generated = 45
 "github.com".recheck_manual = 21
+"github.com".generated_sampling_percentage = 10
 "github.io".aggregate = true
 "github.io".delay = 1
 "gitlab.com".delay = 1
-"hydra.nixos.org".generated_sampling_percentage = 10
+"hydra.nixos.org".generated_sampling_percentage = 1
 "kojipkgs.fedoraproject.org".generated_sampling_percentage = 10
 "mran.revolutionanalytics.com".recheck_manual = 14
 "notabug.org".delay = 60
