@@ -21,11 +21,11 @@
 "files.pythonhosted.org".generated_sampling_percentage = 1  # no real need to recheck links provided by pypi itself, right?
 "files.pythonhosted.org".recheck_manual = 30
 "files.pythonhosted.org".recheck_generated = 30
-"github.com".delay = 1.1                    # occasional 429s when set to 1 sec
+"github.com".delay = 1
 "github.com".recheck_generated = 45
 "github.com".recheck_manual = 21
 "github.com".generated_sampling_percentage = 10
-"github.io".aggregate = true
+"github.io".aggregation = "github.com"
 "github.io".delay = 1
 "gitlab.com".delay = 1
 "hydra.nixos.org".generated_sampling_percentage = 1
@@ -37,6 +37,7 @@
 "pkgs.alpinelinux.org".recheck_generated = 45
 "pypi.org".delay = 1                        # lots of links, claims (XXX: source?) to handle much trafic
 "pypi.org".recheck_manual = 14
+"raw.githubusercontent.com".aggregation = "github.com"
 "raw.githubusercontent.com".delay = 1
 "readthedocs.io".aggregate = true
 "rubygems.org".delay = 1
