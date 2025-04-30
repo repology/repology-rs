@@ -467,7 +467,6 @@ CREATE TABLE links (
 );
 
 CREATE UNIQUE INDEX ON links(url);
-CREATE INDEX ON links(next_check) WHERE (refcount > 0);             -- XXX: probably for old link checker, may no longer be needed
 CREATE UNIQUE INDEX ON links(next_check, id) WHERE (refcount > 0);  -- used by link checker
 
 --------------------------------------------------------------------------------
