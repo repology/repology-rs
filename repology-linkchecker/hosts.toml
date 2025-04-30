@@ -11,6 +11,7 @@ default.recheck_generated = 14
 "build.debian.org".delay = 60               # sensitive to load
 "build.debian.org".recheck_generated = 400  # because of huge delay
 "build.opensuse.org".recheck_generated = 21
+"community.chocolatey.org".disable_head = true
 "cpan.metacpan.org".recheck_manual = 14
 "crates.io".recheck = 60
 "crates.io".skip = true                     # misconfigured crap, always 404; XXX = this is true only for crate pages, not for e.g. https://crates.io/api/v1/crates/abscissa_core/0.5.2/download
