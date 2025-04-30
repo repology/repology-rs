@@ -14,6 +14,7 @@ pub struct HostSettings {
     pub timeout: Duration,
     pub recheck_manual: Duration,
     pub recheck_generated: Duration,
+    pub recheck_unsampled: Duration,
     pub recheck_splay: f32,
     pub skip: bool,
     pub aggregate: bool,
@@ -30,6 +31,7 @@ impl Default for HostSettings {
             timeout: Duration::from_mins(1),
             recheck_manual: Duration::from_days(7),
             recheck_generated: Duration::from_days(14),
+            recheck_unsampled: Duration::from_days(60),
             recheck_splay: 1.0,
             skip: false,
             aggregate: false,
@@ -41,11 +43,27 @@ impl Default for HostSettings {
     }
 }
 
+pub enum RecheckCase {
+    Manual,
+    Generated,
+    Unsampled,
+}
+
+impl From<CheckPriority> for RecheckCase {
+    fn from(priority: CheckPriority) -> Self {
+        match priority {
+            CheckPriority::Manual => Self::Manual,
+            CheckPriority::Generated => Self::Generated,
+        }
+    }
+}
+
 impl HostSettings {
-    pub fn generate_recheck_time(&self, priority: CheckPriority) -> Duration {
-        let recheck_period = match priority {
-            CheckPriority::Manual => self.recheck_manual,
-            CheckPriority::Generated => self.recheck_generated,
+    pub fn generate_recheck_time(&self, case: RecheckCase) -> Duration {
+        let recheck_period = match case {
+            RecheckCase::Manual => self.recheck_manual,
+            RecheckCase::Generated => self.recheck_generated,
+            RecheckCase::Unsampled => self.recheck_unsampled,
         };
         // [recheck, recheck + splay)
         recheck_period.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>())

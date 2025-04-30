@@ -146,9 +146,9 @@ pub struct CliArgs {
 struct HostSettingsPatch {
     delay: Option<f32>,
     timeout: Option<f32>,
-    recheck: Option<f32>,
     recheck_manual: Option<f32>,
     recheck_generated: Option<f32>,
+    recheck_unsampled: Option<f32>,
     recheck_splay: Option<f32>,
     skip: Option<bool>,
     aggregate: Option<bool>,
@@ -169,15 +169,17 @@ impl HostSettings {
             .map(Duration::from_secs_f32)
             .unwrap_or(self.timeout);
         self.recheck_manual = patch
-            .recheck
-            .or(patch.recheck_manual)
+            .recheck_manual
             .map(|days| Duration::from_secs_f32(days * 86400.0))
             .unwrap_or(self.recheck_manual);
         self.recheck_generated = patch
-            .recheck
-            .or(patch.recheck_generated)
+            .recheck_generated
             .map(|days| Duration::from_secs_f32(days * 86400.0))
             .unwrap_or(self.recheck_generated);
+        self.recheck_unsampled = patch
+            .recheck_unsampled
+            .map(|days| Duration::from_secs_f32(days * 86400.0))
+            .unwrap_or(self.recheck_unsampled);
         self.recheck_splay = patch.recheck_splay.unwrap_or(self.recheck_splay);
         self.skip = patch.skip.unwrap_or(self.skip);
         self.aggregate = patch.aggregate.unwrap_or(self.aggregate);

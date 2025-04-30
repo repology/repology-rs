@@ -10,7 +10,7 @@ use tracing::{error, info, warn};
 use url::Url;
 
 use crate::delayer::Delayer;
-use crate::hosts::Hosts;
+use crate::hosts::{Hosts, RecheckCase};
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest, HttpResponse};
 use crate::resolver::{IpVersion, Resolver, ResolverCache};
 use crate::status::{HttpStatus, HttpStatusWithRedirect};
@@ -200,6 +200,7 @@ where
         let check_start = Instant::now();
         let mut check_result = CheckResult::default();
         let mut host_settings = self.hosts.get_default_settings();
+        let mut recheck_case: RecheckCase = task.priority.into();
 
         if let Some(url) = Url::parse(&task.url).ok().filter(|url| url.has_host()) {
             host_settings = self.hosts.get_settings(
@@ -237,7 +238,7 @@ where
             } else if task.priority == CheckPriority::Generated
                 && task.id % 100 >= host_settings.generated_sampling_percentage as i32
             {
-                // do nothing; check result will be empty
+                recheck_case = RecheckCase::Unsampled;
             } else if host_settings.blacklist {
                 check_result.ipv4 =
                     Some(HttpStatus::Blacklisted.into()).filter(|_| !self.disable_ipv4);
@@ -280,7 +281,7 @@ where
         check_result.id = task.id;
         check_result.check_time = Utc::now();
         check_result.next_check =
-            check_result.check_time + host_settings.generate_recheck_time(task.priority);
+            check_result.check_time + host_settings.generate_recheck_time(recheck_case);
 
         histogram!("repology_linkchecker_checker_check_duration_seconds")
             .record((Instant::now() - check_start).as_secs_f64());
