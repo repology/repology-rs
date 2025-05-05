@@ -228,15 +228,14 @@ where
                 .remove(&task_id);
 
             num_processed += 1;
-            counter!("repology_linkchecker_queuer_tasks_processed_total").increment(1);
+            counter!("repology_linkchecker_queuer_tasks_total", "state" => "processed")
+                .increment(1);
         }
     }
 
     // silences false positive, see the code
     #[expect(clippy::await_holding_lock)]
     pub async fn try_put(&self, task: CheckTask) -> bool {
-        counter!("repology_linkchecker_queuer_tasks_puts_total").increment(1);
-
         let mut first_iteration = true;
         loop {
             if !first_iteration {
@@ -269,13 +268,13 @@ where
             let bucket = if let Some(bucket) = state.buckets.get_mut(bucket_key) {
                 if bucket.task_ids.contains(&task.id) {
                     // already in the queue
+                    counter!("repology_linkchecker_queuer_tasks_total", "state" => "already_queued").increment(1);
                     return false;
                 }
                 if bucket.tasks.len() >= self.max_queued_urls_per_bucket {
                     // Some hosts are just too slow to check, and their queues are quickly
                     // overflown. We don't want to block here, instead we defer tasks
                     bucket.num_deferred += 1;
-                    counter!("repology_linkchecker_queuer_tasks_deferred_total", "bucket" => bucket_key.to_string()).increment(1);
                     drop(state); // no longer needed, and don't hold a lock across await point
                     // clippy::await_holding_lock false positive about holding a lock across await
                     // (but we don't as the lock is dropped a line above), silenced at function level
@@ -283,6 +282,7 @@ where
                     self.updater
                         .defer_by(task.id, host_settings.generate_defer_time(task.priority))
                         .await;
+                    counter!("repology_linkchecker_queuer_tasks_total", "state" => "deferred", "bucket" => bucket_key.to_string()).increment(1);
                     return false;
                 }
                 bucket
@@ -321,6 +321,7 @@ where
             state.num_queued_tasks += 1;
             gauge!("repology_linkchecker_queuer_tasks_queued_total")
                 .set(state.num_queued_tasks as f64);
+            counter!("repology_linkchecker_queuer_tasks_total", "state" => "enqueued").increment(1);
             return true;
         }
     }

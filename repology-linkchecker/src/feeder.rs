@@ -6,7 +6,7 @@ use std::time::{Duration, Instant};
 use anyhow::Result;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
-use metrics::{counter, histogram};
+use metrics::{counter, gauge};
 use sqlx::{FromRow, PgPool};
 use tracing::{error, info};
 
@@ -110,15 +110,15 @@ impl Feeder {
         };
         let urls: Vec<LinkToCheck> = query.fetch_all(&self.pool).await?;
 
+        counter!("repology_linkchecker_feeder_tasks_total").increment(urls.len() as u64);
+        gauge!("repology_linkchecker_feeder_batch_size_total").set(urls.len() as f64);
+
         self.last_key =
             if let Some(last_url) = urls.last().filter(|_| urls.len() == self.batch_size) {
-                counter!("repology_linkchecker_feeder_tasks_this_loop_total")
-                    .increment(urls.len() as u64);
                 Some((last_url.next_check, last_url.id))
             } else {
                 info!("restarting feeder loop");
-                counter!("repology_linkchecker_feeder_tasks_this_loop_total").absolute(0);
-                counter!("repology_linkchecker_feeder_tasks_loops_total").increment(1);
+                counter!("repology_linkchecker_feeder_loops_total").increment(1);
                 None
             };
 
@@ -130,27 +130,28 @@ impl Feeder {
 
         let now = Utc::now();
 
+        if let Some(first_url) = urls.first() {
+            gauge!("repology_linkchecker_feeder_oldest_task_age_seconds")
+                .set((now - first_url.next_check).as_seconds_f64());
+        }
+
         Ok(urls
             .into_iter()
-            .map(|link| {
-                histogram!("repology_linkchecker_task_overdue_age_seconds")
-                    .record((now - link.next_check).as_seconds_f64());
-
-                CheckTask {
-                    id: link.id,
-                    url: link.url,
-                    priority: if link.priority {
-                        CheckPriority::Manual
-                    } else {
-                        CheckPriority::Generated
-                    },
-                    prev_ipv4_status: link
-                        .ipv4_status_code
-                        .map(HttpStatus::from_code_with_fallback),
-                    prev_ipv6_status: link
-                        .ipv6_status_code
-                        .map(HttpStatus::from_code_with_fallback),
-                }
+            .map(|link| CheckTask {
+                id: link.id,
+                url: link.url,
+                priority: if link.priority {
+                    CheckPriority::Manual
+                } else {
+                    CheckPriority::Generated
+                },
+                overdue: (now - link.next_check).to_std().unwrap_or_default(),
+                prev_ipv4_status: link
+                    .ipv4_status_code
+                    .map(HttpStatus::from_code_with_fallback),
+                prev_ipv6_status: link
+                    .ipv6_status_code
+                    .map(HttpStatus::from_code_with_fallback),
             })
             .collect())
     }

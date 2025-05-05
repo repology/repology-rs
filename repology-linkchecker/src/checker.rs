@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use chrono::Utc;
 use http::status::StatusCode;
@@ -37,6 +37,7 @@ pub struct CheckTask {
     pub id: i32,
     pub url: String,
     pub priority: CheckPriority,
+    pub overdue: Duration,
     pub prev_ipv4_status: Option<HttpStatus>,
     pub prev_ipv6_status: Option<HttpStatus>,
 }
@@ -200,6 +201,9 @@ where
         let mut check_result = CheckResult::default();
         let mut host_settings = self.hosts.get_default_settings();
         let mut recheck_case: RecheckCase = task.priority.into();
+
+        histogram!("repology_linkchecker_checker_task_overdue_age_seconds")
+            .record(task.overdue.as_secs_f64());
 
         if let Some(url) = Url::parse(&task.url).ok().filter(|url| url.has_host()) {
             host_settings = self.hosts.get_settings(
