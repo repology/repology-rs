@@ -51,6 +51,7 @@ struct Repository {
     num_maintainers: i32,
     repository_links: sqlx::types::Json<Vec<RepositoryLink>>,
     used_package_link_types: Vec<LinkType>,
+    pessimized_reason: Option<String>,
     last_seen: Option<DateTime<Utc>>,
     is_active: bool,
 }
@@ -99,6 +100,7 @@ pub async fn repository(
             metadata,
             coalesce(metadata->'repolinks', '[]'::jsonb) AS repository_links,
             coalesce(used_package_link_types, '{}'::integer[]) AS used_package_link_types,
+            metadata->>'pessimized' AS pessimized_reason,
             last_seen,
             state!='legacy' AS is_active
         FROM repositories

@@ -34,6 +34,10 @@
 <div class="alert alert-danger" role="alert"><p>This repository <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesFields, [])? }}#{{ repository_name}} ">does not provide</a> links to <strong>package recipes or sources</strong> in a way accessible by Repology. This is critical, because one of the goals of Repology is to make the details of how a project is packaged visible to anyone. It makes Repology maintenance harder as it's not possible to easily check where a specific version comes from; it does not allow upstream to check the recipe and improve their software to simplify packaging, or suggest corrections to the maintainer; it does not allow other maintainers to learn new ideas. It may be as well dangerous to users due to lack of transparency. Because of that, this repository is <strong>subject to removal</strong> in the near future.</p><p>See <a href="{{ ctx.url_for(crate::endpoints::Endpoint::DocsRequirements, [])? }}">documentation</a> for a best way to make package metadata available for Repology.</p></div>
 {% endif %}
 
+{% if let Some(reason) = repository.pessimized_reason %}
+<div class="alert alert-danger" role="alert"><p>This repository {{ reason }}, violating Repology's requirements, and is thus <strong>subject to removal</strong> in the near future unless the problem is resolved.</p></div>
+{% endif %}
+
 {% if !repository.repository_links.0.is_empty() %}
 <h2>Links</h2>
 <ul>
