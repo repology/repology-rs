@@ -52,7 +52,7 @@ url-escape = "0.1.1"
 [dev-dependencies]
 float-cmp = "0.10.0"
 http = "1.3.1"
-insta = { version = "1.43.0", features = ["json"] }
+insta = { version = "1.43.1", features = ["json"] }
 pretty_assertions = "1.4.1"
 regex = "1.11.1"
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }
