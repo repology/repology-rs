@@ -63,7 +63,7 @@ fn has_python_childs() -> bool {
 
 #[tokio::test]
 #[traced_test]
-#[serial(updater)]
+#[serial(python)]
 async fn test_lifecycle() {
     {
         has_python_childs();
@@ -87,14 +87,14 @@ async fn test_lifecycle() {
 }
 
 #[tokio::test]
-#[serial(updater)]
+#[serial(python)]
 async fn test_request_200() {
-    let requester = PythonHttpClient::new("repology/linkchecker", "python")
+    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
         .await
         .unwrap();
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
-    let response = requester
+    let response = http_client
         .request(HttpRequest {
             url: format!("http://example.com:{}/200", ipv4_addr.port()),
             method: HttpMethod::Head,
@@ -105,7 +105,7 @@ async fn test_request_200() {
     assert_eq!(response.status, HttpStatus::Http(200));
     assert_eq!(response.location, None);
 
-    let response = requester
+    let response = http_client
         .request(HttpRequest {
             url: format!("http://example.com:{}/200", ipv6_addr.port()),
             method: HttpMethod::Head,
@@ -118,14 +118,14 @@ async fn test_request_200() {
 }
 
 #[tokio::test]
-#[serial(updater)]
+#[serial(python)]
 async fn test_request_404() {
-    let requester = PythonHttpClient::new("repology/linkchecker", "python")
+    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
         .await
         .unwrap();
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
-    let response = requester
+    let response = http_client
         .request(HttpRequest {
             url: format!("http://example.com:{}/404", ipv4_addr.port()),
             method: HttpMethod::Head,
@@ -136,7 +136,7 @@ async fn test_request_404() {
     assert_eq!(response.status, HttpStatus::Http(404));
     assert_eq!(response.location, None);
 
-    let response = requester
+    let response = http_client
         .request(HttpRequest {
             url: format!("http://example.com:{}/404", ipv6_addr.port()),
             method: HttpMethod::Head,
@@ -149,14 +149,14 @@ async fn test_request_404() {
 }
 
 #[tokio::test]
-#[serial(updater)]
+#[serial(python)]
 async fn test_request_redirect() {
-    let requester = PythonHttpClient::new("repology/linkchecker", "python")
+    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
         .await
         .unwrap();
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
-    let response = requester
+    let response = http_client
         .request(HttpRequest {
             url: format!("http://example.com:{}/308", ipv4_addr.port()),
             method: HttpMethod::Head,
@@ -167,7 +167,7 @@ async fn test_request_redirect() {
     assert_eq!(response.status, HttpStatus::Http(308));
     assert_eq!(response.location, Some("/".to_string()));
 
-    let response = requester
+    let response = http_client
         .request(HttpRequest {
             url: format!("http://example.com:{}/308", ipv6_addr.port()),
             method: HttpMethod::Head,
@@ -180,14 +180,14 @@ async fn test_request_redirect() {
 }
 
 #[tokio::test]
-#[serial(updater)]
+#[serial(python)]
 async fn test_request_timeout() {
-    let requester = PythonHttpClient::new("repology/linkchecker", "python")
+    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
         .await
         .unwrap();
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
-    let response = requester
+    let response = http_client
         .request(HttpRequest {
             url: format!("http://example.com:{}/timeout", ipv4_addr.port()),
             method: HttpMethod::Head,
@@ -198,7 +198,7 @@ async fn test_request_timeout() {
     assert_eq!(response.status, HttpStatus::Timeout);
     assert_eq!(response.location, None);
 
-    let response = requester
+    let response = http_client
         .request(HttpRequest {
             url: format!("http://example.com:{}/timeout", ipv6_addr.port()),
             method: HttpMethod::Head,

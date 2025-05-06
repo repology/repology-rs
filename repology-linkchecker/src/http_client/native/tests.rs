@@ -14,8 +14,6 @@ use crate::http_client::native::NativeHttpClient;
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest};
 use crate::status::HttpStatus;
 
-use serial_test::serial;
-
 async fn run_test_server() -> (SocketAddr, SocketAddr) {
     let app = Router::new()
         .route("/200", get(async || (StatusCode::OK, String::new())))
@@ -55,7 +53,6 @@ async fn run_test_server() -> (SocketAddr, SocketAddr) {
 }
 
 #[tokio::test]
-#[serial(updater)]
 async fn test_request_200() {
     let http_client = NativeHttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
@@ -84,7 +81,6 @@ async fn test_request_200() {
 }
 
 #[tokio::test]
-#[serial(updater)]
 async fn test_request_404() {
     let http_client = NativeHttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
@@ -113,7 +109,6 @@ async fn test_request_404() {
 }
 
 #[tokio::test]
-#[serial(updater)]
 async fn test_request_redirect() {
     let http_client = NativeHttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
@@ -142,7 +137,6 @@ async fn test_request_redirect() {
 }
 
 #[tokio::test]
-#[serial(updater)]
 async fn test_request_timeout() {
     let requester = NativeHttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
