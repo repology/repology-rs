@@ -247,6 +247,7 @@ impl HttpClient for NativeHttpClient {
             .redirect(reqwest::redirect::Policy::none())
             .timeout(request.timeout)
             .dns_resolver(Arc::new(FakeResolver::new(request.address)))
+            .use_rustls_tls()
             .build()
             .expect("expected to always be able to build reqwest client");
 
