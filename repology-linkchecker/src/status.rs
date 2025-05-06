@@ -262,6 +262,41 @@ impl HttpStatus {
             ipv4
         }
     }
+
+    pub fn precision(self) -> u8 {
+        match self {
+            Self::UnknownError => 0,
+
+            // generic error categories
+            Self::DnsError => 1,
+            Self::SslError => 1,
+            Self::BadHttp => 1,
+
+            // precise errors
+            Self::Http(_) => 2,
+            Self::Timeout => 2,
+            Self::InvalidUrl => 2,
+            Self::Blacklisted => 2,
+            Self::DnsDomainNotFound => 2,
+            Self::DnsNoAddressRecord => 2,
+            Self::DnsRefused => 2,
+            Self::DnsTimeout => 2,
+            Self::DnsIpv4MappedInAaaa => 2,
+            Self::ConnectionRefused => 2,
+            Self::HostUnreachable => 2,
+            Self::ConnectionResetByPeer => 2,
+            Self::NetworkUnreachable => 2,
+            Self::ServerDisconnected => 2,
+            Self::ConnectionAborted => 2,
+            Self::AddressNotAvailable => 2,
+            Self::TooManyRedirects => 2,
+            Self::SslCertificateHasExpired => 2,
+            Self::SslCertificateHostnameMismatch => 2,
+            Self::SslCertificateSelfSigned => 2,
+            Self::SslCertificateSelfSignedInChain => 2,
+            Self::SslCertificateIncompleteChain => 2,
+        }
+    }
 }
 
 impl std::fmt::Display for HttpStatus {
