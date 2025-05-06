@@ -209,3 +209,34 @@ async fn test_request_timeout() {
     assert_eq!(response.status, HttpStatus::Timeout);
     assert_eq!(response.location, None);
 }
+
+#[tokio::test]
+#[serial(python)]
+async fn test_request_ssl_error() {
+    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
+        .await
+        .unwrap();
+    let (ipv4_addr, ipv6_addr) = run_test_server().await;
+
+    let response = http_client
+        .request(HttpRequest {
+            url: format!("https://example.com:{}/200", ipv4_addr.port()),
+            method: HttpMethod::Head,
+            address: ipv4_addr.ip(),
+            timeout: Duration::from_secs(1),
+        })
+        .await;
+    assert_eq!(response.status, HttpStatus::SslError);
+    assert_eq!(response.location, None);
+
+    let response = http_client
+        .request(HttpRequest {
+            url: format!("https://example.com:{}/200", ipv6_addr.port()),
+            method: HttpMethod::Head,
+            address: ipv6_addr.ip(),
+            timeout: Duration::from_secs(1),
+        })
+        .await;
+    assert_eq!(response.status, HttpStatus::SslError);
+    assert_eq!(response.location, None);
+}
