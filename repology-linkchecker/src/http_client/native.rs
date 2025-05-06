@@ -81,9 +81,15 @@ fn extract_status_from_io_error(
 ) {
     use std::io::ErrorKind::*;
     match error.kind() {
-        HostUnreachable => chooser.push(HttpStatus::HostUnreachable),
-        ConnectionRefused => chooser.push(HttpStatus::ConnectionRefused),
-        UnexpectedEof => chooser.push(HttpStatus::ConnectionResetByPeer),
+        HostUnreachable => {
+            chooser.push(HttpStatus::HostUnreachable);
+        }
+        ConnectionRefused => {
+            chooser.push(HttpStatus::ConnectionRefused);
+        }
+        UnexpectedEof => {
+            chooser.push(HttpStatus::ConnectionResetByPeer);
+        }
         _ => {}
     }
     if let Some(inner) = error.get_ref() {
@@ -109,12 +115,14 @@ fn extract_status_from_rustls_error(
     use rustls::Error::*;
     match error {
         InvalidCertificate(certificate_error) => {
-            extract_status_from_rustls_certificate_error(certificate_error, chooser, url)
+            extract_status_from_rustls_certificate_error(certificate_error, chooser, url);
         }
         AlertReceived(alert_description) => {
-            extract_status_from_rustls_alert_description(alert_description, chooser, url)
+            extract_status_from_rustls_alert_description(alert_description, chooser, url);
         }
-        Other(other_error) => extract_status_from_rustls_other_error(&other_error, chooser, url),
+        Other(other_error) => {
+            extract_status_from_rustls_other_error(&other_error, chooser, url);
+        }
         _ => {
             chooser.push(HttpStatus::SslError);
             error!(?error, ?url, "unhandled rustls::Error variant");
@@ -129,7 +137,10 @@ fn extract_status_from_rustls_alert_description(
 ) {
     use rustls::AlertDescription::*;
     match error {
-        HandshakeFailure => chooser.push(HttpStatus::SslError), // XXX: we need more specific error code for it
+        HandshakeFailure => {
+            // XXX: we need more specific error code for it
+            chooser.push(HttpStatus::SslError);
+        }
         _ => {
             chooser.push(HttpStatus::SslError);
             error!(?error, ?url, "unhandled rustls::AlertDescription variant");
@@ -144,12 +155,18 @@ fn extract_status_from_rustls_certificate_error(
 ) {
     use rustls::CertificateError::*;
     match error {
-        Expired => chooser.push(HttpStatus::SslCertificateHasExpired),
-        UnknownIssuer => chooser.push(HttpStatus::SslCertificateIncompleteChain),
+        Expired => {
+            chooser.push(HttpStatus::SslCertificateHasExpired);
+        }
+        UnknownIssuer => {
+            chooser.push(HttpStatus::SslCertificateIncompleteChain);
+        }
         NotValidForName | NotValidForNameContext { .. } => {
             chooser.push(HttpStatus::SslCertificateHostnameMismatch);
         }
-        Other(other_error) => extract_status_from_rustls_other_error(&other_error, chooser, url),
+        Other(other_error) => {
+            extract_status_from_rustls_other_error(&other_error, chooser, url);
+        }
         _ => {
             chooser.push(HttpStatus::SslError);
             error!(?error, ?url, "unhandled rustls::CertificateError variant");
@@ -164,7 +181,9 @@ fn extract_status_from_webpki_error(
 ) {
     use webpki::Error::*;
     match error {
-        CaUsedAsEndEntity => chooser.push(HttpStatus::SslCertificateSelfSigned),
+        CaUsedAsEndEntity => {
+            chooser.push(HttpStatus::SslCertificateSelfSigned);
+        }
         _ => {
             chooser.push(HttpStatus::SslError);
             error!(?error, ?url, "unhandled webpki::Error variant");
