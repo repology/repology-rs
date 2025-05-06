@@ -146,6 +146,9 @@ fn extract_status_from_rustls_certificate_error(
     match error {
         Expired => chooser.push(HttpStatus::SslCertificateHasExpired),
         UnknownIssuer => chooser.push(HttpStatus::SslCertificateIncompleteChain),
+        NotValidForName | NotValidForNameContext { .. } => {
+            chooser.push(HttpStatus::SslCertificateHostnameMismatch);
+        }
         Other(other_error) => extract_status_from_rustls_other_error(&other_error, chooser, url),
         _ => {
             chooser.push(HttpStatus::SslError);
