@@ -42,33 +42,37 @@ pub struct CheckTask {
     pub prev_ipv6_status: Option<HttpStatus>,
 }
 
-pub struct Checker<'a, R> {
+pub struct Checker<'a, R, ER> {
     resolver_cache_ipv4: ResolverCache,
     resolver_cache_ipv6: ResolverCache,
     hosts: &'a Hosts,
     delayer: &'a Delayer,
-    requester: &'a R,
+    http_client: &'a R,
+    experimental_http_client: &'a ER,
     disable_ipv4: bool,
     disable_ipv6: bool,
     satisfy_with_ipv6: bool,
 }
 
-impl<'a, R> Checker<'a, R>
+impl<'a, R, ER> Checker<'a, R, ER>
 where
     R: HttpClient + Send + Sync + 'static,
+    ER: HttpClient + Send + Sync + 'static,
 {
     pub fn new(
         resolver: &Resolver,
         hosts: &'a Hosts,
         delayer: &'a Delayer,
-        requester: &'a R,
+        http_client: &'a R,
+        experimental_http_client: &'a ER,
     ) -> Self {
         Self {
             resolver_cache_ipv4: resolver.create_cache(IpVersion::Ipv4),
             resolver_cache_ipv6: resolver.create_cache(IpVersion::Ipv6),
             hosts,
             delayer,
-            requester,
+            http_client,
+            experimental_http_client,
             disable_ipv4: false,
             disable_ipv6: false,
             satisfy_with_ipv6: false,
@@ -90,18 +94,61 @@ where
         self
     }
 
+    async fn perform_http_request(
+        host: &str,
+        hosts: &Hosts,
+        delayer: &Delayer,
+        request: HttpRequest,
+        http_client: &R,
+        experimental_http_client: &ER,
+    ) -> HttpResponse {
+        let host_settings = hosts.get_settings(host);
+        delayer
+            .reserve(hosts.get_aggregation(host), host_settings.delay)
+            .await;
+        counter!("repology_linkchecker_checker_http_requests_total").increment(1);
+        let response = http_client.request(request.clone()).await;
+
+        let experiment_prob: f32 = match response.status {
+            HttpStatus::Http(429) => 0.0,
+            HttpStatus::Http(200) => 0.001,
+            HttpStatus::Http(403)
+            | HttpStatus::Http(404)
+            | HttpStatus::Http(500)
+            | HttpStatus::Timeout => 0.01,
+            _ => 1.0,
+        };
+
+        if rand::random::<f32>() < experiment_prob {
+            delayer
+                .reserve(hosts.get_aggregation(host), host_settings.delay)
+                .await;
+            counter!("repology_linkchecker_checker_http_requests_total").increment(1);
+            let experimental_response = experimental_http_client.request(request.clone()).await;
+
+            if response.status != experimental_response.status {
+                counter!("repology_linkchecker_checker_experimental_requests_total", "outcome" => "mismatch", "status" => response.status.to_string()).increment(1);
+                error!(url = request.url, status = ?response.status, experimental_status = ?experimental_response.status, "experimental status mismatch");
+            } else {
+                counter!("repology_linkchecker_checker_experimental_requests_total", "outcome" => "match")
+                    .increment(1);
+            }
+        }
+
+        response
+    }
+
     async fn handle_one_request(
         url: &Url,
         hosts: &Hosts,
         delayer: &Delayer,
         resolver_cache: &mut ResolverCache,
-        requester: &R,
+        http_client: &R,
+        experimental_http_client: &ER,
     ) -> Result<HttpResponse, HttpStatus> {
         let host = url
             .host_str()
             .expect("only urls with host should end up here");
-
-        counter!("repology_linkchecker_checker_http_requests_total").increment(1);
 
         match resolver_cache.lookup(host).await {
             Ok(address) => {
@@ -110,19 +157,22 @@ where
                 }
 
                 let host_settings = hosts.get_settings(host);
-                delayer
-                    .reserve(hosts.get_aggregation(host), host_settings.delay)
-                    .await;
 
                 if !host_settings.disable_head {
-                    let head_response = requester
-                        .request(HttpRequest {
+                    let head_response = Self::perform_http_request(
+                        host,
+                        hosts,
+                        delayer,
+                        HttpRequest {
                             url: url.as_str().to_string(),
                             method: HttpMethod::Head,
                             address,
                             timeout: host_settings.timeout,
-                        })
-                        .await;
+                        },
+                        http_client,
+                        experimental_http_client,
+                    )
+                    .await;
 
                     if head_response.status
                         != HttpStatus::Http(StatusCode::METHOD_NOT_ALLOWED.as_u16())
@@ -131,14 +181,20 @@ where
                     }
                 }
 
-                Ok(requester
-                    .request(HttpRequest {
+                Ok(Self::perform_http_request(
+                    host,
+                    hosts,
+                    delayer,
+                    HttpRequest {
                         url: url.as_str().to_string(),
                         method: HttpMethod::Get,
                         address,
                         timeout: host_settings.timeout,
-                    })
-                    .await)
+                    },
+                    http_client,
+                    experimental_http_client,
+                )
+                .await)
             }
             Err(resolve_error) => Err(HttpStatus::from_resolve_error(&resolve_error)),
         }
@@ -149,7 +205,8 @@ where
         hosts: &Hosts,
         delayer: &Delayer,
         resolver_cache: &mut ResolverCache,
-        requester: &R,
+        http_client: &R,
+        experimental_http_client: &ER,
     ) -> HttpStatusWithRedirect {
         let mut url = url;
         let mut num_redirects = 0;
@@ -157,15 +214,21 @@ where
         let mut permanent_redirect_target: Option<String> = None;
 
         loop {
-            let response =
-                match Self::handle_one_request(&url, hosts, delayer, resolver_cache, requester)
-                    .await
-                {
-                    Ok(response) => response,
-                    Err(status) => {
-                        return status.into();
-                    }
-                };
+            let response = match Self::handle_one_request(
+                &url,
+                hosts,
+                delayer,
+                resolver_cache,
+                http_client,
+                experimental_http_client,
+            )
+            .await
+            {
+                Ok(response) => response,
+                Err(status) => {
+                    return status.into();
+                }
+            };
 
             let (status, location) = (response.status, response.location);
 
@@ -262,7 +325,8 @@ where
                         self.hosts,
                         self.delayer,
                         &mut self.resolver_cache_ipv6,
-                        self.requester,
+                        self.http_client,
+                        self.experimental_http_client,
                     )
                     .await;
                     skip_ipv4 = self.satisfy_with_ipv6 && status.status.is_success();
@@ -276,7 +340,8 @@ where
                             self.hosts,
                             self.delayer,
                             &mut self.resolver_cache_ipv4,
-                            self.requester,
+                            self.http_client,
+                            self.experimental_http_client,
                         )
                         .await,
                     );

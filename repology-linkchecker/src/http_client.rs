@@ -18,6 +18,7 @@ pub enum HttpMethod {
     Get,
 }
 
+#[derive(Clone)]
 pub struct HttpRequest {
     pub url: String,
     pub method: HttpMethod,

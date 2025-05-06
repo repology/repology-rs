@@ -48,12 +48,13 @@ struct State {
     max_bucket_age: Duration,
 }
 
-pub struct Queuer<R> {
+pub struct Queuer<R, ER> {
     state: Arc<Mutex<State>>,
     resolver: Arc<Resolver>,
     hosts: Arc<Hosts>,
     delayer: Arc<Delayer>,
-    requester: Arc<R>,
+    http_client: Arc<R>,
+    experimental_http_client: Arc<ER>,
     updater: Arc<Updater>,
     max_queued_urls: usize,
     max_queued_urls_per_bucket: usize,
@@ -63,15 +64,17 @@ pub struct Queuer<R> {
     satisfy_with_ipv6: bool,
 }
 
-impl<R> Queuer<R>
+impl<R, ER> Queuer<R, ER>
 where
     R: HttpClient + Send + Sync + 'static,
+    ER: HttpClient + Send + Sync + 'static,
 {
     pub fn new(
         resolver: Resolver,
         hosts: Hosts,
         delayer: Delayer,
-        requester: R,
+        http_client: R,
+        experimental_http_client: ER,
         updater: Updater,
     ) -> Self {
         Self {
@@ -79,7 +82,8 @@ where
             resolver: Arc::new(resolver),
             hosts: Arc::new(hosts),
             delayer: Arc::new(delayer),
-            requester: Arc::new(requester),
+            http_client: Arc::new(http_client),
+            experimental_http_client: Arc::new(experimental_http_client),
             updater: Arc::new(updater),
             max_queued_urls: DEFAULT_MAX_QUEUED_URLS,
             max_queued_urls_per_bucket: DEFAULT_MAX_QUEUED_URLS_PER_BUCKET,
@@ -129,7 +133,8 @@ where
         resolver: Arc<Resolver>,
         hosts: Arc<Hosts>,
         delayer: Arc<Delayer>,
-        requester: Arc<R>,
+        http_client: Arc<R>,
+        experimental_http_client: Arc<ER>,
         updater: Arc<Updater>,
         disable_ipv4: bool,
         disable_ipv6: bool,
@@ -138,10 +143,16 @@ where
         let mut num_processed: usize = 0;
         let mut last_log_time = Instant::now();
 
-        let mut checker = Checker::new(&resolver, &hosts, &delayer, &*requester)
-            .with_disable_ipv4(disable_ipv4)
-            .with_disable_ipv6(disable_ipv6)
-            .with_satisfy_with_ipv6(satisfy_with_ipv6);
+        let mut checker = Checker::new(
+            &resolver,
+            &hosts,
+            &delayer,
+            &*http_client,
+            &*experimental_http_client,
+        )
+        .with_disable_ipv4(disable_ipv4)
+        .with_disable_ipv6(disable_ipv6)
+        .with_satisfy_with_ipv6(satisfy_with_ipv6);
 
         // Give a newborn bucket some time to fill up, otherwise buckets which
         // tend to process tasks without delays (e.g. when a host is skipped)
@@ -300,7 +311,8 @@ where
                     Arc::clone(&self.resolver),
                     Arc::clone(&self.hosts),
                     Arc::clone(&self.delayer),
-                    Arc::clone(&self.requester),
+                    Arc::clone(&self.http_client),
+                    Arc::clone(&self.experimental_http_client),
                     Arc::clone(&self.updater),
                     self.disable_ipv4,
                     self.disable_ipv6,
