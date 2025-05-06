@@ -56,7 +56,7 @@ pub enum HttpStatus {
     DnsNoAddressRecord = -202,
     DnsRefused = -203,
     DnsTimeout = -204,
-    DnsIpv4MappedInAaaa = -205,
+    DnsIpv4MappedInAaaa = -205, // XXX: rename this into NonGlobalIpAddress
 
     // Connection errors
     ConnectionRefused = -300,

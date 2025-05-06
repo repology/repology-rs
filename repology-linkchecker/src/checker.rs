@@ -105,6 +105,10 @@ where
 
         match resolver_cache.lookup(host).await {
             Ok(address) => {
+                if !address.is_global() {
+                    return Err(HttpStatus::DnsIpv4MappedInAaaa);
+                }
+
                 let host_settings = hosts.get_settings(host);
                 delayer
                     .reserve(hosts.get_aggregation(host), host_settings.delay)
