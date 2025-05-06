@@ -35,6 +35,7 @@
 "notabug.org".delay = 60
 "npmjs.com".delay = 10
 "npmjs.org".delay = 10
+"packman.links2linux.org".disable_head = true
 "pkgs.alpinelinux.org".recheck_generated = 45
 "pypi.org".delay = 1                        # lots of links, claims (XXX: source?) to handle much trafic
 "pypi.org".recheck_manual = 14
