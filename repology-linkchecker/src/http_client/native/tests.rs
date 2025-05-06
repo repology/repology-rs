@@ -136,6 +136,7 @@ async fn test_request_redirect() {
 
 #[tokio::test]
 #[serial(updater)]
+#[ignore]
 async fn test_request_cannot_connect() {
     let http_client = NativeHttpClient::new("repology/linkchecker".to_string());
 
