@@ -245,7 +245,6 @@ impl HttpClient for NativeHttpClient {
         let client = reqwest::ClientBuilder::new()
             .user_agent(&self.user_agent)
             .redirect(reqwest::redirect::Policy::none())
-            .timeout(request.timeout)
             .dns_resolver(Arc::new(FakeResolver::new(request.address)))
             .use_rustls_tls()
             .build()
@@ -259,6 +258,7 @@ impl HttpClient for NativeHttpClient {
                 },
                 request.url,
             )
+            .timeout(request.timeout)
             .send()
             .await
         {
