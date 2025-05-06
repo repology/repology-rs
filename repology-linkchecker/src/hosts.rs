@@ -116,6 +116,7 @@ impl Hosts {
     }
 
     pub fn get_aggregation<'a>(&'a self, hostname: &'a str) -> &'a str {
+        let hostname = hostname.strip_prefix("www.").unwrap_or(hostname);
         let mut current_hostname = hostname;
         loop {
             if let Some(host_settings) = self.host_settings.get(current_hostname) {
@@ -181,5 +182,11 @@ mod tests {
             hosts.get_aggregation("foo.raw.githubusercontent.com"),
             "github.com"
         );
+    }
+
+    #[test]
+    fn test_aggregation_www() {
+        let hosts = Hosts::new(HostSettings::default(), Default::default());
+        assert_eq!(hosts.get_aggregation("www.example.com"), "example.com");
     }
 }
