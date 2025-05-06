@@ -54,16 +54,6 @@ impl StatusChooser {
     }
 }
 
-pub struct NativeHttpClient {
-    user_agent: String,
-}
-
-impl NativeHttpClient {
-    pub fn new(user_agent: String) -> Self {
-        Self { user_agent }
-    }
-}
-
 fn process_response(response: reqwest::Response) -> HttpResponse {
     let location = if let Some(location) = response.headers().get("location") {
         if let Ok(location) = location.to_str() {
@@ -236,6 +226,16 @@ fn process_error(error: reqwest::Error) -> HttpResponse {
     HttpResponse {
         status: error_to_status(error),
         location: None,
+    }
+}
+
+pub struct NativeHttpClient {
+    user_agent: String,
+}
+
+impl NativeHttpClient {
+    pub fn new(user_agent: String) -> Self {
+        Self { user_agent }
     }
 }
 
