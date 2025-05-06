@@ -3,7 +3,7 @@
 
 #![coverage(off)]
 
-use std::net::{IpAddr, SocketAddr};
+use std::net::SocketAddr;
 use std::time::Duration;
 
 use axum::Router;
@@ -29,6 +29,13 @@ async fn run_test_server() -> (SocketAddr, SocketAddr) {
                     [(header::LOCATION, HeaderValue::from_static("/"))],
                     String::new(),
                 )
+            }),
+        )
+        .route(
+            "/timeout",
+            get(async || {
+                tokio::time::sleep(Duration::from_secs(60)).await;
+                (StatusCode::OK, String::new())
             }),
         );
 
@@ -174,44 +181,31 @@ async fn test_request_redirect() {
 
 #[tokio::test]
 #[serial(updater)]
-async fn test_request_cannot_connect() {
+async fn test_request_timeout() {
     let requester = PythonHttpClient::new("repology/linkchecker", "python")
         .await
         .unwrap();
-
-    // we use explicitly unreacheable addresses here, but statuses this
-    // leads to may vary
-    let ipv4_addr: IpAddr = "192.0.2.0".parse().unwrap();
-    let ipv6_addr: IpAddr = "100::".parse().unwrap();
-    let expected_statuses = [HttpStatus::Timeout, HttpStatus::NetworkUnreachable];
+    let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
     let response = requester
         .request(HttpRequest {
-            url: "http://example.com/200".to_string(),
+            url: format!("http://example.com:{}/timeout", ipv4_addr.port()),
             method: HttpMethod::Head,
-            address: ipv4_addr,
+            address: ipv4_addr.ip(),
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert!(
-        expected_statuses.contains(&response.status),
-        "unexpected status {:?}",
-        response.status
-    );
+    assert_eq!(response.status, HttpStatus::Timeout);
     assert_eq!(response.location, None);
 
     let response = requester
         .request(HttpRequest {
-            url: "http://example.com/200".to_string(),
+            url: format!("http://example.com:{}/timeout", ipv6_addr.port()),
             method: HttpMethod::Head,
-            address: ipv6_addr,
+            address: ipv6_addr.ip(),
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert!(
-        expected_statuses.contains(&response.status),
-        "unexpected status {:?}",
-        response.status
-    );
+    assert_eq!(response.status, HttpStatus::Timeout);
     assert_eq!(response.location, None);
 }
