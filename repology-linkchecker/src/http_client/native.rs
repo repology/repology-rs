@@ -121,10 +121,28 @@ fn extract_status_from_rustls_error(
         InvalidCertificate(certificate_error) => {
             extract_status_from_rustls_certificate_error(certificate_error, chooser, url)
         }
+        AlertReceived(alert_description) => {
+            extract_status_from_rustls_alert_description(alert_description, chooser, url)
+        }
         Other(other_error) => extract_status_from_rustls_other_error(&other_error, chooser, url),
         _ => {
             chooser.push(HttpStatus::SslError);
             error!(?error, ?url, "unhandled rustls::Error variant");
+        }
+    }
+}
+
+fn extract_status_from_rustls_alert_description(
+    error: &rustls::AlertDescription,
+    chooser: &mut StatusChooser,
+    url: Option<&str>,
+) {
+    use rustls::AlertDescription::*;
+    match error {
+        HandshakeFailure => chooser.push(HttpStatus::SslError), // XXX: we need more specific error code for it
+        _ => {
+            chooser.push(HttpStatus::SslError);
+            error!(?error, ?url, "unhandled rustls::AlertDescription variant");
         }
     }
 }
