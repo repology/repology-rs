@@ -84,47 +84,112 @@ fn process_response(response: reqwest::Response) -> HttpResponse {
     }
 }
 
+fn extract_status_from_io_error(
+    error: &std::io::Error,
+    chooser: &mut StatusChooser,
+    url: Option<&str>,
+) {
+    use std::io::ErrorKind::*;
+    match error.kind() {
+        HostUnreachable => chooser.push(HttpStatus::HostUnreachable),
+        ConnectionRefused => chooser.push(HttpStatus::ConnectionRefused),
+        UnexpectedEof => chooser.push(HttpStatus::ConnectionResetByPeer),
+        _ => {}
+    }
+    if let Some(inner) = error.get_ref() {
+        extract_status_from_error_hierarchy(inner, chooser, url)
+    }
+}
+
+fn extract_status_from_hyper_error(
+    error: &hyper::Error,
+    chooser: &mut StatusChooser,
+    _url: Option<&str>,
+) {
+    if error.is_incomplete_message() {
+        chooser.push(HttpStatus::ServerDisconnected);
+    }
+}
+
+fn extract_status_from_rustls_error(
+    error: &rustls::Error,
+    chooser: &mut StatusChooser,
+    url: Option<&str>,
+) {
+    use rustls::Error::*;
+    match error {
+        InvalidCertificate(certificate_error) => {
+            extract_status_from_rustls_certificate_error(certificate_error, chooser, url)
+        }
+        Other(other_error) => extract_status_from_rustls_other_error(&other_error, chooser, url),
+        _ => {
+            chooser.push(HttpStatus::SslError);
+            error!(?error, ?url, "unhandled rustls::Error variant");
+        }
+    }
+}
+
+fn extract_status_from_rustls_certificate_error(
+    error: &rustls::CertificateError,
+    chooser: &mut StatusChooser,
+    url: Option<&str>,
+) {
+    use rustls::CertificateError::*;
+    match error {
+        Expired => chooser.push(HttpStatus::SslCertificateHasExpired),
+        UnknownIssuer => chooser.push(HttpStatus::SslCertificateIncompleteChain),
+        Other(other_error) => extract_status_from_rustls_other_error(&other_error, chooser, url),
+        _ => {
+            chooser.push(HttpStatus::SslError);
+            error!(?error, ?url, "unhandled rustls::CertificateError variant");
+        }
+    }
+}
+
+fn extract_status_from_webpki_error(
+    error: &webpki::Error,
+    chooser: &mut StatusChooser,
+    url: Option<&str>,
+) {
+    use webpki::Error::*;
+    match error {
+        CaUsedAsEndEntity => chooser.push(HttpStatus::SslCertificateSelfSigned),
+        _ => {
+            chooser.push(HttpStatus::SslError);
+            error!(?error, ?url, "unhandled webpki::Error variant");
+        }
+    }
+}
+
+fn extract_status_from_rustls_other_error(
+    error: &rustls::OtherError,
+    chooser: &mut StatusChooser,
+    url: Option<&str>,
+) {
+    extract_status_from_error_hierarchy(error.0.as_ref(), chooser, url);
+}
+
 fn extract_status_from_error_hierarchy(
     error: &(dyn std::error::Error + 'static),
     chooser: &mut StatusChooser,
+    url: Option<&str>,
 ) {
     if let Some(source) = error.source() {
-        extract_status_from_error_hierarchy(source, chooser);
+        extract_status_from_error_hierarchy(source, chooser, url)
     }
 
-    // first try precise error type matching
-    if let Some(error) = error.downcast_ref::<std::io::Error>() {
-        match error.kind() {
-            std::io::ErrorKind::HostUnreachable => chooser.push(HttpStatus::HostUnreachable),
-            std::io::ErrorKind::ConnectionRefused => chooser.push(HttpStatus::ConnectionRefused),
-            _ => {}
-        }
-    }
-    if let Some(error) = error.downcast_ref::<hyper::Error>() {
-        if error.is_incomplete_message() {
-            chooser.push(HttpStatus::ServerDisconnected);
-        }
-    }
-
-    // then fallback to parsing error Display output
-    const STRING_MATCHES: &[(&str, HttpStatus)] = &[
-        ("SSL routines", HttpStatus::SslError),
-        (
-            "self-signed certificate",
-            HttpStatus::SslCertificateSelfSigned,
-        ),
-        (
-            "unable to get local issuer certificate",
-            HttpStatus::SslCertificateIncompleteChain,
-        ),
-    ];
-
-    let descr = error.to_string();
-    for (substring, status) in STRING_MATCHES {
-        if descr.contains(substring) {
-            chooser.push(*status)
-        }
-    }
+    error
+        .downcast_ref::<std::io::Error>()
+        .inspect(|error| extract_status_from_io_error(error, chooser, url));
+    error
+        .downcast_ref::<hyper::Error>()
+        .inspect(|error| extract_status_from_hyper_error(error, chooser, url));
+    error
+        .downcast_ref::<rustls::Error>()
+        .inspect(|error| extract_status_from_rustls_error(error, chooser, url));
+    error
+        .downcast_ref::<webpki::Error>()
+        .inspect(|error| extract_status_from_webpki_error(error, chooser, url));
 }
 
 fn error_to_status(error: reqwest::Error) -> HttpStatus {
@@ -134,7 +199,11 @@ fn error_to_status(error: reqwest::Error) -> HttpStatus {
 
     let mut chooser = StatusChooser::new();
 
-    extract_status_from_error_hierarchy(&error, &mut chooser);
+    extract_status_from_error_hierarchy(
+        &error,
+        &mut chooser,
+        error.url().map(reqwest::Url::as_str),
+    );
 
     let status = chooser.get();
 
