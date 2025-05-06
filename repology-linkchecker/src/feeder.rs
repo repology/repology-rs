@@ -145,7 +145,7 @@ impl Feeder {
                 } else {
                     CheckPriority::Generated
                 },
-                overdue: (now - link.next_check).to_std().unwrap_or_default(),
+                deadline: link.next_check,
                 prev_ipv4_status: link
                     .ipv4_status_code
                     .map(HttpStatus::from_code_with_fallback),
