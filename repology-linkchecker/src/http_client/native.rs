@@ -90,6 +90,9 @@ fn extract_status_from_io_error(
         UnexpectedEof => {
             chooser.push(HttpStatus::ConnectionResetByPeer);
         }
+        ConnectionReset => {
+            chooser.push(HttpStatus::ConnectionResetByPeer);
+        }
         _ => {}
     }
     if let Some(inner) = error.get_ref() {
