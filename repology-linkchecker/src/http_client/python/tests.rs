@@ -193,7 +193,11 @@ async fn test_request_cannot_connect() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert!(expected_statuses.contains(&response.status));
+    assert!(
+        expected_statuses.contains(&response.status),
+        "unexpected status {:?}",
+        response.status
+    );
     assert_eq!(response.location, None);
 
     let response = requester
@@ -204,6 +208,10 @@ async fn test_request_cannot_connect() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert!(expected_statuses.contains(&response.status));
+    assert!(
+        expected_statuses.contains(&response.status),
+        "unexpected status {:?}",
+        response.status
+    );
     assert_eq!(response.location, None);
 }
