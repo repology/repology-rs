@@ -33,7 +33,8 @@ pub async fn link_check_loop(pool: PgPool, config: Config) -> Result<()> {
     let resolver = Resolver::new();
     let updater = Updater::new(pool)
         .with_dry_run(config.dry_run)
-        .with_database_retry_period(config.database_retry_period);
+        .with_database_retry_period(config.database_retry_period)
+        .with_max_parallel_updates(config.max_parallel_updates);
     let hosts = Hosts::new(
         config.default_host_settings.clone(),
         config.host_settings.clone(),

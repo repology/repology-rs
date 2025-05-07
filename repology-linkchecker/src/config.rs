@@ -74,6 +74,10 @@ pub struct CliArgs {
     #[arg(long, value_name = "SECONDS", help_heading = "Database")]
     pub database_retry_period: Option<u64>,
 
+    /// Limit on number of parallel link status updates
+    #[arg(long, value_name = "COUNT", help_heading = "Database")]
+    pub max_parallel_updates: Option<usize>,
+
     /// Input batch size
     ///
     /// Default: 10000
@@ -222,6 +226,7 @@ struct FileConfig {
     disable_ipv6: Option<bool>,
     satisfy_with_ipv6: Option<bool>,
     disable_builtin_hosts_config: Option<bool>,
+    max_parallel_updates: Option<usize>,
 }
 
 #[derive(Debug)]
@@ -244,6 +249,7 @@ pub struct Config {
     pub disable_ipv4: bool,
     pub disable_ipv6: bool,
     pub satisfy_with_ipv6: bool,
+    pub max_parallel_updates: usize,
 }
 
 impl Config {
@@ -346,6 +352,10 @@ impl Config {
             disable_ipv4: args.disable_ipv4 || config.disable_ipv4.unwrap_or(false),
             disable_ipv6: args.disable_ipv6 || config.disable_ipv6.unwrap_or(false),
             satisfy_with_ipv6: args.satisfy_with_ipv6 || config.satisfy_with_ipv6.unwrap_or(false),
+            max_parallel_updates: args
+                .max_parallel_updates
+                .or(config.max_parallel_updates)
+                .unwrap_or(0),
         })
     }
 }

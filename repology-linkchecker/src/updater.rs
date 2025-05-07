@@ -13,6 +13,7 @@ use sqlx::PgPool;
 use tracing::error;
 
 use crate::config::DEFAULT_DATABASE_RETRY_PERIOD;
+use crate::optional_semaphore::OptionalSemaphore;
 use crate::status::HttpStatusWithRedirect;
 
 #[derive(Debug, Default)]
@@ -28,6 +29,7 @@ pub struct Updater {
     pool: PgPool,
     dry_run: bool,
     database_retry_period: Duration,
+    update_semaphore: OptionalSemaphore,
 }
 
 impl Updater {
@@ -36,6 +38,7 @@ impl Updater {
             pool,
             dry_run: false,
             database_retry_period: DEFAULT_DATABASE_RETRY_PERIOD,
+            update_semaphore: Default::default(),
         }
     }
 
@@ -49,10 +52,21 @@ impl Updater {
         self
     }
 
+    pub fn with_max_parallel_updates(mut self, max_parallel_updates: usize) -> Self {
+        self.update_semaphore = OptionalSemaphore::new(max_parallel_updates);
+        self
+    }
+
     pub async fn try_push(&self, result: &CheckResult) -> Result<()> {
         if self.dry_run {
             return Ok(());
         }
+
+        let _permit = self
+            .update_semaphore
+            .acquire()
+            .await
+            .expect("expected to be able to acquire update semaphore");
 
         sqlx::query(indoc! {"
             UPDATE links
@@ -104,6 +118,12 @@ impl Updater {
 
     pub async fn try_defer_by(&self, id: i32, duration: Duration) -> Result<()> {
         if !self.dry_run {
+            let _permit = self
+                .update_semaphore
+                .acquire()
+                .await
+                .expect("expected to be able to acquire update semaphore");
+
             sqlx::query("UPDATE links SET next_check = now() + $2 WHERE id = $1")
                 .bind(id)
                 .bind(Duration::from_secs(duration.as_secs())) // avoid "does not support nanoseconds precision" erro

@@ -15,6 +15,7 @@ mod feeder;
 mod hosts;
 mod http_client;
 mod mainloop;
+mod optional_semaphore;
 mod queuer;
 mod resolver;
 mod status;
