@@ -49,6 +49,7 @@
 "sf.net".aggregate = true
 "sourceforge.net".aggregate = true
 "src.fedoraproject.org".generated_sampling_percentage = 1
+"static.crates.io".skip = false             # exclude this host from crates.io skip rule above
 
 # Blacklist (domain for sale, overtaken, spam etc.)
 # This list is |sort friendly, please keep sorted
