@@ -3,7 +3,9 @@
 
 use tokio::sync::{AcquireError, Semaphore, SemaphorePermit};
 
+#[derive(Default)]
 pub struct OptionalSemaphore(Option<Semaphore>);
+
 #[must_use]
 #[clippy::has_significant_drop]
 pub struct OptionalSemaphorePermit<'a>(#[allow(unused)] Option<SemaphorePermit<'a>>);
@@ -24,12 +26,6 @@ impl OptionalSemaphore {
                 .map(|permit| OptionalSemaphorePermit(Some(permit))),
             None => Ok(OptionalSemaphorePermit(None)),
         }
-    }
-}
-
-impl Default for OptionalSemaphore {
-    fn default() -> Self {
-        Self(None)
     }
 }
 

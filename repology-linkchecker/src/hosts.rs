@@ -121,7 +121,7 @@ impl Hosts {
         loop {
             if let Some(host_settings) = self.host_settings.get(current_hostname) {
                 if let Some(aggregation) = &host_settings.aggregation {
-                    return &aggregation;
+                    return aggregation;
                 }
                 if host_settings.aggregate {
                     return current_hostname;

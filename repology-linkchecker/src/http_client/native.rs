@@ -124,7 +124,7 @@ fn extract_status_from_rustls_error(
             extract_status_from_rustls_alert_description(alert_description, chooser, url);
         }
         Other(other_error) => {
-            extract_status_from_rustls_other_error(&other_error, chooser, url);
+            extract_status_from_rustls_other_error(other_error, chooser, url);
         }
         _ => {
             chooser.push(HttpStatus::SslError);
@@ -168,7 +168,7 @@ fn extract_status_from_rustls_certificate_error(
             chooser.push(HttpStatus::SslCertificateHostnameMismatch);
         }
         Other(other_error) => {
-            extract_status_from_rustls_other_error(&other_error, chooser, url);
+            extract_status_from_rustls_other_error(other_error, chooser, url);
         }
         _ => {
             chooser.push(HttpStatus::SslError);
