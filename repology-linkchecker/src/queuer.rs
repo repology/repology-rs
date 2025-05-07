@@ -283,17 +283,22 @@ where
                     return false;
                 }
                 if bucket.tasks.len() >= self.max_queued_urls_per_bucket {
-                    // Some hosts are just too slow to check, and their queues are quickly
-                    // overflown. We don't want to block here, instead we defer tasks
-                    bucket.num_deferred += 1;
-                    drop(state); // no longer needed, and don't hold a lock across await point
-                    // clippy::await_holding_lock false positive about holding a lock across await
-                    // (but we don't as the lock is dropped a line above), silenced at function level
-                    // See https://github.com/rust-lang/rust-clippy/issues/9683
-                    self.updater
-                        .defer_by(task.id, host_settings.generate_defer_time(task.priority))
-                        .await;
-                    counter!("repology_linkchecker_queuer_tasks_total", "state" => "deferred", "bucket" => bucket_key.to_string()).increment(1);
+                    if task.prev_ipv4_status.is_none() && task.prev_ipv6_status.is_none() {
+                        // don't defer unchecked links
+                        counter!("repology_linkchecker_queuer_tasks_total", "state" => "retained", "bucket" => bucket_key.to_string()).increment(1);
+                    } else {
+                        // Some hosts are just too slow to check, and their queues are quickly
+                        // overflown. We don't want to block here, instead we defer tasks
+                        bucket.num_deferred += 1;
+                        drop(state); // no longer needed, and don't hold a lock across await point
+                        // clippy::await_holding_lock false positive about holding a lock across await
+                        // (but we don't as the lock is dropped a line above), silenced at function level
+                        // See https://github.com/rust-lang/rust-clippy/issues/9683
+                        self.updater
+                            .defer_by(task.id, host_settings.generate_defer_time(task.priority))
+                            .await;
+                        counter!("repology_linkchecker_queuer_tasks_total", "state" => "deferred", "bucket" => bucket_key.to_string()).increment(1);
+                    }
                     return false;
                 }
                 bucket
