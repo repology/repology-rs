@@ -84,7 +84,7 @@ pub struct CliArgs {
 
     /// Input batch size
     ///
-    /// Default: 10000
+    /// Default: 1000
     #[arg(long, value_name = "COUNT", help_heading = "Check task generation")]
     pub batch_size: Option<usize>,
 
