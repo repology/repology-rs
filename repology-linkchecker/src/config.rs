@@ -48,6 +48,10 @@ pub struct CliArgs {
     #[arg(short = '1', long)]
     pub once_only: bool,
 
+    /// Disable embedded hosts config
+    #[arg(long)]
+    pub disable_builtin_hosts_config: bool,
+
     /// Socket address for serving Prometheus metrics
     #[arg(long, value_name = "ADDR:PORT", help_heading = "Monitoring")]
     pub prometheus_export: Option<SocketAddr>,
@@ -144,10 +148,6 @@ pub struct CliArgs {
     /// Omit IPv4 check if IPv6 check succeeds
     #[arg(long, help_heading = "Internet protocol versions")]
     pub satisfy_with_ipv6: bool,
-
-    /// Disable embedded hosts config
-    #[arg(long, help_heading = "Internet protocol versions")]
-    pub disable_builtin_hosts_config: bool,
 }
 
 #[derive(Deserialize)]
