@@ -113,14 +113,15 @@ impl Feeder {
         counter!("repology_linkchecker_feeder_tasks_total").increment(urls.len() as u64);
         gauge!("repology_linkchecker_feeder_batch_size_total").set(urls.len() as f64);
 
-        self.last_key =
-            if let Some(last_url) = urls.last().filter(|_| urls.len() == self.batch_size) {
-                Some((last_url.next_check, last_url.id))
-            } else {
-                info!("restarting feeder loop");
-                counter!("repology_linkchecker_feeder_loops_total").increment(1);
-                None
-            };
+        self.last_key = if let Some(last_url) = urls.last()
+            && urls.len() == self.batch_size
+        {
+            Some((last_url.next_check, last_url.id))
+        } else {
+            info!("restarting feeder loop");
+            counter!("repology_linkchecker_feeder_loops_total").increment(1);
+            None
+        };
 
         info!(
             count = urls.len(),
