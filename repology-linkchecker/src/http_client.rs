@@ -18,6 +18,15 @@ pub enum HttpMethod {
     Get,
 }
 
+impl HttpMethod {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Head => "HEAD",
+            Self::Get => "GET",
+        }
+    }
+}
+
 #[derive(Clone)]
 pub struct HttpRequest {
     pub url: String,

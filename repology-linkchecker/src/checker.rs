@@ -106,7 +106,7 @@ where
         delayer
             .reserve(hosts.get_aggregation(host), host_settings.delay)
             .await;
-        counter!("repology_linkchecker_checker_http_requests_total").increment(1);
+        counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str()).increment(1);
         let response = http_client.request(request.clone()).await;
 
         let experiment_prob: f32 = match response.status {
@@ -123,7 +123,7 @@ where
             delayer
                 .reserve(hosts.get_aggregation(host), host_settings.delay)
                 .await;
-            counter!("repology_linkchecker_checker_http_requests_total").increment(1);
+            counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str()).increment(1);
             let experimental_response = experimental_http_client.request(request.clone()).await;
 
             if response.status != experimental_response.status {
