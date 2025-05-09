@@ -126,7 +126,18 @@ where
             counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str()).increment(1);
             let experimental_response = experimental_http_client.request(request.clone()).await;
 
-            if response.status != experimental_response.status {
+            let ignore_experiment =
+                host == "code.google.com" // flapping 500's
+                || host == "pyropus.ca." // native checker is correct
+                || host == "gitee.com" // spurious 502 → 200
+                || response.status == HttpStatus::HostUnreachable && experimental_response.status == HttpStatus::Timeout // somewhat interchangeable? manual check confirms timeout
+                || response.status == HttpStatus::ConnectionAborted && experimental_response.status == HttpStatus::Timeout // somewhat interchangeable? manual check confirms timeout
+                || request.url.contains('%') && experimental_response.status == HttpStatus::Http(200) // native checker is correct
+                || host == "packages.debian.org" || host == "packages.trisquel.org" || host == "packages.ubuntu.com" // flapping 502/504s
+            ;
+
+            if ignore_experiment {
+            } else if response.status != experimental_response.status {
                 counter!("repology_linkchecker_checker_experimental_requests_total", "outcome" => "mismatch", "status" => response.status.to_string()).increment(1);
                 error!(url = request.url, status = ?response.status, experimental_status = ?experimental_response.status, "experimental status mismatch");
             } else {
