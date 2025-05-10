@@ -37,6 +37,7 @@ pub struct CheckTask {
     pub id: i32,
     pub url: String,
     pub priority: CheckPriority,
+    pub last_checked: Option<DateTime<Utc>>,
     pub deadline: DateTime<Utc>,
     pub prev_ipv4_status: Option<HttpStatus>,
     pub prev_ipv6_status: Option<HttpStatus>,

@@ -283,7 +283,7 @@ where
                     return false;
                 }
                 if bucket.tasks.len() >= self.max_queued_urls_per_bucket {
-                    if task.prev_ipv4_status.is_none() && task.prev_ipv6_status.is_none() {
+                    if task.last_checked.is_none() {
                         // don't defer unchecked links
                         counter!("repology_linkchecker_queuer_tasks_total", "state" => "retained", "bucket" => bucket_key.to_string()).increment(1);
                     } else {

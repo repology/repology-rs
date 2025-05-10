@@ -27,6 +27,7 @@ pub struct Feeder {
 struct LinkToCheck {
     id: i32,
     url: String,
+    last_checked: Option<DateTime<Utc>>,
     next_check: DateTime<Utc>,
     priority: bool,
     ipv4_status_code: Option<i16>,
@@ -75,6 +76,7 @@ impl Feeder {
                 SELECT
                     id,
                     url,
+                    last_checked,
                     next_check,
                     priority,
                     ipv4_status_code,
@@ -95,6 +97,7 @@ impl Feeder {
                 SELECT
                     id,
                     url,
+                    last_checked,
                     next_check,
                     priority,
                     ipv4_status_code,
@@ -146,6 +149,7 @@ impl Feeder {
                 } else {
                     CheckPriority::Generated
                 },
+                last_checked: link.last_checked,
                 deadline: link.next_check,
                 prev_ipv4_status: link
                     .ipv4_status_code
