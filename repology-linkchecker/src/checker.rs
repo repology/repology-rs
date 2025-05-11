@@ -369,10 +369,16 @@ where
             counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "InvalidUrl").increment(1);
         };
 
+        let now = Utc::now();
+
         check_result.id = task.id;
-        check_result.check_time = Utc::now();
-        check_result.next_check =
-            check_result.check_time + host_settings.generate_recheck_time(recheck_case);
+        check_result.check_time = now;
+        check_result.next_check = now + host_settings.generate_recheck_time(recheck_case);
+
+        if let Some(last_checked) = &task.last_checked {
+            histogram!("repology_linkchecker_checker_check_period_seconds")
+                .record((now - last_checked).as_seconds_f64());
+        }
 
         if let Some(status) = &check_result.ipv4 {
             counter!(
