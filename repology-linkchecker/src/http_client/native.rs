@@ -110,6 +110,16 @@ fn extract_status_from_hyper_error(
     }
 }
 
+fn extract_status_from_h2_error(
+    error: &h2::Error,
+    chooser: &mut StatusChooser,
+    _url: Option<&str>,
+) {
+    if error.is_reset() {
+        chooser.push(HttpStatus::ServerDisconnected);
+    }
+}
+
 fn extract_status_from_rustls_error(
     error: &rustls::Error,
     chooser: &mut StatusChooser,
@@ -217,6 +227,9 @@ fn extract_status_from_error_hierarchy(
     error
         .downcast_ref::<hyper::Error>()
         .inspect(|error| extract_status_from_hyper_error(error, chooser, url));
+    error
+        .downcast_ref::<h2::Error>()
+        .inspect(|error| extract_status_from_h2_error(error, chooser, url));
     error
         .downcast_ref::<rustls::Error>()
         .inspect(|error| extract_status_from_rustls_error(error, chooser, url));
