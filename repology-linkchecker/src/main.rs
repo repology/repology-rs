@@ -36,45 +36,47 @@ fn collect_tokio_runtime_metrics() {
     let metrics = tokio::runtime::Handle::current().metrics();
 
     #[cfg(tokio_unstable)]
-    {
-        gauge!("tokio_blocking_queue_depth").set(metrics.blocking_queue_depth() as f64);
-        counter!("tokio_budget_forced_yield_count_total")
-            .absolute(metrics.budget_forced_yield_count());
-    }
+    gauge!("tokio_blocking_queue_depth").set(metrics.blocking_queue_depth() as f64);
+    #[cfg(tokio_unstable)]
+    counter!("tokio_budget_forced_yield_count_total").absolute(metrics.budget_forced_yield_count());
     gauge!("tokio_global_queue_depth").set(metrics.global_queue_depth() as f64);
     gauge!("tokio_num_alive_tasks").set(metrics.num_alive_tasks() as f64);
     #[cfg(tokio_unstable)]
-    {
-        gauge!("tokio_num_blocking_threads").set(metrics.num_blocking_threads() as f64);
-        gauge!("tokio_num_idle_blocking_threads").set(metrics.num_idle_blocking_threads() as f64);
-    }
+    gauge!("tokio_num_blocking_threads").set(metrics.num_blocking_threads() as f64);
+    #[cfg(tokio_unstable)]
+    gauge!("tokio_num_idle_blocking_threads").set(metrics.num_idle_blocking_threads() as f64);
     gauge!("tokio_num_workers").set(metrics.num_workers() as f64);
     #[cfg(tokio_unstable)]
-    {
-        counter!("tokio_spawned_tasks_count_total").absolute(metrics.spawned_tasks_count());
-    }
+    counter!("tokio_spawned_tasks_count_total").absolute(metrics.spawned_tasks_count());
 
-    #[cfg(tokio_unstable)]
     for nworker in 0..metrics.num_workers() {
         let labels = [("worker", format!("{nworker}"))];
+        #[cfg(tokio_unstable)]
         gauge!("tokio_worker_local_queue_depth", &labels)
             .set(metrics.worker_local_queue_depth(nworker) as f64);
+        #[cfg(tokio_unstable)]
         counter!("tokio_worker_local_schedule_count_total", &labels)
             .absolute(metrics.worker_local_schedule_count(nworker));
+        #[cfg(tokio_unstable)]
         gauge!("tokio_worker_mean_poll_time", &labels)
             .set(metrics.worker_mean_poll_time(nworker).as_secs_f64());
+        #[cfg(tokio_unstable)]
         counter!("tokio_worker_noop_count_total", &labels)
             .absolute(metrics.worker_noop_count(nworker));
+        #[cfg(tokio_unstable)]
         counter!("tokio_worker_overflow_count_total", &labels)
             .absolute(metrics.worker_overflow_count(nworker));
         counter!("tokio_worker_park_count_total", &labels)
             .absolute(metrics.worker_park_count(nworker));
         counter!("tokio_worker_park_unpark_count_total", &labels)
             .absolute(metrics.worker_park_unpark_count(nworker));
+        #[cfg(tokio_unstable)]
         counter!("tokio_worker_poll_count_total", &labels)
             .absolute(metrics.worker_poll_count(nworker));
+        #[cfg(tokio_unstable)]
         counter!("tokio_worker_steal_count_total", &labels)
             .absolute(metrics.worker_steal_count(nworker));
+        #[cfg(tokio_unstable)]
         counter!("tokio_worker_steal_operations_total", &labels)
             .absolute(metrics.worker_steal_operations(nworker));
         counter!("tokio_worker_total_busy_duration", &labels)
