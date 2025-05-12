@@ -80,7 +80,7 @@ impl Report {
             WHERE id = $1
         "})
         .bind(id)
-        .bind(&update.reply)
+        .bind(Some(&update.reply).filter(|reply| !reply.is_empty()))
         .bind(match update.accepted.as_ref() {
             "true" => Some(true),
             "false" => Some(false),
