@@ -10,6 +10,7 @@ use tokio::task::{self};
 use tracing::info;
 use url::Url;
 
+use crate::checker::CheckPriority;
 use crate::checker::{CheckTask, Checker};
 use crate::config::{
     DEFAULT_MAX_BUCKETS, DEFAULT_MAX_QUEUED_URLS, DEFAULT_MAX_QUEUED_URLS_PER_BUCKET,
@@ -283,8 +284,8 @@ where
                     return false;
                 }
                 if bucket.tasks.len() >= self.max_queued_urls_per_bucket {
-                    if task.last_checked.is_none() {
-                        // don't defer unchecked links
+                    if task.last_checked.is_none() && task.priority == CheckPriority::Manual {
+                        // don't defer unchecked manual links
                         counter!("repology_linkchecker_queuer_tasks_total", "state" => "retained", "bucket" => bucket_key.to_string()).increment(1);
                     } else {
                         // Some hosts are just too slow to check, and their queues are quickly
