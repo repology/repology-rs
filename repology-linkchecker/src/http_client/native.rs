@@ -154,6 +154,9 @@ fn extract_status_from_rustls_alert_description(
             // XXX: we need more specific error code for it
             chooser.push(HttpStatus::SslError);
         }
+        UnrecognisedName => {
+            chooser.push(HttpStatus::SslError);
+        }
         _ => {
             chooser.push(HttpStatus::SslError);
             error!(?error, ?url, "unhandled rustls::AlertDescription variant");
