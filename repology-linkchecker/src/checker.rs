@@ -134,6 +134,10 @@ where
                 || response.status == HttpStatus::HostUnreachable && experimental_response.status == HttpStatus::Timeout // somewhat interchangeable? manual check confirms timeout
                 || response.status == HttpStatus::ConnectionAborted && experimental_response.status == HttpStatus::Timeout // somewhat interchangeable? manual check confirms timeout
                 || request.url.contains('%') && experimental_response.status == HttpStatus::Http(200) // native checker is correct
+                || response.status == HttpStatus::Http(502) && experimental_response.status == HttpStatus::Http(200) // flapping 5xx
+                || response.status == HttpStatus::Http(503) && experimental_response.status == HttpStatus::Http(200) // flapping 5xx
+                || response.status == HttpStatus::Http(504) && experimental_response.status == HttpStatus::Http(200) // flapping 5xx
+                || response.status == HttpStatus::Http(429) || experimental_response.status == HttpStatus::Http(429) // 429s
                 || host == "packages.debian.org" || host == "packages.trisquel.org" || host == "packages.ubuntu.com" // flapping 502/504s
             ;
 
