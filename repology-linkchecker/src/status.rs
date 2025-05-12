@@ -326,6 +326,14 @@ impl FromStr for HttpStatus {
     }
 }
 
+impl TryFrom<i16> for HttpStatus {
+    type Error = ParseHttpStatusError;
+
+    fn try_from(code: i16) -> Result<Self, Self::Error> {
+        Self::from_code(code)
+    }
+}
+
 impl<'de> Deserialize<'de> for HttpStatus {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
