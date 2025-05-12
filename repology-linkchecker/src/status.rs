@@ -5,7 +5,6 @@ use std::error::Error;
 use std::num::ParseIntError;
 use std::str::FromStr;
 
-use hickory_resolver::ResolveError;
 use serde::Deserialize;
 use strum::{EnumDiscriminants, EnumIter, IntoStaticStr};
 use tracing::error;
@@ -220,81 +219,11 @@ impl HttpStatus {
         })
     }
 
-    #[tracing::instrument]
-    pub fn from_resolve_error(err: &ResolveError) -> Self {
-        use hickory_resolver::ResolveErrorKind;
-        use hickory_resolver::proto::ProtoErrorKind;
-        use hickory_resolver::proto::op::response_code::ResponseCode;
-
-        let ResolveErrorKind::Proto(err) = err.kind() else {
-            error!("no specific handling for this resolve error ResolveErrorKind");
-            return Self::DnsError;
-        };
-
-        match err.kind() {
-            ProtoErrorKind::NoRecordsFound { response_code, .. }
-                if *response_code == ResponseCode::ServFail =>
-            {
-                Self::DnsError
-            }
-            ProtoErrorKind::NoRecordsFound { response_code, .. }
-                if *response_code == ResponseCode::NXDomain =>
-            {
-                Self::DnsDomainNotFound
-            }
-            ProtoErrorKind::NoRecordsFound { response_code, .. }
-                if *response_code == ResponseCode::NoError =>
-            {
-                Self::DnsNoAddressRecord
-            }
-            ProtoErrorKind::Timeout => Self::DnsTimeout,
-            _ => {
-                error!("no specific handling for this resolve error ProtoErrorKind");
-                Self::DnsError
-            }
-        }
-    }
-
     pub fn pick_from46(ipv4: Option<Self>, ipv6: Option<Self>) -> Option<Self> {
         if ipv6.is_some_and(|status| status != HttpStatus::DnsNoAddressRecord) {
             ipv6
         } else {
             ipv4
-        }
-    }
-
-    pub fn precision(self) -> u8 {
-        match self {
-            Self::UnknownError => 0,
-
-            // generic error categories
-            Self::DnsError => 1,
-            Self::SslError => 1,
-            Self::BadHttp => 1,
-
-            // precise errors
-            Self::Http(_) => 2,
-            Self::Timeout => 2,
-            Self::InvalidUrl => 2,
-            Self::Blacklisted => 2,
-            Self::DnsDomainNotFound => 2,
-            Self::DnsNoAddressRecord => 2,
-            Self::DnsRefused => 2,
-            Self::DnsTimeout => 2,
-            Self::DnsIpv4MappedInAaaa => 2,
-            Self::ConnectionRefused => 2,
-            Self::HostUnreachable => 2,
-            Self::ConnectionResetByPeer => 2,
-            Self::NetworkUnreachable => 2,
-            Self::ServerDisconnected => 2,
-            Self::ConnectionAborted => 2,
-            Self::AddressNotAvailable => 2,
-            Self::TooManyRedirects => 2,
-            Self::SslCertificateHasExpired => 2,
-            Self::SslCertificateHostnameMismatch => 2,
-            Self::SslCertificateSelfSigned => 2,
-            Self::SslCertificateSelfSignedInChain => 2,
-            Self::SslCertificateIncompleteChain => 2,
         }
     }
 }

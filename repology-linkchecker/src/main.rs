@@ -12,6 +12,7 @@
 mod checker;
 mod config;
 mod delayer;
+mod errors;
 mod feeder;
 mod hosts;
 mod http_client;

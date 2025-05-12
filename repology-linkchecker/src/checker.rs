@@ -10,6 +10,7 @@ use tracing::{error, info, warn};
 use url::Url;
 
 use crate::delayer::Delayer;
+use crate::errors::extract_status;
 use crate::hosts::{Hosts, RecheckCase};
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest, HttpResponse};
 use crate::resolver::{IpVersion, Resolver, ResolverCache};
@@ -212,7 +213,7 @@ where
                 )
                 .await)
             }
-            Err(resolve_error) => Err(HttpStatus::from_resolve_error(&resolve_error)),
+            Err(resolve_error) => Err(extract_status(&resolve_error, url.as_str())),
         }
     }
 
