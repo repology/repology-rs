@@ -7,7 +7,7 @@ use std::time::{Duration, Instant};
 
 use metrics::{counter, gauge};
 use tokio::task::{self};
-use tracing::info;
+use tracing::{debug, info};
 use url::Url;
 
 use crate::checker::CheckPriority;
@@ -22,7 +22,7 @@ use crate::resolver::Resolver;
 use crate::updater::Updater;
 
 const OLD_BUCKET_AGE_THRESHOLD: Duration = Duration::from_secs(600);
-const OLD_BUCKET_LOG_PERIOD: Duration = Duration::from_secs(60);
+const OLD_BUCKET_LOG_PERIOD: Duration = Duration::from_secs(300);
 
 struct Bucket {
     tasks: VecDeque<CheckTask>,
@@ -177,7 +177,7 @@ where
                 let now = Instant::now();
 
                 let Some(task) = bucket.tasks.pop_front() else {
-                    info!(
+                    debug!(
                         key = bucket_key,
                         num_processed,
                         num_deferred = bucket.num_deferred,
@@ -325,7 +325,7 @@ where
                     self.satisfy_with_ipv6,
                 ));
 
-                info!(key = bucket_key, "bucket created");
+                debug!(key = bucket_key, "bucket created");
 
                 bucket
             } else {
