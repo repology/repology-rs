@@ -171,6 +171,9 @@ impl ExtractStatus for hyper::Error {
         if self.is_incomplete_message() {
             chooser.push(HttpStatus::ServerDisconnected);
         }
+        if self.is_parse() {
+            chooser.push(HttpStatus::BadHttp);
+        }
     }
 }
 
