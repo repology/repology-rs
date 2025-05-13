@@ -28,6 +28,8 @@
 "github.com".recheck_manual = 21
 "github.io".aggregation = "github.com"
 "github.io".delay = 1.25
+"github.io".recheck_generated = 45
+"github.io".recheck_manual = 21
 "gitlab.com".delay = 1
 "hydra.nixos.org".generated_sampling_percentage = 1
 "kojipkgs.fedoraproject.org".generated_sampling_percentage = 10
@@ -43,6 +45,8 @@
 "pypi.org".recheck_manual = 14
 "raw.githubusercontent.com".aggregation = "github.com"
 "raw.githubusercontent.com".delay = 1.25
+"raw.githubusercontent.com".recheck_generated = 45
+"raw.githubusercontent.com".recheck_manual = 21
 "readthedocs.io".aggregate = true
 "rubygems.org".delay = 1
 "rubygems.org".recheck_manual = 14
