@@ -23,6 +23,7 @@
 "files.pythonhosted.org".recheck_generated = 30
 "files.pythonhosted.org".recheck_manual = 30
 "gitee.com".delay = 5                       # 429s @ 3sec
+"gitee.com".generated_sampling_percentage = 10
 "github.com".delay = 2
 "github.com".generated_sampling_percentage = 10
 "github.com".recheck_generated = 45
