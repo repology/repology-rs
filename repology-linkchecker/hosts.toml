@@ -22,6 +22,7 @@
 "files.pythonhosted.org".generated_sampling_percentage = 1  # no real need to recheck links provided by pypi itself, right?
 "files.pythonhosted.org".recheck_generated = 30
 "files.pythonhosted.org".recheck_manual = 30
+"gitee.com".delay = 5                       # 429s @ 3sec
 "github.com".delay = 2
 "github.com".generated_sampling_percentage = 10
 "github.com".recheck_generated = 45
