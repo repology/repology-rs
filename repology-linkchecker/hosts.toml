@@ -9,7 +9,7 @@
 "build.debian.org".recheck_generated = 400  # because of huge delay
 "build.opensuse.org".generated_sampling_percentage = 10
 "build.opensuse.org".recheck_generated = 21
-"codeberg.org".delay = 20                   # 429s @ 10sec
+"codeberg.org".delay = 30                   # 429s @ 30sec
 "community.chocolatey.org".disable_head = true
 "cpan.metacpan.org".recheck_manual = 14
 "crates.io".recheck_generated = 60
