@@ -12,7 +12,7 @@ use tracing::{error, info};
 
 use crate::checker::{CheckPriority, CheckTask};
 use crate::config::{DEFAULT_BATCH_PERIOD, DEFAULT_BATCH_SIZE, DEFAULT_DATABASE_RETRY_PERIOD};
-use crate::status::HttpStatus;
+use crate::status::LinkStatus;
 
 pub struct Feeder {
     pool: PgPool,
@@ -153,10 +153,10 @@ impl Feeder {
                 deadline: link.next_check,
                 prev_ipv4_status: link
                     .ipv4_status_code
-                    .map(HttpStatus::from_code_with_fallback),
+                    .map(LinkStatus::from_code_with_fallback),
                 prev_ipv6_status: link
                     .ipv6_status_code
-                    .map(HttpStatus::from_code_with_fallback),
+                    .map(LinkStatus::from_code_with_fallback),
             })
             .collect())
     }

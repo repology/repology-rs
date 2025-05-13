@@ -3,21 +3,21 @@
 
 use tracing::error;
 
-use crate::status::HttpStatus;
+use crate::status::LinkStatus;
 
 struct StatusChooser {
-    status: HttpStatus,
+    status: LinkStatus,
 }
 
 impl StatusChooser {
     fn new() -> Self {
         Self {
-            status: HttpStatus::UnknownError,
+            status: LinkStatus::UnknownError,
         }
     }
 
-    fn get_status_precision(status: HttpStatus) -> u8 {
-        use HttpStatus::*;
+    fn get_status_precision(status: LinkStatus) -> u8 {
+        use LinkStatus::*;
         match status {
             UnknownError => 0,
 
@@ -52,7 +52,7 @@ impl StatusChooser {
         }
     }
 
-    fn push(&mut self, status: HttpStatus) {
+    fn push(&mut self, status: LinkStatus) {
         let precision = Self::get_status_precision(status);
         let self_precision = Self::get_status_precision(self.status);
 
@@ -63,7 +63,7 @@ impl StatusChooser {
         }
     }
 
-    fn get(&self) -> HttpStatus {
+    fn get(&self) -> LinkStatus {
         self.status
     }
 }
@@ -122,7 +122,7 @@ fn extract_status_generic(
 impl ExtractStatus for h2::Error {
     fn extract_status(&self, chooser: &mut StatusChooser, _url: &str) {
         if self.is_reset() {
-            chooser.push(HttpStatus::ServerDisconnected);
+            chooser.push(LinkStatus::ServerDisconnected);
         }
     }
 }
@@ -133,7 +133,7 @@ impl ExtractStatus for hickory_resolver::ResolveError {
         use hickory_resolver::proto::ProtoErrorKind;
         use hickory_resolver::proto::op::response_code::ResponseCode;
 
-        chooser.push(HttpStatus::DnsError);
+        chooser.push(LinkStatus::DnsError);
 
         let ResolveErrorKind::Proto(proto_error) = self.kind() else {
             error!(error = ?self, url, "unhandled hickory_resolver::ResolveErrorKind variant");
@@ -144,20 +144,20 @@ impl ExtractStatus for hickory_resolver::ResolveError {
             ProtoErrorKind::NoRecordsFound { response_code, .. }
                 if *response_code == ResponseCode::ServFail =>
             {
-                chooser.push(HttpStatus::DnsError);
+                chooser.push(LinkStatus::DnsError);
             }
             ProtoErrorKind::NoRecordsFound { response_code, .. }
                 if *response_code == ResponseCode::NXDomain =>
             {
-                chooser.push(HttpStatus::DnsDomainNotFound);
+                chooser.push(LinkStatus::DnsDomainNotFound);
             }
             ProtoErrorKind::NoRecordsFound { response_code, .. }
                 if *response_code == ResponseCode::NoError =>
             {
-                chooser.push(HttpStatus::DnsNoAddressRecord);
+                chooser.push(LinkStatus::DnsNoAddressRecord);
             }
             ProtoErrorKind::Timeout => {
-                chooser.push(HttpStatus::DnsTimeout);
+                chooser.push(LinkStatus::DnsTimeout);
             }
             _ => {
                 error!(error = ?self, url, "unhandled hickory_resolver::proto::ProtoErrorKind variant");
@@ -169,10 +169,10 @@ impl ExtractStatus for hickory_resolver::ResolveError {
 impl ExtractStatus for hyper::Error {
     fn extract_status(&self, chooser: &mut StatusChooser, _url: &str) {
         if self.is_incomplete_message() {
-            chooser.push(HttpStatus::ServerDisconnected);
+            chooser.push(LinkStatus::ServerDisconnected);
         }
         if self.is_parse() {
-            chooser.push(HttpStatus::BadHttp);
+            chooser.push(LinkStatus::BadHttp);
         }
     }
 }
@@ -180,7 +180,7 @@ impl ExtractStatus for hyper::Error {
 impl ExtractStatus for reqwest::Error {
     fn extract_status(&self, chooser: &mut StatusChooser, _url: &str) {
         if self.is_timeout() {
-            chooser.push(HttpStatus::Timeout);
+            chooser.push(LinkStatus::Timeout);
         }
     }
 }
@@ -199,7 +199,7 @@ impl ExtractStatus for rustls::Error {
                 other_error.extract_status(chooser, url);
             }
             _ => {
-                chooser.push(HttpStatus::SslError);
+                chooser.push(LinkStatus::SslError);
                 error!(error = ?self, url, "unhandled rustls::Error variant");
             }
         }
@@ -218,13 +218,13 @@ impl ExtractStatus for rustls::AlertDescription {
         match self {
             HandshakeFailure => {
                 // XXX: we need more specific error code for it
-                chooser.push(HttpStatus::SslError);
+                chooser.push(LinkStatus::SslError);
             }
             UnrecognisedName => {
-                chooser.push(HttpStatus::SslError);
+                chooser.push(LinkStatus::SslError);
             }
             _ => {
-                chooser.push(HttpStatus::SslError);
+                chooser.push(LinkStatus::SslError);
                 error!(error = ?self, url, "unhandled rustls::AlertDescription variant");
             }
         }
@@ -236,19 +236,19 @@ impl ExtractStatus for rustls::CertificateError {
         use rustls::CertificateError::*;
         match self {
             Expired | ExpiredContext { .. } => {
-                chooser.push(HttpStatus::SslCertificateHasExpired);
+                chooser.push(LinkStatus::SslCertificateHasExpired);
             }
             UnknownIssuer => {
-                chooser.push(HttpStatus::SslCertificateIncompleteChain);
+                chooser.push(LinkStatus::SslCertificateIncompleteChain);
             }
             NotValidForName | NotValidForNameContext { .. } => {
-                chooser.push(HttpStatus::SslCertificateHostnameMismatch);
+                chooser.push(LinkStatus::SslCertificateHostnameMismatch);
             }
             Other(other_error) => {
                 other_error.extract_status(chooser, url);
             }
             _ => {
-                chooser.push(HttpStatus::SslError);
+                chooser.push(LinkStatus::SslError);
                 error!(error = ?self, url, "unhandled rustls::CertificateError variant");
             }
         }
@@ -260,16 +260,16 @@ impl ExtractStatus for std::io::Error {
         use std::io::ErrorKind::*;
         match self.kind() {
             HostUnreachable => {
-                chooser.push(HttpStatus::HostUnreachable);
+                chooser.push(LinkStatus::HostUnreachable);
             }
             ConnectionRefused => {
-                chooser.push(HttpStatus::ConnectionRefused);
+                chooser.push(LinkStatus::ConnectionRefused);
             }
             UnexpectedEof => {
-                chooser.push(HttpStatus::ConnectionResetByPeer);
+                chooser.push(LinkStatus::ConnectionResetByPeer);
             }
             ConnectionReset => {
-                chooser.push(HttpStatus::ConnectionResetByPeer);
+                chooser.push(LinkStatus::ConnectionResetByPeer);
             }
             _ => {}
         }
@@ -284,24 +284,24 @@ impl ExtractStatus for webpki::Error {
         use webpki::Error::*;
         match self {
             CaUsedAsEndEntity => {
-                chooser.push(HttpStatus::SslCertificateSelfSigned);
+                chooser.push(LinkStatus::SslCertificateSelfSigned);
             }
             _ => {
-                chooser.push(HttpStatus::SslError);
+                chooser.push(LinkStatus::SslError);
                 error!(error = ?self, url, "unhandled webpki::Error variant");
             }
         }
     }
 }
 
-pub fn extract_status(error: &(dyn std::error::Error + 'static), url: &str) -> HttpStatus {
+pub fn extract_status(error: &(dyn std::error::Error + 'static), url: &str) -> LinkStatus {
     let mut chooser = StatusChooser::new();
 
     error.extract_status(&mut chooser, url);
 
     let status = chooser.get();
 
-    if status == HttpStatus::UnknownError {
+    if status == LinkStatus::UnknownError {
         error!(?error, url, "unhandled error type");
     }
 

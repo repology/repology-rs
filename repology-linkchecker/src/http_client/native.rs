@@ -11,7 +11,7 @@ use async_trait::async_trait;
 
 use crate::errors::extract_status;
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest, HttpResponse};
-use crate::status::HttpStatus;
+use crate::status::LinkStatus;
 
 struct FakeResolver {
     address: IpAddr,
@@ -69,7 +69,7 @@ impl HttpClient for NativeHttpClient {
                         Some(location.to_string())
                     } else {
                         return HttpResponse {
-                            status: HttpStatus::InvalidUrl,
+                            status: LinkStatus::InvalidUrl,
                             location: None,
                         };
                     }
@@ -78,7 +78,7 @@ impl HttpClient for NativeHttpClient {
                 };
 
                 HttpResponse {
-                    status: HttpStatus::Http(response.status().as_u16()),
+                    status: LinkStatus::Http(response.status().as_u16()),
                     location,
                 }
             }

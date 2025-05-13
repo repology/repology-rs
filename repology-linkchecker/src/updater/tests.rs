@@ -50,12 +50,12 @@ fn test_result_is_stored(pool: PgPool) {
     let check_result = CheckResult {
         url: "https://example.com/".to_string(),
         check_time,
-        ipv4: Some(HttpStatus {
+        ipv4: Some(LinkStatus {
             is_success: true,
             status_code: 200,
             permanent_redirect_target: None,
         }),
-        ipv6: Some(HttpStatus {
+        ipv6: Some(LinkStatus {
             is_success: false,
             status_code: 404,
             permanent_redirect_target: Some("https://example.com/redirect".to_string()),

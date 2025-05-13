@@ -12,7 +12,7 @@ use axum::routing::get;
 
 use crate::http_client::native::NativeHttpClient;
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest};
-use crate::status::HttpStatus;
+use crate::status::LinkStatus;
 
 async fn run_test_server() -> (SocketAddr, SocketAddr) {
     let app = Router::new()
@@ -65,7 +65,7 @@ async fn test_request_200() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::Http(200));
+    assert_eq!(response.status, LinkStatus::Http(200));
     assert_eq!(response.location, None);
 
     let response = http_client
@@ -76,7 +76,7 @@ async fn test_request_200() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::Http(200));
+    assert_eq!(response.status, LinkStatus::Http(200));
     assert_eq!(response.location, None);
 }
 
@@ -93,7 +93,7 @@ async fn test_request_404() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::Http(404));
+    assert_eq!(response.status, LinkStatus::Http(404));
     assert_eq!(response.location, None);
 
     let response = http_client
@@ -104,7 +104,7 @@ async fn test_request_404() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::Http(404));
+    assert_eq!(response.status, LinkStatus::Http(404));
     assert_eq!(response.location, None);
 }
 
@@ -121,7 +121,7 @@ async fn test_request_redirect() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::Http(308));
+    assert_eq!(response.status, LinkStatus::Http(308));
     assert_eq!(response.location, Some("/".to_string()));
 
     let response = http_client
@@ -132,7 +132,7 @@ async fn test_request_redirect() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::Http(308));
+    assert_eq!(response.status, LinkStatus::Http(308));
     assert_eq!(response.location, Some("/".to_string()));
 }
 
@@ -149,7 +149,7 @@ async fn test_request_timeout() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::Timeout);
+    assert_eq!(response.status, LinkStatus::Timeout);
     assert_eq!(response.location, None);
 
     let response = requester
@@ -160,7 +160,7 @@ async fn test_request_timeout() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::Timeout);
+    assert_eq!(response.status, LinkStatus::Timeout);
     assert_eq!(response.location, None);
 }
 
@@ -177,7 +177,7 @@ async fn test_request_ssl_error() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::SslError);
+    assert_eq!(response.status, LinkStatus::SslError);
     assert_eq!(response.location, None);
 
     let response = http_client
@@ -188,6 +188,6 @@ async fn test_request_ssl_error() {
             timeout: Duration::from_secs(1),
         })
         .await;
-    assert_eq!(response.status, HttpStatus::SslError);
+    assert_eq!(response.status, LinkStatus::SslError);
     assert_eq!(response.location, None);
 }

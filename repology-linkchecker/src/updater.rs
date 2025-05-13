@@ -14,15 +14,15 @@ use tracing::error;
 
 use crate::config::DEFAULT_DATABASE_RETRY_PERIOD;
 use crate::optional_semaphore::OptionalSemaphore;
-use crate::status::HttpStatusWithRedirect;
+use crate::status::LinkStatusWithRedirect;
 
 #[derive(Debug, Default)]
 pub struct CheckResult {
     pub id: i32,
     pub check_time: DateTime<Utc>,
     pub next_check: DateTime<Utc>,
-    pub ipv4: Option<HttpStatusWithRedirect>,
-    pub ipv6: Option<HttpStatusWithRedirect>,
+    pub ipv4: Option<LinkStatusWithRedirect>,
+    pub ipv6: Option<LinkStatusWithRedirect>,
 }
 
 pub struct Updater {

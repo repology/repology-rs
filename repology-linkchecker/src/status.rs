@@ -10,12 +10,12 @@ use strum::{EnumDiscriminants, EnumIter, IntoStaticStr};
 use tracing::error;
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
-pub enum ParseHttpStatusError {
+pub enum ParseLinkStatusError {
     BadCode,
     BadErrorName,
 }
 
-impl std::fmt::Display for ParseHttpStatusError {
+impl std::fmt::Display for ParseLinkStatusError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
@@ -28,9 +28,9 @@ impl std::fmt::Display for ParseHttpStatusError {
     }
 }
 
-impl Error for ParseHttpStatusError {}
+impl Error for ParseLinkStatusError {}
 
-impl From<ParseIntError> for ParseHttpStatusError {
+impl From<ParseIntError> for ParseLinkStatusError {
     fn from(_: ParseIntError) -> Self {
         Self::BadCode
     }
@@ -39,7 +39,7 @@ impl From<ParseIntError> for ParseHttpStatusError {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, EnumDiscriminants)]
 #[repr(i16)]
 #[strum_discriminants(derive(IntoStaticStr, EnumIter))]
-pub enum HttpStatus {
+pub enum LinkStatus {
     #[strum(disabled)]
     Http(u16) = 0,
 
@@ -79,7 +79,7 @@ pub enum HttpStatus {
     SslCertificateIncompleteChain = -505,
 }
 
-impl HttpStatus {
+impl LinkStatus {
     pub fn is_success(self) -> bool {
         self == Self::Http(200)
     }
@@ -95,77 +95,77 @@ impl HttpStatus {
     pub fn code(self) -> i16 {
         match self {
             Self::Http(code) => code as i16,
-            _ => HttpStatusDiscriminants::from(self) as i16,
+            _ => LinkStatusDiscriminants::from(self) as i16,
         }
     }
 
-    pub fn from_code(code: i16) -> Result<Self, ParseHttpStatusError> {
+    pub fn from_code(code: i16) -> Result<Self, ParseLinkStatusError> {
         match code {
             code if code >= 0 => Ok(Self::Http(code as u16)),
 
-            val if val == HttpStatusDiscriminants::UnknownError as i16 => Ok(Self::UnknownError),
-            val if val == HttpStatusDiscriminants::Timeout as i16 => Ok(Self::Timeout),
-            val if val == HttpStatusDiscriminants::InvalidUrl as i16 => Ok(Self::InvalidUrl),
-            val if val == HttpStatusDiscriminants::Blacklisted as i16 => Ok(Self::Blacklisted),
+            val if val == LinkStatusDiscriminants::UnknownError as i16 => Ok(Self::UnknownError),
+            val if val == LinkStatusDiscriminants::Timeout as i16 => Ok(Self::Timeout),
+            val if val == LinkStatusDiscriminants::InvalidUrl as i16 => Ok(Self::InvalidUrl),
+            val if val == LinkStatusDiscriminants::Blacklisted as i16 => Ok(Self::Blacklisted),
 
-            val if val == HttpStatusDiscriminants::DnsError as i16 => Ok(Self::DnsError),
-            val if val == HttpStatusDiscriminants::DnsDomainNotFound as i16 => {
+            val if val == LinkStatusDiscriminants::DnsError as i16 => Ok(Self::DnsError),
+            val if val == LinkStatusDiscriminants::DnsDomainNotFound as i16 => {
                 Ok(Self::DnsDomainNotFound)
             }
-            val if val == HttpStatusDiscriminants::DnsNoAddressRecord as i16 => {
+            val if val == LinkStatusDiscriminants::DnsNoAddressRecord as i16 => {
                 Ok(Self::DnsNoAddressRecord)
             }
-            val if val == HttpStatusDiscriminants::DnsRefused as i16 => Ok(Self::DnsRefused),
-            val if val == HttpStatusDiscriminants::DnsTimeout as i16 => Ok(Self::DnsTimeout),
-            val if val == HttpStatusDiscriminants::DnsIpv4MappedInAaaa as i16 => {
+            val if val == LinkStatusDiscriminants::DnsRefused as i16 => Ok(Self::DnsRefused),
+            val if val == LinkStatusDiscriminants::DnsTimeout as i16 => Ok(Self::DnsTimeout),
+            val if val == LinkStatusDiscriminants::DnsIpv4MappedInAaaa as i16 => {
                 Ok(Self::DnsIpv4MappedInAaaa)
             }
 
-            val if val == HttpStatusDiscriminants::ConnectionRefused as i16 => {
+            val if val == LinkStatusDiscriminants::ConnectionRefused as i16 => {
                 Ok(Self::ConnectionRefused)
             }
-            val if val == HttpStatusDiscriminants::HostUnreachable as i16 => {
+            val if val == LinkStatusDiscriminants::HostUnreachable as i16 => {
                 Ok(Self::HostUnreachable)
             }
-            val if val == HttpStatusDiscriminants::ConnectionResetByPeer as i16 => {
+            val if val == LinkStatusDiscriminants::ConnectionResetByPeer as i16 => {
                 Ok(Self::ConnectionResetByPeer)
             }
-            val if val == HttpStatusDiscriminants::NetworkUnreachable as i16 => {
+            val if val == LinkStatusDiscriminants::NetworkUnreachable as i16 => {
                 Ok(Self::NetworkUnreachable)
             }
-            val if val == HttpStatusDiscriminants::ServerDisconnected as i16 => {
+            val if val == LinkStatusDiscriminants::ServerDisconnected as i16 => {
                 Ok(Self::ServerDisconnected)
             }
-            val if val == HttpStatusDiscriminants::ConnectionAborted as i16 => {
+            val if val == LinkStatusDiscriminants::ConnectionAborted as i16 => {
                 Ok(Self::ConnectionAborted)
             }
-            val if val == HttpStatusDiscriminants::AddressNotAvailable as i16 => {
+            val if val == LinkStatusDiscriminants::AddressNotAvailable as i16 => {
                 Ok(Self::AddressNotAvailable)
             }
 
-            val if val == HttpStatusDiscriminants::TooManyRedirects as i16 => {
+            val if val == LinkStatusDiscriminants::TooManyRedirects as i16 => {
                 Ok(Self::TooManyRedirects)
             }
-            val if val == HttpStatusDiscriminants::BadHttp as i16 => Ok(Self::BadHttp),
+            val if val == LinkStatusDiscriminants::BadHttp as i16 => Ok(Self::BadHttp),
 
-            val if val == HttpStatusDiscriminants::SslError as i16 => Ok(Self::SslError),
-            val if val == HttpStatusDiscriminants::SslCertificateHasExpired as i16 => {
+            val if val == LinkStatusDiscriminants::SslError as i16 => Ok(Self::SslError),
+            val if val == LinkStatusDiscriminants::SslCertificateHasExpired as i16 => {
                 Ok(Self::SslCertificateHasExpired)
             }
-            val if val == HttpStatusDiscriminants::SslCertificateHostnameMismatch as i16 => {
+            val if val == LinkStatusDiscriminants::SslCertificateHostnameMismatch as i16 => {
                 Ok(Self::SslCertificateHostnameMismatch)
             }
-            val if val == HttpStatusDiscriminants::SslCertificateSelfSigned as i16 => {
+            val if val == LinkStatusDiscriminants::SslCertificateSelfSigned as i16 => {
                 Ok(Self::SslCertificateSelfSigned)
             }
-            val if val == HttpStatusDiscriminants::SslCertificateSelfSignedInChain as i16 => {
+            val if val == LinkStatusDiscriminants::SslCertificateSelfSignedInChain as i16 => {
                 Ok(Self::SslCertificateSelfSignedInChain)
             }
-            val if val == HttpStatusDiscriminants::SslCertificateIncompleteChain as i16 => {
+            val if val == LinkStatusDiscriminants::SslCertificateIncompleteChain as i16 => {
                 Ok(Self::SslCertificateIncompleteChain)
             }
 
-            _ => Err(ParseHttpStatusError::BadCode),
+            _ => Err(ParseLinkStatusError::BadCode),
         }
     }
 
@@ -176,7 +176,7 @@ impl HttpStatus {
         })
     }
 
-    pub fn from_error_name(name: &str) -> Result<Self, ParseHttpStatusError> {
+    pub fn from_error_name(name: &str) -> Result<Self, ParseLinkStatusError> {
         match name {
             "UnknownError" => Ok(Self::UnknownError),
             "Timeout" => Ok(Self::Timeout),
@@ -208,7 +208,7 @@ impl HttpStatus {
             "SslCertificateSelfSignedInChain" => Ok(Self::SslCertificateSelfSignedInChain),
             "SslCertificateIncompleteChain" => Ok(Self::SslCertificateIncompleteChain),
 
-            _ => Err(ParseHttpStatusError::BadErrorName),
+            _ => Err(ParseLinkStatusError::BadErrorName),
         }
     }
 
@@ -220,7 +220,7 @@ impl HttpStatus {
     }
 
     pub fn pick_from46(ipv4: Option<Self>, ipv6: Option<Self>) -> Option<Self> {
-        if ipv6.is_some_and(|status| status != HttpStatus::DnsNoAddressRecord) {
+        if ipv6.is_some_and(|status| status != LinkStatus::DnsNoAddressRecord) {
             ipv6
         } else {
             ipv4
@@ -228,22 +228,22 @@ impl HttpStatus {
     }
 }
 
-impl std::fmt::Display for HttpStatus {
+impl std::fmt::Display for LinkStatus {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
             Self::Http(code) => {
                 write!(f, "{code}")
             }
             _ => {
-                let s: &'static str = HttpStatusDiscriminants::from(self).into();
+                let s: &'static str = LinkStatusDiscriminants::from(self).into();
                 write!(f, "{s}")
             }
         }
     }
 }
 
-impl FromStr for HttpStatus {
-    type Err = ParseHttpStatusError;
+impl FromStr for LinkStatus {
+    type Err = ParseLinkStatusError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if !s.is_empty() && s.chars().all(|ch| ch.is_ascii_digit()) {
@@ -255,15 +255,15 @@ impl FromStr for HttpStatus {
     }
 }
 
-impl TryFrom<i16> for HttpStatus {
-    type Error = ParseHttpStatusError;
+impl TryFrom<i16> for LinkStatus {
+    type Error = ParseLinkStatusError;
 
     fn try_from(code: i16) -> Result<Self, Self::Error> {
         Self::from_code(code)
     }
 }
 
-impl<'de> Deserialize<'de> for HttpStatus {
+impl<'de> Deserialize<'de> for LinkStatus {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
@@ -274,13 +274,13 @@ impl<'de> Deserialize<'de> for HttpStatus {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct HttpStatusWithRedirect {
-    pub status: HttpStatus,
+pub struct LinkStatusWithRedirect {
+    pub status: LinkStatus,
     pub redirect: Option<String>,
 }
 
-impl From<HttpStatus> for HttpStatusWithRedirect {
-    fn from(status: HttpStatus) -> Self {
+impl From<LinkStatus> for LinkStatusWithRedirect {
+    fn from(status: LinkStatus) -> Self {
         Self {
             status,
             redirect: None,
@@ -288,7 +288,7 @@ impl From<HttpStatus> for HttpStatusWithRedirect {
     }
 }
 
-impl HttpStatusWithRedirect {
+impl LinkStatusWithRedirect {
     pub fn is_success(&self) -> bool {
         self.status.is_success()
     }
@@ -302,8 +302,8 @@ impl HttpStatusWithRedirect {
     }
 }
 
-impl FromStr for HttpStatusWithRedirect {
-    type Err = ParseHttpStatusError;
+impl FromStr for LinkStatusWithRedirect {
+    type Err = ParseLinkStatusError;
 
     fn from_str(status: &str) -> Result<Self, Self::Err> {
         Ok(Self {
@@ -322,63 +322,63 @@ mod tests {
 
     #[test]
     fn test_http_conversions() {
-        assert_eq!(HttpStatus::from_code(200).unwrap(), HttpStatus::Http(200));
-        assert_eq!(HttpStatus::from_str("200").unwrap(), HttpStatus::Http(200));
-        assert_eq!(HttpStatus::Http(200).code(), 200);
-        assert_eq!(HttpStatus::Http(200).to_string(), "200".to_string());
+        assert_eq!(LinkStatus::from_code(200).unwrap(), LinkStatus::Http(200));
+        assert_eq!(LinkStatus::from_str("200").unwrap(), LinkStatus::Http(200));
+        assert_eq!(LinkStatus::Http(200).code(), 200);
+        assert_eq!(LinkStatus::Http(200).to_string(), "200".to_string());
     }
 
     #[test]
     fn test_error_conversions() {
-        for code in HttpStatusDiscriminants::iter().map(|d| d as i16) {
-            let status = HttpStatus::from_code(code).unwrap();
+        for code in LinkStatusDiscriminants::iter().map(|d| d as i16) {
+            let status = LinkStatus::from_code(code).unwrap();
             assert_eq!(status.code(), code);
-            assert_eq!(HttpStatus::from_str(&status.to_string()).unwrap(), status);
+            assert_eq!(LinkStatus::from_str(&status.to_string()).unwrap(), status);
         }
     }
 
     #[test]
     fn test_failing_conversions() {
         assert_eq!(
-            HttpStatus::from_code(-9999),
-            Err(ParseHttpStatusError::BadCode)
+            LinkStatus::from_code(-9999),
+            Err(ParseLinkStatusError::BadCode)
         );
         assert_eq!(
-            HttpStatus::from_error_name("FooBar"),
-            Err(ParseHttpStatusError::BadErrorName)
+            LinkStatus::from_error_name("FooBar"),
+            Err(ParseLinkStatusError::BadErrorName)
         );
         assert_eq!(
-            HttpStatus::from_str("FooBar"),
-            Err(ParseHttpStatusError::BadErrorName)
+            LinkStatus::from_str("FooBar"),
+            Err(ParseLinkStatusError::BadErrorName)
         );
         assert_eq!(
-            HttpStatus::from_str("9999999"),
-            Err(ParseHttpStatusError::BadCode)
+            LinkStatus::from_str("9999999"),
+            Err(ParseLinkStatusError::BadCode)
         );
     }
 
     #[test]
     fn test_is_success() {
-        assert!(HttpStatus::Http(200).is_success());
-        assert!(!HttpStatus::Http(201).is_success());
-        assert!(!HttpStatus::Http(404).is_success());
-        assert!(!HttpStatus::DnsTimeout.is_success());
+        assert!(LinkStatus::Http(200).is_success());
+        assert!(!LinkStatus::Http(201).is_success());
+        assert!(!LinkStatus::Http(404).is_success());
+        assert!(!LinkStatus::DnsTimeout.is_success());
     }
 
     #[test]
     fn test_is_redirect() {
-        assert!(!HttpStatus::Http(200).is_redirect());
-        assert!(HttpStatus::Http(301).is_redirect());
-        assert!(!HttpStatus::Http(404).is_redirect());
-        assert!(!HttpStatus::DnsTimeout.is_redirect());
+        assert!(!LinkStatus::Http(200).is_redirect());
+        assert!(LinkStatus::Http(301).is_redirect());
+        assert!(!LinkStatus::Http(404).is_redirect());
+        assert!(!LinkStatus::DnsTimeout.is_redirect());
     }
 
     #[test]
     fn test_is_permanent_redirect() {
-        assert!(HttpStatus::Http(301).is_permanent_redirect());
-        assert!(HttpStatus::Http(308).is_permanent_redirect());
-        assert!(!HttpStatus::Http(307).is_permanent_redirect());
-        assert!(!HttpStatus::Http(404).is_permanent_redirect());
-        assert!(!HttpStatus::DnsTimeout.is_permanent_redirect());
+        assert!(LinkStatus::Http(301).is_permanent_redirect());
+        assert!(LinkStatus::Http(308).is_permanent_redirect());
+        assert!(!LinkStatus::Http(307).is_permanent_redirect());
+        assert!(!LinkStatus::Http(404).is_permanent_redirect());
+        assert!(!LinkStatus::DnsTimeout.is_permanent_redirect());
     }
 }

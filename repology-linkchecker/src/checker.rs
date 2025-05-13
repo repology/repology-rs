@@ -14,7 +14,7 @@ use crate::errors::extract_status;
 use crate::hosts::{Hosts, RecheckCase};
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest, HttpResponse};
 use crate::resolver::{IpVersion, Resolver, ResolverCache};
-use crate::status::{HttpStatus, HttpStatusWithRedirect};
+use crate::status::{LinkStatus, LinkStatusWithRedirect};
 use crate::updater::CheckResult;
 
 const MAX_REDIRECTS: usize = 10;
@@ -40,8 +40,8 @@ pub struct CheckTask {
     pub priority: CheckPriority,
     pub last_checked: Option<DateTime<Utc>>,
     pub deadline: DateTime<Utc>,
-    pub prev_ipv4_status: Option<HttpStatus>,
-    pub prev_ipv6_status: Option<HttpStatus>,
+    pub prev_ipv4_status: Option<LinkStatus>,
+    pub prev_ipv6_status: Option<LinkStatus>,
 }
 
 pub struct Checker<'a, R, ER> {
@@ -112,12 +112,12 @@ where
         let response = http_client.request(request.clone()).await;
 
         let experiment_prob: f32 = match response.status {
-            HttpStatus::Http(429) => 0.0,
-            HttpStatus::Http(200) => 0.001,
-            HttpStatus::Http(403)
-            | HttpStatus::Http(404)
-            | HttpStatus::Http(500)
-            | HttpStatus::Timeout => 0.01,
+            LinkStatus::Http(429) => 0.0,
+            LinkStatus::Http(200) => 0.001,
+            LinkStatus::Http(403)
+            | LinkStatus::Http(404)
+            | LinkStatus::Http(500)
+            | LinkStatus::Timeout => 0.01,
             _ => 1.0,
         };
 
@@ -131,9 +131,9 @@ where
             let ignore_experiment =
                 host == "code.google.com" // flapping 500's
                 || host == "pyropus.ca." // native checker is correct
-                || response.status == HttpStatus::Http(429) || experimental_response.status == HttpStatus::Http(429) // 429s
-                || experimental_response.status == HttpStatus::Http(200) // flapping
-                || experimental_response.status == HttpStatus::Timeout   // flapping
+                || response.status == LinkStatus::Http(429) || experimental_response.status == LinkStatus::Http(429) // 429s
+                || experimental_response.status == LinkStatus::Http(200) // flapping
+                || experimental_response.status == LinkStatus::Timeout   // flapping
                 || host == "packages.debian.org" || host == "packages.trisquel.org" || host == "packages.ubuntu.com" // flapping 502/504s
             ;
 
@@ -157,7 +157,7 @@ where
         resolver_cache: &mut ResolverCache,
         http_client: &R,
         experimental_http_client: &ER,
-    ) -> Result<HttpResponse, HttpStatus> {
+    ) -> Result<HttpResponse, LinkStatus> {
         let host = url
             .host_str()
             .expect("only urls with host should end up here");
@@ -165,7 +165,7 @@ where
         match resolver_cache.lookup(host).await {
             Ok(address) => {
                 if !address.is_global() {
-                    return Err(HttpStatus::DnsIpv4MappedInAaaa);
+                    return Err(LinkStatus::DnsIpv4MappedInAaaa);
                 }
 
                 let host_settings = hosts.get_settings(host);
@@ -187,7 +187,7 @@ where
                     .await;
 
                     if head_response.status
-                        != HttpStatus::Http(StatusCode::METHOD_NOT_ALLOWED.as_u16())
+                        != LinkStatus::Http(StatusCode::METHOD_NOT_ALLOWED.as_u16())
                     {
                         return Ok(head_response);
                     }
@@ -219,7 +219,7 @@ where
         resolver_cache: &mut ResolverCache,
         http_client: &R,
         experimental_http_client: &ER,
-    ) -> HttpStatusWithRedirect {
+    ) -> LinkStatusWithRedirect {
         let mut url = url;
         let mut num_redirects = 0;
         let mut had_temporary_redirect = false;
@@ -250,7 +250,7 @@ where
                         url = url.as_str(),
                         location, "failed to join redirect target"
                     );
-                    return HttpStatus::InvalidUrl.into();
+                    return LinkStatus::InvalidUrl.into();
                 };
 
                 if status.is_permanent_redirect() {
@@ -262,7 +262,7 @@ where
                 }
                 url = target;
             } else {
-                return HttpStatusWithRedirect {
+                return LinkStatusWithRedirect {
                     status,
                     // only save redirects for successes
                     redirect: permanent_redirect_target.filter(|_| status.is_success()),
@@ -270,7 +270,7 @@ where
             }
             num_redirects += 1;
             if num_redirects >= MAX_REDIRECTS {
-                return HttpStatus::TooManyRedirects.into();
+                return LinkStatus::TooManyRedirects.into();
             }
         }
     }
@@ -325,9 +325,9 @@ where
                 counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Unsampled").increment(1);
             } else if host_settings.blacklist {
                 check_result.ipv4 =
-                    Some(HttpStatus::Blacklisted.into()).filter(|_| !self.disable_ipv4);
+                    Some(LinkStatus::Blacklisted.into()).filter(|_| !self.disable_ipv4);
                 check_result.ipv6 =
-                    Some(HttpStatus::Blacklisted.into()).filter(|_| !self.disable_ipv6);
+                    Some(LinkStatus::Blacklisted.into()).filter(|_| !self.disable_ipv6);
             } else {
                 let mut skip_ipv4 = false;
 
@@ -364,8 +364,8 @@ where
                 counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Checked").increment(1);
             }
         } else {
-            check_result.ipv4 = Some(HttpStatus::InvalidUrl.into()).filter(|_| !self.disable_ipv4);
-            check_result.ipv6 = Some(HttpStatus::InvalidUrl.into()).filter(|_| !self.disable_ipv6);
+            check_result.ipv4 = Some(LinkStatus::InvalidUrl.into()).filter(|_| !self.disable_ipv4);
+            check_result.ipv6 = Some(LinkStatus::InvalidUrl.into()).filter(|_| !self.disable_ipv6);
             counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "InvalidUrl").increment(1);
         };
 
@@ -402,8 +402,8 @@ where
 
         {
             // note that we only compare statuses here
-            let old = HttpStatus::pick_from46(task.prev_ipv4_status, task.prev_ipv6_status);
-            let new = HttpStatus::pick_from46(
+            let old = LinkStatus::pick_from46(task.prev_ipv4_status, task.prev_ipv6_status);
+            let new = LinkStatus::pick_from46(
                 check_result.ipv4.as_ref().map(|status| status.status),
                 check_result.ipv6.as_ref().map(|status| status.status),
             );
