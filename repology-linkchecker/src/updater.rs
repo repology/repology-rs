@@ -74,6 +74,8 @@ impl Updater {
             SET
                 last_checked = $2,
                 next_check = $3,
+                last_success = CASE WHEN     ($4 OR $7) THEN $2 ELSE last_success END,
+                last_failure = CASE WHEN NOT ($4 OR $7) THEN $2 ELSE last_failure END,
 
                 ipv4_last_success = CASE WHEN     $4 THEN $2 ELSE ipv4_last_success END,
                 ipv4_last_failure = CASE WHEN NOT $4 THEN $2 ELSE ipv4_last_failure END,

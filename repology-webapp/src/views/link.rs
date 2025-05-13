@@ -33,6 +33,8 @@ struct DbLink {
     url: String,
     first_extracted: DateTime<Utc>,
     last_checked: Option<DateTime<Utc>>,
+    last_success: Option<DateTime<Utc>>,
+    last_failure: Option<DateTime<Utc>>,
 
     ipv4_last_success: Option<DateTime<Utc>>,
     ipv4_last_failure: Option<DateTime<Utc>>,
@@ -49,6 +51,8 @@ struct Link {
     url: String,
     first_extracted: DateTime<Utc>,
     last_checked: Option<DateTime<Utc>>,
+    last_success: Option<DateTime<Utc>>,
+    last_failure: Option<DateTime<Utc>>,
 
     ipv4_last_success: Option<DateTime<Utc>>,
     ipv4_last_failure: Option<DateTime<Utc>>,
@@ -69,6 +73,8 @@ impl TryFrom<DbLink> for Link {
             url: link.url,
             first_extracted: link.first_extracted,
             last_checked: link.last_checked,
+            last_success: link.last_success,
+            last_failure: link.last_failure,
 
             ipv4_last_success: link.ipv4_last_success,
             ipv4_last_failure: link.ipv4_last_failure,
@@ -98,6 +104,8 @@ pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -
             url,
             first_extracted,
             last_checked,
+            last_success,
+            last_failure,
 
             ipv4_last_success,
             ipv4_last_failure,

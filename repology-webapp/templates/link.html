@@ -20,6 +20,27 @@
 	{%- else %}
 	<li>Not yet checked</li>
 	{%- endif %}
+	{#- TODO: these are temporarily wrapped in extra conditions until last_{success,failure} fields are filled in most links #}
+	{%- if link.last_success.is_some() %}
+	<li>Last success:
+	{%- if let Some(last_success) = link.last_success %}
+		<b>{% call time::format_absolute_time_sec(last_success) %}</b>
+		(<b>{% call time::format_time_interval(Utc::now() - last_success) %} ago</b>)
+	{%- else %}
+		<b>never</b>
+	{%- endif %}
+	</li>
+	{%- endif %}
+	{%- if link.last_failure.is_some() %}
+	<li>Last failure:
+	{%- if let Some(last_failure) = link.last_failure %}
+		<b>{% call time::format_absolute_time_sec(last_failure) %}</b>
+		(<b>{% call time::format_time_interval(Utc::now() - last_failure) %} ago</b>)
+	{%- else %}
+		<b>never</b>
+	{%- endif %}
+	</li>
+	{%- endif %}
 </ul>
 {%- if let Some(status) = link.ipv6_status %}
 <h3>IPv6</h3>
