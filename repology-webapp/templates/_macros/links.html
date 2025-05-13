@@ -1,48 +1,47 @@
-{%- macro format_link_status_code(code) -%}
-	{%- if code == -1 %}Unknown error
+{%- macro format_link_status(status) -%}
+	{%- match status %}
+		{%- when LinkStatus::Http(code) %}HTTP {{code}}
 
-	{%- else if code == -100 %}Connect timeout (60 seconds)
-	{%- else if code == -101 %}Invalid URL
-	{%- else if code == -102 %}Host manually blacklisted for being taken over by an unrelated entity
+		{%- when LinkStatus::UnknownError %}Unknown error
+		{%- when LinkStatus::Timeout %}Connect timeout (60 seconds)
+		{%- when LinkStatus::InvalidUrl %}Invalid URL
+		{%- when LinkStatus::Blacklisted %}Host manually blacklisted for being taken over by an unrelated entity
 
-	{%- else if code == -200 %}DNS error
-	{%- else if code == -201 %}DNS error: domain name not found
-	{%- else if code == -202 %}DNS error: no address record
-	{%- else if code == -203 %}DNS error: could not contact DNS servers
-	{%- else if code == -204 %}DNS error: timeout while contacting DNS servers
-	{%- else if code == -205 %}DNS error: IPv4-mapped address in AAAA
+		{%- when LinkStatus::DnsError %}DNS error
+		{%- when LinkStatus::DnsDomainNotFound %}DNS error: domain name not found
+		{%- when LinkStatus::DnsNoAddressRecord %}DNS error: no address record
+		{%- when LinkStatus::DnsRefused %}DNS error: could not contact DNS servers
+		{%- when LinkStatus::DnsTimeout %}DNS error: timeout while contacting DNS servers
+		{%- when LinkStatus::DnsIpv4MappedInAaaa %}DNS error: IPv4-mapped address in AAAA
 
-	{%- else if code == -300 %}Connection refused
-	{%- else if code == -301 %}No route to host
-	{%- else if code == -302 %}Connection reset by peer
-	{%- else if code == -303 %}Network is unreachable
-	{%- else if code == -304 %}Server disconnected
-	{%- else if code == -306 %}Connection aborted
-	{%- else if code == -307 %}Address not available
+		{%- when LinkStatus::ConnectionRefused %}Connection refused
+		{%- when LinkStatus::HostUnreachable %}No route to host
+		{%- when LinkStatus::ConnectionResetByPeer %}Connection reset by peer
+		{%- when LinkStatus::NetworkUnreachable %}Network is unreachable
+		{%- when LinkStatus::ServerDisconnected %}Server disconnected
+		{%- when LinkStatus::ConnectionAborted %}Connection aborted
+		{%- when LinkStatus::AddressNotAvailable %}Address not available
 
-	{%- else if code == -400 %}Too many redirects (possibly, a redirect loop)
-	{%- else if code == -402 %}HTTP protocol error
+		{%- when LinkStatus::TooManyRedirects %}Too many redirects (possibly, a redirect loop)
+		{%- when LinkStatus::BadHttp %}HTTP protocol error
 
-	{%- else if code == -500 %}SSL error
-	{%- else if code == -501 %}SSL error: certificate has expired
-	{%- else if code == -502 %}SSL error: certificate issued for different hostname
-	{%- else if code == -503 %}SSL error: self signed certificate
-	{%- else if code == -504 %}SSL error: self signed certificate in certificate chain
-	{%- else if code == -505 %}SSL error: incomplete certificate chain
-
-	{%- else if code >= 0 && code < 1000 %}HTTP {{ code }}
-	{%- else %}{{ code }}
-	{%- endif -%}
+		{%- when LinkStatus::SslError %}SSL error
+		{%- when LinkStatus::SslCertificateHasExpired %}SSL error: certificate has expired
+		{%- when LinkStatus::SslCertificateHostnameMismatch %}SSL error: certificate issued for different hostname
+		{%- when LinkStatus::SslCertificateSelfSigned %}SSL error: self signed certificate
+		{%- when LinkStatus::SslCertificateSelfSignedInChain %}SSL error: self signed certificate in certificate chain
+		{%- when LinkStatus::SslCertificateIncompleteChain %}SSL error: incomplete certificate chain
+	{%- endmatch -%}
 {%- endmacro -%}
 
-{%- macro format_link_suggestions(code, url) -%}
-	{%- if code >= -399 && code <= -300 || code == -100 || code == -203 || code == -204 -%}
+{%- macro format_link_suggestions(status, url) -%}
+	{%- if status.is_connection_error() || *status == LinkStatus::Timeout || *status == LinkStatus::DnsRefused || *status == LinkStatus::DnsTimeout -%}
 		(check on <a href="https://www.uptrends.com/tools/uptime" rel="nofollow">uptrends</a>, <a href="https://www.site24x7.com/check-website-availability.html" rel="nofollow">site24x7</a>, <a href="https://check-host.net/check-ping" rel="nofollow">check-host.net</a>; note that there can be geo-based blocks not visible on some of these checkers)
 	{%- endif -%}
-	{%- if code == -205 -%}
+	{%- if *status == LinkStatus::DnsIpv4MappedInAaaa -%}
 		(<a href="https://bb6-ie.blogspot.com/2017/04/do-not-put-ipv4-mapped-ipv6-addresses.html" rel="nofollow">related reading</a>)
 	{%- endif -%}
-	{%- if code >= -599 && code <= -500 -%}
+	{%- if status.is_ssl_error() -%}
 		{%- if let Some(domain) = crate::template_funcs::extract_domain_for_ssltest(url) -%}
 			(<a href="https://www.ssllabs.com/ssltest/analyze.html?d={{ domain }}" rel="nofollow">check on SSL Labs</a>)
 		{%- endif -%}

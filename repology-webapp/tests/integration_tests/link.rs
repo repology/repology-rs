@@ -30,7 +30,7 @@ async fn test_ipv4_failure(pool: PgPool) {
 async fn test_ipv4_success(pool: PgPool) {
     let response = Request::new(pool, "/link/https://example.com/ipv4-success").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
-    assert!(response.text().unwrap().contains("OK (200)"));
+    assert!(response.text().unwrap().contains("OK"));
     assert!(response.text().unwrap().contains("IPv6 was not checked"));
 }
 
@@ -55,7 +55,7 @@ async fn test_ipv6_failure(pool: PgPool) {
 async fn test_ipv6_success(pool: PgPool) {
     let response = Request::new(pool, "/link/https://example.com/ipv6-success").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
-    assert!(response.text().unwrap().contains("OK (200)"));
+    assert!(response.text().unwrap().contains("OK"));
     assert!(response.text().unwrap().contains("IPv4 check was skipped"));
 }
 

@@ -14,6 +14,8 @@ use chrono::{DateTime, Utc};
 use indoc::indoc;
 use sqlx::FromRow;
 
+use repology_common::LinkStatus;
+
 use crate::endpoints::Endpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -27,7 +29,7 @@ struct TemplateParams {
 }
 
 #[derive(FromRow)]
-struct Link {
+struct DbLink {
     url: String,
     first_extracted: DateTime<Utc>,
     last_checked: Option<DateTime<Utc>>,
@@ -43,11 +45,55 @@ struct Link {
     ipv6_permanent_redirect_target: Option<String>,
 }
 
+struct Link {
+    url: String,
+    first_extracted: DateTime<Utc>,
+    last_checked: Option<DateTime<Utc>>,
+
+    ipv4_last_success: Option<DateTime<Utc>>,
+    ipv4_last_failure: Option<DateTime<Utc>>,
+    ipv4_status: Option<LinkStatus>,
+    ipv4_permanent_redirect_target: Option<String>,
+
+    ipv6_last_success: Option<DateTime<Utc>>,
+    ipv6_last_failure: Option<DateTime<Utc>>,
+    ipv6_status: Option<LinkStatus>,
+    ipv6_permanent_redirect_target: Option<String>,
+}
+
+impl TryFrom<DbLink> for Link {
+    type Error = anyhow::Error;
+
+    fn try_from(link: DbLink) -> Result<Self, Self::Error> {
+        Ok(Self {
+            url: link.url,
+            first_extracted: link.first_extracted,
+            last_checked: link.last_checked,
+
+            ipv4_last_success: link.ipv4_last_success,
+            ipv4_last_failure: link.ipv4_last_failure,
+            ipv4_status: link
+                .ipv4_status_code
+                .map(|code| LinkStatus::try_from(code))
+                .transpose()?,
+            ipv4_permanent_redirect_target: link.ipv4_permanent_redirect_target,
+
+            ipv6_last_success: link.ipv6_last_success,
+            ipv6_last_failure: link.ipv6_last_failure,
+            ipv6_status: link
+                .ipv6_status_code
+                .map(|code| LinkStatus::try_from(code))
+                .transpose()?,
+            ipv6_permanent_redirect_target: link.ipv6_permanent_redirect_target,
+        })
+    }
+}
+
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
 pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Link);
 
-    let link: Option<Link> = sqlx::query_as(indoc! {r#"
+    let link: Option<DbLink> = sqlx::query_as(indoc! {r#"
         SELECT
             url,
             first_extracted,
@@ -78,7 +124,11 @@ pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
-        TemplateParams { ctx, link }.render()?,
+        TemplateParams {
+            ctx,
+            link: link.try_into()?,
+        }
+        .render()?,
     )
         .into_response())
 }

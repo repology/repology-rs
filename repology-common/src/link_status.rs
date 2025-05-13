@@ -92,6 +92,22 @@ impl LinkStatus {
         matches!(self, Self::Http(code) if code == 301 || code == 308)
     }
 
+    pub fn is_dns_error(self) -> bool {
+        (-299..=-200).contains(&self.code())
+    }
+
+    pub fn is_connection_error(self) -> bool {
+        (-399..=-300).contains(&self.code())
+    }
+
+    pub fn is_http_error(self) -> bool {
+        (-499..=-400).contains(&self.code())
+    }
+
+    pub fn is_ssl_error(self) -> bool {
+        (-599..=-500).contains(&self.code())
+    }
+
     pub fn code(self) -> i16 {
         match self {
             Self::Http(code) => code as i16,
@@ -380,5 +396,11 @@ mod tests {
         assert!(!LinkStatus::Http(307).is_permanent_redirect());
         assert!(!LinkStatus::Http(404).is_permanent_redirect());
         assert!(!LinkStatus::DnsTimeout.is_permanent_redirect());
+    }
+
+    #[test]
+    fn test_is() {
+        assert!(LinkStatus::SslError.is_ssl_error());
+        assert!(!LinkStatus::SslError.is_http_error());
     }
 }

@@ -66,8 +66,8 @@
 			<td class="text-left">
 			{% if problem.kind == "homepage_dead" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
-				{%- let code = problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? %}
-				Homepage link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status_code(code) %}</b>)
+				{%- let status = LinkStatus::try_from(*(problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? as i16))? %}
+				Homepage link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status(status) %}</b>)
 				for more than a month and should be replaced by alive link (see other packages for hints, or link to <a href="https://archive.org/">archive.org</a> as a last resort).
 			{% else if problem.kind == "homepage_permanent_https_redirect" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
@@ -118,8 +118,8 @@
 				{% endif %}
 			{% else if problem.kind == "download_dead" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
-				{%- let code = problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? %}
-				Download link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status_code(code) %}</b>)
+				{%- let status = LinkStatus::try_from(*(problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? as i16))? %}
+				Download link <code>{{ url }}</code> is <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Link, [("url", url|ref)])? }}">dead</a> (<b class="link-error">{% call links::format_link_status(status) %}</b>)
 				for more than a month and should be replaced by alive link (see other packages for hints).
 			{% else if problem.kind == "download_permanent_https_redirect" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}

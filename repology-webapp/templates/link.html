@@ -21,7 +21,7 @@
 	<li>Not yet checked</li>
 	{%- endif %}
 </ul>
-{%- if let Some(status_code) = link.ipv6_status_code %}
+{%- if let Some(status) = link.ipv6_status %}
 <h3>IPv6</h3>
 <ul class="list-unstyled">
 	<li>Last success:
@@ -41,15 +41,15 @@
 	{%- endif %}
 	</li>
 	<li>Status:
-	{%- if *status_code == 200 %}
+	{%- if status.is_success() %}
 		{%- if let Some(target) = link.ipv6_permanent_redirect_target %}
 			<b class="link-redirect">permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
 		{%- else %}
-			<b class="link-ok">OK ({{ status_code }})</b>
+			<b class="link-ok">OK</b>
 		{%- endif %}
 	{%- else %}
-		<b class="link-error">{% call links::format_link_status_code(ctx.deref(ctx.deref(status_code))) %}</b>
-		{% call links::format_link_suggestions(ctx.deref(ctx.deref(status_code)), link.url) %}
+		<b class="link-error">{% call links::format_link_status(status) %}</b>
+		{% call links::format_link_suggestions(status, link.url) %}
 	{%- endif %}
 	</li>
 </ul>
@@ -57,7 +57,7 @@
 <p>IPv6 was not checked</p>
 {%- endif -%}
 
-{%- if let Some(status_code) = link.ipv4_status_code %}
+{%- if let Some(status) = link.ipv4_status %}
 <h3>IPv4</h3>
 <ul class="list-unstyled">
 	<li>Last success:
@@ -77,19 +77,19 @@
 	{%- endif %}
 	</li>
 	<li>Status:
-	{%- if *status_code == 200 %}
+	{%- if status.is_success() %}
 		{%- if let Some(target) = link.ipv4_permanent_redirect_target %}
 			<b class="link-redirect">permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
 		{%- else %}
-			<b class="link-ok">OK ({{ status_code }})</b>
+			<b class="link-ok">OK</b>
 		{%- endif %}
 	{%- else %}
-		<b class="link-error">{% call links::format_link_status_code(ctx.deref(ctx.deref(status_code))) %}</b>
-		{% call links::format_link_suggestions(ctx.deref(ctx.deref(status_code)), link.url) %}
+		<b class="link-error">{% call links::format_link_status(status) %}</b>
+		{% call links::format_link_suggestions(status, link.url) %}
 	{%- endif %}
 	</li>
 </ul>
-{%- else if link.ipv6_status_code == Some(200) %}
+{%- else if link.ipv6_status == Some(LinkStatus::Http(200)) %}
 <p>Legacy IPv4 check was skipped because IPv6 check succeeded</p>
 {%- else %}
 <p>IPv4 was not checked</p>

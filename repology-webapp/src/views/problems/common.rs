@@ -10,6 +10,8 @@ use axum::response::IntoResponse;
 use indoc::indoc;
 use sqlx::FromRow;
 
+use repology_common::LinkStatus;
+
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
