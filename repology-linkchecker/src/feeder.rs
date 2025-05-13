@@ -10,9 +10,10 @@ use metrics::{counter, gauge};
 use sqlx::{FromRow, PgPool};
 use tracing::{error, info};
 
+use repology_common::LinkStatus;
+
 use crate::checker::{CheckPriority, CheckTask};
 use crate::config::{DEFAULT_BATCH_PERIOD, DEFAULT_BATCH_SIZE, DEFAULT_DATABASE_RETRY_PERIOD};
-use crate::status::LinkStatus;
 
 pub struct Feeder {
     pool: PgPool,

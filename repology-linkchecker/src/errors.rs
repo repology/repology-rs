@@ -3,7 +3,7 @@
 
 use tracing::error;
 
-use crate::status::LinkStatus;
+use repology_common::LinkStatus;
 
 struct StatusChooser {
     status: LinkStatus,

@@ -10,7 +10,7 @@ use std::time::Duration;
 use async_trait::async_trait;
 use serde::Deserialize;
 
-use crate::status::LinkStatus;
+use repology_common::LinkStatus;
 
 #[derive(Clone, Copy)]
 pub enum HttpMethod {

@@ -10,9 +10,10 @@ use axum::Router;
 use axum::http::{HeaderValue, StatusCode, header};
 use axum::routing::get;
 
+use repology_common::LinkStatus;
+
 use crate::http_client::native::NativeHttpClient;
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest};
-use crate::status::LinkStatus;
 
 async fn run_test_server() -> (SocketAddr, SocketAddr) {
     let app = Router::new()

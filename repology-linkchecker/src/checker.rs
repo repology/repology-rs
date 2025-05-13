@@ -9,12 +9,13 @@ use metrics::{counter, histogram};
 use tracing::{error, info, warn};
 use url::Url;
 
+use repology_common::{LinkStatus, LinkStatusWithRedirect};
+
 use crate::delayer::Delayer;
 use crate::errors::extract_status;
 use crate::hosts::{Hosts, RecheckCase};
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest, HttpResponse};
 use crate::resolver::{IpVersion, Resolver, ResolverCache};
-use crate::status::{LinkStatus, LinkStatusWithRedirect};
 use crate::updater::CheckResult;
 
 const MAX_REDIRECTS: usize = 10;

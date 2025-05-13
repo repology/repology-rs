@@ -7,7 +7,7 @@ use std::str::FromStr;
 
 use serde::Deserialize;
 use strum::{EnumDiscriminants, EnumIter, IntoStaticStr};
-use tracing::error;
+use tracing::error; // XXX: better eliminate this dependency
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ParseLinkStatusError {

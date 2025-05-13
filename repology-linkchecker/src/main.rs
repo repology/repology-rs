@@ -20,7 +20,6 @@ mod mainloop;
 mod optional_semaphore;
 mod queuer;
 mod resolver;
-mod status;
 mod updater;
 
 use anyhow::{Context, Result};

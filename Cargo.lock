@@ -2450,7 +2450,7 @@ dependencies = [
  "serde_repr",
  "sqlx",
  "strum",
- "strum_macros",
+ "tracing",
 ]
 
 [[package]]
@@ -2482,7 +2482,6 @@ dependencies = [
  "serde_json",
  "serial_test",
  "sqlx",
- "strum",
  "tempfile",
  "tokio",
  "toml",

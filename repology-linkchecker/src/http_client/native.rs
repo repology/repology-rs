@@ -9,9 +9,10 @@ use std::sync::Arc;
 
 use async_trait::async_trait;
 
+use repology_common::LinkStatus;
+
 use crate::errors::extract_status;
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest, HttpResponse};
-use crate::status::LinkStatus;
 
 struct FakeResolver {
     address: IpAddr,

@@ -9,13 +9,13 @@ use std::time::Duration;
 use axum::Router;
 use axum::http::{HeaderValue, StatusCode, header};
 use axum::routing::get;
+use serial_test::serial;
 use tracing_test::traced_test;
+
+use repology_common::LinkStatus;
 
 use crate::http_client::python::PythonHttpClient;
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest};
-use crate::status::LinkStatus;
-
-use serial_test::serial;
 
 async fn run_test_server() -> (SocketAddr, SocketAddr) {
     let app = Router::new()

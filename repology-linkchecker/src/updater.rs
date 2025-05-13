@@ -12,9 +12,10 @@ use indoc::indoc;
 use sqlx::PgPool;
 use tracing::error;
 
+use repology_common::LinkStatusWithRedirect;
+
 use crate::config::DEFAULT_DATABASE_RETRY_PERIOD;
 use crate::optional_semaphore::OptionalSemaphore;
-use crate::status::LinkStatusWithRedirect;
 
 #[derive(Debug, Default)]
 pub struct CheckResult {
