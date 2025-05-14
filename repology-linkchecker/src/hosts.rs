@@ -22,7 +22,7 @@ pub struct HostSettings {
     pub disable_ipv6: bool,
     pub disable_head: bool,
     pub generated_sampling_percentage: u8,
-    pub aggregation: Option<String>,
+    pub is: Option<String>,
 }
 
 impl Default for HostSettings {
@@ -40,7 +40,7 @@ impl Default for HostSettings {
             disable_ipv6: false,
             disable_head: false,
             generated_sampling_percentage: 100,
-            aggregation: None,
+            is: None,
         }
     }
 }
@@ -101,6 +101,12 @@ impl Hosts {
         let mut current_hostname = hostname;
         loop {
             if let Some(host_settings) = self.host_settings.get(current_hostname) {
+                if let Some(target) = &host_settings.is {
+                    return self
+                        .host_settings
+                        .get(target)
+                        .unwrap_or(&self.default_host_settings);
+                }
                 return host_settings;
             }
             if let Some(separator_pos) = current_hostname.find('.') {
@@ -120,8 +126,8 @@ impl Hosts {
         let mut current_hostname = hostname;
         loop {
             if let Some(host_settings) = self.host_settings.get(current_hostname) {
-                if let Some(aggregation) = &host_settings.aggregation {
-                    return aggregation;
+                if let Some(target) = &host_settings.is {
+                    return target;
                 }
                 if host_settings.aggregate {
                     return current_hostname;
@@ -142,51 +148,190 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_aggregation() {
+    fn test_base() {
+        let mut hosts: HashMap<String, HostSettings> = Default::default();
+        hosts.insert(
+            "foo.example.com".to_string(),
+            HostSettings {
+                generated_sampling_percentage: 42,
+                ..Default::default()
+            },
+        );
+        let hosts = Hosts::new(HostSettings::default(), hosts);
+
+        assert_eq!(hosts.get_aggregation("example.com"), "example.com");
+        assert_eq!(hosts.get_aggregation("foo.example.com"), "foo.example.com");
+        assert_eq!(hosts.get_aggregation("www.example.com"), "example.com");
+        assert_eq!(
+            hosts.get_aggregation("www.foo.example.com"),
+            "foo.example.com"
+        );
+        assert_eq!(
+            hosts.get_aggregation("bar.foo.example.com"),
+            "bar.foo.example.com"
+        );
+
+        assert_eq!(
+            hosts
+                .get_settings("example.com")
+                .generated_sampling_percentage,
+            100
+        );
+        assert_eq!(
+            hosts
+                .get_settings("foo.example.com")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("www.example.com")
+                .generated_sampling_percentage,
+            100
+        );
+        assert_eq!(
+            hosts
+                .get_settings("www.foo.example.com")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("bar.foo.example.com")
+                .generated_sampling_percentage,
+            42
+        );
+    }
+
+    #[test]
+    fn test_aggregate() {
         let mut hosts: HashMap<String, HostSettings> = Default::default();
         hosts.insert(
             "github.io".to_string(),
             HostSettings {
                 aggregate: true,
+                generated_sampling_percentage: 42,
+                ..Default::default()
+            },
+        );
+        let hosts = Hosts::new(HostSettings::default(), hosts);
+
+        assert_eq!(hosts.get_aggregation("github.io"), "github.io");
+        assert_eq!(hosts.get_aggregation("www.github.io"), "github.io");
+        assert_eq!(hosts.get_aggregation("foo.github.io"), "github.io");
+        assert_eq!(hosts.get_aggregation("www.foo.github.io"), "github.io");
+        assert_eq!(hosts.get_aggregation("bar.foo.github.io"), "github.io");
+
+        assert_eq!(
+            hosts
+                .get_settings("github.io")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("www.github.io")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("foo.github.io")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("www.foo.github.io")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("bar.foo.github.io")
+                .generated_sampling_percentage,
+            42
+        );
+    }
+
+    #[test]
+    fn test_is() {
+        let mut hosts: HashMap<String, HostSettings> = Default::default();
+        hosts.insert(
+            "github.io".to_string(),
+            HostSettings {
+                is: Some("github.com".to_string()),
                 ..Default::default()
             },
         );
         hosts.insert(
-            "raw.githubusercontent.com".to_string(),
+            "github.com".to_string(),
             HostSettings {
-                aggregation: Some("github.com".to_string()),
+                generated_sampling_percentage: 42,
                 ..Default::default()
             },
         );
 
         let hosts = Hosts::new(HostSettings::default(), hosts);
 
-        // by default, no aggregation
-        assert_eq!(hosts.get_aggregation("example.com"), "example.com");
-        assert_eq!(hosts.get_aggregation("foo.example.com"), "foo.example.com");
+        assert_eq!(hosts.get_aggregation("github.io"), "github.com");
+        assert_eq!(hosts.get_aggregation("www.github.io"), "github.com");
+        assert_eq!(hosts.get_aggregation("foo.github.io"), "github.com");
+        assert_eq!(hosts.get_aggregation("www.foo.github.io"), "github.com");
+        assert_eq!(hosts.get_aggregation("bar.foo.github.io"), "github.com");
 
-        // aggregation enabled
-        assert_eq!(hosts.get_aggregation("github.io"), "github.io");
-        assert_eq!(hosts.get_aggregation("foo.github.io"), "github.io");
+        assert_eq!(hosts.get_aggregation("github.com"), "github.com");
+        assert_eq!(hosts.get_aggregation("www.github.com"), "github.com");
+        assert_eq!(hosts.get_aggregation("foo.github.com"), "foo.github.com"); // no aggregation unless aggregate is also specified on github.com
 
-        // manually specified aggregation
         assert_eq!(
-            hosts.get_aggregation("githubusercontent.com"),
-            "githubusercontent.com"
+            hosts
+                .get_settings("github.io")
+                .generated_sampling_percentage,
+            42
         );
         assert_eq!(
-            hosts.get_aggregation("raw.githubusercontent.com"),
-            "github.com"
+            hosts
+                .get_settings("www.github.io")
+                .generated_sampling_percentage,
+            42
         );
         assert_eq!(
-            hosts.get_aggregation("foo.raw.githubusercontent.com"),
-            "github.com"
+            hosts
+                .get_settings("foo.github.io")
+                .generated_sampling_percentage,
+            42
         );
-    }
+        assert_eq!(
+            hosts
+                .get_settings("www.foo.github.io")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("bar.foo.github.io")
+                .generated_sampling_percentage,
+            42
+        );
 
-    #[test]
-    fn test_aggregation_www() {
-        let hosts = Hosts::new(HostSettings::default(), Default::default());
-        assert_eq!(hosts.get_aggregation("www.example.com"), "example.com");
+        assert_eq!(
+            hosts
+                .get_settings("github.com")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("www.github.com")
+                .generated_sampling_percentage,
+            42
+        );
+        assert_eq!(
+            hosts
+                .get_settings("foo.github.com")
+                .generated_sampling_percentage,
+            42
+        );
     }
 }

@@ -16,6 +16,7 @@
 "crates.io".recheck_manual = 60
 "crates.io".skip = true                     # misconfigured crap, always 404; XXX = this is true only for crate pages, not for e.g. https://crates.io/api/v1/crates/abscissa_core/0.5.2/download
 "dev.exherbo.org".recheck_manual = 30       # broken, 60+ sec checks
+"dev.exherbo.org".recheck_generated = 30    # broken, 60+ sec checks
 "dev.exherbo.org".timeout = 5               # broken, 60+ sec checks
 "dev.gentoo.org".delay = 1
 "files.pythonhosted.org".delay = 1
@@ -28,10 +29,8 @@
 "github.com".generated_sampling_percentage = 10
 "github.com".recheck_generated = 45
 "github.com".recheck_manual = 21
-"github.io".aggregation = "github.com"
-"github.io".delay = 2
-"github.io".recheck_generated = 45
-"github.io".recheck_manual = 21
+"github.io".is = "github.com"
+"githubusercontent.com".is = "github.com"
 "gitlab.com".delay = 1
 "hydra.nixos.org".generated_sampling_percentage = 1
 "kojipkgs.fedoraproject.org".generated_sampling_percentage = 10
@@ -45,16 +44,13 @@
 "pkgs.alpinelinux.org".recheck_generated = 45
 "pypi.org".delay = 1                        # lots of links, claims (XXX: source?) to handle much trafic
 "pypi.org".recheck_manual = 14
-"raw.githubusercontent.com".aggregation = "github.com"
-"raw.githubusercontent.com".delay = 2
-"raw.githubusercontent.com".recheck_generated = 45
-"raw.githubusercontent.com".recheck_manual = 21
 "readthedocs.io".aggregate = true
 "rubygems.org".delay = 1
 "rubygems.org".recheck_manual = 14
 "search.cpan.org".recheck_manual = 14
-"sf.net".aggregate = true
+"sf.net".is = "sourceforge.net"
 "sourceforge.net".aggregate = true
+"sourceforge.io".is = "sourceforge.net"
 "src.fedoraproject.org".generated_sampling_percentage = 1
 "static.crates.io".skip = false             # exclude this host from crates.io skip rule above
 

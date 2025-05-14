@@ -164,7 +164,28 @@ struct HostSettingsPatch {
     disable_ipv6: Option<bool>,
     disable_head: Option<bool>,
     generated_sampling_percentage: Option<u8>,
-    aggregation: Option<String>,
+    is: Option<String>,
+}
+
+impl HostSettingsPatch {
+    fn check(&self) {
+        assert!(
+            self.is.is_none()
+                || self.delay.is_none()
+                    && self.timeout.is_none()
+                    && self.recheck_manual.is_none()
+                    && self.recheck_generated.is_none()
+                    && self.recheck_unsampled.is_none()
+                    && self.recheck_splay.is_none()
+                    && self.skip.is_none()
+                    && self.aggregate.is_none()
+                    && self.blacklist.is_none()
+                    && self.disable_ipv6.is_none()
+                    && self.disable_head.is_none()
+                    && self.generated_sampling_percentage.is_none(),
+            "you can't specify any other settings for host with .is"
+        );
+    }
 }
 
 impl HostSettings {
@@ -198,8 +219,8 @@ impl HostSettings {
         self.generated_sampling_percentage = patch
             .generated_sampling_percentage
             .unwrap_or(self.generated_sampling_percentage);
-        if patch.aggregation.is_some() {
-            self.aggregation = patch.aggregation;
+        if patch.is.is_some() {
+            self.is = patch.is;
         }
     }
 }
@@ -297,13 +318,17 @@ impl Config {
             .remove("default")
             .into_iter()
             .chain(config.hosts.remove("default"))
-            .for_each(|patch| default_host_settings.merge(patch));
+            .for_each(|patch| {
+                patch.check();
+                default_host_settings.merge(patch);
+            });
 
         let mut host_settings: HashMap<String, HostSettings> = Default::default();
         builtin_hosts
             .into_iter()
             .chain(config.hosts)
             .for_each(|(hostname, patch)| {
+                patch.check();
                 host_settings
                     .entry(hostname)
                     .or_insert_with(|| default_host_settings.clone())
