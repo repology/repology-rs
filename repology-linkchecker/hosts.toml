@@ -15,8 +15,8 @@
 "crates.io".recheck_generated = 60
 "crates.io".recheck_manual = 60
 "crates.io".skip = true                     # misconfigured crap, always 404; XXX = this is true only for crate pages, not for e.g. https://crates.io/api/v1/crates/abscissa_core/0.5.2/download
-"dev.exherbo.org".recheck_manual = 30       # broken, 60+ sec checks
 "dev.exherbo.org".recheck_generated = 30    # broken, 60+ sec checks
+"dev.exherbo.org".recheck_manual = 30       # broken, 60+ sec checks
 "dev.exherbo.org".timeout = 5               # broken, 60+ sec checks
 "dev.gentoo.org".delay = 1
 "files.pythonhosted.org".delay = 1
@@ -49,8 +49,8 @@
 "rubygems.org".recheck_manual = 14
 "search.cpan.org".recheck_manual = 14
 "sf.net".is = "sourceforge.net"
-"sourceforge.net".aggregate = true
 "sourceforge.io".is = "sourceforge.net"
+"sourceforge.net".aggregate = true
 "src.fedoraproject.org".generated_sampling_percentage = 1
 "static.crates.io".skip = false             # exclude this host from crates.io skip rule above
 
