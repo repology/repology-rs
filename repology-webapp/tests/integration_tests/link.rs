@@ -23,7 +23,7 @@ async fn test_ipv4_failure(pool: PgPool) {
     let response = Request::new(pool, "/link/https://example.com/ipv4-failure").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert!(response.text().unwrap().contains("HTTP 404"));
-    assert!(response.text().unwrap().contains("IPv6 was not checked"));
+    assert!(response.text().unwrap().contains("not checked"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
@@ -31,7 +31,7 @@ async fn test_ipv4_success(pool: PgPool) {
     let response = Request::new(pool, "/link/https://example.com/ipv4-success").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert!(response.text().unwrap().contains("OK"));
-    assert!(response.text().unwrap().contains("IPv6 was not checked"));
+    assert!(response.text().unwrap().contains("not checked"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
@@ -40,7 +40,7 @@ async fn test_ipv4_redirect(pool: PgPool) {
     assert_eq!(response.status(), http::StatusCode::OK);
     assert!(response.text().unwrap().contains("permanent redirect"));
     assert!(response.text().unwrap().contains("https://example.com/ipv4-redirect-target"));
-    assert!(response.text().unwrap().contains("IPv6 was not checked"));
+    assert!(response.text().unwrap().contains("not checked"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
@@ -48,7 +48,7 @@ async fn test_ipv6_failure(pool: PgPool) {
     let response = Request::new(pool, "/link/https://example.com/ipv6-failure").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert!(response.text().unwrap().contains("HTTP 404"));
-    assert!(response.text().unwrap().contains("IPv4 was not checked"));
+    assert!(response.text().unwrap().contains("not checked"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
@@ -56,7 +56,7 @@ async fn test_ipv6_success(pool: PgPool) {
     let response = Request::new(pool, "/link/https://example.com/ipv6-success").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert!(response.text().unwrap().contains("OK"));
-    assert!(response.text().unwrap().contains("IPv4 check was skipped"));
+    assert!(response.text().unwrap().contains("skipped, because IPv6 succeeded"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]
@@ -65,7 +65,7 @@ async fn test_ipv6_redirect(pool: PgPool) {
     assert_eq!(response.status(), http::StatusCode::OK);
     assert!(response.text().unwrap().contains("permanent redirect"));
     assert!(response.text().unwrap().contains("https://example.com/ipv6-redirect-target"));
-    assert!(response.text().unwrap().contains("IPv4 check was skipped"));
+    assert!(response.text().unwrap().contains("skipped, because IPv6 succeeded"));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("link_data"))]

@@ -69,36 +69,43 @@ impl Updater {
             .await
             .expect("expected to be able to acquire update semaphore");
 
+        let success = match (
+            result
+                .ipv4
+                .as_ref()
+                .map(|status| status.status.is_success()),
+            result
+                .ipv6
+                .as_ref()
+                .map(|status| status.status.is_success()),
+        ) {
+            (None, None) => None,
+            (Some(true), _) => Some(true),
+            (_, Some(true)) => Some(true),
+            _ => Some(false),
+        };
+
         sqlx::query(indoc! {"
             UPDATE links
             SET
                 last_checked = $2,
                 next_check = $3,
-                last_success = CASE WHEN     ($4 OR $7) THEN $2 ELSE last_success END,
-                last_failure = CASE WHEN NOT ($4 OR $7) THEN $2 ELSE last_failure END,
-
-                ipv4_last_success = CASE WHEN     $4 THEN $2 ELSE ipv4_last_success END,
-                ipv4_last_failure = CASE WHEN NOT $4 THEN $2 ELSE ipv4_last_failure END,
-                ipv4_success = $4,
+                last_success = CASE WHEN     $4 THEN $2 ELSE last_success END,
+                last_failure = CASE WHEN NOT $4 THEN $2 ELSE last_failure END,
                 ipv4_status_code = $5,
                 ipv4_permanent_redirect_target = $6,
-
-                ipv6_last_success = CASE WHEN     $7 THEN $2 ELSE ipv6_last_success END,
-                ipv6_last_failure = CASE WHEN NOT $7 THEN $2 ELSE ipv6_last_failure END,
-                ipv6_success = $7,
-                ipv6_status_code = $8,
-                ipv6_permanent_redirect_target = $9
+                ipv6_status_code = $7,
+                ipv6_permanent_redirect_target = $8
             WHERE id = $1
         "})
-        .bind(result.id)
-        .bind(result.check_time)
-        .bind(result.next_check)
-        .bind(result.ipv4.as_ref().map(|status| status.is_success()))
-        .bind(result.ipv4.as_ref().map(|status| status.code()))
-        .bind(result.ipv4.as_ref().and_then(|status| status.redirect()))
-        .bind(result.ipv6.as_ref().map(|status| status.is_success()))
-        .bind(result.ipv6.as_ref().map(|status| status.code()))
-        .bind(result.ipv6.as_ref().and_then(|status| status.redirect()))
+        .bind(result.id) // $1
+        .bind(result.check_time) // $2
+        .bind(result.next_check) // $3
+        .bind(success) // $4
+        .bind(result.ipv4.as_ref().map(|status| status.code())) // $5
+        .bind(result.ipv4.as_ref().and_then(|status| status.redirect())) // $6
+        .bind(result.ipv6.as_ref().map(|status| status.code())) // $7
+        .bind(result.ipv6.as_ref().and_then(|status| status.redirect())) // $8
         .execute(&self.pool)
         .await?;
 

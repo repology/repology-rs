@@ -35,14 +35,8 @@ struct DbLink {
     last_checked: Option<DateTime<Utc>>,
     last_success: Option<DateTime<Utc>>,
     last_failure: Option<DateTime<Utc>>,
-
-    ipv4_last_success: Option<DateTime<Utc>>,
-    ipv4_last_failure: Option<DateTime<Utc>>,
     ipv4_status_code: Option<i16>,
     ipv4_permanent_redirect_target: Option<String>,
-
-    ipv6_last_success: Option<DateTime<Utc>>,
-    ipv6_last_failure: Option<DateTime<Utc>>,
     ipv6_status_code: Option<i16>,
     ipv6_permanent_redirect_target: Option<String>,
 }
@@ -53,14 +47,8 @@ struct Link {
     last_checked: Option<DateTime<Utc>>,
     last_success: Option<DateTime<Utc>>,
     last_failure: Option<DateTime<Utc>>,
-
-    ipv4_last_success: Option<DateTime<Utc>>,
-    ipv4_last_failure: Option<DateTime<Utc>>,
     ipv4_status: Option<LinkStatus>,
     ipv4_permanent_redirect_target: Option<String>,
-
-    ipv6_last_success: Option<DateTime<Utc>>,
-    ipv6_last_failure: Option<DateTime<Utc>>,
     ipv6_status: Option<LinkStatus>,
     ipv6_permanent_redirect_target: Option<String>,
 }
@@ -75,17 +63,11 @@ impl TryFrom<DbLink> for Link {
             last_checked: link.last_checked,
             last_success: link.last_success,
             last_failure: link.last_failure,
-
-            ipv4_last_success: link.ipv4_last_success,
-            ipv4_last_failure: link.ipv4_last_failure,
             ipv4_status: link
                 .ipv4_status_code
                 .map(|code| LinkStatus::try_from(code))
                 .transpose()?,
             ipv4_permanent_redirect_target: link.ipv4_permanent_redirect_target,
-
-            ipv6_last_success: link.ipv6_last_success,
-            ipv6_last_failure: link.ipv6_last_failure,
             ipv6_status: link
                 .ipv6_status_code
                 .map(|code| LinkStatus::try_from(code))
@@ -106,14 +88,8 @@ pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -
             last_checked,
             last_success,
             last_failure,
-
-            ipv4_last_success,
-            ipv4_last_failure,
             ipv4_status_code,
             ipv4_permanent_redirect_target,
-
-            ipv6_last_success,
-            ipv6_last_failure,
             ipv6_status_code,
             ipv6_permanent_redirect_target
         FROM links
