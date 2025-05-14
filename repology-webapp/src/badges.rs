@@ -91,21 +91,11 @@ impl Cell {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 struct Column {
-    pub width: usize,
-    pub is_collapsed: bool,
-    pub offset: usize,
-}
-
-impl Default for Column {
-    fn default() -> Self {
-        Self {
-            width: 0,
-            is_collapsed: true,
-            offset: 0,
-        }
-    }
+    pub width: usize = 0,
+    pub is_collapsed: bool = true,
+    pub offset: usize = 0,
 }
 
 #[rustfmt::skip::macros(xml)]
