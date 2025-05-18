@@ -185,7 +185,7 @@ impl DatasourceProcessor for CpeProcessor<'_> {
 
         // XXX: switch to MERGE
         let num_rows = sqlx::query(indoc! {"
-            DELETE FROM public.cpe_dictionary;
+            DELETE FROM repology.cpe_dictionary;
         "})
         .execute(&mut *tx)
         .await?
@@ -194,7 +194,7 @@ impl DatasourceProcessor for CpeProcessor<'_> {
         counter!("repology_vulnupdater_processor_sql_rows_total", "processor" => "cpe", "operation" => "DELETE", "stage" => "finalization").increment(num_rows);
 
         sqlx::query(indoc! {"
-            INSERT INTO public.cpe_dictionary(
+            INSERT INTO repology.cpe_dictionary(
                 cpe_vendor,
                 cpe_product,
                 cpe_edition,
