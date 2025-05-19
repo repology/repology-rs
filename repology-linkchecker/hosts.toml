@@ -67,6 +67,7 @@
 "dejavu-fonts.org".blacklist = true
 "ekg2.org".blacklist = true
 "ferite.org".blacklist = true
+"geocities.com".blacklist = true
 "glimpse-editor.org".blacklist = true
 "gnugadu.org".blacklist = true
 "htdig.org".blacklist = true
