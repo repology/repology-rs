@@ -147,6 +147,11 @@ async fn main() -> Result<()> {
                 CHECK_PERIOD_SECONDS_BUCKETS,
             )
             .unwrap()
+            .set_buckets_for_metric(
+                Matcher::Suffix("_recovery_duration_seconds".to_string()),
+                CHECK_PERIOD_SECONDS_BUCKETS,
+            )
+            .unwrap()
             .with_http_listener(*socket_addr)
             .install()
             .context("prometheus exporter initialization failed")?;

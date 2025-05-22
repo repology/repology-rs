@@ -43,7 +43,7 @@ pub struct CheckTask {
     pub deadline: DateTime<Utc>,
     pub prev_ipv4_status: Option<LinkStatus>,
     pub prev_ipv6_status: Option<LinkStatus>,
-    #[allow(unused)]
+    pub last_success: Option<DateTime<Utc>>,
     // TODO[#260]: use for faster recheck of just-failed links, but first we need
     // to accumulate some failures #279 not to consider them just-failed
     pub failure_streak: Option<u16>,
@@ -442,11 +442,18 @@ where
                     );
                 }
                 if is_recovery {
+                    let recovery_duration =
+                        task.last_success.map(|last_success| now - last_success);
                     counter!("repology_linkchecker_checker_status_changes_total", "kind" => "Link recovery").increment(1);
+                    if let Some(duration) = recovery_duration {
+                        histogram!("repology_linkchecker_checker_link_recovery_duration_seconds")
+                            .record(duration.as_seconds_f64());
+                    }
                     info!(
                         url = task.url,
                         old = formatted_old,
                         new = formatted_new,
+                        ?recovery_duration,
                         failure_streak = task.failure_streak.unwrap_or_default(),
                         "link recovered"
                     );
