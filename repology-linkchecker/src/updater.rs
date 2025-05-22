@@ -90,6 +90,7 @@ impl Updater {
                 next_check = $3,
                 last_success = CASE $4 WHEN NULL THEN NULL WHEN TRUE  THEN $2 ELSE last_success END,
                 last_failure = CASE $4 WHEN NULL THEN NULL WHEN FALSE THEN $2 ELSE last_failure END,
+                failure_streak = CASE $4 WHEN FALSE THEN coalesce(failure_streak, 0) + 1 ELSE NULL END,
                 ipv4_status_code = $5,
                 ipv4_permanent_redirect_target = $6,
                 ipv6_status_code = $7,

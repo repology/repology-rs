@@ -43,6 +43,10 @@ pub struct CheckTask {
     pub deadline: DateTime<Utc>,
     pub prev_ipv4_status: Option<LinkStatus>,
     pub prev_ipv6_status: Option<LinkStatus>,
+    #[allow(unused)]
+    // TODO[#260]: use for faster recheck of just-failed links, but first we need
+    // to accumulate some failures #279 not to consider them just-failed
+    pub failure_streak: Option<u16>,
 }
 
 pub struct Checker<'a, R, ER> {

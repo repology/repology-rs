@@ -33,6 +33,7 @@ struct LinkToCheck {
     priority: bool,
     ipv4_status_code: Option<i16>,
     ipv6_status_code: Option<i16>,
+    failure_streak: Option<i16>,
 }
 
 impl Feeder {
@@ -81,7 +82,8 @@ impl Feeder {
                     next_check,
                     priority,
                     ipv4_status_code,
-                    ipv6_status_code
+                    ipv6_status_code,
+                    failure_streak
                 FROM links
                 WHERE
                     refcount > 0
@@ -102,7 +104,8 @@ impl Feeder {
                     next_check,
                     priority,
                     ipv4_status_code,
-                    ipv6_status_code
+                    ipv6_status_code,
+                    failure_streak
                 FROM links
                 WHERE
                     refcount > 0
@@ -158,6 +161,9 @@ impl Feeder {
                 prev_ipv6_status: link
                     .ipv6_status_code
                     .map(LinkStatus::from_code_with_fallback),
+                failure_streak: link
+                    .failure_streak
+                    .map(|streak| streak.try_into().unwrap_or_default()),
             })
             .collect())
     }
