@@ -20,6 +20,7 @@
 	{%- else %}
 	<li>Not yet checked</li>
 	{%- endif %}
+	{% if link.last_success.is_some() || link.last_failure.is_some() %}
 	<li>Last success:
 	{%- if let Some(last_success) = link.last_success %}
 		<b>{% call time::format_absolute_time_sec(last_success) %}</b>
@@ -36,6 +37,7 @@
 		<b>never</b>
 	{%- endif %}
 	</li>
+	{%- endif %}
 	<li>IPv6 status:
 	{%- if let Some(status) = link.ipv6_status %}
 		{%- if status.is_success() %}
