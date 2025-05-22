@@ -41,8 +41,8 @@ pub struct CheckTask {
     pub priority: CheckPriority,
     pub last_checked: Option<DateTime<Utc>>,
     pub deadline: DateTime<Utc>,
-    pub prev_ipv4_status: Option<LinkStatus>,
-    pub prev_ipv6_status: Option<LinkStatus>,
+    pub prev_ipv4_status: LinkStatus,
+    pub prev_ipv6_status: LinkStatus,
     pub last_success: Option<DateTime<Utc>>,
     // TODO[#260]: use for faster recheck of just-failed links, but first we need
     // to accumulate some failures #279 not to consider them just-failed
@@ -270,7 +270,8 @@ where
                 return LinkStatusWithRedirect {
                     status,
                     // only save redirects for successes
-                    redirect: permanent_redirect_target.filter(|_| status.is_success()),
+                    redirect: permanent_redirect_target
+                        .filter(|_| status.is_success() == Some(true)),
                 };
             }
             num_redirects += 1;
@@ -282,9 +283,11 @@ where
 
     pub async fn check(&mut self, task: CheckTask) -> CheckResult {
         let check_start = Instant::now();
-        let mut check_result = CheckResult::default();
         let mut host_settings = self.hosts.get_default_settings();
         let mut recheck_case: RecheckCase = task.priority.into();
+
+        let ipv4_status: LinkStatusWithRedirect;
+        let ipv6_status: LinkStatusWithRedirect;
 
         histogram!("repology_linkchecker_checker_task_overdue_age_seconds")
             .record((Utc::now() - task.deadline).as_seconds_f64());
@@ -320,24 +323,64 @@ where
                 //  hg+http   |        1
                 //  git+http  |        1
                 //  irc       |        1
+                ipv4_status = if self.disable_ipv4 {
+                    LinkStatus::ProtocolDisabled.into()
+                } else {
+                    LinkStatus::UnsupportedScheme.into()
+                };
+                ipv6_status = if self.disable_ipv6 {
+                    LinkStatus::ProtocolDisabled.into()
+                } else {
+                    LinkStatus::UnsupportedScheme.into()
+                };
                 counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "InvalidScheme").increment(1);
             } else if host_settings.skip {
+                ipv4_status = if self.disable_ipv4 {
+                    LinkStatus::ProtocolDisabled.into()
+                } else {
+                    LinkStatus::Skipped.into()
+                };
+                ipv6_status = if self.disable_ipv6 {
+                    LinkStatus::ProtocolDisabled.into()
+                } else {
+                    LinkStatus::Skipped.into()
+                };
                 counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Skipped").increment(1);
             } else if task.priority == CheckPriority::Generated
                 && task.id % 100 >= host_settings.generated_sampling_percentage as i32
             {
+                ipv4_status = if self.disable_ipv4 {
+                    LinkStatus::ProtocolDisabled.into()
+                } else {
+                    LinkStatus::OutOfSample.into()
+                };
+                ipv6_status = if self.disable_ipv6 {
+                    LinkStatus::ProtocolDisabled.into()
+                } else {
+                    LinkStatus::OutOfSample.into()
+                };
                 recheck_case = RecheckCase::Unsampled;
                 counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Unsampled").increment(1);
             } else if host_settings.blacklist {
-                check_result.ipv4 =
-                    Some(LinkStatus::Blacklisted.into()).filter(|_| !self.disable_ipv4);
-                check_result.ipv6 =
-                    Some(LinkStatus::Blacklisted.into()).filter(|_| !self.disable_ipv6);
+                ipv4_status = if self.disable_ipv4 {
+                    LinkStatus::ProtocolDisabled.into()
+                } else {
+                    LinkStatus::Blacklisted.into()
+                };
+                ipv6_status = if self.disable_ipv6 {
+                    LinkStatus::ProtocolDisabled.into()
+                } else {
+                    LinkStatus::Blacklisted.into()
+                };
             } else {
                 let mut skip_ipv4 = false;
 
-                if !self.disable_ipv6 && !host_settings.disable_ipv6 {
-                    let status = Self::handle_one_check(
+                if self.disable_ipv6 {
+                    ipv6_status = LinkStatus::ProtocolDisabled.into();
+                } else if host_settings.disable_ipv6 {
+                    ipv6_status = LinkStatus::ProtocolDisabledForHost.into();
+                } else {
+                    ipv6_status = Self::handle_one_check(
                         url.clone(),
                         self.hosts,
                         self.delayer,
@@ -346,22 +389,23 @@ where
                         self.experimental_http_client,
                     )
                     .await;
-                    skip_ipv4 = self.satisfy_with_ipv6 && status.status.is_success();
-                    check_result.ipv6 = Some(status);
+                    skip_ipv4 = self.satisfy_with_ipv6 && ipv6_status.is_success() == Some(true);
                 }
 
-                if !self.disable_ipv4 && !skip_ipv4 {
-                    check_result.ipv4 = Some(
-                        Self::handle_one_check(
-                            url,
-                            self.hosts,
-                            self.delayer,
-                            &mut self.resolver_cache_ipv4,
-                            self.http_client,
-                            self.experimental_http_client,
-                        )
-                        .await,
-                    );
+                if self.disable_ipv4 {
+                    ipv4_status = LinkStatus::ProtocolDisabled.into();
+                } else if skip_ipv4 {
+                    ipv4_status = LinkStatus::SatisfiedWithIpv6Success.into();
+                } else {
+                    ipv4_status = Self::handle_one_check(
+                        url,
+                        self.hosts,
+                        self.delayer,
+                        &mut self.resolver_cache_ipv4,
+                        self.http_client,
+                        self.experimental_http_client,
+                    )
+                    .await;
                 }
 
                 histogram!("repology_linkchecker_checker_check_duration_seconds")
@@ -369,59 +413,62 @@ where
                 counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Checked").increment(1);
             }
         } else {
-            check_result.ipv4 = Some(LinkStatus::InvalidUrl.into()).filter(|_| !self.disable_ipv4);
-            check_result.ipv6 = Some(LinkStatus::InvalidUrl.into()).filter(|_| !self.disable_ipv6);
+            ipv4_status = if self.disable_ipv4 {
+                LinkStatus::ProtocolDisabled.into()
+            } else {
+                LinkStatus::InvalidUrl.into()
+            };
+            ipv6_status = if self.disable_ipv6 {
+                LinkStatus::ProtocolDisabled.into()
+            } else {
+                LinkStatus::InvalidUrl.into()
+            };
             counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "InvalidUrl").increment(1);
         };
 
         let now = Utc::now();
 
-        check_result.id = task.id;
-        check_result.check_time = now;
-        check_result.next_check = now + host_settings.generate_recheck_time(recheck_case);
+        let check_result = CheckResult {
+            id: task.id,
+            check_time: now,
+            next_check: now + host_settings.generate_recheck_time(recheck_case),
+            ipv4: ipv4_status,
+            ipv6: ipv6_status,
+        };
 
         if let Some(last_checked) = &task.last_checked {
             histogram!("repology_linkchecker_checker_check_period_seconds")
                 .record((now - last_checked).as_seconds_f64());
         }
 
-        if let Some(status) = &check_result.ipv4 {
-            counter!(
-                "repology_linkchecker_checker_statuses_total",
-                "protocol" => "ipv4",
-                "status" => status.status.to_string(),
-                "priority" => task.priority.as_str()
-            )
-            .increment(1);
-        }
+        counter!(
+            "repology_linkchecker_checker_statuses_total",
+            "protocol" => "ipv4",
+            "status" => check_result.ipv4.status.to_string(),
+            "priority" => task.priority.as_str()
+        )
+        .increment(1);
 
-        if let Some(status) = &check_result.ipv6 {
-            counter!(
-                "repology_linkchecker_checker_statuses_total",
-                "protocol" => "ipv6",
-                "status" => status.status.to_string(),
-                "priority" => task.priority.as_str()
-            )
-            .increment(1);
-        }
+        counter!(
+            "repology_linkchecker_checker_statuses_total",
+            "protocol" => "ipv6",
+            "status" => check_result.ipv6.status.to_string(),
+            "priority" => task.priority.as_str()
+        )
+        .increment(1);
 
         {
             // note that we only compare statuses here
             let old = LinkStatus::pick_from46(task.prev_ipv4_status, task.prev_ipv6_status);
-            let new = LinkStatus::pick_from46(
-                check_result.ipv4.as_ref().map(|status| status.status),
-                check_result.ipv6.as_ref().map(|status| status.status),
-            );
+            let new = LinkStatus::pick_from46(check_result.ipv4.status, check_result.ipv6.status);
 
-            let is_breakage = old.is_some_and(|status| status.is_success())
-                && new.is_some_and(|status| !status.is_success());
-            let is_new_broken = old.is_none() && new.is_some_and(|status| !status.is_success());
-            let is_recovery = old.is_some_and(|status| !status.is_success())
-                && new.is_some_and(|status| status.is_success());
+            let is_breakage = old.is_success() == Some(true) && new.is_success() == Some(false);
+            let is_new_broken = old.is_success() == None && new.is_success() == Some(false);
+            let is_recovery = old.is_success() == Some(false) && new.is_success() == Some(true);
 
             if is_breakage || is_new_broken || is_recovery {
-                let formatted_old = old.map(|s| s.to_string()).unwrap_or_else(|| "-".into());
-                let formatted_new = new.map(|s| s.to_string()).unwrap_or_else(|| "-".into());
+                let formatted_old = old.to_string();
+                let formatted_new = new.to_string();
 
                 if is_breakage {
                     counter!("repology_linkchecker_checker_status_changes_total", "kind" => "Link breakage").increment(1);

@@ -19,12 +19,21 @@ impl StatusChooser {
     fn get_status_precision(status: LinkStatus) -> u8 {
         use LinkStatus::*;
         match status {
-            UnknownError => 0,
+            NotYetProcessed
+            | Skipped
+            | OutOfSample
+            | SatisfiedWithIpv6Success
+            | UnsupportedScheme
+            | ProtocolDisabled
+            | ProtocolDisabledForHost => {
+                unreachable!("skipped status should not be encountered in status resolution");
+            }
 
             // generic error categories
             DnsError => 1,
             SslError => 1,
             BadHttp => 1,
+            UnknownError => 0,
 
             // precise errors
             Http(..) => 2,

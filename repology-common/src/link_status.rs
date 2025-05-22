@@ -41,13 +41,22 @@ impl From<ParseIntError> for ParseLinkStatusError {
 #[strum_discriminants(derive(IntoStaticStr, EnumIter))]
 pub enum LinkStatus {
     #[strum(disabled)]
-    Http(u16) = 0,
+    Http(u16) = 1,
+
+    // Not checked family
+    NotYetProcessed = 0,
+    Skipped = -1,
+    OutOfSample = -2,
+    SatisfiedWithIpv6Success = -3,
+    UnsupportedScheme = -4,
+    ProtocolDisabled = -5,
+    ProtocolDisabledForHost = -6,
 
     // Generic errors
-    UnknownError = -1,
     Timeout = -100,
     InvalidUrl = -101,
     Blacklisted = -102,
+    UnknownError = -103,
 
     // DNS errors
     DnsError = -200,
@@ -80,8 +89,12 @@ pub enum LinkStatus {
 }
 
 impl LinkStatus {
-    pub fn is_success(self) -> bool {
-        self == Self::Http(200)
+    pub fn is_success(self) -> Option<bool> {
+        match self {
+            Self::Http(200) => Some(true),
+            _ if self.is_not_checked() => None,
+            _ => Some(false),
+        }
     }
 
     pub fn is_redirect(self) -> bool {
@@ -90,6 +103,10 @@ impl LinkStatus {
 
     pub fn is_permanent_redirect(self) -> bool {
         matches!(self, Self::Http(code) if code == 301 || code == 308)
+    }
+
+    pub fn is_not_checked(self) -> bool {
+        (-99..=0).contains(&self.code())
     }
 
     pub fn is_dns_error(self) -> bool {
@@ -117,12 +134,30 @@ impl LinkStatus {
 
     pub fn from_code(code: i16) -> Result<Self, ParseLinkStatusError> {
         match code {
-            code if code >= 0 => Ok(Self::Http(code as u16)),
+            code if code > 0 => Ok(Self::Http(code as u16)),
 
-            val if val == LinkStatusDiscriminants::UnknownError as i16 => Ok(Self::UnknownError),
+            val if val == LinkStatusDiscriminants::NotYetProcessed as i16 => {
+                Ok(Self::NotYetProcessed)
+            }
+            val if val == LinkStatusDiscriminants::Skipped as i16 => Ok(Self::Skipped),
+            val if val == LinkStatusDiscriminants::OutOfSample as i16 => Ok(Self::OutOfSample),
+            val if val == LinkStatusDiscriminants::SatisfiedWithIpv6Success as i16 => {
+                Ok(Self::SatisfiedWithIpv6Success)
+            }
+            val if val == LinkStatusDiscriminants::UnsupportedScheme as i16 => {
+                Ok(Self::UnsupportedScheme)
+            }
+            val if val == LinkStatusDiscriminants::ProtocolDisabled as i16 => {
+                Ok(Self::ProtocolDisabled)
+            }
+            val if val == LinkStatusDiscriminants::ProtocolDisabledForHost as i16 => {
+                Ok(Self::ProtocolDisabledForHost)
+            }
+
             val if val == LinkStatusDiscriminants::Timeout as i16 => Ok(Self::Timeout),
             val if val == LinkStatusDiscriminants::InvalidUrl as i16 => Ok(Self::InvalidUrl),
             val if val == LinkStatusDiscriminants::Blacklisted as i16 => Ok(Self::Blacklisted),
+            val if val == LinkStatusDiscriminants::UnknownError as i16 => Ok(Self::UnknownError),
 
             val if val == LinkStatusDiscriminants::DnsError as i16 => Ok(Self::DnsError),
             val if val == LinkStatusDiscriminants::DnsDomainNotFound as i16 => {
@@ -194,10 +229,18 @@ impl LinkStatus {
 
     pub fn from_error_name(name: &str) -> Result<Self, ParseLinkStatusError> {
         match name {
-            "UnknownError" => Ok(Self::UnknownError),
+            "NotYetProcessed" => Ok(Self::NotYetProcessed),
+            "Skipped" => Ok(Self::Skipped),
+            "OutOfSample" => Ok(Self::OutOfSample),
+            "SatisfiedWithIpv6Success" => Ok(Self::SatisfiedWithIpv6Success),
+            "UnsupportedScheme" => Ok(Self::UnsupportedScheme),
+            "ProtocolDisabled" => Ok(Self::ProtocolDisabled),
+            "ProtocolDisabledForHost" => Ok(Self::ProtocolDisabledForHost),
+
             "Timeout" => Ok(Self::Timeout),
             "InvalidUrl" => Ok(Self::InvalidUrl),
             "Blacklisted" => Ok(Self::Blacklisted),
+            "UnknownError" => Ok(Self::UnknownError),
 
             "DnsError" => Ok(Self::DnsError),
             "DnsDomainNotFound" => Ok(Self::DnsDomainNotFound),
@@ -235,8 +278,11 @@ impl LinkStatus {
         })
     }
 
-    pub fn pick_from46(ipv4: Option<Self>, ipv6: Option<Self>) -> Option<Self> {
-        if ipv6.is_some_and(|status| status != LinkStatus::DnsNoAddressRecord) {
+    pub fn pick_from46(ipv4: Self, ipv6: Self) -> Self {
+        use LinkStatus::*;
+        if ipv4 == Http(200) || ipv6 == Http(200) {
+            Http(200)
+        } else if ipv4.is_not_checked() {
             ipv6
         } else {
             ipv4
@@ -305,7 +351,7 @@ impl From<LinkStatus> for LinkStatusWithRedirect {
 }
 
 impl LinkStatusWithRedirect {
-    pub fn is_success(&self) -> bool {
+    pub fn is_success(&self) -> Option<bool> {
         self.status.is_success()
     }
 
@@ -375,10 +421,11 @@ mod tests {
 
     #[test]
     fn test_is_success() {
-        assert!(LinkStatus::Http(200).is_success());
-        assert!(!LinkStatus::Http(201).is_success());
-        assert!(!LinkStatus::Http(404).is_success());
-        assert!(!LinkStatus::DnsTimeout.is_success());
+        assert_eq!(LinkStatus::Http(200).is_success(), Some(true));
+        assert_eq!(LinkStatus::Http(201).is_success(), Some(false));
+        assert_eq!(LinkStatus::Http(404).is_success(), Some(false));
+        assert_eq!(LinkStatus::DnsTimeout.is_success(), Some(false));
+        assert_eq!(LinkStatus::Skipped.is_success(), None);
     }
 
     #[test]

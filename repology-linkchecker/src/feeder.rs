@@ -31,8 +31,8 @@ struct LinkToCheck {
     last_checked: Option<DateTime<Utc>>,
     next_check: DateTime<Utc>,
     priority: bool,
-    ipv4_status_code: Option<i16>,
-    ipv6_status_code: Option<i16>,
+    ipv4_status_code: i16,
+    ipv6_status_code: i16,
     last_success: Option<DateTime<Utc>>,
     failure_streak: Option<i16>,
 }
@@ -82,8 +82,8 @@ impl Feeder {
                     last_checked,
                     next_check,
                     priority,
-                    ipv4_status_code,
-                    ipv6_status_code,
+                    coalesce(ipv4_status_code, 0::smallint) as ipv4_status_code,
+                    coalesce(ipv6_status_code, 0::smallint) as ipv6_status_code,
                     last_success,
                     failure_streak
                 FROM links
@@ -105,8 +105,8 @@ impl Feeder {
                     last_checked,
                     next_check,
                     priority,
-                    ipv4_status_code,
-                    ipv6_status_code,
+                    coalesce(ipv4_status_code, 0::smallint) as ipv4_status_code,
+                    coalesce(ipv6_status_code, 0::smallint) as ipv6_status_code,
                     last_success,
                     failure_streak
                 FROM links
@@ -158,12 +158,8 @@ impl Feeder {
                 },
                 last_checked: link.last_checked,
                 deadline: link.next_check,
-                prev_ipv4_status: link
-                    .ipv4_status_code
-                    .map(LinkStatus::from_code_with_fallback),
-                prev_ipv6_status: link
-                    .ipv6_status_code
-                    .map(LinkStatus::from_code_with_fallback),
+                prev_ipv4_status: LinkStatus::from_code_with_fallback(link.ipv4_status_code),
+                prev_ipv6_status: LinkStatus::from_code_with_fallback(link.ipv6_status_code),
                 last_success: link.last_success,
                 failure_streak: link
                     .failure_streak

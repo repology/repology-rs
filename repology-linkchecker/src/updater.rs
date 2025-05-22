@@ -17,21 +17,18 @@ use repology_common::LinkStatusWithRedirect;
 use crate::config::DEFAULT_DATABASE_RETRY_PERIOD;
 use crate::optional_semaphore::OptionalSemaphore;
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct CheckResult {
     pub id: i32,
     pub check_time: DateTime<Utc>,
     pub next_check: DateTime<Utc>,
-    pub ipv4: Option<LinkStatusWithRedirect>,
-    pub ipv6: Option<LinkStatusWithRedirect>,
+    pub ipv4: LinkStatusWithRedirect,
+    pub ipv6: LinkStatusWithRedirect,
 }
 
 impl CheckResult {
     fn is_success(&self) -> Option<bool> {
-        match (
-            self.ipv4.as_ref().map(|status| status.status.is_success()),
-            self.ipv6.as_ref().map(|status| status.status.is_success()),
-        ) {
+        match (self.ipv4.status.is_success(), self.ipv6.status.is_success()) {
             (None, None) => None,
             (Some(true), _) => Some(true),
             (_, Some(true)) => Some(true),
@@ -112,10 +109,10 @@ impl Updater {
         .bind(result.check_time) // $2
         .bind(result.next_check) // $3
         .bind(result.is_success()) // $4
-        .bind(result.ipv4.as_ref().map(|status| status.code())) // $5
-        .bind(result.ipv4.as_ref().and_then(|status| status.redirect())) // $6
-        .bind(result.ipv6.as_ref().map(|status| status.code())) // $7
-        .bind(result.ipv6.as_ref().and_then(|status| status.redirect())) // $8
+        .bind(result.ipv4.code()) // $5
+        .bind(result.ipv4.redirect()) // $6
+        .bind(result.ipv6.code()) // $7
+        .bind(result.ipv6.redirect()) // $8
         .execute(&self.pool)
         .await?;
 

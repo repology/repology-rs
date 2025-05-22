@@ -2,10 +2,18 @@
 	{%- match status %}
 		{%- when LinkStatus::Http(code) %}HTTP {{code}}
 
-		{%- when LinkStatus::UnknownError %}Unknown error
-		{%- when LinkStatus::Timeout %}Connect timeout (60 seconds)
-		{%- when LinkStatus::InvalidUrl %}Invalid URL
-		{%- when LinkStatus::Blacklisted %}Host manually blacklisted for being taken over by an unrelated entity
+		{%- when LinkStatus::NotYetProcessed %}not yet processed by the link checker
+		{%- when LinkStatus::Skipped %}host manually excluded from link checking
+		{%- when LinkStatus::OutOfSample %}link is subject to sampling, and is excluded from the sample
+		{%- when LinkStatus::SatisfiedWithIpv6Success %}not checked because IPv6 check succeeded
+		{%- when LinkStatus::UnsupportedScheme %}unsupported scheme
+		{%- when LinkStatus::ProtocolDisabled %}protocol checking manually disabled
+		{%- when LinkStatus::ProtocolDisabledForHost %}protocol checking manually disabled for the host
+
+		{%- when LinkStatus::Timeout %}connect timeout (60 seconds)
+		{%- when LinkStatus::InvalidUrl %}invalid URL
+		{%- when LinkStatus::Blacklisted %}host manually blacklisted for being taken over by an unrelated entity
+		{%- when LinkStatus::UnknownError %}unknown error
 
 		{%- when LinkStatus::DnsError %}DNS error
 		{%- when LinkStatus::DnsDomainNotFound %}DNS error: domain name not found
@@ -14,15 +22,15 @@
 		{%- when LinkStatus::DnsTimeout %}DNS error: timeout while contacting DNS servers
 		{%- when LinkStatus::DnsIpv4MappedInAaaa %}DNS error: IPv4-mapped address in AAAA
 
-		{%- when LinkStatus::ConnectionRefused %}Connection refused
-		{%- when LinkStatus::HostUnreachable %}No route to host
-		{%- when LinkStatus::ConnectionResetByPeer %}Connection reset by peer
-		{%- when LinkStatus::NetworkUnreachable %}Network is unreachable
-		{%- when LinkStatus::ServerDisconnected %}Server disconnected
-		{%- when LinkStatus::ConnectionAborted %}Connection aborted
-		{%- when LinkStatus::AddressNotAvailable %}Address not available
+		{%- when LinkStatus::ConnectionRefused %}connection refused
+		{%- when LinkStatus::HostUnreachable %}no route to host
+		{%- when LinkStatus::ConnectionResetByPeer %}connection reset by peer
+		{%- when LinkStatus::NetworkUnreachable %}network is unreachable
+		{%- when LinkStatus::ServerDisconnected %}server disconnected
+		{%- when LinkStatus::ConnectionAborted %}connection aborted
+		{%- when LinkStatus::AddressNotAvailable %}address not available
 
-		{%- when LinkStatus::TooManyRedirects %}Too many redirects (possibly, a redirect loop)
+		{%- when LinkStatus::TooManyRedirects %}too many redirects (possibly, a redirect loop)
 		{%- when LinkStatus::BadHttp %}HTTP protocol error
 
 		{%- when LinkStatus::SslError %}SSL error
@@ -35,10 +43,10 @@
 {%- endmacro -%}
 
 {%- macro format_link_suggestions(status, url) -%}
-	{%- if status.is_connection_error() || *status == LinkStatus::Timeout || *status == LinkStatus::DnsRefused || *status == LinkStatus::DnsTimeout -%}
+	{%- if status.is_connection_error() || status == LinkStatus::Timeout || status == LinkStatus::DnsRefused || status == LinkStatus::DnsTimeout -%}
 		(check on <a href="https://www.uptrends.com/tools/uptime" rel="nofollow">uptrends</a>, <a href="https://www.site24x7.com/check-website-availability.html" rel="nofollow">site24x7</a>, <a href="https://check-host.net/check-ping" rel="nofollow">check-host.net</a>; note that there can be geo-based blocks not visible on some of these checkers)
 	{%- endif -%}
-	{%- if *status == LinkStatus::DnsIpv4MappedInAaaa -%}
+	{%- if status == LinkStatus::DnsIpv4MappedInAaaa -%}
 		(<a href="https://bb6-ie.blogspot.com/2017/04/do-not-put-ipv4-mapped-ipv6-addresses.html" rel="nofollow">related reading</a>)
 	{%- endif -%}
 	{%- if status.is_ssl_error() -%}

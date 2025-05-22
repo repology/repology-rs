@@ -35,9 +35,9 @@ struct DbLink {
     last_checked: Option<DateTime<Utc>>,
     last_success: Option<DateTime<Utc>>,
     last_failure: Option<DateTime<Utc>>,
-    ipv4_status_code: Option<i16>,
+    ipv4_status_code: i16,
     ipv4_permanent_redirect_target: Option<String>,
-    ipv6_status_code: Option<i16>,
+    ipv6_status_code: i16,
     ipv6_permanent_redirect_target: Option<String>,
 }
 
@@ -47,9 +47,9 @@ struct Link {
     last_checked: Option<DateTime<Utc>>,
     last_success: Option<DateTime<Utc>>,
     last_failure: Option<DateTime<Utc>>,
-    ipv4_status: Option<LinkStatus>,
+    ipv4_status: LinkStatus,
     ipv4_permanent_redirect_target: Option<String>,
-    ipv6_status: Option<LinkStatus>,
+    ipv6_status: LinkStatus,
     ipv6_permanent_redirect_target: Option<String>,
 }
 
@@ -63,15 +63,9 @@ impl TryFrom<DbLink> for Link {
             last_checked: link.last_checked,
             last_success: link.last_success,
             last_failure: link.last_failure,
-            ipv4_status: link
-                .ipv4_status_code
-                .map(|code| LinkStatus::try_from(code))
-                .transpose()?,
+            ipv4_status: LinkStatus::try_from(link.ipv4_status_code)?,
             ipv4_permanent_redirect_target: link.ipv4_permanent_redirect_target,
-            ipv6_status: link
-                .ipv6_status_code
-                .map(|code| LinkStatus::try_from(code))
-                .transpose()?,
+            ipv6_status: LinkStatus::try_from(link.ipv6_status_code)?,
             ipv6_permanent_redirect_target: link.ipv6_permanent_redirect_target,
         })
     }
@@ -88,9 +82,9 @@ pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -
             last_checked,
             last_success,
             last_failure,
-            ipv4_status_code,
+            coalesce(ipv4_status_code, 0::smallint) AS ipv4_status_code,
             ipv4_permanent_redirect_target,
-            ipv6_status_code,
+            coalesce(ipv6_status_code, 0::smallint) AS ipv6_status_code,
             ipv6_permanent_redirect_target
         FROM links
         WHERE url = $1

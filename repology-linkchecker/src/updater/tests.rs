@@ -18,41 +18,24 @@ use crate::updater::{CheckResult, Updater};
 
 #[test]
 fn test_check_result_is_success() {
-    let gen_check_result = |ipv4: Option<bool>, ipv6: Option<bool>| CheckResult {
+    let res = |ipv4: LinkStatus, ipv6: LinkStatus| CheckResult {
         id: 0,
         check_time: Utc::now(),
         next_check: Utc::now(),
-        ipv4: ipv4.map(|success| LinkStatus::Http(if success { 200 } else { 404 }).into()),
-        ipv6: ipv6.map(|success| LinkStatus::Http(if success { 200 } else { 404 }).into()),
+        ipv4: ipv4.into(),
+        ipv6: ipv6.into(),
     };
 
-    assert_eq!(gen_check_result(None, None).is_success(), None);
-    assert_eq!(
-        gen_check_result(None, Some(false)).is_success(),
-        Some(false)
-    );
-    assert_eq!(gen_check_result(None, Some(true)).is_success(), Some(true));
-    assert_eq!(
-        gen_check_result(Some(false), None).is_success(),
-        Some(false)
-    );
-    assert_eq!(
-        gen_check_result(Some(false), Some(false)).is_success(),
-        Some(false)
-    );
-    assert_eq!(
-        gen_check_result(Some(false), Some(true)).is_success(),
-        Some(true)
-    );
-    assert_eq!(gen_check_result(Some(true), None).is_success(), Some(true));
-    assert_eq!(
-        gen_check_result(Some(true), Some(false)).is_success(),
-        Some(true)
-    );
-    assert_eq!(
-        gen_check_result(Some(true), Some(true)).is_success(),
-        Some(true)
-    );
+    use repology_common::LinkStatus::*;
+    assert_eq!(res(Skipped, Skipped).is_success(), None);
+    assert_eq!(res(Skipped, Http(404)).is_success(), Some(false));
+    assert_eq!(res(Skipped, Http(200)).is_success(), Some(true));
+    assert_eq!(res(Http(404), Skipped).is_success(), Some(false));
+    assert_eq!(res(Http(404), Http(404)).is_success(), Some(false));
+    assert_eq!(res(Http(404), Http(200)).is_success(), Some(true));
+    assert_eq!(res(Http(200), Skipped).is_success(), Some(true));
+    assert_eq!(res(Http(200), Http(404)).is_success(), Some(true));
+    assert_eq!(res(Http(200), Http(200)).is_success(), Some(true));
 }
 
 /*

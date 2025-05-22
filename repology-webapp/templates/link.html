@@ -39,37 +39,27 @@
 	</li>
 	{%- endif %}
 	<li>IPv6 status:
-	{%- if let Some(status) = link.ipv6_status %}
-		{%- if status.is_success() %}
-			{%- if let Some(target) = link.ipv6_permanent_redirect_target %}
-				<b class="link-redirect">permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
-			{%- else %}
-				<b class="link-ok">OK</b>
-			{%- endif %}
-		{%- else %}
-			<b class="link-error">{% call links::format_link_status(status) %}</b>
-			{% call links::format_link_suggestions(status, link.url) %}
-		{%- endif %}
+	{%- if link.ipv6_status.is_success() == Some(false) %}
+		<b class="link-error">{% call links::format_link_status(link.ipv6_status) %}</b>
+		{% call links::format_link_suggestions(link.ipv6_status, link.url) %}
+	{%- else if link.ipv6_status.is_success().is_none() %}
+		{% call links::format_link_status(link.ipv6_status) %}
+	{%- else if let Some(target) = link.ipv6_permanent_redirect_target %}
+		<b class="link-redirect">OK, but permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
 	{%- else %}
-		not checked
+		<b class="link-ok">OK</b>
 	{%- endif %}
 	</li>
 	<li>IPv4 status:
-	{%- if let Some(status) = link.ipv4_status %}
-		{%- if status.is_success() %}
-			{%- if let Some(target) = link.ipv4_permanent_redirect_target %}
-				<b class="link-redirect">permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
-			{%- else %}
-				<b class="link-ok">OK</b>
-			{%- endif %}
-		{%- else %}
-			<b class="link-error">{% call links::format_link_status(status) %}</b>
-			{% call links::format_link_suggestions(status, link.url) %}
-		{%- endif %}
-	{%- else if link.ipv6_status == Some(LinkStatus::Http(200)) %}
-		skipped, because IPv6 succeeded
+	{%- if link.ipv4_status.is_success() == Some(false) %}
+		<b class="link-error">{% call links::format_link_status(link.ipv4_status) %}</b>
+		{% call links::format_link_suggestions(link.ipv4_status, link.url) %}
+	{%- else if link.ipv4_status.is_success().is_none() %}
+		{% call links::format_link_status(link.ipv4_status) %}
+	{%- else if let Some(target) = link.ipv4_permanent_redirect_target %}
+		<b class="link-redirect">OK, but permanent redirect</b> to <b><a href="{{ target }}">{{ target }}</a></b>
 	{%- else %}
-		not checked
+		<b class="link-ok">OK</b>
 	{%- endif %}
 	</li>
 </ul>
