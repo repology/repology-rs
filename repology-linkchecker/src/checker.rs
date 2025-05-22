@@ -447,6 +447,7 @@ where
                         url = task.url,
                         old = formatted_old,
                         new = formatted_new,
+                        failure_streak = task.failure_streak.unwrap_or_default(),
                         "link recovered"
                     );
                 }
