@@ -26,6 +26,20 @@ pub struct CheckResult {
     pub ipv6: Option<LinkStatusWithRedirect>,
 }
 
+impl CheckResult {
+    fn is_success(&self) -> Option<bool> {
+        match (
+            self.ipv4.as_ref().map(|status| status.status.is_success()),
+            self.ipv6.as_ref().map(|status| status.status.is_success()),
+        ) {
+            (None, None) => None,
+            (Some(true), _) => Some(true),
+            (_, Some(true)) => Some(true),
+            _ => Some(false),
+        }
+    }
+}
+
 pub struct Updater {
     pool: PgPool,
     dry_run: bool,
@@ -69,22 +83,6 @@ impl Updater {
             .await
             .expect("expected to be able to acquire update semaphore");
 
-        let success = match (
-            result
-                .ipv4
-                .as_ref()
-                .map(|status| status.status.is_success()),
-            result
-                .ipv6
-                .as_ref()
-                .map(|status| status.status.is_success()),
-        ) {
-            (None, None) => None,
-            (Some(true), _) => Some(true),
-            (_, Some(true)) => Some(true),
-            _ => Some(false),
-        };
-
         sqlx::query(indoc! {"
             UPDATE links
             SET
@@ -101,7 +99,7 @@ impl Updater {
         .bind(result.id) // $1
         .bind(result.check_time) // $2
         .bind(result.next_check) // $3
-        .bind(success) // $4
+        .bind(result.is_success()) // $4
         .bind(result.ipv4.as_ref().map(|status| status.code())) // $5
         .bind(result.ipv4.as_ref().and_then(|status| status.redirect())) // $6
         .bind(result.ipv6.as_ref().map(|status| status.code())) // $7
