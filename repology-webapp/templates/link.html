@@ -48,9 +48,9 @@
 			<b class="link-error">{% call links::format_link_status(status) %}</b>
 			{% call links::format_link_suggestions(status, link.url) %}
 		{%- endif %}
-	{%- else -%}
+	{%- else %}
 		not checked
-	{%- endif -%}
+	{%- endif %}
 	</li>
 	<li>IPv4 status:
 	{%- if let Some(status) = link.ipv4_status %}
