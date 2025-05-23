@@ -27,7 +27,6 @@ const OLD_BUCKET_LOG_PERIOD: Duration = Duration::from_secs(300);
 struct Bucket {
     tasks: VecDeque<CheckTask>,
     task_ids: HashSet<i32>,
-    task_ids_on_cooldown: HashSet<i32>,
     create_time: Instant,
     num_deferred: usize,
 }
@@ -37,7 +36,6 @@ impl Default for Bucket {
         Self {
             tasks: Default::default(),
             task_ids: Default::default(),
-            task_ids_on_cooldown: Default::default(),
             create_time: Instant::now(),
             num_deferred: 0,
         }
@@ -48,6 +46,7 @@ impl Default for Bucket {
 struct State {
     num_queued_tasks: usize,
     buckets: HashMap<String, Bucket>,
+    task_ids_on_cooldown: HashSet<i32>,
     max_bucket_age: Duration,
 }
 
@@ -234,13 +233,13 @@ where
 
             {
                 let mut state = state.lock().unwrap();
-                let bucket = state
+                state
                     .buckets
                     .get_mut(&bucket_key)
-                    .expect("bucket we've just retrieved task from should still exist");
-
-                bucket.task_ids.remove(&task_id);
-                bucket.task_ids_on_cooldown.insert(task_id);
+                    .expect("bucket we've just retrieved task from should still exist")
+                    .task_ids
+                    .remove(&task_id);
+                state.task_ids_on_cooldown.insert(task_id);
             }
 
             num_processed += 1;
@@ -250,12 +249,7 @@ where
     }
 
     pub fn clear_cooldowns(&self) {
-        self.state
-            .lock()
-            .unwrap()
-            .buckets
-            .iter_mut()
-            .for_each(|(_, bucket)| bucket.task_ids_on_cooldown.clear());
+        self.state.lock().unwrap().task_ids_on_cooldown.clear();
     }
 
     // silences false positive, see the code
@@ -272,6 +266,13 @@ where
             first_iteration = false;
 
             let mut state = self.state.lock().unwrap();
+
+            if state.task_ids_on_cooldown.contains(&task.id) {
+                // was processed just a moment ago
+                counter!("repology_linkchecker_queuer_tasks_total", "state" => "on_cooldown")
+                    .increment(1);
+                return false;
+            }
 
             if state.num_queued_tasks >= self.max_queued_urls {
                 // total queued URLs limit reached
@@ -291,9 +292,7 @@ where
                 };
 
             let bucket = if let Some(bucket) = state.buckets.get_mut(bucket_key) {
-                if bucket.task_ids.contains(&task.id)
-                    || bucket.task_ids_on_cooldown.contains(&task.id)
-                {
+                if bucket.task_ids.contains(&task.id) {
                     // already in the queue
                     counter!("repology_linkchecker_queuer_tasks_total", "state" => "already_queued").increment(1);
                     return false;
