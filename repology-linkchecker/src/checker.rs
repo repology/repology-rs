@@ -453,7 +453,7 @@ where
                         url = task.url,
                         old = formatted_old,
                         new = formatted_new,
-                        ?recovery_duration,
+                        recovery_duration = recovery_duration.map(chrono::Duration::as_seconds_f64),
                         failure_streak = task.failure_streak.unwrap_or_default(),
                         "link recovered"
                     );
