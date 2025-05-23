@@ -27,6 +27,7 @@ const OLD_BUCKET_LOG_PERIOD: Duration = Duration::from_secs(300);
 struct Bucket {
     tasks: VecDeque<CheckTask>,
     task_ids: HashSet<i32>,
+    task_ids_on_cooldown: HashSet<i32>,
     create_time: Instant,
     num_deferred: usize,
 }
@@ -36,6 +37,7 @@ impl Default for Bucket {
         Self {
             tasks: Default::default(),
             task_ids: Default::default(),
+            task_ids_on_cooldown: Default::default(),
             create_time: Instant::now(),
             num_deferred: 0,
         }
@@ -230,19 +232,30 @@ where
 
             updater.push(checker.check(task).await).await;
 
-            state
-                .lock()
-                .unwrap()
-                .buckets
-                .get_mut(&bucket_key)
-                .expect("bucket we've just retrieved task from should still exist")
-                .task_ids
-                .remove(&task_id);
+            {
+                let mut state = state.lock().unwrap();
+                let bucket = state
+                    .buckets
+                    .get_mut(&bucket_key)
+                    .expect("bucket we've just retrieved task from should still exist");
+
+                bucket.task_ids.remove(&task_id);
+                bucket.task_ids_on_cooldown.insert(task_id);
+            }
 
             num_processed += 1;
             counter!("repology_linkchecker_queuer_tasks_total", "state" => "processed")
                 .increment(1);
         }
+    }
+
+    pub fn clear_cooldowns(&self) {
+        self.state
+            .lock()
+            .unwrap()
+            .buckets
+            .iter_mut()
+            .for_each(|(_, bucket)| bucket.task_ids_on_cooldown.clear());
     }
 
     // silences false positive, see the code
@@ -278,7 +291,9 @@ where
                 };
 
             let bucket = if let Some(bucket) = state.buckets.get_mut(bucket_key) {
-                if bucket.task_ids.contains(&task.id) {
+                if bucket.task_ids.contains(&task.id)
+                    || bucket.task_ids_on_cooldown.contains(&task.id)
+                {
                     // already in the queue
                     counter!("repology_linkchecker_queuer_tasks_total", "state" => "already_queued").increment(1);
                     return false;

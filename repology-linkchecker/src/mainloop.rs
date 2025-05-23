@@ -56,6 +56,8 @@ pub async fn link_check_loop(pool: PgPool, config: Config) -> Result<()> {
     .with_satisfy_with_ipv6(config.satisfy_with_ipv6);
 
     loop {
+        queuer.clear_cooldowns();
+
         let tasks = feeder.get_next_batch().await;
 
         if tasks.is_empty() {
