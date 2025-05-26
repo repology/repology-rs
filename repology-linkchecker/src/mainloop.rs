@@ -53,7 +53,8 @@ pub async fn link_check_loop(pool: PgPool, config: Config) -> Result<()> {
     .with_max_buckets(config.max_buckets)
     .with_disable_ipv4(config.disable_ipv4)
     .with_disable_ipv6(config.disable_ipv6)
-    .with_satisfy_with_ipv6(config.satisfy_with_ipv6);
+    .with_satisfy_with_ipv6(config.satisfy_with_ipv6)
+    .with_fast_failure_recheck(config.fast_failure_recheck);
 
     loop {
         queuer.clear_cooldowns();

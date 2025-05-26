@@ -59,6 +59,7 @@ pub struct Checker<'a, R, ER> {
     disable_ipv4: bool,
     disable_ipv6: bool,
     satisfy_with_ipv6: bool,
+    fast_failure_recheck: bool,
 }
 
 impl<'a, R, ER> Checker<'a, R, ER>
@@ -83,6 +84,7 @@ where
             disable_ipv4: false,
             disable_ipv6: false,
             satisfy_with_ipv6: false,
+            fast_failure_recheck: false,
         }
     }
 
@@ -98,6 +100,11 @@ where
 
     pub fn with_satisfy_with_ipv6(mut self, satisfy_with_ipv6: bool) -> Self {
         self.satisfy_with_ipv6 = satisfy_with_ipv6;
+        self
+    }
+
+    pub fn with_fast_failure_recheck(mut self, fast_failure_recheck: bool) -> Self {
+        self.fast_failure_recheck = fast_failure_recheck;
         self
     }
 
@@ -430,13 +437,23 @@ where
 
         let now = Utc::now();
 
-        let check_result = CheckResult {
+        let mut check_result = CheckResult {
             id: task.id,
             check_time: now,
             next_check: now + host_settings.generate_recheck_time(recheck_case),
             ipv4: ipv4_status,
             ipv6: ipv6_status,
         };
+
+        if self.fast_failure_recheck
+            && check_result.is_success() == Some(false)
+            && let Some(fast_recheck_interval) = host_settings.generate_fast_failure_recheck_time(
+                recheck_case,
+                task.failure_streak.unwrap_or_default(),
+            )
+        {
+            check_result.next_check = check_result.next_check.min(now + fast_recheck_interval)
+        }
 
         if let Some(last_checked) = &task.last_checked {
             histogram!("repology_linkchecker_checker_check_period_seconds")

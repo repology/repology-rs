@@ -138,16 +138,20 @@ pub struct CliArgs {
     pub repology_host: Option<String>,
 
     /// Omit IPv4 check
-    #[arg(long, help_heading = "Internet protocol versions")]
+    #[arg(long, help_heading = "Checker behavior")]
     pub disable_ipv4: bool,
 
     /// Omit IPV6 check
-    #[arg(long, help_heading = "Internet protocol versions")]
+    #[arg(long, help_heading = "Checker behavior")]
     pub disable_ipv6: bool,
 
     /// Omit IPv4 check if IPv6 check succeeds
-    #[arg(long, help_heading = "Internet protocol versions")]
+    #[arg(long, help_heading = "Checker behavior")]
     pub satisfy_with_ipv6: bool,
+
+    /// Do faster rechecks for failed links
+    #[arg(long, help_heading = "Checker behavior")]
+    pub fast_failure_recheck: bool,
 }
 
 #[derive(Deserialize)]
@@ -246,6 +250,7 @@ struct FileConfig {
     disable_ipv4: Option<bool>,
     disable_ipv6: Option<bool>,
     satisfy_with_ipv6: Option<bool>,
+    fast_failure_recheck: Option<bool>,
     disable_builtin_hosts_config: Option<bool>,
     max_parallel_updates: Option<usize>,
 }
@@ -270,6 +275,7 @@ pub struct Config {
     pub disable_ipv4: bool,
     pub disable_ipv6: bool,
     pub satisfy_with_ipv6: bool,
+    pub fast_failure_recheck: bool,
     pub max_parallel_updates: usize,
 }
 
@@ -377,6 +383,8 @@ impl Config {
             disable_ipv4: args.disable_ipv4 || config.disable_ipv4.unwrap_or(false),
             disable_ipv6: args.disable_ipv6 || config.disable_ipv6.unwrap_or(false),
             satisfy_with_ipv6: args.satisfy_with_ipv6 || config.satisfy_with_ipv6.unwrap_or(false),
+            fast_failure_recheck: args.fast_failure_recheck
+                || config.fast_failure_recheck.unwrap_or(false),
             max_parallel_updates: args
                 .max_parallel_updates
                 .or(config.max_parallel_updates)

@@ -45,6 +45,7 @@ impl Default for HostSettings {
     }
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum RecheckCase {
     Manual,
     Generated,
@@ -69,6 +70,29 @@ impl HostSettings {
         };
         // [recheck, recheck + splay)
         recheck_period.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>())
+    }
+
+    pub fn generate_fast_failure_recheck_time(
+        &self,
+        case: RecheckCase,
+        failure_streak: u16,
+    ) -> Option<Duration> {
+        const FAST_FAILURE_RECHECK_INTERVALS: &[Duration] = &[
+            Duration::from_hours(1),
+            Duration::from_hours(4),
+            Duration::from_days(1),
+            Duration::from_days(3),
+        ];
+
+        if case == RecheckCase::Manual
+            && let Some(recheck_period) =
+                FAST_FAILURE_RECHECK_INTERVALS.get(failure_streak as usize)
+        {
+            // [recheck, recheck + splay)
+            Some(recheck_period.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>()))
+        } else {
+            None
+        }
     }
 
     pub fn generate_defer_time(&self, priority: CheckPriority) -> Duration {
