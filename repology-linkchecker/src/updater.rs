@@ -96,7 +96,7 @@ impl Updater {
                     ELSE last_failure
                 END,
                 failure_streak = CASE
-                    WHEN NOT $4 THEN coalesce(failure_streak, 0) + 1
+                    WHEN NOT $4 THEN least(coalesce(failure_streak, 0), 32766) + 1
                     ELSE NULL
                 END,
                 ipv4_status_code = $5,
