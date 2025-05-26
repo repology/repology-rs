@@ -440,17 +440,18 @@ where
         let mut check_result = CheckResult {
             id: task.id,
             check_time: now,
-            next_check: now + host_settings.generate_recheck_time(recheck_case),
+            next_check: now + host_settings.generate_recheck_interval(recheck_case),
             ipv4: ipv4_status,
             ipv6: ipv6_status,
         };
 
         if self.fast_failure_recheck
             && check_result.is_success() == Some(false)
-            && let Some(fast_recheck_interval) = host_settings.generate_fast_failure_recheck_time(
-                recheck_case,
-                task.failure_streak.unwrap_or_default(),
-            )
+            && let Some(fast_recheck_interval) = host_settings
+                .generate_fast_failure_recheck_interval(
+                    recheck_case,
+                    task.failure_streak.unwrap_or_default(),
+                )
         {
             check_result.next_check = check_result.next_check.min(now + fast_recheck_interval)
         }

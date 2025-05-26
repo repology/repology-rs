@@ -62,7 +62,7 @@ impl From<CheckPriority> for RecheckCase {
 }
 
 impl HostSettings {
-    pub fn generate_recheck_time(&self, case: RecheckCase) -> Duration {
+    pub fn generate_recheck_interval(&self, case: RecheckCase) -> Duration {
         let recheck_period = match case {
             RecheckCase::Manual => self.recheck_manual,
             RecheckCase::Generated => self.recheck_generated,
@@ -72,7 +72,7 @@ impl HostSettings {
         recheck_period.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>())
     }
 
-    pub fn generate_fast_failure_recheck_time(
+    pub fn generate_fast_failure_recheck_interval(
         &self,
         case: RecheckCase,
         failure_streak: u16,
@@ -95,7 +95,7 @@ impl HostSettings {
         }
     }
 
-    pub fn generate_defer_time(&self, priority: CheckPriority) -> Duration {
+    pub fn generate_defer_interval(&self, priority: CheckPriority) -> Duration {
         let recheck_period = match priority {
             CheckPriority::Manual => self.recheck_manual,
             CheckPriority::Generated => self.recheck_generated,

@@ -319,7 +319,10 @@ where
                         // (but we don't as the lock is dropped a line above), silenced at function level
                         // See https://github.com/rust-lang/rust-clippy/issues/9683
                         self.updater
-                            .defer_by(task.id, host_settings.generate_defer_time(task.priority))
+                            .defer_by(
+                                task.id,
+                                host_settings.generate_defer_interval(task.priority),
+                            )
                             .await;
                         counter!("repology_linkchecker_queuer_tasks_total", "state" => "deferred", "bucket" => bucket_key.to_string()).increment(1);
                     }
