@@ -141,6 +141,7 @@ where
                 || experimental_response.status == LinkStatus::Timeout   // flapping
                 || host == "packages.debian.org" || host == "packages.trisquel.org" || host == "packages.ubuntu.com" // flapping 502/504s
                 || host == "metacpan.org" // flapping 503/504s
+                || response.status == LinkStatus::BadHttp // aiohttp specific failures (https://git.lighttpd.net/lighttpd/fcgi-cgi.git/snapshot/fcgi-cgi-0.2.2.tar.gz, http://www.fefe.de/dietlibc)
             ;
 
             if ignore_experiment {
