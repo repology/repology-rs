@@ -104,7 +104,7 @@ fn init_logging(config: &Config) -> Result<()> {
     }
 
     let layer = tracing_subscriber::fmt::Layer::new().with_timer(
-        tracing_subscriber::fmt::time::ChronoLocal::new(String::from("%F %T%.6f%z")),
+        tracing_subscriber::fmt::time::ChronoLocal::new(String::from("%F %T%.6f")),
     );
 
     if let Some(log_directory) = &config.log_directory {
