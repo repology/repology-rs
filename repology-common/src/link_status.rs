@@ -89,6 +89,7 @@ pub enum LinkStatus {
     SslCertificateSelfSignedInChain = -504,
     SslCertificateIncompleteChain = -505,
     SslHandshakeFailure = -506,
+    CertificateUnknownIssuer = -507,
 }
 
 impl LinkStatus {
@@ -188,6 +189,7 @@ impl LinkStatus {
                 Ok(Self::SslCertificateIncompleteChain)
             }
             val if val == D::SslHandshakeFailure as i16 => Ok(Self::SslHandshakeFailure),
+            val if val == D::CertificateUnknownIssuer as i16 => Ok(Self::CertificateUnknownIssuer),
 
             _ => Err(ParseLinkStatusError::BadCode),
         }
@@ -242,6 +244,7 @@ impl LinkStatus {
             "SslCertificateSelfSignedInChain" => Ok(Self::SslCertificateSelfSignedInChain),
             "SslCertificateIncompleteChain" => Ok(Self::SslCertificateIncompleteChain),
             "SslHandshakeFailure" => Ok(Self::SslHandshakeFailure),
+            "CertificateUnknownIssuer" => Ok(Self::CertificateUnknownIssuer),
 
             _ => Err(ParseLinkStatusError::BadErrorName),
         }

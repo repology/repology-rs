@@ -61,6 +61,7 @@ impl StatusChooser {
             SslCertificateSelfSignedInChain => 2,
             SslCertificateIncompleteChain => 2,
             SslHandshakeFailure => 2,
+            CertificateUnknownIssuer => 2,
         }
     }
 
@@ -262,7 +263,7 @@ impl ExtractStatus for rustls::CertificateError {
                 chooser.push(LinkStatus::SslCertificateHasExpired);
             }
             UnknownIssuer => {
-                chooser.push(LinkStatus::SslCertificateIncompleteChain);
+                chooser.push(LinkStatus::CertificateUnknownIssuer);
             }
             NotValidForName | NotValidForNameContext { .. } => {
                 chooser.push(LinkStatus::SslCertificateHostnameMismatch);

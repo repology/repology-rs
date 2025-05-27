@@ -42,6 +42,7 @@
 		{%- when LinkStatus::SslCertificateSelfSignedInChain %}SSL error: self signed certificate in certificate chain
 		{%- when LinkStatus::SslCertificateIncompleteChain %}SSL error: incomplete certificate chain
 		{%- when LinkStatus::SslHandshakeFailure %}SSL handshake failure
+		{%- when LinkStatus::CertificateUnknownIssuer %}SSL error: invalid certificate: unknown issuer
 	{%- endmatch -%}
 {%- endmacro -%}
 
