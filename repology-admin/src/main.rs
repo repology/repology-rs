@@ -12,8 +12,8 @@ mod result;
 
 use anyhow::{Context, Result};
 use metrics::{counter, gauge};
-use sqlx::Executor;
 use sqlx::postgres::PgPoolOptions;
+use sqlx::{Executor, PgPool};
 use tracing::info;
 
 use crate::app::create_app;
@@ -72,8 +72,8 @@ fn collect_tokio_runtime_metrics() {
     }
 }
 
-async fn async_main() -> Result<()> {
-    let config = Config::parse().with_context(|| "failed to process configuration")?;
+pub fn init_logging(config: &Config) -> Result<()> {
+    info!("initializing logging");
 
     if let Some(log_directory) = &config.log_directory {
         use tracing_appender::rolling::{RollingFileAppender, Rotation};
@@ -88,6 +88,10 @@ async fn async_main() -> Result<()> {
         tracing_subscriber::fmt::init();
     }
 
+    Ok(())
+}
+
+fn init_metrics(config: &Config) -> Result<()> {
     if let Some(socket_addr) = &config.prometheus_export {
         info!("initializing prometheus exporter");
         use metrics_exporter_prometheus::{Matcher, PrometheusBuilder};
@@ -128,6 +132,10 @@ async fn async_main() -> Result<()> {
         });
     }
 
+    Ok(())
+}
+
+async fn init_database(config: &Config) -> Result<PgPool> {
     info!("initializing database pool");
     let pool = PgPoolOptions::new()
         .after_connect(|conn, _meta| {
@@ -140,6 +148,18 @@ async fn async_main() -> Result<()> {
         .connect(&config.dsn)
         .await
         .context("error creating PostgreSQL connection pool")?;
+
+    Ok(pool)
+}
+
+async fn async_main() -> Result<()> {
+    let config = Config::parse().with_context(|| "failed to process configuration")?;
+
+    init_logging(&config).with_context(|| "failed to init logging")?;
+    init_metrics(&config).with_context(|| "failed to init metrics")?;
+    let pool = init_database(&config)
+        .await
+        .with_context(|| "failed to init database")?;
 
     info!("initializing application");
     let listen_address = config.listen.clone();

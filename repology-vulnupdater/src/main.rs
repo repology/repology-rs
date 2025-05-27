@@ -17,8 +17,8 @@ use std::cell::LazyCell;
 
 use anyhow::{Context, Result, bail};
 use clap::Parser as _;
-use sqlx::Executor;
 use sqlx::postgres::PgPoolOptions;
+use sqlx::{Executor, PgPool};
 use tracing::info;
 
 use args::Args;
@@ -29,9 +29,8 @@ use status_tracker::SourceUpdateStatusTracker;
 
 use vulnupdater::{Datasource, VulnUpdater};
 
-#[tokio::main]
-async fn main() -> Result<()> {
-    let args = Args::parse();
+fn init_logging(args: &Args) -> Result<()> {
+    info!("initializing logging");
 
     if let Some(log_directory) = &args.log_directory {
         use tracing_appender::rolling::{RollingFileAppender, Rotation};
@@ -46,6 +45,10 @@ async fn main() -> Result<()> {
         tracing_subscriber::fmt::init();
     }
 
+    Ok(())
+}
+
+fn init_metrics(args: &Args) -> Result<()> {
     if let Some(socket_addr) = &args.prometheus_export {
         if args.once_only {
             bail!("prometheus export is not supported in --once-only mode");
@@ -67,6 +70,10 @@ async fn main() -> Result<()> {
         });
     }
 
+    Ok(())
+}
+
+async fn init_database(args: &Args) -> Result<PgPool> {
     info!("creating PostgreSQL pool");
     let pool = PgPoolOptions::new()
         .after_connect(|conn, _meta| {
@@ -80,6 +87,19 @@ async fn main() -> Result<()> {
         .connect(&args.dsn)
         .await
         .context("postgres connection failed")?;
+
+    Ok(pool)
+}
+
+#[tokio::main]
+async fn main() -> Result<()> {
+    let args = Args::parse();
+
+    init_logging(&args).with_context(|| "failed to init logging")?;
+    init_metrics(&args).with_context(|| "failed to init metrics")?;
+    let pool = init_database(&args)
+        .await
+        .with_context(|| "failed to init database")?;
 
     // make sure schema exist before migrations, so
     // _sqlx_migrations table can be placed within it
