@@ -239,6 +239,9 @@ impl ExtractStatus for rustls::AlertDescription {
             UnrecognisedName => {
                 chooser.push(LinkStatus::SslError);
             }
+            InternalError => {
+                chooser.push(LinkStatus::SslError);
+            }
             _ => {
                 chooser.push(LinkStatus::SslError);
                 error!(error = ?self, url, "unhandled rustls::AlertDescription variant");
