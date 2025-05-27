@@ -103,8 +103,9 @@ fn init_logging(config: &Config) -> Result<()> {
         layers.push(layer.boxed());
     }
 
-    let layer = tracing_subscriber::fmt::Layer::new()
-        .with_timer(tracing_subscriber::fmt::time::ChronoLocal::rfc_3339());
+    let layer = tracing_subscriber::fmt::Layer::new().with_timer(
+        tracing_subscriber::fmt::time::ChronoLocal::new(String::from("%F %T%.6f%z")),
+    );
 
     if let Some(log_directory) = &config.log_directory {
         use tracing_appender::rolling::{RollingFileAppender, Rotation};
