@@ -140,16 +140,14 @@ where
             counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str()).increment(1);
             let experimental_response = experimental_http_client.request(request.clone()).await;
 
-            let ignore_experiment =
-                host == "code.google.com" // flapping 500's
+            use LinkStatus::*;
+            let ignore_experiment = host == "code.google.com" // flapping 500's
                 || host == "pyropus.ca." // native checker is correct
-                || response.status == LinkStatus::Http(429) || experimental_response.status == LinkStatus::Http(429) // 429s
-                || experimental_response.status == LinkStatus::Http(200) // flapping
-                || experimental_response.status == LinkStatus::Timeout   // flapping
-                || host == "packages.debian.org" || host == "packages.trisquel.org" || host == "packages.ubuntu.com" // flapping 502/504s
-                || host == "metacpan.org" // flapping 503/504s
+                || response.status == Http(429) || experimental_response.status == Http(429) // 429s
+                || experimental_response.status == Http(200) // flapping
+                || experimental_response.status == Timeout   // flapping
                 || response.status == LinkStatus::BadHttp // aiohttp specific failures (https://git.lighttpd.net/lighttpd/fcgi-cgi.git/snapshot/fcgi-cgi-0.2.2.tar.gz, http://www.fefe.de/dietlibc)
-            ;
+                || matches!(response.status, Http(500) | Http(501) | Http(502) | Http(503) | Http(504) | Http(200) | Timeout) && matches!(experimental_response.status, Http(500) | Http(501) | Http(502) | Http(503) | Http(504) | Http(200) | Timeout);
 
             if ignore_experiment {
             } else if response.status != experimental_response.status {
