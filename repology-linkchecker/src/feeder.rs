@@ -8,7 +8,7 @@ use chrono::{DateTime, Utc};
 use indoc::indoc;
 use metrics::{counter, gauge};
 use sqlx::{FromRow, PgPool};
-use tracing::{error, info};
+use tracing::{debug, error, info};
 
 use repology_common::LinkStatus;
 
@@ -128,7 +128,7 @@ impl Feeder {
         {
             Some((last_url.next_check, last_url.id))
         } else {
-            info!("restarting feeder loop");
+            debug!("restarting feeder loop");
             counter!("repology_linkchecker_feeder_loops_total").increment(1);
             None
         };
