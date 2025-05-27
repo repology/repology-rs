@@ -45,6 +45,8 @@ impl StatusChooser {
             DnsRefused => 2,
             DnsTimeout => 2,
             DnsIpv4MappedInAaaa => 2,
+            NonGlobalIpAddress => 2,
+            InvalidCharactersInHostname => 2,
             ConnectionRefused => 2,
             HostUnreachable => 2,
             ConnectionResetByPeer => 2,
@@ -167,6 +169,11 @@ impl ExtractStatus for hickory_resolver::ResolveError {
             }
             ProtoErrorKind::Timeout => {
                 chooser.push(LinkStatus::DnsTimeout);
+            }
+            ProtoErrorKind::Msg(message)
+                if message.starts_with("Label contains invalid characters") =>
+            {
+                chooser.push(LinkStatus::InvalidCharactersInHostname);
             }
             _ => {
                 error!(error = ?self, url, "unhandled hickory_resolver::proto::ProtoErrorKind variant");

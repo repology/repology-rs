@@ -177,7 +177,7 @@ where
         match resolver_cache.lookup(host).await {
             Ok(address) => {
                 if !address.is_global() {
-                    return Err(LinkStatus::DnsIpv4MappedInAaaa);
+                    return Err(LinkStatus::NonGlobalIpAddress);
                 }
 
                 let host_settings = hosts.get_settings(host);
