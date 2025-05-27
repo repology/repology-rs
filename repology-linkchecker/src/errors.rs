@@ -60,6 +60,7 @@ impl StatusChooser {
             SslCertificateSelfSigned => 2,
             SslCertificateSelfSignedInChain => 2,
             SslCertificateIncompleteChain => 2,
+            SslHandshakeFailure => 2,
         }
     }
 
@@ -233,8 +234,7 @@ impl ExtractStatus for rustls::AlertDescription {
         use rustls::AlertDescription::*;
         match self {
             HandshakeFailure => {
-                // XXX: we need more specific error code for it
-                chooser.push(LinkStatus::SslError);
+                chooser.push(LinkStatus::SslHandshakeFailure);
             }
             UnrecognisedName => {
                 chooser.push(LinkStatus::SslError);

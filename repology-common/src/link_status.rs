@@ -88,6 +88,7 @@ pub enum LinkStatus {
     SslCertificateSelfSigned = -503,
     SslCertificateSelfSignedInChain = -504,
     SslCertificateIncompleteChain = -505,
+    SslHandshakeFailure = -506,
 }
 
 impl LinkStatus {
@@ -139,23 +140,13 @@ impl LinkStatus {
         match code {
             code if code > 0 => Ok(Self::Http(code as u16)),
 
-            val if val == D::NotYetProcessed as i16 => {
-                Ok(Self::NotYetProcessed)
-            }
+            val if val == D::NotYetProcessed as i16 => Ok(Self::NotYetProcessed),
             val if val == D::Skipped as i16 => Ok(Self::Skipped),
             val if val == D::OutOfSample as i16 => Ok(Self::OutOfSample),
-            val if val == D::SatisfiedWithIpv6Success as i16 => {
-                Ok(Self::SatisfiedWithIpv6Success)
-            }
-            val if val == D::UnsupportedScheme as i16 => {
-                Ok(Self::UnsupportedScheme)
-            }
-            val if val == D::ProtocolDisabled as i16 => {
-                Ok(Self::ProtocolDisabled)
-            }
-            val if val == D::ProtocolDisabledForHost as i16 => {
-                Ok(Self::ProtocolDisabledForHost)
-            }
+            val if val == D::SatisfiedWithIpv6Success as i16 => Ok(Self::SatisfiedWithIpv6Success),
+            val if val == D::UnsupportedScheme as i16 => Ok(Self::UnsupportedScheme),
+            val if val == D::ProtocolDisabled as i16 => Ok(Self::ProtocolDisabled),
+            val if val == D::ProtocolDisabledForHost as i16 => Ok(Self::ProtocolDisabledForHost),
 
             val if val == D::Timeout as i16 => Ok(Self::Timeout),
             val if val == D::InvalidUrl as i16 => Ok(Self::InvalidUrl),
@@ -163,61 +154,40 @@ impl LinkStatus {
             val if val == D::UnknownError as i16 => Ok(Self::UnknownError),
 
             val if val == D::DnsError as i16 => Ok(Self::DnsError),
-            val if val == D::DnsDomainNotFound as i16 => {
-                Ok(Self::DnsDomainNotFound)
-            }
-            val if val == D::DnsNoAddressRecord as i16 => {
-                Ok(Self::DnsNoAddressRecord)
-            }
+            val if val == D::DnsDomainNotFound as i16 => Ok(Self::DnsDomainNotFound),
+            val if val == D::DnsNoAddressRecord as i16 => Ok(Self::DnsNoAddressRecord),
             val if val == D::DnsRefused as i16 => Ok(Self::DnsRefused),
             val if val == D::DnsTimeout as i16 => Ok(Self::DnsTimeout),
-            val if val == D::DnsIpv4MappedInAaaa as i16 => { Ok(Self::DnsIpv4MappedInAaaa) }
-            val if val == D::NonGlobalIpAddress as i16 => { Ok(Self::NonGlobalIpAddress) }
-            val if val == D::InvalidCharactersInHostname as i16 => { Ok(Self::InvalidCharactersInHostname) }
-
-            val if val == D::ConnectionRefused as i16 => {
-                Ok(Self::ConnectionRefused)
-            }
-            val if val == D::HostUnreachable as i16 => {
-                Ok(Self::HostUnreachable)
-            }
-            val if val == D::ConnectionResetByPeer as i16 => {
-                Ok(Self::ConnectionResetByPeer)
-            }
-            val if val == D::NetworkUnreachable as i16 => {
-                Ok(Self::NetworkUnreachable)
-            }
-            val if val == D::ServerDisconnected as i16 => {
-                Ok(Self::ServerDisconnected)
-            }
-            val if val == D::ConnectionAborted as i16 => {
-                Ok(Self::ConnectionAborted)
-            }
-            val if val == D::AddressNotAvailable as i16 => {
-                Ok(Self::AddressNotAvailable)
+            val if val == D::DnsIpv4MappedInAaaa as i16 => Ok(Self::DnsIpv4MappedInAaaa),
+            val if val == D::NonGlobalIpAddress as i16 => Ok(Self::NonGlobalIpAddress),
+            val if val == D::InvalidCharactersInHostname as i16 => {
+                Ok(Self::InvalidCharactersInHostname)
             }
 
-            val if val == D::TooManyRedirects as i16 => {
-                Ok(Self::TooManyRedirects)
-            }
+            val if val == D::ConnectionRefused as i16 => Ok(Self::ConnectionRefused),
+            val if val == D::HostUnreachable as i16 => Ok(Self::HostUnreachable),
+            val if val == D::ConnectionResetByPeer as i16 => Ok(Self::ConnectionResetByPeer),
+            val if val == D::NetworkUnreachable as i16 => Ok(Self::NetworkUnreachable),
+            val if val == D::ServerDisconnected as i16 => Ok(Self::ServerDisconnected),
+            val if val == D::ConnectionAborted as i16 => Ok(Self::ConnectionAborted),
+            val if val == D::AddressNotAvailable as i16 => Ok(Self::AddressNotAvailable),
+
+            val if val == D::TooManyRedirects as i16 => Ok(Self::TooManyRedirects),
             val if val == D::BadHttp as i16 => Ok(Self::BadHttp),
 
             val if val == D::SslError as i16 => Ok(Self::SslError),
-            val if val == D::SslCertificateHasExpired as i16 => {
-                Ok(Self::SslCertificateHasExpired)
-            }
+            val if val == D::SslCertificateHasExpired as i16 => Ok(Self::SslCertificateHasExpired),
             val if val == D::SslCertificateHostnameMismatch as i16 => {
                 Ok(Self::SslCertificateHostnameMismatch)
             }
-            val if val == D::SslCertificateSelfSigned as i16 => {
-                Ok(Self::SslCertificateSelfSigned)
-            }
+            val if val == D::SslCertificateSelfSigned as i16 => Ok(Self::SslCertificateSelfSigned),
             val if val == D::SslCertificateSelfSignedInChain as i16 => {
                 Ok(Self::SslCertificateSelfSignedInChain)
             }
             val if val == D::SslCertificateIncompleteChain as i16 => {
                 Ok(Self::SslCertificateIncompleteChain)
             }
+            val if val == D::SslHandshakeFailure as i16 => Ok(Self::SslHandshakeFailure),
 
             _ => Err(ParseLinkStatusError::BadCode),
         }
@@ -271,6 +241,7 @@ impl LinkStatus {
             "SslCertificateSelfSigned" => Ok(Self::SslCertificateSelfSigned),
             "SslCertificateSelfSignedInChain" => Ok(Self::SslCertificateSelfSignedInChain),
             "SslCertificateIncompleteChain" => Ok(Self::SslCertificateIncompleteChain),
+            "SslHandshakeFailure" => Ok(Self::SslHandshakeFailure),
 
             _ => Err(ParseLinkStatusError::BadErrorName),
         }

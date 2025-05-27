@@ -41,6 +41,7 @@
 		{%- when LinkStatus::SslCertificateSelfSigned %}SSL error: self signed certificate
 		{%- when LinkStatus::SslCertificateSelfSignedInChain %}SSL error: self signed certificate in certificate chain
 		{%- when LinkStatus::SslCertificateIncompleteChain %}SSL error: incomplete certificate chain
+		{%- when LinkStatus::SslHandshakeFailure %}SSL handshake failure
 	{%- endmatch -%}
 {%- endmacro -%}
 
