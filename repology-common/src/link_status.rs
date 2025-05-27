@@ -133,86 +133,85 @@ impl LinkStatus {
     }
 
     pub fn from_code(code: i16) -> Result<Self, ParseLinkStatusError> {
+        use LinkStatusDiscriminants as D;
         match code {
             code if code > 0 => Ok(Self::Http(code as u16)),
 
-            val if val == LinkStatusDiscriminants::NotYetProcessed as i16 => {
+            val if val == D::NotYetProcessed as i16 => {
                 Ok(Self::NotYetProcessed)
             }
-            val if val == LinkStatusDiscriminants::Skipped as i16 => Ok(Self::Skipped),
-            val if val == LinkStatusDiscriminants::OutOfSample as i16 => Ok(Self::OutOfSample),
-            val if val == LinkStatusDiscriminants::SatisfiedWithIpv6Success as i16 => {
+            val if val == D::Skipped as i16 => Ok(Self::Skipped),
+            val if val == D::OutOfSample as i16 => Ok(Self::OutOfSample),
+            val if val == D::SatisfiedWithIpv6Success as i16 => {
                 Ok(Self::SatisfiedWithIpv6Success)
             }
-            val if val == LinkStatusDiscriminants::UnsupportedScheme as i16 => {
+            val if val == D::UnsupportedScheme as i16 => {
                 Ok(Self::UnsupportedScheme)
             }
-            val if val == LinkStatusDiscriminants::ProtocolDisabled as i16 => {
+            val if val == D::ProtocolDisabled as i16 => {
                 Ok(Self::ProtocolDisabled)
             }
-            val if val == LinkStatusDiscriminants::ProtocolDisabledForHost as i16 => {
+            val if val == D::ProtocolDisabledForHost as i16 => {
                 Ok(Self::ProtocolDisabledForHost)
             }
 
-            val if val == LinkStatusDiscriminants::Timeout as i16 => Ok(Self::Timeout),
-            val if val == LinkStatusDiscriminants::InvalidUrl as i16 => Ok(Self::InvalidUrl),
-            val if val == LinkStatusDiscriminants::Blacklisted as i16 => Ok(Self::Blacklisted),
-            val if val == LinkStatusDiscriminants::UnknownError as i16 => Ok(Self::UnknownError),
+            val if val == D::Timeout as i16 => Ok(Self::Timeout),
+            val if val == D::InvalidUrl as i16 => Ok(Self::InvalidUrl),
+            val if val == D::Blacklisted as i16 => Ok(Self::Blacklisted),
+            val if val == D::UnknownError as i16 => Ok(Self::UnknownError),
 
-            val if val == LinkStatusDiscriminants::DnsError as i16 => Ok(Self::DnsError),
-            val if val == LinkStatusDiscriminants::DnsDomainNotFound as i16 => {
+            val if val == D::DnsError as i16 => Ok(Self::DnsError),
+            val if val == D::DnsDomainNotFound as i16 => {
                 Ok(Self::DnsDomainNotFound)
             }
-            val if val == LinkStatusDiscriminants::DnsNoAddressRecord as i16 => {
+            val if val == D::DnsNoAddressRecord as i16 => {
                 Ok(Self::DnsNoAddressRecord)
             }
-            val if val == LinkStatusDiscriminants::DnsRefused as i16 => Ok(Self::DnsRefused),
-            val if val == LinkStatusDiscriminants::DnsTimeout as i16 => Ok(Self::DnsTimeout),
-            val if val == LinkStatusDiscriminants::DnsIpv4MappedInAaaa as i16 => {
-                Ok(Self::DnsIpv4MappedInAaaa)
-            }
+            val if val == D::DnsRefused as i16 => Ok(Self::DnsRefused),
+            val if val == D::DnsTimeout as i16 => Ok(Self::DnsTimeout),
+            val if val == D::DnsIpv4MappedInAaaa as i16 => { Ok(Self::DnsIpv4MappedInAaaa) }
 
-            val if val == LinkStatusDiscriminants::ConnectionRefused as i16 => {
+            val if val == D::ConnectionRefused as i16 => {
                 Ok(Self::ConnectionRefused)
             }
-            val if val == LinkStatusDiscriminants::HostUnreachable as i16 => {
+            val if val == D::HostUnreachable as i16 => {
                 Ok(Self::HostUnreachable)
             }
-            val if val == LinkStatusDiscriminants::ConnectionResetByPeer as i16 => {
+            val if val == D::ConnectionResetByPeer as i16 => {
                 Ok(Self::ConnectionResetByPeer)
             }
-            val if val == LinkStatusDiscriminants::NetworkUnreachable as i16 => {
+            val if val == D::NetworkUnreachable as i16 => {
                 Ok(Self::NetworkUnreachable)
             }
-            val if val == LinkStatusDiscriminants::ServerDisconnected as i16 => {
+            val if val == D::ServerDisconnected as i16 => {
                 Ok(Self::ServerDisconnected)
             }
-            val if val == LinkStatusDiscriminants::ConnectionAborted as i16 => {
+            val if val == D::ConnectionAborted as i16 => {
                 Ok(Self::ConnectionAborted)
             }
-            val if val == LinkStatusDiscriminants::AddressNotAvailable as i16 => {
+            val if val == D::AddressNotAvailable as i16 => {
                 Ok(Self::AddressNotAvailable)
             }
 
-            val if val == LinkStatusDiscriminants::TooManyRedirects as i16 => {
+            val if val == D::TooManyRedirects as i16 => {
                 Ok(Self::TooManyRedirects)
             }
-            val if val == LinkStatusDiscriminants::BadHttp as i16 => Ok(Self::BadHttp),
+            val if val == D::BadHttp as i16 => Ok(Self::BadHttp),
 
-            val if val == LinkStatusDiscriminants::SslError as i16 => Ok(Self::SslError),
-            val if val == LinkStatusDiscriminants::SslCertificateHasExpired as i16 => {
+            val if val == D::SslError as i16 => Ok(Self::SslError),
+            val if val == D::SslCertificateHasExpired as i16 => {
                 Ok(Self::SslCertificateHasExpired)
             }
-            val if val == LinkStatusDiscriminants::SslCertificateHostnameMismatch as i16 => {
+            val if val == D::SslCertificateHostnameMismatch as i16 => {
                 Ok(Self::SslCertificateHostnameMismatch)
             }
-            val if val == LinkStatusDiscriminants::SslCertificateSelfSigned as i16 => {
+            val if val == D::SslCertificateSelfSigned as i16 => {
                 Ok(Self::SslCertificateSelfSigned)
             }
-            val if val == LinkStatusDiscriminants::SslCertificateSelfSignedInChain as i16 => {
+            val if val == D::SslCertificateSelfSignedInChain as i16 => {
                 Ok(Self::SslCertificateSelfSignedInChain)
             }
-            val if val == LinkStatusDiscriminants::SslCertificateIncompleteChain as i16 => {
+            val if val == D::SslCertificateIncompleteChain as i16 => {
                 Ok(Self::SslCertificateIncompleteChain)
             }
 
