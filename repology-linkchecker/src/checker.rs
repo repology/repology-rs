@@ -146,8 +146,13 @@ where
                 || response.status == Http(429) || experimental_response.status == Http(429) // 429s
                 || experimental_response.status == Http(200) // flapping
                 || experimental_response.status == Timeout   // flapping
-                || response.status == LinkStatus::BadHttp // aiohttp specific failures (https://git.lighttpd.net/lighttpd/fcgi-cgi.git/snapshot/fcgi-cgi-0.2.2.tar.gz, http://www.fefe.de/dietlibc)
-                || matches!(response.status, Http(500) | Http(501) | Http(502) | Http(503) | Http(504) | Http(200) | Timeout) && matches!(experimental_response.status, Http(500) | Http(501) | Http(502) | Http(503) | Http(504) | Http(200) | Timeout);
+                || response.status == BadHttp // aiohttp specific failures (https://git.lighttpd.net/lighttpd/fcgi-cgi.git/snapshot/fcgi-cgi-0.2.2.tar.gz, http://www.fefe.de/dietlibc)
+                || matches!(response.status, Http(500) | Http(501) | Http(502) | Http(503) | Http(504) | Http(200) | Timeout) && matches!(experimental_response.status, Http(500) | Http(501) | Http(502) | Http(503) | Http(504) | Http(200) | Timeout)
+                || response.status == SslError && experimental_response.status == SslHandshakeFailure // same error named differently in backends
+                || response.status == ServerDisconnected && experimental_response.status == ConnectionResetByPeer // same error named differently in backends
+                || response.status == SslCertificateIncompleteChain && experimental_response.status == CertificateUnknownIssuer // same error named differently in backends
+                // leave semicolon on the next line for convenience
+            ;
 
             if ignore_experiment {
             } else if response.status != experimental_response.status {
