@@ -9,6 +9,7 @@ use std::time::Duration;
 use anyhow::{Context, Result};
 use clap::Parser;
 use serde::Deserialize;
+use url::Url;
 
 use crate::hosts::HostSettings;
 
@@ -62,6 +63,10 @@ pub struct CliArgs {
     /// given directory with daily rotation and 14 kept rotated files.
     #[arg(long, value_name = "PATH", help_heading = "Logging")]
     pub log_directory: Option<PathBuf>,
+
+    /// Loki log collector URL
+    #[arg(long, value_name = "URL", help_heading = "Logging")]
+    pub loki_url: Option<Url>,
 
     /// PostgreSQL database DSN
     ///
@@ -235,6 +240,7 @@ impl HostSettings {
 struct FileConfig {
     dsn: Option<String>,
     log_directory: Option<PathBuf>,
+    loki_url: Option<Url>,
     prometheus_export: Option<SocketAddr>,
     repology_host: Option<String>,
     hosts: HashMap<String, HostSettingsPatch>,
@@ -259,6 +265,7 @@ struct FileConfig {
 pub struct Config {
     pub dsn: String,
     pub log_directory: Option<PathBuf>,
+    pub loki_url: Option<Url>,
     pub prometheus_export: Option<SocketAddr>,
     pub repology_host: String,
     pub default_host_settings: HostSettings,
@@ -344,6 +351,7 @@ impl Config {
         Ok(Config {
             dsn,
             log_directory: args.log_directory.or(config.log_directory),
+            loki_url: args.loki_url.or(config.loki_url),
             prometheus_export: args.prometheus_export.or(config.prometheus_export),
             repology_host,
             default_host_settings,
