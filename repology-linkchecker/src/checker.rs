@@ -290,6 +290,24 @@ where
         }
     }
 
+    fn fill_trivial_statuses(
+        &self,
+        status: LinkStatus,
+    ) -> (LinkStatusWithRedirect, LinkStatusWithRedirect) {
+        (
+            if self.disable_ipv4 {
+                LinkStatus::ProtocolDisabled.into()
+            } else {
+                status.into()
+            },
+            if self.disable_ipv6 {
+                LinkStatus::ProtocolDisabled.into()
+            } else {
+                status.into()
+            },
+        )
+    }
+
     pub async fn check(&mut self, task: CheckTask) -> CheckResult {
         let check_start = Instant::now();
         let mut host_settings = self.hosts.get_default_settings();
@@ -332,55 +350,17 @@ where
                 //  hg+http   |        1
                 //  git+http  |        1
                 //  irc       |        1
-                ipv4_status = if self.disable_ipv4 {
-                    LinkStatus::ProtocolDisabled.into()
-                } else {
-                    LinkStatus::UnsupportedScheme.into()
-                };
-                ipv6_status = if self.disable_ipv6 {
-                    LinkStatus::ProtocolDisabled.into()
-                } else {
-                    LinkStatus::UnsupportedScheme.into()
-                };
-                counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "InvalidScheme").increment(1);
+                (ipv4_status, ipv6_status) =
+                    self.fill_trivial_statuses(LinkStatus::UnsupportedScheme);
             } else if host_settings.skip {
-                ipv4_status = if self.disable_ipv4 {
-                    LinkStatus::ProtocolDisabled.into()
-                } else {
-                    LinkStatus::Skipped.into()
-                };
-                ipv6_status = if self.disable_ipv6 {
-                    LinkStatus::ProtocolDisabled.into()
-                } else {
-                    LinkStatus::Skipped.into()
-                };
-                counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Skipped").increment(1);
+                (ipv4_status, ipv6_status) = self.fill_trivial_statuses(LinkStatus::Skipped);
             } else if task.priority == CheckPriority::Generated
                 && task.id % 100 >= host_settings.generated_sampling_percentage as i32
             {
-                ipv4_status = if self.disable_ipv4 {
-                    LinkStatus::ProtocolDisabled.into()
-                } else {
-                    LinkStatus::OutOfSample.into()
-                };
-                ipv6_status = if self.disable_ipv6 {
-                    LinkStatus::ProtocolDisabled.into()
-                } else {
-                    LinkStatus::OutOfSample.into()
-                };
+                (ipv4_status, ipv6_status) = self.fill_trivial_statuses(LinkStatus::OutOfSample);
                 recheck_case = RecheckCase::Unsampled;
-                counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Unsampled").increment(1);
             } else if host_settings.blacklist {
-                ipv4_status = if self.disable_ipv4 {
-                    LinkStatus::ProtocolDisabled.into()
-                } else {
-                    LinkStatus::Blacklisted.into()
-                };
-                ipv6_status = if self.disable_ipv6 {
-                    LinkStatus::ProtocolDisabled.into()
-                } else {
-                    LinkStatus::Blacklisted.into()
-                };
+                (ipv4_status, ipv6_status) = self.fill_trivial_statuses(LinkStatus::Blacklisted);
             } else {
                 let mut skip_ipv4 = false;
 
@@ -419,20 +399,9 @@ where
 
                 histogram!("repology_linkchecker_checker_check_duration_seconds")
                     .record((Instant::now() - check_start).as_secs_f64());
-                counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "Checked").increment(1);
             }
         } else {
-            ipv4_status = if self.disable_ipv4 {
-                LinkStatus::ProtocolDisabled.into()
-            } else {
-                LinkStatus::InvalidUrl.into()
-            };
-            ipv6_status = if self.disable_ipv6 {
-                LinkStatus::ProtocolDisabled.into()
-            } else {
-                LinkStatus::InvalidUrl.into()
-            };
-            counter!("repology_linkchecker_checker_processed_total", "priority" => task.priority.as_str(), "class" => "InvalidUrl").increment(1);
+            (ipv4_status, ipv6_status) = self.fill_trivial_statuses(LinkStatus::InvalidUrl);
         };
 
         let now = Utc::now();
@@ -461,9 +430,18 @@ where
                 .record((now - last_checked).as_seconds_f64());
         }
 
+        fn format_tristate_success(value: Option<bool>) -> &'static str {
+            match value {
+                Some(true) => "true",
+                Some(false) => "false",
+                None => "-",
+            }
+        }
+
         counter!(
             "repology_linkchecker_checker_statuses_total",
             "protocol" => "ipv4",
+            "success" => format_tristate_success(check_result.ipv4.status.is_success()),
             "status" => check_result.ipv4.status.to_string(),
             "priority" => task.priority.as_str()
         )
@@ -472,6 +450,7 @@ where
         counter!(
             "repology_linkchecker_checker_statuses_total",
             "protocol" => "ipv6",
+            "success" => format_tristate_success(check_result.ipv6.status.is_success()),
             "status" => check_result.ipv6.status.to_string(),
             "priority" => task.priority.as_str()
         )
