@@ -125,7 +125,7 @@ where
 
         let experiment_prob: f32 = match response.status {
             LinkStatus::Http(429) => 0.0,
-            LinkStatus::Http(200) => 0.001,
+            LinkStatus::Http(200) => 0.002,
             LinkStatus::Http(403)
             | LinkStatus::Http(404)
             | LinkStatus::Http(500)
