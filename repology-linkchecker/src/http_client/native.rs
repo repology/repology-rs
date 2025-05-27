@@ -78,6 +78,12 @@ impl HttpClient for NativeHttpClient {
                     None
                 };
 
+                if let Some(server) = response.headers().get("server")
+                    && server == "cloudflare"
+                {
+                    tracing::info!(status = response.status().as_u16(), "cloudflare response");
+                }
+
                 HttpResponse {
                     status: LinkStatus::Http(response.status().as_u16()),
                     location,
