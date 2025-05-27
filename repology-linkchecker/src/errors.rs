@@ -215,6 +215,10 @@ impl ExtractStatus for rustls::Error {
             Other(other_error) => {
                 other_error.extract_status(chooser, url);
             }
+            InvalidMessage(..) => {
+                // many error kinds, but I don't think we need specific handling for these
+                chooser.push(LinkStatus::SslError);
+            }
             _ => {
                 chooser.push(LinkStatus::SslError);
                 error!(error = ?self, url, "unhandled rustls::Error variant");
