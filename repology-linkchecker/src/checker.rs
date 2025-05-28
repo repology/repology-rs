@@ -143,6 +143,8 @@ where
             use LinkStatus::*;
             let ignore_experiment = host == "code.google.com" // flapping 500's
                 || host == "pyropus.ca." // native checker is correct
+                || host == "mirrors.nav.ro" // ConnectionRefused for python, not worth investigating
+                || host == "linkedin.com" || host == "www.linkedin.com" // http 999 for native, confirmed with curl; 3xx/4xx codes for python, not worth investigating
                 || response.status == Http(429) || experimental_response.status == Http(429) // 429s
                 || experimental_response.status == Http(200) // flapping
                 || experimental_response.status == Timeout   // flapping
