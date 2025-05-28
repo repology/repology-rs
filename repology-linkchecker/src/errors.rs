@@ -29,39 +29,40 @@ impl StatusChooser {
                 unreachable!("skipped status should not be encountered in status resolution");
             }
 
-            // generic error categories
+            UnknownError => 0,
+
             DnsError => 1,
             SslError => 1,
             BadHttp => 1,
-            UnknownError => 0,
 
-            // precise errors
-            Http(..) => 2,
-            Timeout => 2,
-            InvalidUrl => 2,
-            Blacklisted => 2,
-            DnsDomainNotFound => 2,
-            DnsNoAddressRecord => 2,
-            DnsRefused => 2,
-            DnsTimeout => 2,
-            DnsIpv4MappedInAaaa => 2,
-            NonGlobalIpAddress => 2,
-            InvalidCharactersInHostname => 2,
-            ConnectionRefused => 2,
-            HostUnreachable => 2,
-            ConnectionResetByPeer => 2,
-            NetworkUnreachable => 2,
-            ServerDisconnected => 2,
-            ConnectionAborted => 2,
-            AddressNotAvailable => 2,
-            TooManyRedirects => 2,
-            SslCertificateHasExpired => 2,
-            SslCertificateHostnameMismatch => 2,
-            SslCertificateSelfSigned => 2,
-            SslCertificateSelfSignedInChain => 2,
-            SslCertificateIncompleteChain => 2,
-            SslHandshakeFailure => 2,
-            CertificateUnknownIssuer => 2,
+            InvalidCertificate => 2,
+
+            Http(..) => 3,
+            Timeout => 3,
+            InvalidUrl => 3,
+            Blacklisted => 3,
+            DnsDomainNotFound => 3,
+            DnsNoAddressRecord => 3,
+            DnsRefused => 3,
+            DnsTimeout => 3,
+            DnsIpv4MappedInAaaa => 3,
+            NonGlobalIpAddress => 3,
+            InvalidCharactersInHostname => 3,
+            ConnectionRefused => 3,
+            HostUnreachable => 3,
+            ConnectionResetByPeer => 3,
+            NetworkUnreachable => 3,
+            ServerDisconnected => 3,
+            ConnectionAborted => 3,
+            AddressNotAvailable => 3,
+            TooManyRedirects => 3,
+            SslCertificateHasExpired => 3,
+            SslCertificateHostnameMismatch => 3,
+            SslCertificateSelfSigned => 3,
+            SslCertificateSelfSignedInChain => 3,
+            SslCertificateIncompleteChain => 3,
+            SslHandshakeFailure => 3,
+            CertificateUnknownIssuer => 3,
         }
     }
 
@@ -269,10 +270,11 @@ impl ExtractStatus for rustls::CertificateError {
                 chooser.push(LinkStatus::SslCertificateHostnameMismatch);
             }
             Other(other_error) => {
+                chooser.push(LinkStatus::InvalidCertificate);
                 other_error.extract_status(chooser, url);
             }
             _ => {
-                chooser.push(LinkStatus::SslError);
+                chooser.push(LinkStatus::InvalidCertificate);
                 error!(error = ?self, url, "unhandled rustls::CertificateError variant");
             }
         }
@@ -310,8 +312,11 @@ impl ExtractStatus for webpki::Error {
             CaUsedAsEndEntity => {
                 chooser.push(LinkStatus::SslCertificateSelfSigned);
             }
+            UnsupportedCertVersion => {
+                chooser.push(LinkStatus::InvalidCertificate);
+            }
             _ => {
-                chooser.push(LinkStatus::SslError);
+                chooser.push(LinkStatus::InvalidCertificate);
                 error!(error = ?self, url, "unhandled webpki::Error variant");
             }
         }
