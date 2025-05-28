@@ -141,7 +141,7 @@ impl Report {
                             }
                         }
                         .form-group {
-                            textarea .textarea id="reply" name="reply" rows="2" placeholder="Reply" {
+                            textarea .textarea id={"reply_" (self.id)} name="reply" rows="2" placeholder="Reply" {
                                 (self.reply.as_deref().unwrap_or_default())
                             }
                         }
