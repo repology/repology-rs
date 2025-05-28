@@ -52,8 +52,6 @@ impl HttpClient for NativeHttpClient {
             .build()
             .expect("expected to always be able to build reqwest client");
 
-        let log_url = request.url.clone();
-
         match client
             .request(
                 match request.method {
@@ -79,16 +77,6 @@ impl HttpClient for NativeHttpClient {
                 } else {
                     None
                 };
-
-                if let Some(server) = response.headers().get("server")
-                    && server == "cloudflare"
-                {
-                    tracing::info!(
-                        url = log_url,
-                        status = response.status().as_u16(),
-                        "cloudflare response"
-                    );
-                }
 
                 HttpResponse {
                     status: LinkStatus::Http(response.status().as_u16()),
