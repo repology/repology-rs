@@ -34,6 +34,7 @@
 "gitlab.com".delay = 1
 "hydra.nixos.org".generated_sampling_percentage = 1
 "kojipkgs.fedoraproject.org".generated_sampling_percentage = 10
+"lib.rs".disable_head = true                # https://gitlab.com/lib.rs/main/-/issues/209
 "madoguchi.fyralabs.com".delay = 5          # 429s @ 3 sec
 "marketplace.visualstudio.com".disable_head = true
 "mran.revolutionanalytics.com".recheck_manual = 14
