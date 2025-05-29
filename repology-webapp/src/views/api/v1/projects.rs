@@ -8,20 +8,52 @@ use axum::extract::{Path, Query, State};
 use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
+use serde::Serialize;
 use sqlx::FromRow;
+
+use repology_common::PackageStatus;
 
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::views::projects::projects::QueryParams;
 use crate::views::projects::query::{ProjectsFilter, query_listing_projects};
 
-use super::common::ApiV1Package;
+#[derive(Serialize, FromRow)]
+pub struct ApiPackage {
+    pub repo: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub subrepo: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub srcname: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub binname: Option<String>,
+    pub visiblename: String,
+
+    pub version: String,
+    //#[serde(skip_serializing_if = "Option::is_none")]  // Note: this is commented
+    // for bug-to-bug compatibility with python webapp
+    pub origversion: Option<String>,
+
+    pub status: PackageStatus,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub summary: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub maintainers: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub licenses: Vec<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub categories: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub vulnerable: Option<bool>,
+}
 
 #[derive(FromRow)]
-struct ApiV1PackageWithEffname {
+struct ApiPackageWithEffname {
     pub effname: String,
     #[sqlx(flatten)]
-    pub package: ApiV1Package,
+    pub package: ApiPackage,
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
@@ -61,7 +93,7 @@ async fn api_v1_projects_generic(
 
     let projects = query_listing_projects(&state.pool, &filter).await?;
 
-    let packages: Vec<ApiV1PackageWithEffname> = sqlx::query_as(indoc! {"
+    let packages: Vec<ApiPackageWithEffname> = sqlx::query_as(indoc! {"
         SELECT
             effname,
             repo,
@@ -89,7 +121,7 @@ async fn api_v1_projects_generic(
     .fetch_all(&state.pool)
     .await?;
 
-    let mut project_packages: HashMap<String, Vec<ApiV1Package>> = Default::default();
+    let mut project_packages: HashMap<String, Vec<ApiPackage>> = Default::default();
 
     packages.into_iter().for_each(|package| {
         project_packages

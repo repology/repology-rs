@@ -23,6 +23,7 @@
     "repo": "freebsd",
     "srcname": "www/firefox",
     "binname": "firefox",
+    "binnames": ["firefox"],
     "visiblename": "www/firefox",
     "version": "50.1.0",
     "origversion": "50.1.0_4,1",
@@ -38,15 +39,17 @@
 <dl class="dl-horizontal">
 	<dt>repo</dt><dd>name of repository for this package</dd>
 	<dt>subrepo</dt><dd>name of subrepository (if applicable; for example, <em>main</em> or <em>contrib</em> or <em>non-free</em> for Debian)</dd>
-	<dt>srcname, binname</dt><dd>package name(s) as used in repository - source package name and/or binary package name, whichever is applicable (all fields are optional)</dd>
-	<dt>visiblename</dt><dd>package name as shown to the user by Repology</dd>
-	<dt>version</dt><dd>package version (sanitized, as shown by Repology) </dd>
-	<dt>origversion</dt><dd>package version as in repository</dd>
-	<dt>status</dt><dd>package status, one of <em>newest</em>, <em>devel</em>, <em>unique</em>, <em>outdated</em>, <em>legacy</em>, <em>rolling</em>, <em>noscheme</em>, <em>incorrect</em>, <em>untrusted</em>, <em>ignored</em></dd>
-	<dt>summary</dt><dd>one-line description of the package</dd>
-	<dt>categories</dt><dd>list of package categories</dd>
-	<dt>licenses</dt><dd>list of package licenses</dd>
-	<dt>maintainers</dt><dd>list of package maintainers</dd>
+	<dt>srcname</dt><dd>source package name as used in repository, if applicable.</dd>
+	<dt>binname</dt><dd>binary package name as used in repository, if applicable.</dd>
+	<dt>binnames</dt><dd>binary package names for a source package, if applicable. Only returned by <a href="#single_project">single project</a> endpoint.</dd>
+	<dt>visiblename</dt><dd>package name as shown to the user by Repology.</dd>
+	<dt>version</dt><dd>package version (sanitized, as shown by Repology).</dd>
+	<dt>origversion</dt><dd>package version as in repository.</dd>
+	<dt>status</dt><dd>package status, one of <em>newest</em>, <em>devel</em>, <em>unique</em>, <em>outdated</em>, <em>legacy</em>, <em>rolling</em>, <em>noscheme</em>, <em>incorrect</em>, <em>untrusted</em>, <em>ignored</em>.</dd>
+	<dt>summary</dt><dd>one-line description of the package.</dd>
+	<dt>categories</dt><dd>list of package categories.</dd>
+	<dt>licenses</dt><dd>list of package licenses.</dd>
+	<dt>maintainers</dt><dd>list of package maintainers.</dd>
 </dl>
 
 <p>
@@ -57,7 +60,7 @@ Mandatory fields are <b>repo</b> and <b>version</b>, all other fields are option
 
 <p>API allows to request <em>packages</em> for a single <em>project</em> or for a range of <em>projects</em>.</p>
 
-<h3>Single project</h3>
+<h3 id="single_project">Single project</h3>
 
 <p>Get list of <em>packages</em> for specific <em>project</em> (here, firefox):</p>
 <pre>
