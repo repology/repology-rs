@@ -48,6 +48,7 @@ impl StatusChooser {
             DnsIpv4MappedInAaaa => 3,
             NonGlobalIpAddress => 3,
             InvalidCharactersInHostname => 3,
+            InvalidHostname => 3,
             ConnectionRefused => 3,
             HostUnreachable => 3,
             ConnectionResetByPeer => 3,
@@ -177,6 +178,9 @@ impl ExtractStatus for hickory_resolver::ResolveError {
                 if message.starts_with("Label contains invalid characters") =>
             {
                 chooser.push(LinkStatus::InvalidCharactersInHostname);
+            }
+            ProtoErrorKind::Msg(message) if message.starts_with("Malformed label") => {
+                chooser.push(LinkStatus::InvalidHostname);
             }
             _ => {
                 error!(error = ?self, url, "unhandled hickory_resolver::proto::ProtoErrorKind variant");

@@ -67,6 +67,7 @@ pub enum LinkStatus {
     DnsIpv4MappedInAaaa = -205, // XXX: rename this into NonGlobalIpAddress
     NonGlobalIpAddress = -206,
     InvalidCharactersInHostname = -207,
+    InvalidHostname = -208,
 
     // Connection errors
     ConnectionRefused = -300,
@@ -165,6 +166,7 @@ impl LinkStatus {
             val if val == D::InvalidCharactersInHostname as i16 => {
                 Ok(Self::InvalidCharactersInHostname)
             }
+            val if val == D::InvalidHostname as i16 => Ok(Self::InvalidHostname),
 
             val if val == D::ConnectionRefused as i16 => Ok(Self::ConnectionRefused),
             val if val == D::HostUnreachable as i16 => Ok(Self::HostUnreachable),
@@ -227,6 +229,7 @@ impl LinkStatus {
             "DnsIpv4MappedInAaaa" => Ok(Self::DnsIpv4MappedInAaaa),
             "NonGlobalIpAddress" => Ok(Self::NonGlobalIpAddress),
             "InvalidCharactersInHostname" => Ok(Self::InvalidCharactersInHostname),
+            "InvalidHostname" => Ok(Self::InvalidHostname),
 
             "ConnectionRefused" => Ok(Self::ConnectionRefused),
             "HostUnreachable" => Ok(Self::HostUnreachable),

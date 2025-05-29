@@ -23,6 +23,7 @@
 		{%- when LinkStatus::DnsIpv4MappedInAaaa %}DNS error: IPv4-mapped address in AAAA
 		{%- when LinkStatus::NonGlobalIpAddress %}DNS error: domain maps to non-global IP address
 		{%- when LinkStatus::InvalidCharactersInHostname %}DNS error: invalid charactars in hostname
+		{%- when LinkStatus::InvalidHostname %}DNS error: invalid hostname
 
 		{%- when LinkStatus::ConnectionRefused %}connection refused
 		{%- when LinkStatus::HostUnreachable %}no route to host
