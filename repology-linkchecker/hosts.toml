@@ -57,6 +57,7 @@
 
 # Blacklist (domain for sale, overtaken, spam etc.)
 # This list is |sort friendly, please keep sorted
+"afflib.org".blacklist = true
 "antigrain.com".blacklist = true
 "aseman.co".blacklist = true
 "astroid.org".blacklist = true
