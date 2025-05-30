@@ -146,6 +146,8 @@ where
                 || host == "mirrors.nav.ro" // ConnectionRefused for python, not worth investigating
                 || host == "linkedin.com" || host.ends_with(".linkedin.com") // http 999 for native, confirmed with curl; 3xx/4xx codes for python, not worth investigating
                 || host == "zdoom.org" || host == "www.zdoom.org" // ServerDisconnected from python, ok from native
+                || host == "gnu.org" || host == "www.gnu.org" // flapping ConnectionRefused
+                || request.url.contains("%%") // https://metacpan.org/release/%%7Bdist%7D: probably an invalid url, but native checker handles in
                 || response.status == Http(429) || experimental_response.status == Http(429) // 429s
                 || experimental_response.status == Http(200) // flapping
                 || experimental_response.status == Timeout   // flapping
@@ -162,7 +164,7 @@ where
                     && matches!(experimental_response.status, ServerDisconnected|ConnectionResetByPeer)
                 // expected discrepancies due to different ssl backends
                 || matches!(response.status, SslCertificateIncompleteChain|SslCertificateSelfSigned|SslCertificateSelfSignedInChain|SslCertificateHostnameMismatch)
-                    && matches!(experimental_response.status, CertificateUnknownIssuer|SslCertificateHasExpired)
+                    && matches!(experimental_response.status, CertificateUnknownIssuer|SslCertificateHasExpired|InvalidCertificate)
                 // leave semicolon on the next line for convenience
             ;
 
