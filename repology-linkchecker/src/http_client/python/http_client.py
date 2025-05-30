@@ -153,12 +153,13 @@ def classify_exception(e: BaseException, url: str) -> str:
 class HttpResponse:
     status: str
     location: Optional[str] = None
+    is_cloudflare: bool = False
 
     @staticmethod
     def from_http_response(
         url: str, response: aiohttp.ClientResponse
     ) -> "HttpResponse":
-        return HttpResponse(str(response.status), response.headers.get("Location"))
+        return HttpResponse(str(response.status), response.headers.get("Location"), response.headers.get("server") == "cloudflare")
 
     @staticmethod
     def from_exception(url: str, exception: Exception) -> "HttpResponse":

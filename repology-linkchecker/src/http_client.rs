@@ -39,6 +39,7 @@ pub struct HttpRequest {
 pub struct HttpResponse {
     pub status: LinkStatus,
     pub location: Option<String>,
+    pub is_cloudflare: bool,
 }
 
 #[async_trait]

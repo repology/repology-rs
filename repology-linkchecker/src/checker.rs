@@ -123,7 +123,7 @@ where
         counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str()).increment(1);
         let response = http_client.request(request.clone()).await;
 
-        let experiment_prob: f32 = match response.status {
+        let mut experiment_prob: f32 = match response.status {
             LinkStatus::Http(429) => 0.0,
             LinkStatus::Http(200) => 0.01,
             LinkStatus::Http(403)
@@ -132,6 +132,10 @@ where
             | LinkStatus::Timeout => 0.01,
             _ => 1.0,
         };
+
+        if response.is_cloudflare {
+            experiment_prob = 1.0;
+        }
 
         if rand::random::<f32>() < experiment_prob {
             delayer
@@ -165,6 +169,9 @@ where
                 // expected discrepancies due to different ssl backends
                 || matches!(response.status, SslCertificateIncompleteChain|SslCertificateSelfSigned|SslCertificateSelfSignedInChain|SslCertificateHostnameMismatch)
                     && matches!(experimental_response.status, CertificateUnknownIssuer|SslCertificateHasExpired|InvalidCertificate)
+                // cloudflare 301 ⇄ 302 flaps, reproducible with curl
+                || (response.is_cloudflare || experimental_response.is_cloudflare)
+                    && matches!(response.status, Http(301) | Http(302)) && matches!(experimental_response.status, Http(301) | Http(302))
                 // leave semicolon on the next line for convenience
             ;
 

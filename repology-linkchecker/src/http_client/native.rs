@@ -72,6 +72,10 @@ impl HttpClient for NativeHttpClient {
                         return HttpResponse {
                             status: LinkStatus::InvalidUrl,
                             location: None,
+                            is_cloudflare: response
+                                .headers()
+                                .get("server")
+                                .is_some_and(|server| server == "cloudflare"),
                         };
                     }
                 } else {
@@ -81,11 +85,16 @@ impl HttpClient for NativeHttpClient {
                 HttpResponse {
                     status: LinkStatus::Http(response.status().as_u16()),
                     location,
+                    is_cloudflare: response
+                        .headers()
+                        .get("server")
+                        .is_some_and(|server| server == "cloudflare"),
                 }
             }
             Err(error) => HttpResponse {
                 status: extract_status(&error, error.url().map(url::Url::as_str).unwrap_or("???")),
                 location: None,
+                is_cloudflare: false,
             },
         }
     }
