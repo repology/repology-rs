@@ -171,7 +171,10 @@ where
                     && matches!(experimental_response.status, CertificateUnknownIssuer|SslCertificateHasExpired|InvalidCertificate)
                 // cloudflare 301 ⇄ 302 flaps, reproducible with curl
                 || (response.is_cloudflare || experimental_response.is_cloudflare)
-                    && matches!(response.status, Http(301) | Http(302) | Http(403)) && matches!(experimental_response.status, Http(301) | Http(302))
+                    && matches!(response.status, Http(301) | Http(302)) && matches!(experimental_response.status, Http(301) | Http(302))
+                // cloudflare often 403s python client for some reason
+                || (response.is_cloudflare || experimental_response.is_cloudflare)
+                    && response.status == Http(403)
                 // leave semicolon on the next line for convenience
             ;
 
