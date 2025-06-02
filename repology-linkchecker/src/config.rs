@@ -16,6 +16,8 @@ use crate::hosts::HostSettings;
 const DEFAULT_DSN: &str = "postgresql://repology@localhost/repology";
 const DEFAULT_REPOLOGY_HOST: &str = "https://repology.org";
 
+const BUILTIN_HOSTS_CONFIG: &str = include_str!("../hosts.toml");
+
 // feeder
 pub const DEFAULT_BATCH_SIZE: usize = 1000;
 pub const DEFAULT_BATCH_PERIOD: Duration = Duration::from_secs(60);
@@ -319,7 +321,6 @@ impl Config {
             || config.disable_builtin_hosts_config.unwrap_or(false);
 
         let mut builtin_hosts = if !disable_builtin_hosts_config {
-            const BUILTIN_HOSTS_CONFIG: &str = include_str!("../hosts.toml");
             toml::from_str::<HashMap<String, HostSettingsPatch>>(BUILTIN_HOSTS_CONFIG)
                 .expect("builtin hosts.toml should be parsable")
         } else {
@@ -398,5 +399,16 @@ impl Config {
                 .or(config.max_parallel_updates)
                 .unwrap_or(0),
         })
+    }
+}
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_builtin_hosts_parsing() {
+        assert!(toml::from_str::<HashMap<String, HostSettingsPatch>>(BUILTIN_HOSTS_CONFIG).is_ok());
     }
 }
