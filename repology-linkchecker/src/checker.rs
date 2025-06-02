@@ -176,6 +176,9 @@ where
                 // cloudflare often 403s python client for some reason
                 || (response.is_cloudflare || experimental_response.is_cloudflare)
                     && response.status == Http(403)
+                // recovery from ssl and connection errors
+                || response.status.is_ssl_error() && matches!(experimental_response.status, Http(..))
+                || response.status.is_connection_error() && matches!(experimental_response.status, Http(..))
                 // leave semicolon on the next line for convenience
             ;
 
