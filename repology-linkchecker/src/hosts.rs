@@ -77,19 +77,27 @@ impl HostSettings {
         case: RecheckCase,
         failure_streak: u16,
     ) -> Option<Duration> {
-        const FAST_FAILURE_RECHECK_INTERVALS: &[Duration] = &[
-            Duration::from_hours(1),
-            Duration::from_hours(4),
-            Duration::from_days(1),
-            Duration::from_days(3),
-        ];
+        let interval = match case {
+            RecheckCase::Manual => {
+                const RECHECK_INTERVALS: &[Duration] = &[
+                    Duration::from_hours(1),
+                    Duration::from_hours(4),
+                    Duration::from_days(1),
+                    Duration::from_days(3),
+                ];
+                RECHECK_INTERVALS.get(failure_streak as usize)
+            }
+            RecheckCase::Generated => {
+                const RECHECK_INTERVALS: &[Duration] =
+                    &[Duration::from_hours(1), Duration::from_days(1)];
+                RECHECK_INTERVALS.get(failure_streak as usize)
+            }
+            _ => None,
+        };
 
-        if case == RecheckCase::Manual
-            && let Some(recheck_period) =
-                FAST_FAILURE_RECHECK_INTERVALS.get(failure_streak as usize)
-        {
+        if let Some(interval) = interval {
             // [recheck, recheck + splay)
-            Some(recheck_period.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>()))
+            Some(interval.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>()))
         } else {
             None
         }
