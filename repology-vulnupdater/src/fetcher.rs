@@ -48,10 +48,10 @@ impl NvdFetcher {
     async fn fetch(&self, url: &str) -> Result<String> {
         let mut inner = self.inner.lock().await;
 
-        if let Some(elapsed) = inner.last_request_time.map(|instant| instant.elapsed()) {
-            if elapsed < WAIT_TIME {
-                tokio::time::sleep(WAIT_TIME - elapsed).await;
-            }
+        if let Some(elapsed) = inner.last_request_time.map(|instant| instant.elapsed())
+            && elapsed < WAIT_TIME
+        {
+            tokio::time::sleep(WAIT_TIME - elapsed).await;
         }
 
         inner.last_request_time = Some(Instant::now());
@@ -105,10 +105,10 @@ impl<'a> Paginator<'a> {
     }
 
     pub async fn fetch_next(&mut self) -> Result<Option<String>> {
-        if let Some(total_results) = self.total_results {
-            if self.start_index >= total_results {
-                return Ok(None);
-            }
+        if let Some(total_results) = self.total_results
+            && self.start_index >= total_results
+        {
+            return Ok(None);
         }
 
         counter!("repology_vulnupdater_fetcher_requests_total").increment(1);

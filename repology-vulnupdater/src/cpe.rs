@@ -59,7 +59,7 @@ impl Display for Cpe {
 
 impl Debug for Cpe {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
-        write!(f, "Cpe{{{}}}", self)
+        write!(f, "Cpe{{{self}}}")
     }
 }
 
