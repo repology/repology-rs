@@ -59,7 +59,6 @@
 "sourceforge.io".is = "sourceforge.net"
 "sourceforge.net".aggregate = true
 "sources.debian.org".generated_sampling_percentage = 10
-"sources.debian.org".generated_sampling_percentage = 10
 "src.fedoraproject.org".generated_sampling_percentage = 1
 "static.crates.io".skip = false             # exclude this host from crates.io skip rule above
 
