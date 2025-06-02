@@ -2534,8 +2534,6 @@ dependencies = [
  "metrics",
  "metrics-exporter-prometheus",
  "metrics-process",
- "native-tls",
- "openssl",
  "pretty_assertions",
  "rand 0.9.1",
  "repology-common",
