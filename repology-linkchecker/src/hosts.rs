@@ -95,12 +95,8 @@ impl HostSettings {
             _ => None,
         };
 
-        if let Some(interval) = interval {
-            // [recheck, recheck + splay)
-            Some(interval.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>()))
-        } else {
-            None
-        }
+        // [recheck, recheck + splay)
+        interval.map(|interval| interval.mul_f32(1.0 + self.recheck_splay * rand::random::<f32>()))
     }
 
     pub fn generate_defer_interval(&self, priority: CheckPriority) -> Duration {

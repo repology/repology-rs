@@ -490,7 +490,7 @@ where
             let new = LinkStatus::pick_from46(check_result.ipv4.status, check_result.ipv6.status);
 
             let is_breakage = old.is_success() == Some(true) && new.is_success() == Some(false);
-            let is_new_broken = old.is_success() == None && new.is_success() == Some(false);
+            let is_new_broken = old.is_success().is_none() && new.is_success() == Some(false);
             let is_recovery = old.is_success() == Some(false) && new.is_success() == Some(true);
 
             if is_breakage || is_new_broken || is_recovery {
