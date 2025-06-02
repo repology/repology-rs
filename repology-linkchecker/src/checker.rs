@@ -167,11 +167,12 @@ where
                 || matches!(response.status, ServerDisconnected|ConnectionResetByPeer)
                     && matches!(experimental_response.status, ServerDisconnected|ConnectionResetByPeer)
                 // expected discrepancies due to different ssl backends
-                || matches!(response.status, SslCertificateIncompleteChain|SslCertificateSelfSigned|SslCertificateSelfSignedInChain|SslCertificateHostnameMismatch)
-                    && matches!(experimental_response.status, CertificateUnknownIssuer|SslCertificateHasExpired|InvalidCertificate)
-                // cloudflare 301 ⇄ 302 flaps, reproducible with curl
+                || response.status.is_ssl_error() && experimental_response.status.is_ssl_error()
+                // cloudflare:
+                // - 301 ⇄ 302 flaps, reproducible with curl
+                // - flapping 522s
                 || (response.is_cloudflare || experimental_response.is_cloudflare)
-                    && matches!(response.status, Http(301) | Http(302)) && matches!(experimental_response.status, Http(301) | Http(302))
+                    && matches!(response.status, Http(301) | Http(302) | Http(522)) && matches!(experimental_response.status, Http(301) | Http(302) | Http(522))
                 // cloudflare often 403s python client for some reason
                 || (response.is_cloudflare || experimental_response.is_cloudflare)
                     && response.status == Http(403)
