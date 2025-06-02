@@ -3,12 +3,13 @@
 # This list is |sort friendly, please keep sorted
 "abf.io".generated_sampling_percentage = 10
 "abf.io".recheck_generated = 21
-"aur.archlinux.org".recheck_generated = 45
+"aur.archlinux.org".generated_sampling_percentage = 10
 "bugs.freebsd.org".delay = 30               # 429s @ 3sec
 "build.debian.org".delay = 60               # sensitive to load
 "build.debian.org".recheck_generated = 400  # because of huge delay
 "build.opensuse.org".generated_sampling_percentage = 10
 "build.opensuse.org".recheck_generated = 21
+"buildd.debian.org".generated_sampling_percentage = 10
 "codeberg.org".delay = 30                   # 429s @ 30sec
 "community.chocolatey.org".disable_head = true
 "cpan.metacpan.org".recheck_manual = 14
@@ -23,12 +24,13 @@
 "files.pythonhosted.org".generated_sampling_percentage = 1  # no real need to recheck links provided by pypi itself, right?
 "files.pythonhosted.org".recheck_generated = 30
 "files.pythonhosted.org".recheck_manual = 30
+"git.alpinelinux.org".generated_sampling_percentage = 10
 "gitee.com".delay = 5                       # 429s @ 3sec
 "gitee.com".generated_sampling_percentage = 10
 "github.com".delay = 2
-"github.com".generated_sampling_percentage = 10
+"github.com".generated_sampling_percentage = 1
 "github.com".recheck_generated = 45
-"github.com".recheck_manual = 21
+"github.com".recheck_manual = 30
 "github.io".is = "github.com"
 "githubusercontent.com".is = "github.com"
 "gitlab.com".delay = 1
@@ -41,7 +43,11 @@
 "notabug.org".delay = 60
 "npmjs.com".delay = 10
 "npmjs.org".delay = 10
+"packages.altlinux.org".generated_sampling_percentage = 10
+"packages.debian.org".generated_sampling_percentage = 10
+"packages.ubuntu.com".generated_sampling_percentage = 10
 "packman.links2linux.org".disable_head = true
+"pkgs.alpinelinux.org".generated_sampling_percentage = 10
 "pkgs.alpinelinux.org".recheck_generated = 45
 "pypi.org".delay = 1                        # lots of links, claims (XXX: source?) to handle much trafic
 "pypi.org".recheck_manual = 14
@@ -52,6 +58,8 @@
 "sf.net".is = "sourceforge.net"
 "sourceforge.io".is = "sourceforge.net"
 "sourceforge.net".aggregate = true
+"sources.debian.org".generated_sampling_percentage = 10
+"sources.debian.org".generated_sampling_percentage = 10
 "src.fedoraproject.org".generated_sampling_percentage = 1
 "static.crates.io".skip = false             # exclude this host from crates.io skip rule above
 
