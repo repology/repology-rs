@@ -225,6 +225,10 @@ impl ExtractStatus for rustls::Error {
                 // many error kinds, but I don't think we need specific handling for these
                 chooser.push(LinkStatus::SslError);
             }
+            InappropriateMessage { .. } => {
+                // many error kinds, but I don't think we need specific handling for these
+                chooser.push(LinkStatus::SslError);
+            }
             InvalidMessage(..) => {
                 // many error kinds, but I don't think we need specific handling for these
                 chooser.push(LinkStatus::SslError);
@@ -254,6 +258,9 @@ impl ExtractStatus for rustls::AlertDescription {
                 chooser.push(LinkStatus::SslError);
             }
             InternalError => {
+                chooser.push(LinkStatus::SslError);
+            }
+            AccessDenied => {
                 chooser.push(LinkStatus::SslError);
             }
             _ => {
