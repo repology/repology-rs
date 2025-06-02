@@ -101,12 +101,12 @@ impl Cve {
     }
 
     fn sort_key(&self) -> (u32, u32) {
-        if let Some(numbers) = self.cve_id.strip_prefix("CVE-") {
-            if let Some((a, b)) = numbers.split_once('-') {
-                let a: u32 = a.parse().unwrap_or(0);
-                let b: u32 = b.parse().unwrap_or(0);
-                return (a, b);
-            }
+        if let Some(numbers) = self.cve_id.strip_prefix("CVE-")
+            && let Some((a, b)) = numbers.split_once('-')
+        {
+            let a: u32 = a.parse().unwrap_or(0);
+            let b: u32 = b.parse().unwrap_or(0);
+            return (a, b);
         }
         (0, 0)
     }
@@ -154,7 +154,7 @@ pub async fn project_cves(
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectCves);
 
-    let redirect_from_cookie_name = format!("rdr_{}", project_name);
+    let redirect_from_cookie_name = format!("rdr_{project_name}");
     let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
         let value = cookie.value().to_string();
         cookies.remove(Cookie::build(redirect_from_cookie_name).path("/").into());

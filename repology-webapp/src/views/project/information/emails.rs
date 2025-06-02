@@ -12,10 +12,10 @@ pub struct MaintainerEmailsAggregator<'a> {
 
 impl<'a> MaintainerEmailsAggregator<'a> {
     pub fn add(&mut self, email: &'a str) {
-        if let Some((_, domain)) = email.split_once('@') {
-            if domain.contains('.') {
-                self.emails.insert(email);
-            }
+        if let Some((_, domain)) = email.split_once('@')
+            && domain.contains('.')
+        {
+            self.emails.insert(email);
         }
     }
 

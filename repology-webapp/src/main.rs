@@ -32,7 +32,7 @@ fn collect_tokio_runtime_metrics() {
     counter!("tokio_spawned_tasks_count_total").absolute(metrics.spawned_tasks_count());
 
     for nworker in 0..metrics.num_workers() {
-        let labels = [("worker", format!("{}", nworker))];
+        let labels = [("worker", format!("{nworker}"))];
         #[cfg(tokio_unstable)]
         gauge!("tokio_worker_local_queue_depth", &labels)
             .set(metrics.worker_local_queue_depth(nworker) as f64);

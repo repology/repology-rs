@@ -100,7 +100,7 @@ pub async fn nonexisting_project(
             // by redirect to exclude gone projects
             let target_project_name = &redirect_project_names[0][..];
             cookies.add(
-                Cookie::build((format!("rdr_{}", target_project_name), project_name))
+                Cookie::build((format!("rdr_{target_project_name}"), project_name))
                     .path("/")
                     .max_age(tower_cookies::cookie::time::Duration::seconds(60))
                     .into(),

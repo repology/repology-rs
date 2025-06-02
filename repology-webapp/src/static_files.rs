@@ -63,7 +63,7 @@ impl StaticFiles {
                 let (base, ext) = name
                     .rsplit_once('.')
                     .expect("static files should have extensions");
-                let hashed_name = format!("{}.{:016x}.{}", base, hash, ext);
+                let hashed_name = format!("{base}.{hash:016x}.{ext}");
 
                 let file = StaticFile {
                     name,

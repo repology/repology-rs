@@ -30,10 +30,10 @@ fn update_optional_max<'a, T>(target: &mut Option<&'a T>, next: &'a T)
 where
     T: PackageWithVersion + PackageWithFlags + PackageWithStatus,
 {
-    if let Some(old) = *target {
-        if by_version_descending::compare(old, next) != std::cmp::Ordering::Greater {
-            return;
-        }
+    if let Some(old) = *target
+        && by_version_descending::compare(old, next) != std::cmp::Ordering::Greater
+    {
+        return;
     }
     *target = Some(next);
 }

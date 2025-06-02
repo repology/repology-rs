@@ -42,17 +42,17 @@ fn generate_maintainer_links(maintainer_name: &str) -> Vec<String> {
     let mut res = vec![];
     if let Some((name, domain)) = maintainer_name.split_once('@') {
         match domain {
-            "cpan" => res.push(format!("https://metacpan.org/author/{}", name)),
-            "aur" => res.push(format!("https://aur.archlinux.org/account/{}", name)),
+            "cpan" => res.push(format!("https://metacpan.org/author/{name}")),
+            "aur" => res.push(format!("https://aur.archlinux.org/account/{name}")),
             "altlinux.org" | "altlinux.ru" => {
-                res.push(format!("https://sisyphus.ru/en/packager/{}", name))
+                res.push(format!("https://sisyphus.ru/en/packager/{name}"))
             }
-            "github" => res.push(format!("https://github.com/{}", name)),
-            "freshcode" => res.push(format!("https://freshcode.club/search?user={}", name)),
+            "github" => res.push(format!("https://github.com/{name}")),
+            "freshcode" => res.push(format!("https://freshcode.club/search?user={name}")),
             _ => {}
         }
         if domain.contains('.') {
-            res.push(format!("mailto:{}", maintainer_name))
+            res.push(format!("mailto:{maintainer_name}"))
         }
     }
     res

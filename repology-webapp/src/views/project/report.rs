@@ -207,7 +207,7 @@ async fn project_report_generic(
         vec![],
     );
 
-    let redirect_from_cookie_name = format!("rdr_{}", project_name);
+    let redirect_from_cookie_name = format!("rdr_{project_name}");
     let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
         let value = cookie.value().to_string();
         cookies.remove(Cookie::build(redirect_from_cookie_name).path("/").into());
@@ -252,7 +252,7 @@ async fn project_report_generic(
     .await?;
 
     let too_many_reports = reports.len() >= crate::constants::MAX_REPORTS;
-    let report_added_cookie_name = format!("rprt_{}", project_name);
+    let report_added_cookie_name = format!("rprt_{project_name}");
 
     let errors = if let Some((client_addresses, form)) = &input {
         if let Err(errors) = check_new_report(

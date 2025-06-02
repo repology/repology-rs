@@ -90,7 +90,7 @@ pub async fn project_information(
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::ProjectInformation);
 
-    let redirect_from_cookie_name = format!("rdr_{}", project_name);
+    let redirect_from_cookie_name = format!("rdr_{project_name}");
     let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
         let value = cookie.value().to_string();
         cookies.remove(Cookie::build(redirect_from_cookie_name).path("/").into());

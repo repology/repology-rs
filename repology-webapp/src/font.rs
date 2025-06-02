@@ -35,10 +35,7 @@ impl Font {
             }
         }
         error!(file_name, dirs_tried = ?FONT_DIRS, "failed to find font {}", file_name);
-        panic!(
-            "Font {} not found in known font directories {:?}",
-            file_name, FONT_DIRS
-        );
+        panic!("Font {file_name} not found in known font directories {FONT_DIRS:?}");
     }
 }
 

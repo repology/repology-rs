@@ -113,7 +113,7 @@ fn normalize_graph_data(
                     0.5,
                 ),
             ],
-            y_ticks: vec![(0.5, format!("{}{}", min, suffix))],
+            y_ticks: vec![(0.5, format!("{min}{suffix}"))],
         },
         Some((&min, &max)) => {
             let ticks = calculate_ticks(min, max, graph_type);
