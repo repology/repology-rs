@@ -12,7 +12,7 @@ use serde::Deserialize;
 
 use repology_common::LinkStatus;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub enum HttpMethod {
     Head,
     Get,

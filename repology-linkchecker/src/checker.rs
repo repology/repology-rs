@@ -123,6 +123,16 @@ where
         counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str()).increment(1);
         let response = http_client.request(request.clone()).await;
 
+        match &response.status {
+            LinkStatus::Http(405) if request.method == HttpMethod::Head => {
+                warn!(url = request.url, type = "HEAD not allowed", "host problem");
+            }
+            LinkStatus::Http(429) => {
+                warn!(url = request.url, type = "too many requests", "host problem");
+            }
+            _ => {}
+        }
+
         let mut experiment_prob: f32 = match response.status {
             LinkStatus::Http(429) => 0.0,
             LinkStatus::Http(200) => 0.01,
