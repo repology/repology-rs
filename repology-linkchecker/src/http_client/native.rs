@@ -8,6 +8,7 @@ use std::net::{IpAddr, SocketAddr};
 use std::sync::Arc;
 
 use async_trait::async_trait;
+use tracing::warn;
 
 use repology_common::LinkStatus;
 
@@ -58,7 +59,7 @@ impl HttpClient for NativeHttpClient {
                     HttpMethod::Head => reqwest::Method::HEAD,
                     HttpMethod::Get => reqwest::Method::GET,
                 },
-                request.url,
+                &request.url,
             )
             .timeout(request.timeout)
             .send()
@@ -69,6 +70,7 @@ impl HttpClient for NativeHttpClient {
                     if let Ok(location) = location.to_str() {
                         Some(location.to_string())
                     } else {
+                        warn!(url = request.url, ?location, "cannot parse location header");
                         return HttpResponse {
                             status: LinkStatus::InvalidUrl,
                             location: None,

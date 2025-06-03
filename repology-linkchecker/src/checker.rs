@@ -297,7 +297,7 @@ where
 
             if let Some(location) = location.filter(|_| status.is_redirect()) {
                 let Ok(target) = url.join(&location) else {
-                    error!(
+                    warn!(
                         url = url.as_str(),
                         location, "failed to join redirect target"
                     );
