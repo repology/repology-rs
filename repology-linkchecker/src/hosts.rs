@@ -29,7 +29,7 @@ impl Default for HostSettings {
     fn default() -> Self {
         Self {
             delay: Duration::from_secs(3),
-            timeout: Duration::from_secs(20),
+            timeout: Duration::from_secs(10),
             recheck_manual: Duration::from_days(7),
             recheck_generated: Duration::from_days(14),
             recheck_unsampled: Duration::from_days(60),
