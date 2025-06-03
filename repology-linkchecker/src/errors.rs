@@ -127,6 +127,9 @@ fn extract_status_generic(
         .downcast_ref::<rustls::OtherError>()
         .inspect(|error| error.extract_status(chooser, url));
     error
+        .downcast_ref::<rustls::pki_types::InvalidDnsNameError>()
+        .inspect(|error| error.extract_status(chooser, url));
+    error
         .downcast_ref::<std::io::Error>()
         .inspect(|error| error.extract_status(chooser, url));
     error
@@ -244,6 +247,12 @@ impl ExtractStatus for rustls::Error {
 impl ExtractStatus for rustls::OtherError {
     fn extract_status(&self, chooser: &mut StatusChooser, url: &str) {
         self.0.as_ref().extract_status(chooser, url);
+    }
+}
+
+impl ExtractStatus for rustls::pki_types::InvalidDnsNameError {
+    fn extract_status(&self, chooser: &mut StatusChooser, _url: &str) {
+        chooser.push(LinkStatus::InvalidHostname);
     }
 }
 
