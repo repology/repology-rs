@@ -151,6 +151,7 @@ where
                 || host == "linkedin.com" || host.ends_with(".linkedin.com") // http 999 for native, confirmed with curl; 3xx/4xx codes for python, not worth investigating
                 || host == "zdoom.org" || host == "www.zdoom.org" // ServerDisconnected from python, ok from native
                 || host == "gnu.org" || host == "www.gnu.org" // flapping ConnectionRefused
+                || response.is_iis && experimental_response.status == ConnectionResetByPeer
                 || request.url.contains("%%") // https://metacpan.org/release/%%7Bdist%7D: probably an invalid url, but native checker handles in
                 || response.status == Http(429) || experimental_response.status == Http(429) // 429s
                 || experimental_response.status == Http(200) // flapping

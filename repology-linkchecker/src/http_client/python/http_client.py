@@ -154,12 +154,13 @@ class HttpResponse:
     status: str
     location: Optional[str] = None
     is_cloudflare: bool = False
+    is_iis: bool = False
 
     @staticmethod
     def from_http_response(
         url: str, response: aiohttp.ClientResponse
     ) -> "HttpResponse":
-        return HttpResponse(str(response.status), response.headers.get("Location"), response.headers.get("server") == "cloudflare")
+        return HttpResponse(str(response.status), response.headers.get("Location"), response.headers.get("server") == "cloudflare", "Microsoft-IIS" in response.headers.get("server", ""))
 
     @staticmethod
     def from_exception(url: str, exception: Exception) -> "HttpResponse":

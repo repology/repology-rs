@@ -76,6 +76,7 @@ impl HttpClient for NativeHttpClient {
                                 .headers()
                                 .get("server")
                                 .is_some_and(|server| server == "cloudflare"),
+                            is_iis: false,
                         };
                     }
                 } else {
@@ -89,12 +90,14 @@ impl HttpClient for NativeHttpClient {
                         .headers()
                         .get("server")
                         .is_some_and(|server| server == "cloudflare"),
+                    is_iis: false,
                 }
             }
             Err(error) => HttpResponse {
                 status: extract_status(&error, error.url().map(url::Url::as_str).unwrap_or("???")),
                 location: None,
                 is_cloudflare: false,
+                is_iis: false,
             },
         }
     }
