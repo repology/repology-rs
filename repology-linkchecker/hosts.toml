@@ -25,6 +25,7 @@
 "files.pythonhosted.org".recheck_generated = 30
 "files.pythonhosted.org".recheck_manual = 30
 "git.alpinelinux.org".generated_sampling_percentage = 10
+"git.pld-linux.org".timeout = 30            # may take up to 10 secs is request calls git mutiple times
 "gitee.com".delay = 5                       # 429s @ 3sec
 "gitee.com".generated_sampling_percentage = 10
 "github.com".delay = 2
