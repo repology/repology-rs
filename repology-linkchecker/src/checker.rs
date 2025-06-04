@@ -320,6 +320,9 @@ where
                     );
                     return LinkStatus::InvalidUrl.into();
                 };
+                if target.scheme() != "http" && target.scheme() != "https" {
+                    return LinkStatus::RedirectToNonHttp.into();
+                }
 
                 if status.is_permanent_redirect() {
                     if !had_temporary_redirect {

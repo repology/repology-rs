@@ -57,6 +57,7 @@ impl StatusChooser {
             ConnectionAborted => 3,
             AddressNotAvailable => 3,
             TooManyRedirects => 3,
+            RedirectToNonHttp => 3,
             SslCertificateHasExpired => 3,
             SslCertificateHostnameMismatch => 3,
             SslCertificateSelfSigned => 3,

@@ -35,6 +35,7 @@
 
 		{%- when LinkStatus::TooManyRedirects %}too many redirects (possibly, a redirect loop)
 		{%- when LinkStatus::BadHttp %}HTTP protocol error
+		{%- when LinkStatus::RedirectToNonHttp %}Redirect to non-HTTP url (such as ftp://)
 
 		{%- when LinkStatus::SslError %}SSL error
 		{%- when LinkStatus::SslCertificateHasExpired %}SSL error: certificate has expired

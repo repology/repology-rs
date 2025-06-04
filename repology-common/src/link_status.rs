@@ -81,6 +81,7 @@ pub enum LinkStatus {
     // HTTP errors
     TooManyRedirects = -400,
     BadHttp = -402,
+    RedirectToNonHttp = -403,
 
     // SSL errors
     SslError = -500,
@@ -178,6 +179,7 @@ impl LinkStatus {
 
             val if val == D::TooManyRedirects as i16 => Ok(Self::TooManyRedirects),
             val if val == D::BadHttp as i16 => Ok(Self::BadHttp),
+            val if val == D::RedirectToNonHttp as i16 => Ok(Self::RedirectToNonHttp),
 
             val if val == D::SslError as i16 => Ok(Self::SslError),
             val if val == D::SslCertificateHasExpired as i16 => Ok(Self::SslCertificateHasExpired),
@@ -241,6 +243,7 @@ impl LinkStatus {
 
             "TooManyRedirects" => Ok(Self::TooManyRedirects),
             "BadHttp" => Ok(Self::BadHttp),
+            "RedirectToNonHttp" => Ok(Self::RedirectToNonHttp),
 
             "SslError" => Ok(Self::SslError),
             "SslCertificateHasExpired" => Ok(Self::SslCertificateHasExpired),
