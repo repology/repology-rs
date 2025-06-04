@@ -166,6 +166,13 @@ where
                 || host == "afflib.org" // drops connection, reproducible with curl
                 || host == "epass.icbc.com.cn" // bad server, reproducible with curl
                 || host == "www.zspapapa.com" // bad server, reproducible with curl
+                || host == "biodiversityinformatics.amnh.org" // 403, confirmed by curl
+                || host == "www.microsip.org" // flaky 404 ⇄ 301
+                || host == "ext.by" // misconfigured malicious client blocker
+                || host == "_-.pages.debian.net" // invalid hostname, handled corrently by native checker
+                || host == "legoeducation.cn" // 405 confirmed with curl
+                || host == "madoguchi.fyralabs.com" // flaky 404 ⇄ 303
+                || host == "yandex.cloud" // flaky 404 ⇄ 303
                 || response.is_iis && experimental_response.status == ConnectionResetByPeer
                 || request.url.contains("%%") // https://metacpan.org/release/%%7Bdist%7D: probably an invalid url, but native checker handles in
                 || response.status == Http(429) || experimental_response.status == Http(429) // 429s
