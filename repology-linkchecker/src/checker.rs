@@ -173,6 +173,8 @@ where
                 || host == "legoeducation.cn" // 405 confirmed with curl
                 || host == "madoguchi.fyralabs.com" // flaky 404 ⇄ 303
                 || host == "yandex.cloud" // flaky 404 ⇄ 303
+                || host == "www.amb.org" // does not support tsl1.3
+                || host == "katalix.com" // does not support tsl1.3
                 || response.is_iis && experimental_response.status == ConnectionResetByPeer
                 || request.url.contains("%%") // https://metacpan.org/release/%%7Bdist%7D: probably an invalid url, but native checker handles in
                 || response.status == Http(429) || experimental_response.status == Http(429) // 429s
@@ -188,7 +190,7 @@ where
                 // kinda interchangeable errors
                 || response.status == Timeout && experimental_response.status == HostUnreachable
                 || matches!(response.status, ServerDisconnected|ConnectionResetByPeer)
-                    && matches!(experimental_response.status, ServerDisconnected|ConnectionResetByPeer)
+                    && matches!(experimental_response.status, ServerDisconnected|ConnectionResetByPeer|ConnectionRefused)
                 // expected discrepancies due to different ssl backends
                 || response.status.is_ssl_error() && experimental_response.status.is_ssl_error()
                 // cloudflare:
