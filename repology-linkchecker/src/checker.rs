@@ -163,6 +163,7 @@ where
                 || host == "gnu.org" || host == "www.gnu.org" // flapping ConnectionRefused
                 || host.contains("hneukirchen") // flapping HostUnreachable
                 || host == "www.cs.nott.ac.uk" // drops connection after lowercase headers, repology/repology-rs#252
+                || host == "www.vectorcamp.gr" // known failure, probably due to line folding
                 || host == "afflib.org" // drops connection, reproducible with curl
                 || host == "epass.icbc.com.cn" // bad server, reproducible with curl
                 || host == "www.zspapapa.com" // bad server, reproducible with curl
@@ -173,8 +174,13 @@ where
                 || host == "legoeducation.cn" // 405 confirmed with curl
                 || host == "madoguchi.fyralabs.com" // flaky 404 ⇄ 303
                 || host == "yandex.cloud" // flaky 404 ⇄ 303
+                || host == "yandex.com" || host == "yandex.ru" // 301 → 302 of unknown cause
                 || host == "www.amb.org" // does not support tsl1.3
                 || host == "katalix.com" // does not support tsl1.3
+                || host == "nchc.dl.sourceforge.net" // does not support tsl1.3
+                || host == "subgit.com" // does not support tsl1.3
+                || host == "flow.team" // 403 for rust client
+                || host == "wise.co.kr" // completely broken according to ssllabs
                 || response.is_iis && experimental_response.status == ConnectionResetByPeer
                 || request.url.contains("%%") // https://metacpan.org/release/%%7Bdist%7D: probably an invalid url, but native checker handles in
                 || response.status == Http(429) || experimental_response.status == Http(429) // 429s
