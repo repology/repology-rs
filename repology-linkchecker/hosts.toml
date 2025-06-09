@@ -83,6 +83,7 @@
 "gnugadu.org".blacklist = true
 "htdig.org".blacklist = true
 "htpc-forum.de".blacklist = true
+"jdebp.eu".blacklist = true
 "jnickelsen.de".blacklist = true
 "junoplay.com".blacklist = true
 "kermit-project.org".blacklist = true
