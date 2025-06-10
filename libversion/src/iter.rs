@@ -10,7 +10,7 @@ pub struct VersionComponentIterator<'a> {
 }
 
 impl VersionComponentIterator<'_> {
-    pub fn new<'a>(version: &'a str, flags: Flags) -> VersionComponentIterator<'a> {
+    pub fn new(version: &str, flags: Flags) -> VersionComponentIterator<'_> {
         VersionComponentIterator {
             rest_of_version: version,
             carried_component: None,
@@ -18,7 +18,7 @@ impl VersionComponentIterator<'_> {
         }
     }
 
-    pub fn next(&mut self) -> Component {
+    pub fn next(&mut self) -> Component<'_> {
         if let Some(component) = mem::take(&mut self.carried_component) {
             return component;
         }

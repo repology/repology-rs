@@ -35,7 +35,7 @@ pub fn classify_keyword(s: &str, flags: Flags) -> KeywordClass {
 
 pub fn parse_token_to_component(input: &str, flags: Flags) -> (Component, &str) {
     let (alpha, rest) = split_alpha(input);
-    if let Some(first_char) = alpha.bytes().nth(0) {
+    if let Some(first_char) = alpha.as_bytes().first().copied() {
         (
             match classify_keyword(alpha, flags) {
                 KeywordClass::Unknown => {
@@ -89,24 +89,25 @@ pub fn get_next_version_component(s: &str, flags: Flags) -> (SomeComponents, &st
 
     let (alpha, rest_after_alpha) = split_alpha(rest);
 
-    if let Some(first_char) = alpha.bytes().nth(0) {
-        if !rest_after_alpha
-            .bytes()
-            .nth(0)
-            .is_some_and(|c| is_number(c))
-        {
-            return (
-                SomeComponents::Two(
-                    component,
-                    match classify_keyword(alpha, flags) {
-                        KeywordClass::Unknown => Component::LetterSuffix(to_lower(first_char)),
-                        KeywordClass::PreRelease => Component::PreRelease(to_lower(first_char)),
-                        KeywordClass::PostRelease => Component::PostRelease(to_lower(first_char)),
-                    },
-                ),
-                rest_after_alpha,
-            );
-        }
+    if let Some(first_char) = alpha.as_bytes().first().copied()
+        && !rest_after_alpha
+            .as_bytes()
+            .first()
+            .copied()
+            .is_some_and(is_number)
+    {
+        return (
+            SomeComponents::Two(
+                component,
+                match classify_keyword(alpha, flags) {
+                    KeywordClass::Unknown => Component::LetterSuffix(to_lower(first_char)),
+                    KeywordClass::PreRelease => Component::PreRelease(to_lower(first_char)),
+                    KeywordClass::PostRelease => Component::PostRelease(to_lower(first_char)),
+                },
+            ),
+            rest_after_alpha,
+        );
+    }
 
     (SomeComponents::One(component), rest)
 }
