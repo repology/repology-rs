@@ -8,7 +8,7 @@ anyhow = "1.0.98"
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1", features = ["macros"] }
 axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6", features = ["macros"] }
-axum-htmx = "0.8.0"
+axum-htmx = "0.8.1"
 chrono = { version = "0.4.41", features = ["std", "now", "serde"], default-features = false }
 clap = { version = "4.5.40", features = ["derive"] }
 indoc = "2.0.6"
