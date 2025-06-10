@@ -3,6 +3,7 @@
 # This list is |sort friendly, please keep sorted
 "abf.io".generated_sampling_percentage = 10
 "abf.io".recheck_generated = 21
+"aur.archlinux.org".disable_head = true
 "aur.archlinux.org".generated_sampling_percentage = 10
 "bugs.freebsd.org".delay = 30               # 429s @ 3sec
 "build.debian.org".delay = 60               # sensitive to load
@@ -40,12 +41,14 @@
 "lib.rs".disable_head = true                # https://gitlab.com/lib.rs/main/-/issues/209
 "madoguchi.fyralabs.com".delay = 5          # 429s @ 3 sec
 "marketplace.visualstudio.com".disable_head = true
+"mpr.makedeb.org".disable_head = true
 "notabug.org".delay = 60
 "npmjs.com".delay = 10
 "npmjs.org".delay = 10
 "packages.altlinux.org".generated_sampling_percentage = 10
 "packages.debian.org".generated_sampling_percentage = 10
 "packages.guix.gnu.org".timeout = 5         # constant timeouts
+"packages.msys2.org".disable_head = true
 "packages.ubuntu.com".generated_sampling_percentage = 10
 "packman.links2linux.org".disable_head = true
 "pkgs.alpinelinux.org".generated_sampling_percentage = 10
