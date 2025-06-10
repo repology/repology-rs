@@ -30,7 +30,7 @@ pub fn classify_keyword(s: &str, flags: Flags) -> KeywordClass {
     } else if flags.contains(Flags::PIsPatch) && string_is_equal_to_lowercase(s, "p") {
         return KeywordClass::PostRelease;
     }
-    return KeywordClass::Unknown;
+    KeywordClass::Unknown
 }
 
 pub fn parse_token_to_component(input: &str, flags: Flags) -> (Component, &str) {
@@ -107,9 +107,8 @@ pub fn get_next_version_component(s: &str, flags: Flags) -> (SomeComponents, &st
                 rest_after_alpha,
             );
         }
-    }
 
-    return (SomeComponents::One(component), rest);
+    (SomeComponents::One(component), rest)
 }
 
 #[cfg(test)]

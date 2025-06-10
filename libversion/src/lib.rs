@@ -155,7 +155,7 @@ impl<'a> VersionStr<'a> {
 
 impl AsVersionWithFlags for VersionStr<'_> {
     fn version(&self) -> &str {
-        &self.version
+        self.version
     }
 
     fn flags(&self) -> Flags {
