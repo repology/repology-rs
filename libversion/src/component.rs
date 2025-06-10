@@ -20,12 +20,12 @@ impl Ord for Component<'_> {
         self.discriminant()
             .cmp(&other.discriminant())
             .then_with(|| match (self, other) {
-                (Component::PreRelease(a), Component::PreRelease(b)) => a.cmp(&b),
-                (Component::PostRelease(a), Component::PostRelease(b)) => a.cmp(&b),
+                (Component::PreRelease(a), Component::PreRelease(b)) => a.cmp(b),
+                (Component::PostRelease(a), Component::PostRelease(b)) => a.cmp(b),
                 (Component::NonZero(a), Component::NonZero(b)) => {
-                    a.len().cmp(&b.len()).then_with(|| a.cmp(&b))
+                    a.len().cmp(&b.len()).then_with(|| a.cmp(b))
                 }
-                (Component::LetterSuffix(a), Component::LetterSuffix(b)) => a.cmp(&b),
+                (Component::LetterSuffix(a), Component::LetterSuffix(b)) => a.cmp(b),
                 _ => std::cmp::Ordering::Equal,
             })
     }
