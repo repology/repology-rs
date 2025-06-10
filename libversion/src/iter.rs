@@ -29,9 +29,7 @@ impl VersionComponentIterator<'_> {
         self.rest_of_version = rest_of_version;
 
         match components {
-            SomeComponents::One(component) => {
-                component
-            }
+            SomeComponents::One(component) => component,
             SomeComponents::Two(component1, component2) => {
                 self.carried_component = Some(component2);
                 component1

@@ -24,7 +24,7 @@ pub fn to_lower(c: u8) -> u8 {
 }
 
 pub fn string_is_equal_to_lowercase(a: &str, b: &str) -> bool {
-    a.len() == b.len() && a.bytes().map(|c| to_lower(c)).eq(b.bytes())
+    a.len() == b.len() && a.bytes().map(to_lower).eq(b.bytes())
 }
 
 pub fn string_has_prefix_lowercase(s: &str, prefix: &str) -> bool {
