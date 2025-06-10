@@ -191,7 +191,7 @@ impl Response {
             .get_or_init(|| {
                 std::str::from_utf8(&self.body)
                     .map(|s| s.to_owned())
-                    .map_err(|e| ResponseError::Utf8Error(format!("{}", e)))
+                    .map_err(|e| ResponseError::Utf8Error(format!("{e}")))
             })
             .as_deref()
             .map_err(|e| e.clone())
@@ -201,7 +201,7 @@ impl Response {
         self.xml
             .get_or_init(|| {
                 sxd_document::parser::parse(self.text()?)
-                    .map_err(|e| ResponseError::XmlError(format!("{}", e)))
+                    .map_err(|e| ResponseError::XmlError(format!("{e}")))
             })
             .as_ref()
             .map(|d| d.as_document())
@@ -258,7 +258,7 @@ impl Response {
     }
 
     pub fn json(&self) -> Result<serde_json::Value, ResponseError> {
-        serde_json::from_str(self.text()?).map_err(|e| ResponseError::JsonError(format!("{}", e)))
+        serde_json::from_str(self.text()?).map_err(|e| ResponseError::JsonError(format!("{e}")))
     }
 
     #[track_caller]
@@ -280,7 +280,7 @@ impl Response {
 
         xpath
             .evaluate(&context, self.xml()?.root())
-            .map_err(|e| ResponseError::XpathError(format!("{}", e)))
+            .map_err(|e| ResponseError::XpathError(format!("{e}")))
     }
 
     // snapshot
