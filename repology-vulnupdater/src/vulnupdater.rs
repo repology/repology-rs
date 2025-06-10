@@ -43,7 +43,7 @@ impl<'a> VulnUpdater<'a> {
         &self,
         datasource: &Datasource<'a>,
         now: DateTime<Utc>,
-    ) -> Result<Paginator> {
+    ) -> Result<Paginator<'_>> {
         let pager = self.fetcher.paginate(datasource.url);
         self.status_tracker
             .register_update_attempt(datasource.name, now)
@@ -55,7 +55,7 @@ impl<'a> VulnUpdater<'a> {
         &self,
         datasource: &Datasource<'a>,
         offset: u64,
-    ) -> Result<Paginator> {
+    ) -> Result<Paginator<'_>> {
         let mut pager = self.fetcher.paginate(datasource.url);
         pager.seek(offset);
         Ok(pager)
@@ -66,7 +66,7 @@ impl<'a> VulnUpdater<'a> {
         datasource: &Datasource<'a>,
         now: DateTime<Utc>,
         since: DateTime<Utc>,
-    ) -> Result<Paginator> {
+    ) -> Result<Paginator<'_>> {
         let start_date = (since - INCREMENTAL_UPDATE_OVERLAP).min(now - INCREMENTAL_UPDATE_OVERLAP);
         let end_date = now + INCREMENTAL_UPDATE_OVERLAP;
         if (end_date - start_date) > MAX_INCREMENTAL_UPDATE_SPAN {

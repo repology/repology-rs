@@ -62,7 +62,7 @@ impl NvdFetcher {
         Ok(response.text().await?)
     }
 
-    pub fn paginate(&self, url: &str) -> Paginator {
+    pub fn paginate(&self, url: &str) -> Paginator<'_> {
         Paginator {
             fetcher: self,
             url: url.into(),

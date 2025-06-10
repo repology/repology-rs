@@ -23,7 +23,7 @@ where
     flags
 }
 
-pub fn package_version<T>(package: &T) -> VersionStr
+pub fn package_version<T>(package: &T) -> VersionStr<'_>
 where
     T: PackageWithVersion + PackageWithFlags,
 {

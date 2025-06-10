@@ -33,7 +33,7 @@ pub fn classify_keyword(s: &str, flags: Flags) -> KeywordClass {
     KeywordClass::Unknown
 }
 
-pub fn parse_token_to_component(input: &str, flags: Flags) -> (Component, &str) {
+pub fn parse_token_to_component(input: &str, flags: Flags) -> (Component<'_>, &str) {
     let (alpha, rest) = split_alpha(input);
     if let Some(first_char) = alpha.as_bytes().first().copied() {
         (
@@ -78,7 +78,7 @@ pub enum SomeComponents<'a> {
     Two(Component<'a>, Component<'a>),
 }
 
-pub fn get_next_version_component(s: &str, flags: Flags) -> (SomeComponents, &str) {
+pub fn get_next_version_component(s: &str, flags: Flags) -> (SomeComponents<'_>, &str) {
     let s = skip_separator(s);
 
     if s.is_empty() {

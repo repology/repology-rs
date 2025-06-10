@@ -69,7 +69,7 @@ impl QueryParams {
         }
     }
 
-    pub fn as_filter(&self) -> ProjectsFilter {
+    pub fn as_filter(&self) -> ProjectsFilter<'_> {
         let repositories_range = Self::parse_range(&self.repos);
         let families_range = Self::parse_range(&self.families);
         let repositories_newest_range = Self::parse_range(&self.repos_newest);

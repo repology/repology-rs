@@ -197,7 +197,7 @@ impl Response {
             .map_err(|e| e.clone())
     }
 
-    pub fn xml(&self) -> Result<sxd_document::dom::Document, ResponseError> {
+    pub fn xml(&self) -> Result<sxd_document::dom::Document<'_>, ResponseError> {
         self.xml
             .get_or_init(|| {
                 sxd_document::parser::parse(self.text()?)
@@ -262,7 +262,7 @@ impl Response {
     }
 
     #[track_caller]
-    pub fn xpath(&self, xpath: &str) -> Result<sxd_xpath::Value, ResponseError> {
+    pub fn xpath(&self, xpath: &str) -> Result<sxd_xpath::Value<'_>, ResponseError> {
         let factory = sxd_xpath::Factory::new();
 
         // build() returns Result<Option>, not sure what Ok(None) really means here,
