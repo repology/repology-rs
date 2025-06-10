@@ -2,12 +2,12 @@
 
 /// Check if a byte is ASCII alphabetic character
 pub fn is_alpha(c: u8) -> bool {
-    c >= b'a' && c <= b'z' || c >= b'A' && c <= b'Z'
+    c.is_ascii_lowercase() || c.is_ascii_uppercase()
 }
 
 /// Check if a byte is ASCII digit
 pub fn is_number(c: u8) -> bool {
-    c >= b'0' && c <= b'9'
+    c.is_ascii_digit()
 }
 
 /// Check if a byte is version compoment separator
@@ -16,7 +16,7 @@ pub fn is_separator(c: u8) -> bool {
 }
 
 pub fn to_lower(c: u8) -> u8 {
-    if c >= b'A' && c <= b'Z' {
+    if c.is_ascii_uppercase() {
         c - b'A' + b'a'
     } else {
         c
