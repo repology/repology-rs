@@ -47,6 +47,7 @@
 			<td class="text-center">{% if repository.fields.contains("licenses") %}✔{% endif %}</td>
 			<td class="text-center">
 				{%- if repository.link_types.contains(0|ref) || repository.link_types.contains(1|ref) %}✔
+				{%- else if repository.source_type == "modules" %}-
 				{%- else %}<span class="text-danger" title="Repository must provide link to upstream">✘</span>{% endif -%}
 			</td>
 			<td class="text-center">
