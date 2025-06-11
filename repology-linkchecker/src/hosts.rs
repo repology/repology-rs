@@ -81,7 +81,6 @@ impl HostSettings {
             RecheckCase::Manual => {
                 const RECHECK_INTERVALS: &[Duration] = &[
                     Duration::from_hours(1),
-                    Duration::from_hours(4),
                     Duration::from_days(1),
                     Duration::from_days(3),
                 ];
