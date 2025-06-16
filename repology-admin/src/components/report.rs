@@ -109,9 +109,9 @@ impl Report {
                         .card-header-title {
                             .mr-2 {
                                 a href={(config.repology_host) "/project/" (self.effname) "/versions"} { (self.effname) }
-                                @if let Some(classified_effname) = self.effname.strip_suffix("-unclassified") {
+                                @if let Some(parent_effname) = self.effname.strip_suffix("-unclassified").or_else(|| self.effname.strip_suffix("-misnamed")) {
                                     " (see also ";
-                                    a href={(config.repology_host) "/project/" (classified_effname) "/versions"} { (classified_effname) };
+                                    a href={(config.repology_host) "/project/" (parent_effname) "/versions"} { (parent_effname) };
                                     ")"
                                 }
                             }
