@@ -9,12 +9,9 @@ use std::time::Duration;
 use axum::Router;
 use axum::http::{HeaderValue, StatusCode, header};
 use axum::routing::get;
-use serial_test::serial;
-use tracing_test::traced_test;
 
 use repology_common::LinkStatus;
 
-use crate::http_client::python::PythonHttpClient;
 use crate::http_client::{HttpClient, HttpMethod, HttpRequest};
 
 async fn run_test_server() -> (SocketAddr, SocketAddr) {
@@ -55,43 +52,9 @@ async fn run_test_server() -> (SocketAddr, SocketAddr) {
     )
 }
 
-fn has_python_childs() -> bool {
-    // TODO: check for pyton in pchild processes
-    // run tests with this check in serially
-    false
-}
-
 #[tokio::test]
-#[traced_test]
-#[serial(python)]
-async fn test_lifecycle() {
-    {
-        has_python_childs();
-        let _ = PythonHttpClient::new("repology/linkchecker", "python")
-            .await
-            .unwrap();
-        has_python_childs();
-    }
-    has_python_childs();
-    // checker cleanup is detacked, so we have to wait
-    tokio::time::sleep(Duration::from_secs(1)).await;
-    assert!(logs_contain(
-        "handle_messages: repology_linkchecker::http_client::python: done on EOF"
-    ));
-    assert!(logs_contain(
-        "handle_responses: repology_linkchecker::http_client::python: done on EOF"
-    ));
-    assert!(logs_contain(
-        "handle_requests: repology_linkchecker::http_client::python: done"
-    ));
-}
-
-#[tokio::test]
-#[serial(python)]
 async fn test_request_200() {
-    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
-        .await
-        .unwrap();
+    let http_client = HttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
     let response = http_client
@@ -118,11 +81,8 @@ async fn test_request_200() {
 }
 
 #[tokio::test]
-#[serial(python)]
 async fn test_request_404() {
-    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
-        .await
-        .unwrap();
+    let http_client = HttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
     let response = http_client
@@ -149,11 +109,8 @@ async fn test_request_404() {
 }
 
 #[tokio::test]
-#[serial(python)]
 async fn test_request_redirect() {
-    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
-        .await
-        .unwrap();
+    let http_client = HttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
     let response = http_client
@@ -180,14 +137,11 @@ async fn test_request_redirect() {
 }
 
 #[tokio::test]
-#[serial(python)]
 async fn test_request_timeout() {
-    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
-        .await
-        .unwrap();
+    let requester = HttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
-    let response = http_client
+    let response = requester
         .request(HttpRequest {
             url: format!("http://example.com:{}/timeout", ipv4_addr.port()),
             method: HttpMethod::Head,
@@ -198,7 +152,7 @@ async fn test_request_timeout() {
     assert_eq!(response.status, LinkStatus::Timeout);
     assert_eq!(response.location, None);
 
-    let response = http_client
+    let response = requester
         .request(HttpRequest {
             url: format!("http://example.com:{}/timeout", ipv6_addr.port()),
             method: HttpMethod::Head,
@@ -211,11 +165,8 @@ async fn test_request_timeout() {
 }
 
 #[tokio::test]
-#[serial(python)]
 async fn test_request_ssl_error() {
-    let http_client = PythonHttpClient::new("repology/linkchecker", "python")
-        .await
-        .unwrap();
+    let http_client = HttpClient::new("repology/linkchecker".to_string());
     let (ipv4_addr, ipv6_addr) = run_test_server().await;
 
     let response = http_client

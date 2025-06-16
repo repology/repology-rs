@@ -2521,7 +2521,6 @@ name = "repology-linkchecker"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "async-trait",
  "axum",
  "chrono",
  "clap",
@@ -2540,10 +2539,8 @@ dependencies = [
  "rustls",
  "rustls-webpki",
  "serde",
- "serde_json",
  "serial_test",
  "sqlx",
- "tempfile",
  "tokio",
  "toml",
  "tracing",

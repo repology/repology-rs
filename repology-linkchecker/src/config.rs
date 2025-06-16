@@ -28,9 +28,6 @@ pub const DEFAULT_MAX_QUEUED_URLS: usize = 100000;
 pub const DEFAULT_MAX_QUEUED_URLS_PER_BUCKET: usize = 1000;
 pub const DEFAULT_MAX_BUCKETS: usize = 1000;
 
-// requester
-pub const DEFAULT_PYTHON_PATH: &str = "/usr/bin/python";
-
 // Note: do not use default values for args which are also present in
 // FileConfig, otherwise config settings will always be overwritten
 // by default clap value. Also, since clap does not allow to provide
@@ -128,12 +125,6 @@ pub struct CliArgs {
     /// Default: 1000
     #[arg(long, value_name = "COUNT", help_heading = "Task queueing")]
     pub max_buckets: Option<usize>,
-
-    /// Path to Python interpreter
-    ///
-    /// Default: /usr/bin/python
-    #[arg(long, value_name = "PATH", help_heading = "HTTP requests")]
-    pub python_path: Option<String>,
 
     /// Repology hostname
     ///
@@ -254,7 +245,6 @@ struct FileConfig {
     max_queued_urls: Option<usize>,
     max_queued_urls_per_bucket: Option<usize>,
     max_buckets: Option<usize>,
-    python_path: Option<String>,
     disable_ipv4: Option<bool>,
     disable_ipv6: Option<bool>,
     satisfy_with_ipv6: Option<bool>,
@@ -280,7 +270,6 @@ pub struct Config {
     pub max_queued_urls: usize,
     pub max_queued_urls_per_bucket: usize,
     pub max_buckets: usize,
-    pub python_path: String,
     pub disable_ipv4: bool,
     pub disable_ipv6: bool,
     pub satisfy_with_ipv6: bool,
@@ -385,10 +374,6 @@ impl Config {
                 .max_buckets
                 .or(config.max_buckets)
                 .unwrap_or(DEFAULT_MAX_BUCKETS),
-            python_path: args
-                .python_path
-                .or(config.python_path)
-                .unwrap_or_else(|| DEFAULT_PYTHON_PATH.to_string()),
             disable_ipv4: args.disable_ipv4 || config.disable_ipv4.unwrap_or(false),
             disable_ipv6: args.disable_ipv6 || config.disable_ipv6.unwrap_or(false),
             satisfy_with_ipv6: args.satisfy_with_ipv6 || config.satisfy_with_ipv6.unwrap_or(false),

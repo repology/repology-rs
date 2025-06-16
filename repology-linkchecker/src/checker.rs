@@ -6,7 +6,7 @@ use std::time::Instant;
 use chrono::{DateTime, Utc};
 use http::status::StatusCode;
 use metrics::{counter, histogram};
-use tracing::{error, info, warn};
+use tracing::{info, warn};
 use url::Url;
 
 use repology_common::{LinkStatus, LinkStatusWithRedirect};
@@ -49,30 +49,24 @@ pub struct CheckTask {
     pub failure_streak: Option<u16>,
 }
 
-pub struct Checker<'a, R, ER> {
+pub struct Checker<'a> {
     resolver_cache_ipv4: ResolverCache,
     resolver_cache_ipv6: ResolverCache,
     hosts: &'a Hosts,
     delayer: &'a Delayer,
-    http_client: &'a R,
-    experimental_http_client: &'a ER,
+    http_client: &'a HttpClient,
     disable_ipv4: bool,
     disable_ipv6: bool,
     satisfy_with_ipv6: bool,
     fast_failure_recheck: bool,
 }
 
-impl<'a, R, ER> Checker<'a, R, ER>
-where
-    R: HttpClient + Send + Sync + 'static,
-    ER: HttpClient + Send + Sync + 'static,
-{
+impl<'a> Checker<'a> {
     pub fn new(
         resolver: &Resolver,
         hosts: &'a Hosts,
         delayer: &'a Delayer,
-        http_client: &'a R,
-        experimental_http_client: &'a ER,
+        http_client: &'a HttpClient,
     ) -> Self {
         Self {
             resolver_cache_ipv4: resolver.create_cache(IpVersion::Ipv4),
@@ -80,7 +74,6 @@ where
             hosts,
             delayer,
             http_client,
-            experimental_http_client,
             disable_ipv4: false,
             disable_ipv6: false,
             satisfy_with_ipv6: false,
@@ -113,8 +106,7 @@ where
         hosts: &Hosts,
         delayer: &Delayer,
         request: HttpRequest,
-        http_client: &R,
-        experimental_http_client: &ER,
+        http_client: &HttpClient,
     ) -> HttpResponse {
         let host_settings = hosts.get_settings(host);
         delayer
@@ -133,99 +125,6 @@ where
             _ => {}
         }
 
-        let mut experiment_prob: f32 = match response.status {
-            LinkStatus::Http(429) => 0.0,
-            LinkStatus::Http(200) => 0.01,
-            LinkStatus::Http(403)
-            | LinkStatus::Http(404)
-            | LinkStatus::Http(500)
-            | LinkStatus::Timeout => 0.01,
-            _ => 1.0,
-        };
-
-        if response.is_cloudflare {
-            experiment_prob = 1.0;
-        }
-
-        if rand::random::<f32>() < experiment_prob {
-            delayer
-                .reserve(hosts.get_aggregation(host), host_settings.delay)
-                .await;
-            counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str()).increment(1);
-            let experimental_response = experimental_http_client.request(request.clone()).await;
-
-            use LinkStatus::*;
-            let ignore_experiment = host == "code.google.com" // flapping 500's
-                || host == "pyropus.ca." // native checker is correct
-                || host == "mirrors.nav.ro" // ConnectionRefused for python, not worth investigating
-                || host == "linkedin.com" || host.ends_with(".linkedin.com") // http 999 for native, confirmed with curl; 3xx/4xx codes for python, not worth investigating
-                || host == "zdoom.org" || host == "www.zdoom.org" // ServerDisconnected from python, ok from native
-                || host == "gnu.org" || host == "www.gnu.org" // flapping ConnectionRefused
-                || host.contains("hneukirchen") // flapping HostUnreachable
-                || host == "www.cs.nott.ac.uk" // drops connection after lowercase headers, repology/repology-rs#252
-                || host == "www.vectorcamp.gr" // known failure, probably due to line folding
-                || host == "afflib.org" // drops connection, reproducible with curl
-                || host == "epass.icbc.com.cn" // bad server, reproducible with curl
-                || host == "www.zspapapa.com" // bad server, reproducible with curl
-                || host == "biodiversityinformatics.amnh.org" // 403, confirmed by curl
-                || host == "www.microsip.org" // flaky 404 ⇄ 301
-                || host == "ext.by" // misconfigured malicious client blocker
-                || host == "_-.pages.debian.net" // invalid hostname, handled corrently by native checker
-                || host == "legoeducation.cn" // 405 confirmed with curl
-                || host == "madoguchi.fyralabs.com" // flaky 404 ⇄ 303
-                || host == "yandex.cloud" // flaky 404 ⇄ 303
-                || host == "yandex.com" || host == "yandex.ru" // 301 → 302 of unknown cause
-                || host == "www.amb.org" // does not support tsl1.3
-                || host == "katalix.com" // does not support tsl1.3
-                || host == "nchc.dl.sourceforge.net" // does not support tsl1.3
-                || host == "subgit.com" // does not support tsl1.3
-                || host == "flow.team" // 403 for rust client
-                || host == "wise.co.kr" // completely broken according to ssllabs
-                || host == "www.stykz.net" // flaky 301 ⇄ 415
-                || host == "gitlab.com" && experimental_response.status == ConnectionResetByPeer // flaky
-                || host == "sleekxmpp.com" // confirmed with curl
-                || response.is_iis && experimental_response.status == ConnectionResetByPeer
-                || request.url.contains("%%") // https://metacpan.org/release/%%7Bdist%7D: probably an invalid url, but native checker handles in
-                || response.status == Http(429) || experimental_response.status == Http(429) // 429s
-                || experimental_response.status == Http(200) // flapping
-                || experimental_response.status == Timeout   // flapping
-                || response.status == BadHttp // aiohttp specific failures (https://git.lighttpd.net/lighttpd/fcgi-cgi.git/snapshot/fcgi-cgi-0.2.2.tar.gz, http://www.fefe.de/dietlibc)
-                // flapping errors
-                || matches!(response.status, Http(500) | Http(501) | Http(502) | Http(503) | Http(504) | Http(200) | Timeout)
-                    && matches!(experimental_response.status, Http(..) | Timeout)
-                || matches!(response.status, Http(..) | Timeout)
-                    && matches!(experimental_response.status, Http(500) | Http(501) | Http(502) | Http(503) | Http(504) | Http(200) | Timeout)
-                || response.status == SslError && experimental_response.status == SslHandshakeFailure // same error named differently in backends
-                // kinda interchangeable errors
-                || response.status == Timeout && experimental_response.status == HostUnreachable
-                || matches!(response.status, ServerDisconnected|ConnectionResetByPeer)
-                    && matches!(experimental_response.status, ServerDisconnected|ConnectionResetByPeer|ConnectionRefused)
-                // expected discrepancies due to different ssl backends
-                || response.status.is_ssl_error() && experimental_response.status.is_ssl_error()
-                // cloudflare:
-                // - 301 ⇄ 302 flaps, reproducible with curl
-                // - flapping 522s
-                || (response.is_cloudflare || experimental_response.is_cloudflare)
-                    && matches!(response.status, Http(301) | Http(302) | Http(522)) && matches!(experimental_response.status, Http(301) | Http(302) | Http(522))
-                // cloudflare often 403s python client for some reason
-                || (response.is_cloudflare || experimental_response.is_cloudflare)
-                    && response.status == Http(403)
-                // recovery from ssl and connection errors
-                || response.status.is_ssl_error() && matches!(experimental_response.status, Http(..))
-                || response.status.is_connection_error() && matches!(experimental_response.status, Http(..))
-                // leave semicolon on the next line for convenience
-            ;
-
-            if ignore_experiment {
-            } else if response.status != experimental_response.status {
-                counter!("repology_linkchecker_checker_experimental_requests_total", "outcome" => "mismatch", "status" => response.status.to_string()).increment(1);
-                error!(url = request.url, status = ?response.status, experimental_status = ?experimental_response.status, "experimental status mismatch");
-            } else {
-                counter!("repology_linkchecker_checker_experimental_requests_total", "outcome" => "match")
-                    .increment(1);
-            }
-        }
-
         response
     }
 
@@ -234,8 +133,7 @@ where
         hosts: &Hosts,
         delayer: &Delayer,
         resolver_cache: &mut ResolverCache,
-        http_client: &R,
-        experimental_http_client: &ER,
+        http_client: &HttpClient,
     ) -> Result<HttpResponse, LinkStatus> {
         let host = url
             .host_str()
@@ -261,7 +159,6 @@ where
                             timeout: host_settings.timeout,
                         },
                         http_client,
-                        experimental_http_client,
                     )
                     .await;
 
@@ -283,7 +180,6 @@ where
                         timeout: host_settings.timeout,
                     },
                     http_client,
-                    experimental_http_client,
                 )
                 .await)
             }
@@ -296,8 +192,7 @@ where
         hosts: &Hosts,
         delayer: &Delayer,
         resolver_cache: &mut ResolverCache,
-        http_client: &R,
-        experimental_http_client: &ER,
+        http_client: &HttpClient,
     ) -> LinkStatusWithRedirect {
         let mut url = url;
         let mut num_redirects = 0;
@@ -305,21 +200,15 @@ where
         let mut permanent_redirect_target: Option<String> = None;
 
         loop {
-            let response = match Self::handle_one_request(
-                &url,
-                hosts,
-                delayer,
-                resolver_cache,
-                http_client,
-                experimental_http_client,
-            )
-            .await
-            {
-                Ok(response) => response,
-                Err(status) => {
-                    return status.into();
-                }
-            };
+            let response =
+                match Self::handle_one_request(&url, hosts, delayer, resolver_cache, http_client)
+                    .await
+                {
+                    Ok(response) => response,
+                    Err(status) => {
+                        return status.into();
+                    }
+                };
 
             let (status, location) = (response.status, response.location);
 
@@ -443,7 +332,6 @@ where
                         self.delayer,
                         &mut self.resolver_cache_ipv6,
                         self.http_client,
-                        self.experimental_http_client,
                     )
                     .await;
                     skip_ipv4 = self.satisfy_with_ipv6 && ipv6_status.is_success() == Some(true);
@@ -460,7 +348,6 @@ where
                         self.delayer,
                         &mut self.resolver_cache_ipv4,
                         self.http_client,
-                        self.experimental_http_client,
                     )
                     .await;
                 }
