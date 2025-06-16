@@ -63,8 +63,14 @@ impl Reports {
 
     pub fn render(&self, flags: &ReportFlags, config: &Config) -> Markup {
         html! {
-            @for report in &self.reports {
-                (report.render(flags, config))
+            @if self.reports.is_empty() {
+                p {
+                    "No reports found"
+                }
+            } @else {
+                @for report in &self.reports {
+                    (report.render(flags, config))
+                }
             }
         }
     }
