@@ -182,7 +182,7 @@ where
                 || host == "flow.team" // 403 for rust client
                 || host == "wise.co.kr" // completely broken according to ssllabs
                 || host == "www.stykz.net" // flaky 301 ⇄ 415
-                || host == "gitlab.com" && experimental_response.status == ConnectionRefused // flaky
+                || host == "gitlab.com" && experimental_response.status == ConnectionResetByPeer // flaky
                 || host == "sleekxmpp.com" // confirmed with curl
                 || response.is_iis && experimental_response.status == ConnectionResetByPeer
                 || request.url.contains("%%") // https://metacpan.org/release/%%7Bdist%7D: probably an invalid url, but native checker handles in
