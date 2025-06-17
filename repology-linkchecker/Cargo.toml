@@ -39,6 +39,3 @@ url = { version = "2.5.4", features = ["serde"] }
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1", features = ["macros"] }
 axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6", features = ["macros"] }
-pretty_assertions = "1.4.1"
-serial_test = { version = "3.2.0", default-features = false, features = ["async"] }
-tracing-test = "0.2.5"
