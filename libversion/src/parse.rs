@@ -9,6 +9,7 @@ pub enum KeywordClass {
     PostRelease,
 }
 
+#[allow(clippy::if_same_then_else)]
 pub fn classify_keyword(s: &str, flags: Flags) -> KeywordClass {
     if string_is_equal_to_lowercase(s, "alpha") {
         return KeywordClass::PreRelease;
