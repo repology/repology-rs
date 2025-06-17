@@ -158,8 +158,10 @@ impl Feeder {
                 },
                 last_checked: link.last_checked,
                 deadline: link.next_check,
-                prev_ipv4_status: LinkStatus::from_code_with_fallback(link.ipv4_status_code),
-                prev_ipv6_status: LinkStatus::from_code_with_fallback(link.ipv6_status_code),
+                prev_ipv4_status: LinkStatus::try_from(link.ipv4_status_code)
+                    .unwrap_or(LinkStatus::UnknownError),
+                prev_ipv6_status: LinkStatus::try_from(link.ipv6_status_code)
+                    .unwrap_or(LinkStatus::UnknownError),
                 last_success: link.last_success,
                 failure_streak: link
                     .failure_streak

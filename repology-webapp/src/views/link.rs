@@ -13,6 +13,7 @@ use axum::response::IntoResponse;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
 use sqlx::FromRow;
+use tracing::error;
 
 use repology_common::LinkStatus;
 
@@ -53,21 +54,35 @@ struct Link {
     ipv6_permanent_redirect_target: Option<String>,
 }
 
-impl TryFrom<DbLink> for Link {
-    type Error = anyhow::Error;
-
-    fn try_from(link: DbLink) -> Result<Self, Self::Error> {
-        Ok(Self {
+impl From<DbLink> for Link {
+    fn from(link: DbLink) -> Self {
+        let ipv4_status = LinkStatus::try_from(link.ipv4_status_code).unwrap_or_else(|_| {
+            error!(
+                url = link.url,
+                code = link.ipv4_status_code,
+                "unknown link ipv4 status code encountered"
+            );
+            LinkStatus::UnknownError
+        });
+        let ipv6_status = LinkStatus::try_from(link.ipv6_status_code).unwrap_or_else(|_| {
+            error!(
+                url = link.url,
+                code = link.ipv4_status_code,
+                "unknown link ipv6 status code encountered"
+            );
+            LinkStatus::UnknownError
+        });
+        Self {
             url: link.url,
             first_extracted: link.first_extracted,
             last_checked: link.last_checked,
             last_success: link.last_success,
             last_failure: link.last_failure,
-            ipv4_status: LinkStatus::try_from(link.ipv4_status_code)?,
+            ipv4_status,
             ipv4_permanent_redirect_target: link.ipv4_permanent_redirect_target,
-            ipv6_status: LinkStatus::try_from(link.ipv6_status_code)?,
+            ipv6_status,
             ipv6_permanent_redirect_target: link.ipv6_permanent_redirect_target,
-        })
+        }
     }
 }
 
@@ -104,7 +119,7 @@ pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -
         )],
         TemplateParams {
             ctx,
-            link: link.try_into()?,
+            link: link.into(),
         }
         .render()?,
     )

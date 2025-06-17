@@ -7,7 +7,6 @@ use std::str::FromStr;
 
 use serde::Deserialize;
 use strum::{EnumDiscriminants, EnumIter, IntoStaticStr};
-use tracing::error; // XXX: better eliminate this dependency
 
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub enum ParseLinkStatusError {
@@ -36,6 +35,9 @@ impl From<ParseIntError> for ParseLinkStatusError {
     }
 }
 
+// Note: better not remove variants from this enum unless these have no
+// instances in database `links` table. Otherwise, these will be converted
+// into `UnknownError`s
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, EnumDiscriminants)]
 #[repr(i16)]
 #[strum_discriminants(derive(IntoStaticStr, EnumIter))]
@@ -139,7 +141,96 @@ impl LinkStatus {
         }
     }
 
-    pub fn from_code(code: i16) -> Result<Self, ParseLinkStatusError> {
+    pub fn pick_from46(ipv4: Self, ipv6: Self) -> Self {
+        use LinkStatus::*;
+        if ipv4 == Http(200) || ipv6 == Http(200) {
+            Http(200)
+        } else if ipv4.is_not_checked() {
+            ipv6
+        } else {
+            ipv4
+        }
+    }
+}
+
+impl std::fmt::Display for LinkStatus {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Self::Http(code) => {
+                write!(f, "{code}")
+            }
+            _ => {
+                let s: &'static str = LinkStatusDiscriminants::from(self).into();
+                write!(f, "{s}")
+            }
+        }
+    }
+}
+
+impl FromStr for LinkStatus {
+    type Err = ParseLinkStatusError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        if !s.is_empty() && s.chars().all(|ch| ch.is_ascii_digit()) {
+            let http_code: u16 = s.parse()?;
+            Ok(Self::Http(http_code))
+        } else {
+            match s {
+                "NotYetProcessed" => Ok(Self::NotYetProcessed),
+                "Skipped" => Ok(Self::Skipped),
+                "OutOfSample" => Ok(Self::OutOfSample),
+                "SatisfiedWithIpv6Success" => Ok(Self::SatisfiedWithIpv6Success),
+                "UnsupportedScheme" => Ok(Self::UnsupportedScheme),
+                "ProtocolDisabled" => Ok(Self::ProtocolDisabled),
+                "ProtocolDisabledForHost" => Ok(Self::ProtocolDisabledForHost),
+
+                "Timeout" => Ok(Self::Timeout),
+                "InvalidUrl" => Ok(Self::InvalidUrl),
+                "Blacklisted" => Ok(Self::Blacklisted),
+                "UnknownError" => Ok(Self::UnknownError),
+
+                "DnsError" => Ok(Self::DnsError),
+                "DnsDomainNotFound" => Ok(Self::DnsDomainNotFound),
+                "DnsNoAddressRecord" => Ok(Self::DnsNoAddressRecord),
+                "DnsRefused" => Ok(Self::DnsRefused),
+                "DnsTimeout" => Ok(Self::DnsTimeout),
+                "DnsIpv4MappedInAaaa" => Ok(Self::DnsIpv4MappedInAaaa),
+                "NonGlobalIpAddress" => Ok(Self::NonGlobalIpAddress),
+                "InvalidCharactersInHostname" => Ok(Self::InvalidCharactersInHostname),
+                "InvalidHostname" => Ok(Self::InvalidHostname),
+
+                "ConnectionRefused" => Ok(Self::ConnectionRefused),
+                "HostUnreachable" => Ok(Self::HostUnreachable),
+                "ConnectionResetByPeer" => Ok(Self::ConnectionResetByPeer),
+                "NetworkUnreachable" => Ok(Self::NetworkUnreachable),
+                "ServerDisconnected" => Ok(Self::ServerDisconnected),
+                "ConnectionAborted" => Ok(Self::ConnectionAborted),
+                "AddressNotAvailable" => Ok(Self::AddressNotAvailable),
+
+                "TooManyRedirects" => Ok(Self::TooManyRedirects),
+                "BadHttp" => Ok(Self::BadHttp),
+                "RedirectToNonHttp" => Ok(Self::RedirectToNonHttp),
+
+                "SslError" => Ok(Self::SslError),
+                "SslCertificateHasExpired" => Ok(Self::SslCertificateHasExpired),
+                "SslCertificateHostnameMismatch" => Ok(Self::SslCertificateHostnameMismatch),
+                "SslCertificateSelfSigned" => Ok(Self::SslCertificateSelfSigned),
+                "SslCertificateSelfSignedInChain" => Ok(Self::SslCertificateSelfSignedInChain),
+                "SslCertificateIncompleteChain" => Ok(Self::SslCertificateIncompleteChain),
+                "SslHandshakeFailure" => Ok(Self::SslHandshakeFailure),
+                "CertificateUnknownIssuer" => Ok(Self::CertificateUnknownIssuer),
+                "InvalidCertificate" => Ok(Self::InvalidCertificate),
+
+                _ => Err(ParseLinkStatusError::BadErrorName),
+            }
+        }
+    }
+}
+
+impl TryFrom<i16> for LinkStatus {
+    type Error = ParseLinkStatusError;
+
+    fn try_from(code: i16) -> Result<Self, Self::Error> {
         use LinkStatusDiscriminants as D;
         match code {
             code if code > 0 => Ok(Self::Http(code as u16)),
@@ -199,117 +290,6 @@ impl LinkStatus {
 
             _ => Err(ParseLinkStatusError::BadCode),
         }
-    }
-
-    pub fn from_code_with_fallback(code: i16) -> Self {
-        Self::from_code(code).unwrap_or_else(|_| {
-            error!(code, "unknown http status code");
-            Self::UnknownError
-        })
-    }
-
-    pub fn from_error_name(name: &str) -> Result<Self, ParseLinkStatusError> {
-        match name {
-            "NotYetProcessed" => Ok(Self::NotYetProcessed),
-            "Skipped" => Ok(Self::Skipped),
-            "OutOfSample" => Ok(Self::OutOfSample),
-            "SatisfiedWithIpv6Success" => Ok(Self::SatisfiedWithIpv6Success),
-            "UnsupportedScheme" => Ok(Self::UnsupportedScheme),
-            "ProtocolDisabled" => Ok(Self::ProtocolDisabled),
-            "ProtocolDisabledForHost" => Ok(Self::ProtocolDisabledForHost),
-
-            "Timeout" => Ok(Self::Timeout),
-            "InvalidUrl" => Ok(Self::InvalidUrl),
-            "Blacklisted" => Ok(Self::Blacklisted),
-            "UnknownError" => Ok(Self::UnknownError),
-
-            "DnsError" => Ok(Self::DnsError),
-            "DnsDomainNotFound" => Ok(Self::DnsDomainNotFound),
-            "DnsNoAddressRecord" => Ok(Self::DnsNoAddressRecord),
-            "DnsRefused" => Ok(Self::DnsRefused),
-            "DnsTimeout" => Ok(Self::DnsTimeout),
-            "DnsIpv4MappedInAaaa" => Ok(Self::DnsIpv4MappedInAaaa),
-            "NonGlobalIpAddress" => Ok(Self::NonGlobalIpAddress),
-            "InvalidCharactersInHostname" => Ok(Self::InvalidCharactersInHostname),
-            "InvalidHostname" => Ok(Self::InvalidHostname),
-
-            "ConnectionRefused" => Ok(Self::ConnectionRefused),
-            "HostUnreachable" => Ok(Self::HostUnreachable),
-            "ConnectionResetByPeer" => Ok(Self::ConnectionResetByPeer),
-            "NetworkUnreachable" => Ok(Self::NetworkUnreachable),
-            "ServerDisconnected" => Ok(Self::ServerDisconnected),
-            "ConnectionAborted" => Ok(Self::ConnectionAborted),
-            "AddressNotAvailable" => Ok(Self::AddressNotAvailable),
-
-            "TooManyRedirects" => Ok(Self::TooManyRedirects),
-            "BadHttp" => Ok(Self::BadHttp),
-            "RedirectToNonHttp" => Ok(Self::RedirectToNonHttp),
-
-            "SslError" => Ok(Self::SslError),
-            "SslCertificateHasExpired" => Ok(Self::SslCertificateHasExpired),
-            "SslCertificateHostnameMismatch" => Ok(Self::SslCertificateHostnameMismatch),
-            "SslCertificateSelfSigned" => Ok(Self::SslCertificateSelfSigned),
-            "SslCertificateSelfSignedInChain" => Ok(Self::SslCertificateSelfSignedInChain),
-            "SslCertificateIncompleteChain" => Ok(Self::SslCertificateIncompleteChain),
-            "SslHandshakeFailure" => Ok(Self::SslHandshakeFailure),
-            "CertificateUnknownIssuer" => Ok(Self::CertificateUnknownIssuer),
-            "InvalidCertificate" => Ok(Self::InvalidCertificate),
-
-            _ => Err(ParseLinkStatusError::BadErrorName),
-        }
-    }
-
-    pub fn from_error_name_with_fallback(name: &str) -> Self {
-        Self::from_error_name(name).unwrap_or_else(|_| {
-            error!(name, "unknown http status error name");
-            Self::UnknownError
-        })
-    }
-
-    pub fn pick_from46(ipv4: Self, ipv6: Self) -> Self {
-        use LinkStatus::*;
-        if ipv4 == Http(200) || ipv6 == Http(200) {
-            Http(200)
-        } else if ipv4.is_not_checked() {
-            ipv6
-        } else {
-            ipv4
-        }
-    }
-}
-
-impl std::fmt::Display for LinkStatus {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            Self::Http(code) => {
-                write!(f, "{code}")
-            }
-            _ => {
-                let s: &'static str = LinkStatusDiscriminants::from(self).into();
-                write!(f, "{s}")
-            }
-        }
-    }
-}
-
-impl FromStr for LinkStatus {
-    type Err = ParseLinkStatusError;
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if !s.is_empty() && s.chars().all(|ch| ch.is_ascii_digit()) {
-            let http_code: u16 = s.parse()?;
-            Ok(Self::Http(http_code))
-        } else {
-            Self::from_error_name(s)
-        }
-    }
-}
-
-impl TryFrom<i16> for LinkStatus {
-    type Error = ParseLinkStatusError;
-
-    fn try_from(code: i16) -> Result<Self, Self::Error> {
-        Self::from_code(code)
     }
 }
 
@@ -372,7 +352,7 @@ mod tests {
 
     #[test]
     fn test_http_conversions() {
-        assert_eq!(LinkStatus::from_code(200).unwrap(), LinkStatus::Http(200));
+        assert_eq!(LinkStatus::try_from(200).unwrap(), LinkStatus::Http(200));
         assert_eq!(LinkStatus::from_str("200").unwrap(), LinkStatus::Http(200));
         assert_eq!(LinkStatus::Http(200).code(), 200);
         assert_eq!(LinkStatus::Http(200).to_string(), "200".to_string());
@@ -381,7 +361,7 @@ mod tests {
     #[test]
     fn test_error_conversions() {
         for code in LinkStatusDiscriminants::iter().map(|d| d as i16) {
-            let status = LinkStatus::from_code(code).unwrap();
+            let status = LinkStatus::try_from(code).unwrap();
             assert_eq!(status.code(), code);
             assert_eq!(LinkStatus::from_str(&status.to_string()).unwrap(), status);
         }
@@ -390,12 +370,8 @@ mod tests {
     #[test]
     fn test_failing_conversions() {
         assert_eq!(
-            LinkStatus::from_code(-9999),
+            LinkStatus::try_from(-9999),
             Err(ParseLinkStatusError::BadCode)
-        );
-        assert_eq!(
-            LinkStatus::from_error_name("FooBar"),
-            Err(ParseLinkStatusError::BadErrorName)
         );
         assert_eq!(
             LinkStatus::from_str("FooBar"),
