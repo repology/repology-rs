@@ -63,13 +63,10 @@ impl DatasourceProcessor for CpeProcessor<'_> {
         let mut delete_batch: Vec<Cpe> = vec![];
 
         for product in &root.products {
-            let cpe = match Cpe::from_str(&product.cpe.cpe_name) {
-                Ok(cpe) => cpe,
-                Err(_) => {
-                    // XXX: log these cases
-                    counter!("repology_vulnupdater_processor_products_total", "status" => "skipped", "skip_reason" => "unparsable CPE").increment(1);
-                    continue;
-                }
+            let Ok(cpe) = Cpe::from_str(&product.cpe.cpe_name) else {
+                // XXX: log these cases
+                counter!("repology_vulnupdater_processor_products_total", "status" => "skipped", "skip_reason" => "unparsable CPE").increment(1);
+                continue;
             };
 
             if cpe.part != Part::Applications {

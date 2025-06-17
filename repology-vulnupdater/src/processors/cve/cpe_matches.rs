@@ -98,9 +98,7 @@ impl<'a> CpeMatches<'a> {
                 continue;
             }
 
-            let cpe = if let Ok(cpe) = Cpe::from_str(&cpe_match.criteria) {
-                cpe
-            } else {
+            let Ok(cpe) = Cpe::from_str(&cpe_match.criteria) else {
                 // TODO: log or fix these cases
                 counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "skipped", "skip_reason" => "unparsable CPE").increment(1);
                 continue;

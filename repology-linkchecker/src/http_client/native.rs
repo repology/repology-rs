@@ -96,7 +96,7 @@ impl HttpClient for NativeHttpClient {
                 }
             }
             Err(error) => HttpResponse {
-                status: extract_status(&error, error.url().map(url::Url::as_str).unwrap_or("???")),
+                status: extract_status(&error, &request.url),
                 location: None,
                 is_cloudflare: false,
                 is_iis: false,

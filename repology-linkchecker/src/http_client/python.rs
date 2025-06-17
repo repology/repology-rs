@@ -73,7 +73,7 @@ impl PythonHttpClient {
         let state: Arc<Mutex<State>> = Default::default();
 
         {
-            let state = state.clone();
+            let state = Arc::clone(&state);
             tokio::spawn(Self::handle_requests(state, python_stdin, request_rx));
         }
         tokio::spawn(Self::handle_responses(state, python_stdout, started_tx));
