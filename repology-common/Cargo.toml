@@ -3,6 +3,9 @@ name = "repology-common"
 version = "0.1.0"
 edition = "2024"
 
+[lints]
+workspace = true
+
 [dependencies]
 bitflags = "2.9.1"
 serde = { version = "1.0.219", features = ["derive"] }

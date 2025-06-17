@@ -3,6 +3,9 @@ name = "repology-admin"
 version = "0.1.0"
 edition = "2024"
 
+[lints]
+workspace = true
+
 [dependencies]
 anyhow = "1.0.98"
 # Using dev branch until mainline supports matchit >=0.8.6

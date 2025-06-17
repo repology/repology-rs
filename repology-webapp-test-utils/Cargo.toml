@@ -3,6 +3,9 @@ name = "repology-webapp-test-utils"
 version = "0.1.0"
 edition = "2024"
 
+[lints]
+workspace = true
+
 [dependencies]
 # Using dev branch until mainline supports matchit >=0.8.6
 #axum = { version = "0.8.1" }

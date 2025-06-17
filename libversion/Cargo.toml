@@ -9,5 +9,8 @@ categories = ["algorithms", "version", "comparison"]
 license = "MIT"
 edition = "2024"
 
+[lints]
+workspace = true
+
 [dependencies]
 bitflags = "2.9.1"
