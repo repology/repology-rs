@@ -322,6 +322,9 @@ impl ExtractStatus for std::io::Error {
             ConnectionReset => {
                 chooser.push(LinkStatus::ConnectionResetByPeer);
             }
+            BrokenPipe => {
+                chooser.push(LinkStatus::ConnectionResetByPeer);
+            }
             _ => {}
         }
         if let Some(inner) = self.get_ref() {
