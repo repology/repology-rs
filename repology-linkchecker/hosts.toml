@@ -26,6 +26,7 @@
 "files.pythonhosted.org".recheck_generated = 30
 "files.pythonhosted.org".recheck_manual = 30
 "git.alpinelinux.org".generated_sampling_percentage = 10
+"git.pld-linux.org".generated_sampling_percentage = 10
 "git.pld-linux.org".timeout = 5             # constant timeouts
 "gitee.com".delay = 5                       # 429s @ 3sec
 "gitee.com".generated_sampling_percentage = 10
