@@ -145,7 +145,7 @@ impl Queuer {
         let mut num_processed: usize = 0;
         let mut last_log_time = Instant::now();
 
-        let mut checker = Checker::new(&resolver, &hosts, &delayer, &*http_client)
+        let mut checker = Checker::new(&resolver, &hosts, &delayer, &http_client)
             .with_disable_ipv4(disable_ipv4)
             .with_disable_ipv6(disable_ipv6)
             .with_satisfy_with_ipv6(satisfy_with_ipv6)
