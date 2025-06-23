@@ -430,6 +430,7 @@ impl<'a> Checker<'a> {
                         url = task.url,
                         old = formatted_old,
                         new = formatted_new,
+                        check_duration = (Instant::now() - check_start).as_secs_f64(),
                         "link broke"
                     );
                 }
@@ -439,6 +440,7 @@ impl<'a> Checker<'a> {
                         url = task.url,
                         old = formatted_old,
                         new = formatted_new,
+                        check_duration = (Instant::now() - check_start).as_secs_f64(),
                         "new broken link"
                     );
                 }
