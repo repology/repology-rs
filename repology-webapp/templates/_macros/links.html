@@ -41,8 +41,6 @@
 		{%- when LinkStatus::SslCertificateHasExpired %}SSL error: certificate has expired
 		{%- when LinkStatus::SslCertificateHostnameMismatch %}SSL error: certificate issued for different hostname
 		{%- when LinkStatus::SslCertificateSelfSigned %}SSL error: self signed certificate
-		{%- when LinkStatus::SslCertificateSelfSignedInChain %}SSL error: self signed certificate in certificate chain
-		{%- when LinkStatus::SslCertificateIncompleteChain %}SSL error: incomplete certificate chain
 		{%- when LinkStatus::SslHandshakeFailure %}SSL handshake failure
 		{%- when LinkStatus::CertificateUnknownIssuer %}SSL error: invalid certificate: unknown issuer
 		{%- when LinkStatus::InvalidCertificate %}SSL error: invalid certificate

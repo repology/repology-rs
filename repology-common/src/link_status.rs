@@ -88,8 +88,6 @@ pub enum LinkStatus {
     SslCertificateHasExpired = -501,
     SslCertificateHostnameMismatch = -502,
     SslCertificateSelfSigned = -503,
-    SslCertificateSelfSignedInChain = -504,
-    SslCertificateIncompleteChain = -505,
     SslHandshakeFailure = -506,
     CertificateUnknownIssuer = -507,
     InvalidCertificate = -508,
@@ -216,12 +214,6 @@ impl TryFrom<i16> for LinkStatus {
                 Ok(Self::SslCertificateHostnameMismatch)
             }
             val if val == D::SslCertificateSelfSigned as i16 => Ok(Self::SslCertificateSelfSigned),
-            val if val == D::SslCertificateSelfSignedInChain as i16 => {
-                Ok(Self::SslCertificateSelfSignedInChain)
-            }
-            val if val == D::SslCertificateIncompleteChain as i16 => {
-                Ok(Self::SslCertificateIncompleteChain)
-            }
             val if val == D::SslHandshakeFailure as i16 => Ok(Self::SslHandshakeFailure),
             val if val == D::CertificateUnknownIssuer as i16 => Ok(Self::CertificateUnknownIssuer),
             val if val == D::InvalidCertificate as i16 => Ok(Self::InvalidCertificate),

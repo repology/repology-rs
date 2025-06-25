@@ -61,8 +61,6 @@ impl StatusChooser {
             SslCertificateHasExpired => 3,
             SslCertificateHostnameMismatch => 3,
             SslCertificateSelfSigned => 3,
-            SslCertificateSelfSignedInChain => 3,
-            SslCertificateIncompleteChain => 3,
             SslHandshakeFailure => 3,
             CertificateUnknownIssuer => 3,
         }
