@@ -141,6 +141,9 @@ impl ExtractStatus for h2::Error {
         if self.is_reset() {
             chooser.push(LinkStatus::ServerDisconnected);
         }
+        if self.is_go_away() {
+            chooser.push(LinkStatus::ServerDisconnected);
+        }
     }
 }
 
