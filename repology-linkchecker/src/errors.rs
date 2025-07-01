@@ -202,6 +202,9 @@ impl ExtractStatus for hyper::Error {
         if self.is_parse() {
             chooser.push(LinkStatus::BadHttp);
         }
+        if self.is_canceled() {
+            chooser.push(LinkStatus::ConnectionResetByPeer);
+        }
     }
 }
 
