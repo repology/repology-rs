@@ -1,5 +1,5 @@
 [workspace]
-members = ["repology-admin", "repology-common", "repology-webapp", "libversion", "repology-webapp-test-utils", "repology-vulnupdater", "repology-linkchecker"]
+members = ["repology-admin", "repology-common", "repology-webapp", "libversion", "repology-webapp-test-utils", "repology-vulnupdater", "repology-linkchecker", "repology-updater"]
 resolver = "3"
 
 [workspace.lints.clippy]

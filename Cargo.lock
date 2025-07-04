@@ -2533,6 +2533,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "repology-updater"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "strum",
+ "tempfile",
+]
+
+[[package]]
 name = "repology-vulnupdater"
 version = "0.1.0"
 dependencies = [
