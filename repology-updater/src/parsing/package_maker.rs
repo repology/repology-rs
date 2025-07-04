@@ -3,6 +3,7 @@
 
 use crate::package::Package;
 use crate::parsing::error::PackageParsingError;
+use crate::parsing::utils::version::VersionStripper;
 
 #[derive(Debug, Clone, Default)]
 pub struct PackageMaker {
@@ -18,6 +19,17 @@ impl PackageMaker {
 
     pub fn set_version(&mut self, version: impl Into<String>) -> &mut Self {
         self.version = Some(version.into());
+        self
+    }
+
+    pub fn set_version_stripped(
+        &mut self,
+        version: impl Into<String>,
+        stripper: &VersionStripper,
+    ) -> &mut Self {
+        let stripped = stripper.apply(&version.into()).to_string();
+        self.version = Some(stripped);
+        // TODO: fill origversion
         self
     }
 

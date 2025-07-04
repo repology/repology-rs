@@ -9,6 +9,11 @@ use crate::package::Package;
 use crate::parsing::error::PackageParsingError;
 use crate::parsing::package_maker::PackageMaker;
 use crate::parsing::parser::{PackageParser, PackageSink};
+use crate::parsing::utils::version::VersionStripper;
+
+const VERSION_STRIPPER: VersionStripper = VersionStripper::new()
+    .with_strip_right(",")
+    .with_strip_right("_");
 
 pub struct FreeBsdParser {}
 
@@ -33,7 +38,7 @@ impl FreeBsdParser {
             .ok_or_else(|| anyhow!("expected <package name>-<version> in the first field"))?;
 
         pkg.set_name(name);
-        pkg.set_version(version);
+        pkg.set_version_stripped(version, &VERSION_STRIPPER);
 
         Ok(sink.push(pkg)?)
     }
