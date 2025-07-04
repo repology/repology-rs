@@ -6,11 +6,21 @@ use crate::parsing::error::PackageParsingError;
 
 #[derive(Debug, Clone, Default)]
 pub struct PackageMaker {
-    pub projectname_seed: Option<String>,
-    pub version: Option<String>,
+    projectname_seed: Option<String>,
+    version: Option<String>,
 }
 
 impl PackageMaker {
+    pub fn set_name(&mut self, name: impl Into<String>) -> &mut Self {
+        self.projectname_seed = Some(name.into());
+        self
+    }
+
+    pub fn set_version(&mut self, version: impl Into<String>) -> &mut Self {
+        self.version = Some(version.into());
+        self
+    }
+
     pub fn finalize(self) -> Result<Package, PackageParsingError> {
         let projectname_seed = self
             .projectname_seed

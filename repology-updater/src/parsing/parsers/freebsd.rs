@@ -32,8 +32,8 @@ impl FreeBsdParser {
             .rsplit_once('-')
             .ok_or_else(|| anyhow!("expected <package name>-<version> in the first field"))?;
 
-        pkg.projectname_seed = Some(name.to_owned());
-        pkg.version = Some(version.to_owned());
+        pkg.set_name(name);
+        pkg.set_version(version);
 
         Ok(sink.push(pkg)?)
     }
