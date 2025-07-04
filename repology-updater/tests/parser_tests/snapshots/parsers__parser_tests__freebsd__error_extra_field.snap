@@ -1,0 +1,10 @@
+---
+source: repology-updater/tests/parser_tests/freebsd.rs
+expression: "FreeBsdParser\n{}.parse(Path::new(\"tests/parser_tests/freebsd/INDEX-2\"), &mut packages,)"
+---
+Err(
+    Error {
+        context: "on line 1",
+        source: "expected 13 fields, got 14",
+    },
+)

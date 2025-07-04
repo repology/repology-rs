@@ -1,0 +1,10 @@
+---
+source: repology-updater/tests/parser_tests/freebsd.rs
+expression: packages.packages
+---
+[
+    Package {
+        projectname_seed: "ar-aspell",
+        version: "1.2.0",
+    },
+]

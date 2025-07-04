@@ -2537,6 +2537,7 @@ name = "repology-updater"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "insta",
  "strum",
  "tempfile",
 ]

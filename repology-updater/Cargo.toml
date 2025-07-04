@@ -11,4 +11,5 @@ strum = { version = "0.27.1", features = ["derive"] }
 workspace = true
 
 [dev-dependencies]
+insta = "1.43.1"
 tempfile = "3.20.0"
