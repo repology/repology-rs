@@ -167,27 +167,32 @@ impl PackageMaker {
         self
     }
 
+    pub fn add_link(&mut self, link_type: LinkType, url: impl Into<String>) -> &mut Self {
+        let url: String = url.into();
+        if let Some((url, fragment)) = url.split_once('#') {
+            self.links.push(Link {
+                r#type: link_type,
+                url: url.to_owned(),
+                fragment: Some(fragment.to_owned()),
+            });
+        } else {
+            self.links.push(Link {
+                r#type: link_type,
+                url,
+                fragment: None,
+            });
+        }
+        self
+    }
+
     pub fn add_links(
         &mut self,
         link_type: LinkType,
         urls: impl IntoIterator<Item = impl Into<String>>,
     ) -> &mut Self {
-        for url in urls {
-            let url: String = url.into();
-            if let Some((url, fragment)) = url.split_once('#') {
-                self.links.push(Link {
-                    r#type: link_type,
-                    url: url.to_owned(),
-                    fragment: Some(fragment.to_owned()),
-                });
-            } else {
-                self.links.push(Link {
-                    r#type: link_type,
-                    url,
-                    fragment: None,
-                });
-            }
-        }
+        urls.into_iter().for_each(|url| {
+            self.add_link(link_type, url);
+        });
         self
     }
 
