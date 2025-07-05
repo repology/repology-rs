@@ -3,12 +3,12 @@ name = "repology-updater"
 version = "0.1.0"
 edition = "2024"
 
+[lints]
+workspace = true
+
 [dependencies]
 anyhow = "1.0.98"
 strum = { version = "0.27.1", features = ["derive"] }
-
-[lints]
-workspace = true
 
 [dev-dependencies]
 insta = "1.43.1"
