@@ -4,11 +4,17 @@
 #[derive(Debug, strum::Display)]
 pub enum PackageParsingError {
     MissingProjectNameSeed,
-    MissingVersion,
     EmptyProjectNameSeed,
+
+    MissingVersion,
     EmptyVersion,
-    //UnexpectedDataFormat,
-    //UnexpectedDataFormatString(String),
+
+    MissingVisibleName,
+    EmptyVisibleName,
+
+    MissingPackageNames,
+    EmptySrcName,
+    EmptyBinName,
 }
 
 impl std::error::Error for PackageParsingError {}

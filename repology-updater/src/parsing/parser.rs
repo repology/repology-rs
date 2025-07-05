@@ -3,7 +3,7 @@
 
 use std::path::Path;
 
-use crate::package::Package;
+use crate::package::ParsedPackage;
 use crate::parsing::error::PackageParsingError;
 use crate::parsing::package_maker::PackageMaker;
 
@@ -17,7 +17,7 @@ pub trait PackageParser {
 
 #[derive(Default)]
 pub struct PackageAccumulator {
-    pub packages: Vec<Package>,
+    pub packages: Vec<ParsedPackage>,
 }
 
 impl PackageSink for PackageAccumulator {

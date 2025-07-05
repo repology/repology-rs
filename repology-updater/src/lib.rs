@@ -3,6 +3,7 @@
 
 #![feature(file_buffered)]
 #![feature(coverage_attribute)]
+#![feature(iter_collect_into)]
 #![allow(unused)]
 
 pub mod package;

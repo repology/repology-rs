@@ -11,7 +11,7 @@ use repology_updater::parsing::parsers::freebsd::FreeBsdParser;
 fn test_freebsd() {
     let mut packages = PackageAccumulator::default();
     FreeBsdParser {}
-        .parse(Path::new("tests/parser_tests/freebsd/INDEX"), &mut packages)
+        .parse(Path::new("tests/parser_tests/freebsd/ok"), &mut packages)
         .unwrap();
     insta::assert_debug_snapshot!(packages.packages);
 }
@@ -20,7 +20,7 @@ fn test_freebsd() {
 fn test_error_missing_field() {
     let mut packages = PackageAccumulator::default();
     insta::assert_debug_snapshot!(FreeBsdParser {}.parse(
-        Path::new("tests/parser_tests/freebsd/INDEX-1"),
+        Path::new("tests/parser_tests/freebsd/error1"),
         &mut packages,
     ))
 }
@@ -29,7 +29,7 @@ fn test_error_missing_field() {
 fn test_error_extra_field() {
     let mut packages = PackageAccumulator::default();
     insta::assert_debug_snapshot!(FreeBsdParser {}.parse(
-        Path::new("tests/parser_tests/freebsd/INDEX-2"),
+        Path::new("tests/parser_tests/freebsd/error2"),
         &mut packages,
     ))
 }
@@ -38,7 +38,7 @@ fn test_error_extra_field() {
 fn test_error_missing_version() {
     let mut packages = PackageAccumulator::default();
     insta::assert_debug_snapshot!(FreeBsdParser {}.parse(
-        Path::new("tests/parser_tests/freebsd/INDEX-3"),
+        Path::new("tests/parser_tests/freebsd/error3"),
         &mut packages,
     ))
 }
@@ -47,7 +47,7 @@ fn test_error_missing_version() {
 fn test_error_missing_name() {
     let mut packages = PackageAccumulator::default();
     insta::assert_debug_snapshot!(FreeBsdParser {}.parse(
-        Path::new("tests/parser_tests/freebsd/INDEX-4"),
+        Path::new("tests/parser_tests/freebsd/error4"),
         &mut packages,
     ))
 }
@@ -56,7 +56,16 @@ fn test_error_missing_name() {
 fn test_error_bad_package_format() {
     let mut packages = PackageAccumulator::default();
     insta::assert_debug_snapshot!(FreeBsdParser {}.parse(
-        Path::new("tests/parser_tests/freebsd/INDEX-5"),
+        Path::new("tests/parser_tests/freebsd/error5"),
+        &mut packages,
+    ))
+}
+
+#[test]
+fn test_error_bad_package_path() {
+    let mut packages = PackageAccumulator::default();
+    insta::assert_debug_snapshot!(FreeBsdParser {}.parse(
+        Path::new("tests/parser_tests/freebsd/error6"),
         &mut packages,
     ))
 }

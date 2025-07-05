@@ -7,8 +7,10 @@ edition = "2024"
 workspace = true
 
 [dependencies]
+repology-common = { path = "../repology-common" }
 anyhow = "1.0.98"
 strum = { version = "0.27.1", features = ["derive"] }
+bitflags = "2.9.1"
 
 [dev-dependencies]
 insta = "1.43.1"
