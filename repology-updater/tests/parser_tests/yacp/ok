@@ -1,0 +1,27 @@
+{
+  "repository_name": "YACP",
+  "num_packages": 1,
+  "timestamp": 1750073190,
+  "packages": [
+    {
+      "name": "ACE",
+      "version": "1.01",
+      "category": [
+        "Science"
+      ],
+      "summary": "Accurate Correction of Errors",
+      "homepage": "https://github.com/Sheikhizadeh/ACE",
+      "subpackages": [
+        {
+          "name": "ACE",
+          "category": [
+            "Science"
+          ]
+        }
+      ],
+      "maintainers": [
+        "Daisuke Fujimura"
+      ]
+    }
+  ]
+}

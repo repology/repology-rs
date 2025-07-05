@@ -2540,6 +2540,8 @@ dependencies = [
  "bitflags",
  "insta",
  "repology-common",
+ "serde",
+ "serde_json",
  "strum",
  "tempfile",
 ]
