@@ -98,6 +98,17 @@ impl PackageMaker {
         self
     }
 
+    pub fn add_binnames(
+        &mut self,
+        binnames: impl IntoIterator<Item = impl Into<String>>,
+    ) -> &mut Self {
+        binnames
+            .into_iter()
+            .map(|binname| binname.into())
+            .collect_into(&mut self.binnames);
+        self
+    }
+
     pub fn set_version(&mut self, version: impl Into<String>) -> &mut Self {
         // TODO: strip, forbid newlines
         let version = version.into();
