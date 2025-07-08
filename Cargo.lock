@@ -2539,6 +2539,7 @@ dependencies = [
  "anyhow",
  "bitflags",
  "insta",
+ "regex",
  "repology-common",
  "serde",
  "serde_json",
