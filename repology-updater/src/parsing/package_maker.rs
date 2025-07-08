@@ -152,18 +152,22 @@ impl PackageMaker {
         self
     }
 
+    pub fn add_category(&mut self, category: impl Into<String>) -> &mut Self {
+        // TODO: allow multiple categories
+        // TODO: strip, forbid newlines
+        if self.category.is_none() {
+            self.category = Some(category.into());
+        }
+        self
+    }
+
     pub fn add_categories(
         &mut self,
         categories: impl IntoIterator<Item = impl Into<String>>,
     ) -> &mut Self {
-        // TODO: allow multiple categories
-        // TODO: strip, forbid newlines
-        if self.category.is_none() {
-            self.category = categories
-                .into_iter()
-                .next()
-                .map(|category| category.into())
-        }
+        categories.into_iter().for_each(|category| {
+            self.add_category(category);
+        });
         self
     }
 
