@@ -28,4 +28,4 @@ tower-service = "0.3.3"
 
 [dev-dependencies]
 insta = "1.43.1"
-tokio = "1.45.1"
+tokio = "1.46.1"
