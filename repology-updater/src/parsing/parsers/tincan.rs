@@ -10,6 +10,7 @@ use repology_common::LinkType;
 
 use crate::parsing::package_maker::{NameType, PackageMaker};
 use crate::parsing::parser::{PackageParser, PackageSink};
+use crate::parsing::utils::maintainers::extract_maintainers;
 use crate::parsing::utils::walk::{WalkEntry, WalkFileTree};
 
 mod data {
@@ -71,7 +72,7 @@ impl TinCanParser {
             .for_each(|source| {
                 pkg.add_link(LinkType::UpstreamDownload, source);
             });
-        pkg.add_maintainer(pkgdata.meta.maintainer);
+        pkg.add_maintainers(extract_maintainers(&pkgdata.meta.maintainer));
 
         if std::fs::exists(&files_path_absolute)? {
             for patch_entry in WalkFileTree::walk_by_suffix(&files_path_absolute, ".patch") {

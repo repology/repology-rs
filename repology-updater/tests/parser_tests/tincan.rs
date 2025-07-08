@@ -8,7 +8,6 @@ use repology_updater::parsing::parser::PackageParser as _;
 use repology_updater::parsing::parsers::tincan::TinCanParser;
 
 #[test]
-#[ignore]
 fn test_tincan() {
     let mut packages = PackageAccumulator::default();
     TinCanParser {}

@@ -11,6 +11,7 @@ use crate::package::Package;
 use crate::parsing::error::PackageParsingError;
 use crate::parsing::package_maker::{NameType, PackageMaker};
 use crate::parsing::parser::{PackageParser, PackageSink};
+use crate::parsing::utils::maintainers::extract_maintainers;
 use crate::parsing::utils::version::VersionStripper;
 
 const EXPECTED_FIELDS_COUNT: usize = 13;
@@ -53,7 +54,7 @@ impl FreeBsdParser {
         );
         pkg.set_version_stripped(version, &VERSION_STRIPPER);
         pkg.set_summary(fields[3]);
-        pkg.add_maintainer(fields[5]);
+        pkg.add_maintainers(extract_maintainers(&fields[5]));
         pkg.add_categories(fields[6].split_ascii_whitespace());
         pkg.add_links(
             LinkType::UpstreamHomepage,
