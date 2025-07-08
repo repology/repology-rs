@@ -52,7 +52,7 @@ impl FreeBsdParser {
         );
         pkg.set_version_stripped(version, &VERSION_STRIPPER);
         pkg.set_summary(fields[3]);
-        pkg.add_maintainers(extract_maintainers(&fields[5]));
+        pkg.add_maintainers(extract_maintainers(fields[5]));
         pkg.add_categories(fields[6].split_ascii_whitespace());
         pkg.add_links(
             LinkType::UpstreamHomepage,

@@ -252,7 +252,7 @@ impl PackageMaker {
             binname: self.binname,
             binnames: self.binnames, //.map(|binnames| binnames.into_iter().unique().collect()),
             trackname: self.trackname,
-            visiblename: visiblename,
+            visiblename,
             projectname_seed: projectname_seed.clone(),
 
             rawversion: self

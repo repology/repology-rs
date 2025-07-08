@@ -4,6 +4,7 @@
 #![feature(file_buffered)]
 #![feature(coverage_attribute)]
 #![feature(iter_collect_into)]
+#![feature(const_trait_impl)]
 #![feature(test)]
 
 pub mod package;
