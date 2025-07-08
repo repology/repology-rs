@@ -6,7 +6,9 @@ use std::collections::HashSet;
 use regex::Regex;
 
 pub fn extract_maintainers(maintainers: &str) -> Vec<String> {
-    let looks_like_email = Regex::new(r"^[^<> \t]+@[^<> \t]+$").unwrap();
+    // Note: bench below shows that compiling a regexp on each call is
+    // 3x faster than using LazyCell/LazyLock. Is this true?
+    let looks_like_email = Regex::new(r"^[^<>\s]+@[^<>\s]+$").unwrap();
 
     let mut emails = HashSet::new();
 
@@ -250,5 +252,14 @@ mod tests {
             extract_maintainers("ПЕТЯ@ВАСЯ"),
             vec!["ПЕТЯ@ВАСЯ".to_string()]
         );
+    }
+
+    extern crate test;
+    use test::Bencher;
+    use test::black_box;
+
+    #[bench]
+    fn bench_extract_maintainers(b: &mut Bencher) {
+        b.iter(|| extract_maintainers(black_box("Dmitry Marakasov <amdmi3@FreeBSD.org>")));
     }
 }
