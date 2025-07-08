@@ -34,3 +34,5 @@ parser_test!(FreeBsd, error_bad_package_path);
 parser_test!(TinCan, ok);
 
 parser_test!(Yacp, ok);
+
+parser_test!(StalIx, ok);

@@ -1,0 +1,54 @@
+---
+source: repology-updater/tests/parsers.rs
+expression: res
+---
+Ok(
+    [
+        Package {
+            srcname: "aux/adwaita/cursors",
+            binname: "aux/adwaita/cursors",
+            trackname: "aux/adwaita/cursors",
+            visiblename: "aux/adwaita/cursors",
+            projectname_seed: "adwaita-icon-theme",
+            rawversion: "48.1",
+            maintainers: [
+                "anton@samokhvalov.xyz",
+            ],
+            category: "aux",
+            links: [
+                Link {
+                    type: UpstreamDownload,
+                    url: "https://github.com/GNOME/adwaita-icon-theme/archive/refs/tags/48.1.tar.gz",
+                    fragment: None,
+                },
+            ],
+            version: "48.1",
+            flags: PackageFlags(
+                0x0,
+            ),
+        },
+        Package {
+            srcname: "lib/py/wlroots/module",
+            binname: "lib/py/wlroots/module",
+            trackname: "lib/py/wlroots/module",
+            visiblename: "lib/py/wlroots/module",
+            projectname_seed: "python:pywlroots",
+            rawversion: "0.17.0",
+            maintainers: [
+                "anton@samokhvalov.xyz",
+            ],
+            category: "lib",
+            links: [
+                Link {
+                    type: UpstreamDownload,
+                    url: "https://github.com/flacjacket/pywlroots/archive/refs/tags/v0.17.0.tar.gz",
+                    fragment: None,
+                },
+            ],
+            version: "0.17.0",
+            flags: PackageFlags(
+                0x0,
+            ),
+        },
+    ],
+)
