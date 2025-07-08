@@ -159,90 +159,33 @@ mod tests {
 
     #[test]
     fn test_immune_to_obfuscation() {
-        assert_eq!(
-            extract_maintainers("amdmi3[at]FreeBSD[dot]org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 [ at ] FreeBSD [ dot ] org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 at FreeBSD dot org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3_at_FreeBSD.org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3{at}FreeBSD{dot}org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 <at> freebsd {dot} org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3~at~freebsd~dot~org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 (at) freebsd (dot) org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 __at__ freebsd __dot__ org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3-at-freebsd-dot-org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3<at>freebsd.org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 <at> freebsd.org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 [underscore] ports [at] freebsd.org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 plus ports@freebsd.org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("agent smith (amdmi3@freebsd.org)"),
-            Vec::<String>::new()
-        );
+        assert!(extract_maintainers("amdmi3[at]FreeBSD[dot]org").is_empty(),);
+        assert!(extract_maintainers("amdmi3 [ at ] FreeBSD [ dot ] org").is_empty(),);
+        assert!(extract_maintainers("amdmi3 at FreeBSD dot org").is_empty(),);
+        assert!(extract_maintainers("amdmi3_at_FreeBSD.org").is_empty(),);
+        assert!(extract_maintainers("amdmi3{at}FreeBSD{dot}org").is_empty(),);
+        assert!(extract_maintainers("amdmi3 <at> freebsd {dot} org").is_empty(),);
+        assert!(extract_maintainers("amdmi3~at~freebsd~dot~org").is_empty(),);
+        assert!(extract_maintainers("amdmi3 (at) freebsd (dot) org").is_empty(),);
+        assert!(extract_maintainers("amdmi3 __at__ freebsd __dot__ org").is_empty(),);
+        assert!(extract_maintainers("amdmi3-at-freebsd-dot-org").is_empty(),);
+        assert!(extract_maintainers("amdmi3<at>freebsd.org").is_empty(),);
+        assert!(extract_maintainers("amdmi3 <at> freebsd.org").is_empty(),);
+        assert!(extract_maintainers("amdmi3 [underscore] ports [at] freebsd.org").is_empty(),);
+        assert!(extract_maintainers("amdmi3 plus ports@freebsd.org").is_empty(),);
+        assert!(extract_maintainers("agent smith (amdmi3@freebsd.org)").is_empty(),);
 
-        assert_eq!(
-            extract_maintainers("amdNOmi3@freeSPAMbsd.org (remove NO and SPAM)"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("amdmi3 @ google mail"),
-            Vec::<String>::new()
-        );
+        assert!(extract_maintainers("amdNOmi3@freeSPAMbsd.org (remove NO and SPAM)").is_empty(),);
+        assert!(extract_maintainers("amdmi3 @ google mail").is_empty(),);
     }
 
     #[test]
     fn test_empty() {
-        assert_eq!(extract_maintainers("somecrap"), Vec::<String>::new());
-        assert_eq!(extract_maintainers(""), Vec::<String>::new());
-        assert_eq!(
-            extract_maintainers("http://repology.org"),
-            Vec::<String>::new()
-        );
-        assert_eq!(
-            extract_maintainers("Repology <http://repology.org>"),
-            Vec::<String>::new()
-        );
-        assert_eq!(extract_maintainers("nobody <really>"), Vec::<String>::new());
+        assert!(extract_maintainers("somecrap").is_empty());
+        assert!(extract_maintainers("").is_empty());
+        assert!(extract_maintainers("http://repology.org").is_empty());
+        assert!(extract_maintainers("Repology <http://repology.org>").is_empty());
+        assert!(extract_maintainers("nobody <really>").is_empty());
     }
 
     #[test]
