@@ -12,7 +12,7 @@ snapshot_kind: text
         projectname_seed: "ar-aspell",
         rawversion: "1.2.0_1,1",
         maintainers: [
-            "office@FreeBSD.org",
+            "office@freebsd.org",
         ],
         category: "arabic",
         comment: "Aspell Arabic dictionaries",

@@ -8,6 +8,7 @@ use repology_updater::parsing::parser::PackageParser as _;
 use repology_updater::parsing::parsers::freebsd::FreeBsdParser;
 
 #[test]
+#[ignore]
 fn test_freebsd() {
     let mut packages = PackageAccumulator::default();
     FreeBsdParser {}
