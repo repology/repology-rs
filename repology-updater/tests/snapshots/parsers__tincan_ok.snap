@@ -1,0 +1,29 @@
+---
+source: repology-updater/tests/parsers.rs
+expression: res
+---
+Ok(
+    [
+        Package {
+            srcname: "busybox",
+            trackname: "busybox",
+            visiblename: "busybox",
+            projectname_seed: "busybox",
+            rawversion: "1.36.1",
+            maintainers: [
+                "avs.origami@gmail.com",
+            ],
+            links: [
+                Link {
+                    type: UpstreamDownload,
+                    url: "https://busybox.net/downloads/busybox-1.36.1.tar.bz2",
+                    fragment: None,
+                },
+            ],
+            version: "1.36.1",
+            flags: PackageFlags(
+                0x0,
+            ),
+        },
+    ],
+)
