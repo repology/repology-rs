@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::io::BufRead as _;
 use std::path::Path;
 
 use anyhow::{Context, anyhow, bail};
@@ -13,6 +12,7 @@ use crate::parsing::parser::{PackageParser, PackageSink};
 use crate::parsing::utils::maintainers::extract_maintainers;
 use crate::parsing::utils::walk::{WalkEntry, WalkFileTree};
 
+#[allow(unused)]
 mod data {
     use std::collections::HashMap;
 
@@ -44,7 +44,6 @@ impl TinCanParser {
             .path_absolute
             .parent()
             .expect("should be able to get parent path of package.toml");
-        let files_path_absolute = package_path_absolute.join("files");
         let package_subdir = package_path_absolute
             .file_name()
             .and_then(|file_name| file_name.to_str())

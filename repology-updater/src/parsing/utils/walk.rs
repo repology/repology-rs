@@ -1,8 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::anyhow;
-use std::ffi::OsStr;
 use std::path::{Path, PathBuf};
 
 pub struct WalkEntry {
@@ -82,7 +80,6 @@ impl Iterator for WalkFileTree<'_> {
 mod tests {
     use super::*;
 
-    use std::fs::File;
     use tempfile::TempDir;
 
     #[test]
@@ -91,17 +88,17 @@ mod tests {
 
         {
             let subdir = dir.path().join("foo");
-            std::fs::create_dir(&subdir);
-            std::fs::File::create(subdir.join("PKGBUILD"));
+            std::fs::create_dir(&subdir).unwrap();
+            std::fs::File::create(subdir.join("PKGBUILD")).unwrap();
             // should not return this file, as it's named differently
-            std::fs::File::create(subdir.join("Makefile"));
+            std::fs::File::create(subdir.join("Makefile")).unwrap();
 
             let subdir = dir.path().join("bar");
-            std::fs::create_dir(&subdir);
-            std::fs::File::create(subdir.join("PKGBUILD"));
+            std::fs::create_dir(&subdir).unwrap();
+            std::fs::File::create(subdir.join("PKGBUILD")).unwrap();
 
             // should not return this, as it's a directory
-            std::fs::create_dir(dir.path().join("PKGBUILD"));
+            std::fs::create_dir(dir.path().join("PKGBUILD")).unwrap();
         }
 
         let mut res = vec![];
@@ -121,17 +118,17 @@ mod tests {
 
         {
             let subdir = dir.path().join("foo");
-            std::fs::create_dir(&subdir);
-            std::fs::File::create(subdir.join("foo.spec"));
+            std::fs::create_dir(&subdir).unwrap();
+            std::fs::File::create(subdir.join("foo.spec")).unwrap();
             // should not return this file, as it's named differently
-            std::fs::File::create(subdir.join("foo.conf"));
+            std::fs::File::create(subdir.join("foo.conf")).unwrap();
 
             let subdir = dir.path().join("bar");
-            std::fs::create_dir(&subdir);
-            std::fs::File::create(subdir.join("bar.spec"));
+            std::fs::create_dir(&subdir).unwrap();
+            std::fs::File::create(subdir.join("bar.spec")).unwrap();
 
             // should not return this, as it's a directory
-            std::fs::create_dir(dir.path().join("baz.spec"));
+            std::fs::create_dir(dir.path().join("baz.spec")).unwrap();
         }
 
         let mut res = vec![];

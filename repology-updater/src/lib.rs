@@ -5,7 +5,6 @@
 #![feature(coverage_attribute)]
 #![feature(iter_collect_into)]
 #![feature(test)]
-#![allow(unused)]
 
 pub mod package;
 pub mod parsing;

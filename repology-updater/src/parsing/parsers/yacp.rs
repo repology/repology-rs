@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::io::BufRead as _;
 use std::path::Path;
 
 use anyhow::Context;
@@ -11,6 +10,7 @@ use repology_common::LinkType;
 use crate::parsing::package_maker::{NameType, PackageMaker};
 use crate::parsing::parser::{PackageParser, PackageSink};
 
+#[allow(unused)]
 mod data {
     use serde::Deserialize;
 

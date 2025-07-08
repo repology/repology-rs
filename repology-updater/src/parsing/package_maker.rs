@@ -5,7 +5,7 @@ use std::collections::HashMap;
 
 use bitflags::bitflags;
 
-use repology_common::{LinkType, PackageFlags, PackageStatus};
+use repology_common::{LinkType, PackageFlags};
 
 use crate::package::{ExtraField, Link, ParsedPackage};
 use crate::parsing::error::PackageParsingError;

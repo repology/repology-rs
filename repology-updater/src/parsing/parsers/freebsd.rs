@@ -7,8 +7,6 @@ use std::path::Path;
 
 use repology_common::LinkType;
 
-use crate::package::Package;
-use crate::parsing::error::PackageParsingError;
 use crate::parsing::package_maker::{NameType, PackageMaker};
 use crate::parsing::parser::{PackageParser, PackageSink};
 use crate::parsing::utils::maintainers::extract_maintainers;
