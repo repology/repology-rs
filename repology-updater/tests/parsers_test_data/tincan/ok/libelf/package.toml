@@ -1,0 +1,19 @@
+[meta]
+version = "0.191"
+maintainer = "AVS Origami <avs.origami@gmail.com>"
+
+sources = [
+    "https://sourceware.org/elfutils/ftp/0.191/elfutils-0.191.tar.bz2",
+    "files/musl.patch",
+]
+
+checksums = [
+    "e9e3f567ab63784d968f708c08ea5a09dd5fae2f0846d0d43a2ebc8b542c15b2",
+    "0b92f76da7cc952bcb8490b80320449d8cc0905ca2ba8c7c29052eae99e631ec",
+]
+
+[deps]
+zlib = "*"
+
+[mkdeps]
+pkgconf = "*"

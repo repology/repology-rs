@@ -4,7 +4,7 @@
 use std::io::BufRead as _;
 use std::path::Path;
 
-use anyhow::{Context, anyhow};
+use anyhow::{Context, anyhow, bail};
 
 use repology_common::LinkType;
 
@@ -63,23 +63,24 @@ impl TinCanParser {
                 | NameType::ProjectNameSeed,
         );
         pkg.set_version(pkgdata.meta.version);
-
-        pkgdata
-            .meta
-            .sources
-            .iter()
-            .filter(|source| source.contains("://"))
-            .for_each(|source| {
-                pkg.add_link(LinkType::UpstreamDownload, source);
-            });
         pkg.add_maintainers(extract_maintainers(&pkgdata.meta.maintainer));
 
-        if std::fs::exists(&files_path_absolute)? {
-            for patch_entry in WalkFileTree::walk_by_suffix(&files_path_absolute, ".patch") {
-                let patch_entry = patch_entry?;
-                // TODO: patches
+        let mut patches = vec![];
+        for source in &pkgdata.meta.sources {
+            if source.contains("://") {
+                pkg.add_link(LinkType::UpstreamDownload, source);
+            } else if source.starts_with("files/") && source.ends_with(".patch") {
+                if !std::fs::exists(package_path_absolute.join(source))? {
+                    bail!(
+                        "patch file {source} mentioned in meta.sources section was not found on the file system"
+                    );
+                } else {
+                    patches.push(source);
+                }
             }
         }
+
+        pkg.set_extra_field_many("patches", patches);
 
         Ok(sink.push(pkg)?)
     }

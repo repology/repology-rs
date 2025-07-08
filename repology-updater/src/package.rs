@@ -12,6 +12,12 @@ pub struct Link {
     pub fragment: Option<String>,
 }
 
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub enum ExtraField {
+    OneValue(String),
+    ManyValues(Vec<String>),
+}
+
 #[derive(PartialEq, Eq)]
 pub struct ParsedPackage {
     pub subrepo: Option<String>,
@@ -32,7 +38,7 @@ pub struct ParsedPackage {
     pub comment: Option<String>,
     pub licenses: Vec<String>,
 
-    pub extrafields: HashMap<String, String>,
+    pub extrafields: HashMap<String, ExtraField>,
 
     pub cpe_vendor: Option<String>,
     pub cpe_product: Option<String>,

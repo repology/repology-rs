@@ -7,7 +7,7 @@ use bitflags::bitflags;
 
 use repology_common::{LinkType, PackageFlags, PackageStatus};
 
-use crate::package::{Link, ParsedPackage};
+use crate::package::{ExtraField, Link, ParsedPackage};
 use crate::parsing::error::PackageParsingError;
 use crate::parsing::utils::version::VersionStripper;
 
@@ -31,7 +31,7 @@ pub struct PackageMaker {
     comment: Option<String>,
     licenses: Vec<String>,
 
-    extrafields: HashMap<String, String>,
+    extrafields: HashMap<String, ExtraField>,
 
     cpe_vendor: Option<String>,
     cpe_product: Option<String>,
@@ -194,6 +194,23 @@ impl PackageMaker {
             self.add_link(link_type, url);
         });
         self
+    }
+
+    pub fn set_extra_field_one(&mut self, name: &str, value: impl Into<String>) {
+        self.extrafields
+            .insert(name.to_string(), ExtraField::OneValue(value.into()));
+    }
+
+    pub fn set_extra_field_many(
+        &mut self,
+        name: &str,
+        values: impl IntoIterator<Item = impl Into<String>>,
+    ) {
+        let vec: Vec<_> = values.into_iter().map(|v| v.into()).collect();
+        if !vec.is_empty() {
+            self.extrafields
+                .insert(name.to_string(), ExtraField::ManyValues(vec));
+        }
     }
 
     pub fn finalize(self) -> Result<ParsedPackage, PackageParsingError> {

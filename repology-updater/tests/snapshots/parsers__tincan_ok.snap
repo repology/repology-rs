@@ -1,6 +1,7 @@
 ---
 source: repology-updater/tests/parsers.rs
 expression: res
+snapshot_kind: text
 ---
 Ok(
     [
@@ -21,6 +22,34 @@ Ok(
                 },
             ],
             version: "1.36.1",
+            flags: PackageFlags(
+                0x0,
+            ),
+        },
+        Package {
+            srcname: "libelf",
+            trackname: "libelf",
+            visiblename: "libelf",
+            projectname_seed: "libelf",
+            rawversion: "0.191",
+            maintainers: [
+                "avs.origami@gmail.com",
+            ],
+            extrafields: {
+                "patches": ManyValues(
+                    [
+                        "files/musl.patch",
+                    ],
+                ),
+            },
+            links: [
+                Link {
+                    type: UpstreamDownload,
+                    url: "https://sourceware.org/elfutils/ftp/0.191/elfutils-0.191.tar.bz2",
+                    fragment: None,
+                },
+            ],
+            version: "0.191",
             flags: PackageFlags(
                 0x0,
             ),
