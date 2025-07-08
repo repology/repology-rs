@@ -15,12 +15,14 @@ mod data {
     use serde::Deserialize;
 
     #[derive(Deserialize)]
+    #[serde(deny_unknown_fields)]
     pub struct SubPackage {
         pub name: String,
         pub category: Vec<String>,
     }
 
     #[derive(Deserialize)]
+    #[serde(deny_unknown_fields)]
     pub struct Package {
         pub name: String,
         pub version: String,
@@ -32,6 +34,7 @@ mod data {
     }
 
     #[derive(Deserialize)]
+    #[serde(deny_unknown_fields)]
     pub struct Data {
         pub repository_name: String,
         pub num_packages: usize,
