@@ -36,3 +36,5 @@ parser_test!(TinCan, ok);
 parser_test!(Yacp, ok);
 
 parser_test!(StalIx, ok);
+parser_test!(StalIx, error_bad_lang_module);
+parser_test!(StalIx, error_bad_json);
