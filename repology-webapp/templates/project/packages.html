@@ -18,11 +18,11 @@
 <p><b>{{ packages.len() }}</b> package(s) known</p>
 
 <div class="row">
-{% for package in packages %}
-{% if !loop.first && loop.index0 % 3 == 0 %}
+{%- for package in packages %}
+{%- if !loop.first && loop.index0 % 3 == 0 %}
 </div>
 <div class="row">
-{% endif %}
+{%- endif %}
 	<div class="col-md-4">
 		<div class="panel panel-version-{{ package.status.as_ref() }}">
 			<div class="panel-heading">
@@ -53,50 +53,50 @@
 				</div>
 			</div>
 			<ul class="list-group">
-			{% if let Some(summary) = package.summary %}
+			{%- if let Some(summary) = package.summary %}
 				<li class="list-group-item"><b>Summary:</b><br>
 					{{- summary -}}
 				</li>
-			{% endif %}
-			{% if !package.maintainers.is_empty() %}
+			{%- endif %}
+			{%- if !package.maintainers.is_empty() %}
 				<li class="list-group-item"><b>Maintainer{% if package.maintainers.len() > 1 %}s{% endif %}:</b>
 					<ul class="list-package-details">
-					{% for maintainer in package.maintainers %}
+					{%- for maintainer in package.maintainers %}
 						<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer.as_str())])? }}">{{ maintainer }}</a></li>
-					{% endfor %}
+					{%- endfor %}
 					</ul>
 				</li>
-			{% endif %}
-			{% if let Some(category) = package.category %}
+			{%- endif %}
+			{%- if let Some(category) = package.category %}
 				<li class="list-group-item"><b>Category:</b>
 					<ul class="list-package-details">
 						<li>{{ category }}</li>
 					</ul>
 				</li>
-			{% endif %}
-			{% if !package.licenses.is_empty() %}
+			{%- endif %}
+			{%- if !package.licenses.is_empty() %}
 				<li class="list-group-item"><b>License{% if package.licenses.len() > 1 %}s{% endif %}:</b>
 					<ul class="list-package-details">
-					{% for license in package.licenses %}
+					{%- for license in package.licenses %}
 						<li>{{ license }}</li>
-					{% endfor %}
+					{%- endfor %}
 					</ul>
 				</li>
-			{% endif %}
-			{% if !package.links.is_empty() %}
+			{%- endif %}
+			{%- if !package.links.is_empty() %}
 				<li class="list-group-item"><b>Link(s):</b>
 					<ul class="list-package-details">
-					{% for (link_type, link_id, link_fragment) in package.links.as_ref() %}
+					{%- for (link_type, link_id, link_fragment) in package.links.as_ref() %}
 						{% let link = links[link_id] %}
 						<li><a href="{{ link.url }}{% if let Some(link_fragment) = link_fragment %}#{{ link_fragment }}{% endif %}">{% call links::format_link_type(ctx.deref(ctx.deref(link_type))) %}</a>{% call link_status::link_status(link, false) %}</li>
-					{% endfor %}
+					{%- endfor %}
 					</ul>
 				</li>
-			{% endif %}
+			{%- endif %}
 			</ul>
 		</div>
 	</div>
-{% endfor %}
+{%- endfor %}
 </div>
 </div>
 {% endblock %}
