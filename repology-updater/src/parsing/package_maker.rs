@@ -290,3 +290,132 @@ impl PackageMaker {
         })
     }
 }
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[test]
+    #[should_panic]
+    fn test_panic_double_srcname() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foo", NameType::SrcName);
+        pkg.set_names("foo", NameType::SrcName);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_double_binname() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foo", NameType::BinName);
+        pkg.set_names("foo", NameType::BinName);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_double_trackname() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foo", NameType::TrackName);
+        pkg.set_names("foo", NameType::TrackName);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_double_displayname() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foo", NameType::DisplayName);
+        pkg.set_names("foo", NameType::DisplayName);
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_panic_double_projectname_seed() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foo", NameType::ProjectNameSeed);
+        pkg.set_names("foo", NameType::ProjectNameSeed);
+    }
+
+    #[test]
+    fn test_simple() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("bin", NameType::BinName);
+        pkg.set_names("src", NameType::SrcName);
+        pkg.set_names("track", NameType::TrackName);
+        pkg.set_names("display", NameType::DisplayName);
+        pkg.set_names("project", NameType::ProjectNameSeed);
+        pkg.set_version("1.2.3");
+        let package = pkg.finalize().unwrap();
+
+        assert_eq!(package.binname, Some("bin".to_string()));
+        assert_eq!(package.srcname, Some("src".to_string()));
+        assert_eq!(package.trackname, Some("track".to_string()));
+        assert_eq!(package.visiblename, "display".to_string());
+        assert_eq!(package.projectname_seed, "project".to_string());
+        assert_eq!(package.version, "1.2.3".to_string());
+        assert_eq!(package.rawversion, "1.2.3".to_string());
+    }
+
+    fn finalize_test_package(mut pkg: PackageMaker) -> ParsedPackage {
+        // set mandatory fields
+        // XXX: provide in PackageMaker API and use here a way to
+        // check whether the field has been set before
+        pkg.set_names("foobar", NameType::all());
+        pkg.set_version("1.2.3");
+        pkg.finalize().unwrap()
+    }
+
+    #[test]
+    fn test_set_extra_field_one() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_extra_field_one("foo", "bar1");
+        pkg.set_extra_field_one("foo", "bar2");
+        let package = finalize_test_package(pkg);
+        assert_eq!(
+            package.extrafields["foo"],
+            ExtraField::OneValue("bar2".to_string())
+        );
+    }
+
+    #[test]
+    fn test_set_extra_field_many() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_extra_field_many("foo", ["bar1", "bar1"]);
+        pkg.set_extra_field_many("foo", ["bar3", "bar4"]);
+        let package = finalize_test_package(pkg);
+        assert_eq!(
+            package.extrafields["foo"],
+            ExtraField::ManyValues(vec!["bar3".to_string(), "bar4".to_string()])
+        );
+    }
+
+    #[test]
+    fn test_add_link_no_framgent() {
+        let mut pkg = PackageMaker::default();
+        pkg.add_link(LinkType::UpstreamHomepage, "https://example.com/");
+        let package = finalize_test_package(pkg);
+        assert_eq!(
+            package.links,
+            vec![Link {
+                r#type: LinkType::UpstreamHomepage,
+                url: "https://example.com/".to_string(),
+                fragment: None,
+            }],
+        );
+    }
+
+    #[test]
+    fn test_add_link_framgent() {
+        let mut pkg = PackageMaker::default();
+        pkg.add_link(LinkType::UpstreamHomepage, "https://example.com/foo#frag");
+        let package = finalize_test_package(pkg);
+        assert_eq!(
+            package.links,
+            vec![Link {
+                r#type: LinkType::UpstreamHomepage,
+                url: "https://example.com/foo".to_string(),
+                fragment: Some("frag".to_string()),
+            }],
+        );
+    }
+}
