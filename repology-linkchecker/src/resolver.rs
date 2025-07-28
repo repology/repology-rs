@@ -75,7 +75,7 @@ impl ResolverCache {
         self.num_requests += 1;
 
         if self.cache.len() >= CACHE_CLEANUP_MIN_SIZE
-            && self.num_requests % CACHE_CLEANUP_PERIOD == 0
+            && self.num_requests.is_multiple_of(CACHE_CLEANUP_PERIOD)
         {
             self.cache.retain(|_, entry| entry.valid_until >= now);
         }
