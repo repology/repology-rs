@@ -9,10 +9,10 @@ workspace = true
 [dependencies]
 repology-common = { path = "../repology-common" }
 anyhow = "1.0.98"
-strum = { version = "0.27.1", features = ["derive"] }
+strum = { version = "0.27.2", features = ["derive"] }
 bitflags = "2.9.1"
 serde = { version = "1.0.219", features = ["derive"] }
-serde_json = "1.0.140"
+serde_json = "1.0.141"
 walkdir = "2.5.0"
 toml = { version = "0.9.2", default-features = false, features = ["std", "serde", "parse"] }
 regex = "1.11.1"
