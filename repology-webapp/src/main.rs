@@ -136,6 +136,7 @@ async fn init_database(config: &Config) -> Result<PgPool> {
             Box::pin(async move {
                 conn.execute("SET application_name = 'repology-webapp'")
                     .await?;
+                conn.execute("SET search_path = repology, public").await?;
                 Ok(())
             })
         })
