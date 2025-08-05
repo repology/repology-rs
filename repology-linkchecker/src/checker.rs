@@ -147,6 +147,10 @@ impl<'a> Checker<'a> {
 
                 let host_settings = hosts.get_settings(host);
 
+                if host_settings.blacklist {
+                    return Err(LinkStatus::Blacklisted);
+                }
+
                 if !host_settings.disable_head {
                     let head_response = Self::perform_http_request(
                         host,
@@ -282,6 +286,9 @@ impl<'a> Checker<'a> {
                     .expect("only urls with host should end up here"),
             );
 
+            // TODO: some/most/all of these conditions should in fact
+            // be handled in handle_one_request for consistent handling
+            // of initial check URL and redirect targets
             if url.scheme() != "http" && url.scheme() != "https" {
                 // do nothing; check result will be empty
 
