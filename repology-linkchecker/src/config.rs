@@ -163,6 +163,7 @@ struct HostSettingsPatch {
     skip: Option<bool>,
     aggregate: Option<bool>,
     blacklist: Option<bool>,
+    hijacked: Option<bool>,
     disable_ipv6: Option<bool>,
     disable_head: Option<bool>,
     generated_sampling_percentage: Option<u8>,
@@ -182,6 +183,7 @@ impl HostSettingsPatch {
                     && self.skip.is_none()
                     && self.aggregate.is_none()
                     && self.blacklist.is_none()
+                    && self.hijacked.is_none()
                     && self.disable_ipv6.is_none()
                     && self.disable_head.is_none()
                     && self.generated_sampling_percentage.is_none(),
@@ -216,6 +218,7 @@ impl HostSettings {
         self.skip = patch.skip.unwrap_or(self.skip);
         self.aggregate = patch.aggregate.unwrap_or(self.aggregate);
         self.blacklist = patch.blacklist.unwrap_or(self.blacklist);
+        self.hijacked = patch.hijacked.unwrap_or(self.hijacked);
         self.disable_ipv6 = patch.disable_ipv6.unwrap_or(self.disable_ipv6);
         self.disable_head = patch.disable_head.unwrap_or(self.disable_head);
         self.generated_sampling_percentage = patch

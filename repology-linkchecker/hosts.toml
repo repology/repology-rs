@@ -67,44 +67,46 @@
 "src.fedoraproject.org".generated_sampling_percentage = 1
 "static.crates.io".skip = false             # exclude this host from crates.io skip rule above
 
-# Blacklist (domain for sale, overtaken, spam etc.)
-# This list is |sort friendly, please keep sorted
+# Special blacklisted cases
 "accounts.google.com".blacklist = true      # 302 redirect from dead sites.google.com
-"afflib.org".blacklist = true
-"antigrain.com".blacklist = true
-"aseman.co".blacklist = true
-"astroid.org".blacklist = true
-"beryl-project.org".blacklist = true
-"boutell.co.uk".blacklist = true
-"conduit-project.org".blacklist = true
-"coolreader.org".blacklist = true
-"cross-pcg.com".blacklist = true
-"dejavu-fonts.org".blacklist = true
-"ekg2.org".blacklist = true
-"ferite.org".blacklist = true
-"geocities.com".blacklist = true
-"glimpse-editor.org".blacklist = true
-"gnugadu.org".blacklist = true
-"htdig.org".blacklist = true
-"htpc-forum.de".blacklist = true
-"jdebp.eu".blacklist = true
-"jnickelsen.de".blacklist = true
-"junoplay.com".blacklist = true
-"kermit-project.org".blacklist = true
-"kmldonkey.org".blacklist = true
-"konst.org.ua".blacklist = true
-"libcapn.org".blacklist = true
-"mandriva.com".blacklist = true
-"mepis.org".blacklist = true
-"nimuh.com".blacklist = true
-"ofset.org".blacklist = true
-"opensync.org".blacklist = true
-"opentnl.org".blacklist = true
-"qtoctave.wordpress.com".blacklist = true
-"somethingaboutorange.com".blacklist = true
-"svn.mandriva.com".blacklist = true
-"thekonst.net".blacklist = true
-"tkzinc.org".blacklist = true
-"topfx.com".blacklist = true
-"wmii.de".blacklist = true
-"yafray.org".blacklist = true
+
+# Domain for sale, overtaken, spam etc.
+# This list is |sort friendly, please keep sorted
+"afflib.org".hijacked = true
+"antigrain.com".hijacked = true
+"aseman.co".hijacked = true
+"astroid.org".hijacked = true
+"beryl-project.org".hijacked = true
+"boutell.co.uk".hijacked = true
+"conduit-project.org".hijacked = true
+"coolreader.org".hijacked = true
+"cross-pcg.com".hijacked = true
+"dejavu-fonts.org".hijacked = true
+"ekg2.org".hijacked = true
+"ferite.org".hijacked = true
+"geocities.com".hijacked = true
+"glimpse-editor.org".hijacked = true
+"gnugadu.org".hijacked = true
+"htdig.org".hijacked = true
+"htpc-forum.de".hijacked = true
+"jdebp.eu".hijacked = true
+"jnickelsen.de".hijacked = true
+"junoplay.com".hijacked = true
+"kermit-project.org".hijacked = true
+"kmldonkey.org".hijacked = true
+"konst.org.ua".hijacked = true
+"libcapn.org".hijacked = true
+"mandriva.com".hijacked = true
+"mepis.org".hijacked = true
+"nimuh.com".hijacked = true
+"ofset.org".hijacked = true
+"opensync.org".hijacked = true
+"opentnl.org".hijacked = true
+"qtoctave.wordpress.com".hijacked = true
+"somethingaboutorange.com".hijacked = true
+"svn.mandriva.com".hijacked = true
+"thekonst.net".hijacked = true
+"tkzinc.org".hijacked = true
+"topfx.com".hijacked = true
+"wmii.de".hijacked = true
+"yafray.org".hijacked = true

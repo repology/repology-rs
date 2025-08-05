@@ -12,8 +12,9 @@
 
 		{%- when LinkStatus::Timeout %}connect timeout (60 seconds)
 		{%- when LinkStatus::InvalidUrl %}invalid URL
-		{%- when LinkStatus::Blacklisted %}host manually blacklisted for being taken over by an unrelated entity
+		{%- when LinkStatus::Blacklisted %}host is manually blacklisted
 		{%- when LinkStatus::UnknownError %}unknown error
+		{%- when LinkStatus::Hijacked %}domain was manually marked as expired, hijacked, sold, or otherwise not related to the project
 
 		{%- when LinkStatus::DnsError %}DNS error
 		{%- when LinkStatus::DnsDomainNotFound %}DNS error: domain name not found

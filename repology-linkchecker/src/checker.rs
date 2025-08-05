@@ -150,6 +150,9 @@ impl<'a> Checker<'a> {
                 if host_settings.blacklist {
                     return Err(LinkStatus::Blacklisted);
                 }
+                if host_settings.hijacked {
+                    return Err(LinkStatus::Hijacked);
+                }
 
                 if !host_settings.disable_head {
                     let head_response = Self::perform_http_request(
@@ -325,6 +328,8 @@ impl<'a> Checker<'a> {
                 recheck_case = RecheckCase::Unsampled;
             } else if host_settings.blacklist {
                 (ipv4_status, ipv6_status) = self.fill_trivial_statuses(LinkStatus::Blacklisted);
+            } else if host_settings.hijacked {
+                (ipv4_status, ipv6_status) = self.fill_trivial_statuses(LinkStatus::Hijacked);
             } else {
                 let mut skip_ipv4 = false;
 

@@ -41,6 +41,7 @@ impl StatusChooser {
             Timeout => 3,
             InvalidUrl => 3,
             Blacklisted => 3,
+            Hijacked => 3,
             DnsDomainNotFound => 3,
             DnsNoAddressRecord => 3,
             DnsRefused => 3,

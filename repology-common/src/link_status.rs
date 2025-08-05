@@ -57,6 +57,7 @@ pub enum LinkStatus {
     InvalidUrl = -101,
     Blacklisted = -102,
     UnknownError = -103,
+    Hijacked = -104,
 
     // DNS errors
     DnsError = -200,
@@ -183,6 +184,7 @@ impl TryFrom<i16> for LinkStatus {
             val if val == D::InvalidUrl as i16 => Ok(Self::InvalidUrl),
             val if val == D::Blacklisted as i16 => Ok(Self::Blacklisted),
             val if val == D::UnknownError as i16 => Ok(Self::UnknownError),
+            val if val == D::Hijacked as i16 => Ok(Self::Hijacked),
 
             val if val == D::DnsError as i16 => Ok(Self::DnsError),
             val if val == D::DnsDomainNotFound as i16 => Ok(Self::DnsDomainNotFound),
