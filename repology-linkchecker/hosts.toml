@@ -69,6 +69,7 @@
 
 # Blacklist (domain for sale, overtaken, spam etc.)
 # This list is |sort friendly, please keep sorted
+"accounts.google.com".blacklist = true      # 302 redirect from dead sites.google.com
 "afflib.org".blacklist = true
 "antigrain.com".blacklist = true
 "aseman.co".blacklist = true
