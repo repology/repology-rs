@@ -14,7 +14,7 @@ bitflags = "2.9.1"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.142"
 walkdir = "2.5.0"
-toml = { version = "0.9.4", default-features = false, features = ["std", "serde", "parse"] }
+toml = { version = "0.9.5", default-features = false, features = ["std", "serde", "parse"] }
 regex = "1.11.1"
 
 [dev-dependencies]
