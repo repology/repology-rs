@@ -22,7 +22,7 @@ serde_urlencoded = "0.7.1"
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "postgres", "chrono"] }
 sxd-document = "0.3.2"
 sxd-xpath = "0.4.2"
-thiserror = "2.0.12"
+thiserror = "2.0.14"
 tidy-sys = "0.8.2"
 tower-service = "0.3.3"
 
