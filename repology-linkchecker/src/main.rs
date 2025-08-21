@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![feature(duration_constructors)]
-#![feature(duration_constructors_lite)]
 #![feature(map_try_insert)]
 #![feature(try_blocks)]
 #![feature(lock_value_accessors)]
