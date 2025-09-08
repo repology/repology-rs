@@ -8,12 +8,12 @@ workspace = true
 
 [dependencies]
 anyhow = "1.0.99"
-chrono = { version = "0.4.41", features = ["std", "now", "serde"], default-features = false }
-clap = { version = "4.5.44", features = ["derive"] }
+chrono = { version = "0.4.42", features = ["std", "now", "serde"], default-features = false }
+clap = { version = "4.5.47", features = ["derive"] }
 h2 = { version = "0.4.12", default-features = false }
 hickory-resolver = "0.25.2"
 http = "1.3.1"
-hyper = "1.6.0"
+hyper = "1.7.0"
 indoc = "2.0.6"
 metrics = "0.24.2"
 metrics-exporter-prometheus = { version = "0.17.2", features = ["http-listener"] }
@@ -32,8 +32,8 @@ toml = { version = "0.9.5", default-features = false, features = ["std", "serde"
 tracing = "0.1.41"
 tracing-appender = "0.2.3"
 tracing-loki = { version = "0.2.6", default-features = false, features = ["compat-0-2-1"] }
-tracing-subscriber = { version = "0.3.19", features = ["chrono", "env-filter"] }
-url = { version = "2.5.4", features = ["serde"] }
+tracing-subscriber = { version = "0.3.20", features = ["chrono", "env-filter"] }
+url = { version = "2.5.7", features = ["serde"] }
 
 [dev-dependencies]
 # Using dev branch until mainline supports matchit >=0.8.6
