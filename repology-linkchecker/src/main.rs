@@ -6,6 +6,7 @@
 #![feature(try_blocks)]
 #![feature(lock_value_accessors)]
 #![feature(coverage_attribute)]
+#![feature(option_reduce)]
 #![feature(ip)]
 
 mod checker;

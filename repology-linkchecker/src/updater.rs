@@ -28,12 +28,9 @@ pub struct CheckResult {
 
 impl CheckResult {
     pub fn is_success(&self) -> Option<bool> {
-        match (self.ipv4.status.is_success(), self.ipv6.status.is_success()) {
-            (None, None) => None,
-            (Some(true), _) => Some(true),
-            (_, Some(true)) => Some(true),
-            _ => Some(false),
-        }
+        let success4 = self.ipv4.status.is_success();
+        let success6 = self.ipv6.status.is_success();
+        success4.reduce(success6, |a, b| a || b)
     }
 }
 
