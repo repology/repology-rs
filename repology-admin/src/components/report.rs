@@ -76,7 +76,8 @@ impl Report {
             UPDATE reports
             SET
                 reply = $2,
-                accepted = $3
+                accepted = $3,
+                updated = now()
             WHERE id = $1
         "})
         .bind(id)
