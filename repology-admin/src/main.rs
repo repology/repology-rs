@@ -178,7 +178,7 @@ async fn init_database(config: &Config) -> Result<PgPool> {
 }
 
 async fn async_main() -> Result<()> {
-    let config = Config::parse().with_context(|| "failed to process configuration")?;
+    let config = Config::parse();
 
     init_logging(&config).with_context(|| "failed to init logging")?;
     init_metrics(&config).with_context(|| "failed to init metrics")?;

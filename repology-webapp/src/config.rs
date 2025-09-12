@@ -93,7 +93,7 @@ pub struct Config {
 
 impl Config {
     pub fn parse() -> Result<Self> {
-        let args = CliArgs::try_parse().with_context(|| "cannot parse command line arguments")?;
+        let args = CliArgs::parse();
 
         let config = args
             .config

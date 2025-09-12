@@ -4,7 +4,6 @@
 use std::net::SocketAddr;
 use std::path::PathBuf;
 
-use anyhow::{Context, Result};
 use clap::Parser;
 use url::Url;
 
@@ -54,12 +53,11 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn parse() -> Result<Self> {
-        let mut config =
-            Self::try_parse().with_context(|| "cannot parse command line arguments")?;
+    pub fn parse() -> Self {
+        let mut config: Self = Parser::parse();
         while config.repology_host.ends_with("/") {
             config.repology_host.pop();
         }
-        Ok(config)
+        config
     }
 }
