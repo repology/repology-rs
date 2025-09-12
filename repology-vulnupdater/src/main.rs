@@ -29,7 +29,27 @@ use status_tracker::SourceUpdateStatusTracker;
 use vulnupdater::{Datasource, VulnUpdater};
 
 fn init_logging(args: &Args) -> Result<()> {
+    use tracing_subscriber::Layer;
+    use tracing_subscriber::filter::EnvFilter;
+    use tracing_subscriber::layer::SubscriberExt;
+    use tracing_subscriber::util::SubscriberInitExt;
+
     info!("initializing logging");
+
+    let mut layers = vec![];
+
+    if let Some(loki_url) = &args.loki_url {
+        let (layer, task) = tracing_loki::builder()
+            .label("service", "repology-vulnupdater")?
+            .build_url(loki_url.clone())
+            .context("loki logging initialization failed")?;
+        tokio::spawn(task);
+        layers.push(layer.boxed());
+    }
+
+    let layer = tracing_subscriber::fmt::Layer::new().with_timer(
+        tracing_subscriber::fmt::time::ChronoLocal::new(String::from("%F %T%.6f")),
+    );
 
     if let Some(log_directory) = &args.log_directory {
         use tracing_appender::rolling::{RollingFileAppender, Rotation};
@@ -39,10 +59,15 @@ fn init_logging(args: &Args) -> Result<()> {
             .max_log_files(14)
             .build(log_directory)
             .context("logging initialization failed")?;
-        tracing_subscriber::fmt().with_writer(logfile).init();
+        layers.push(layer.with_writer(logfile).boxed());
     } else {
-        tracing_subscriber::fmt::init();
+        layers.push(layer.boxed());
     }
+
+    tracing_subscriber::registry()
+        .with(EnvFilter::new("info"))
+        .with(layers)
+        .init();
 
     Ok(())
 }

@@ -2494,7 +2494,9 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-appender",
+ "tracing-loki",
  "tracing-subscriber",
+ "url",
 ]
 
 [[package]]
@@ -2577,7 +2579,9 @@ dependencies = [
  "tokio",
  "tracing",
  "tracing-appender",
+ "tracing-loki",
  "tracing-subscriber",
+ "url",
 ]
 
 [[package]]
@@ -2621,6 +2625,7 @@ dependencies = [
  "tower-service",
  "tracing",
  "tracing-appender",
+ "tracing-loki",
  "tracing-subscriber",
  "ttf-parser",
  "url",

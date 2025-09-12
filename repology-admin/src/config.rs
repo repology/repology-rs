@@ -6,6 +6,7 @@ use std::path::PathBuf;
 
 use anyhow::{Context, Result};
 use clap::Parser;
+use url::Url;
 
 #[derive(clap::Parser, Debug)]
 #[command(version, about, long_about = None)]
@@ -29,6 +30,10 @@ pub struct Config {
     /// given directory with daily rotation and 14 kept rotated files.
     #[arg(long, value_name = "PATH")]
     pub log_directory: Option<PathBuf>,
+
+    /// Loki log collector URL
+    #[arg(long, value_name = "URL")]
+    pub loki_url: Option<Url>,
 
     /// Socket address for serving Prometheus metrics
     #[arg(long, value_name = "ADDR:PORT")]

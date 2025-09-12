@@ -5,6 +5,8 @@ use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::time::Duration;
 
+use url::Url;
+
 fn parse_duration(arg: &str) -> Result<std::time::Duration, std::num::ParseIntError> {
     Ok(match arg.split_at_checked(arg.len() - 1) {
         Some((seconds, "s")) => Duration::from_secs(seconds.parse()?),
@@ -63,6 +65,10 @@ pub struct Args {
     /// given directory with daily rotation and 14 kept rotated files.
     #[arg(short = 'l', long, value_name = "PATH")]
     pub log_directory: Option<PathBuf>,
+
+    /// Loki log collector URL
+    #[arg(long, value_name = "URL")]
+    pub loki_url: Option<Url>,
 
     /// Host/port for Prometheus metrics export endpoint
     #[arg(long, value_name = "HOST:PORT")]

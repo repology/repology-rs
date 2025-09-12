@@ -10,6 +10,7 @@ use std::path::PathBuf;
 use anyhow::{Context, Result, anyhow};
 use clap::Parser;
 use ip_network::IpNetwork;
+use url::Url;
 
 use types::MyIpNetwork;
 pub use types::StaffAfkPeriod;
@@ -39,6 +40,10 @@ struct CliArgs {
     #[arg(long, value_name = "PATH")]
     log_directory: Option<PathBuf>,
 
+    /// Loki log collector URL
+    #[arg(long, value_name = "URL")]
+    loki_url: Option<Url>,
+
     /// Socket address for serving Prometheus metrics
     #[arg(long, value_name = "ADDR:PORT")]
     prometheus_export: Option<SocketAddr>,
@@ -56,6 +61,7 @@ struct FileConfig {
 
     listen: Option<String>,
     log_directory: Option<PathBuf>,
+    loki_url: Option<Url>,
     prometheus_export: Option<SocketAddr>,
 
     spam_keywords: Vec<String>,
@@ -79,6 +85,7 @@ pub struct Config {
     pub dsn: String,
     pub listen: String,
     pub log_directory: Option<PathBuf>,
+    pub loki_url: Option<Url>,
     pub prometheus_export: Option<SocketAddr>,
 
     pub app_config: AppConfig,
@@ -112,6 +119,7 @@ impl Config {
                 anyhow!("missing required argument or config parameter \"listen\"")
             })?,
             log_directory: args.log_directory.or(config.log_directory),
+            loki_url: args.loki_url.or(config.loki_url),
             prometheus_export: args.prometheus_export.or(config.prometheus_export),
 
             app_config: AppConfig {
