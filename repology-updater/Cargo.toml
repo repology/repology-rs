@@ -20,4 +20,4 @@ regex = "1.11.2"
 [dev-dependencies]
 insta = "1.43.2"
 paste = "1.0.15"
-tempfile = "3.21.0"
+tempfile = "3.22.0"
