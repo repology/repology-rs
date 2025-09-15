@@ -25,7 +25,7 @@ repology-common = { path = "../repology-common" }
 reqwest = { version = "0.12.23", default-features = false, features = ["http2", "rustls-tls", "rustls-tls-native-roots"] }
 rustls = { version = "0.23.31", default-features = false }
 rustls-webpki = { version = "0.103.4", default-features = false }
-serde = { version = "1.0.219", features = ["derive"] }
+serde = { version = "1.0.224", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "postgres", "chrono"] }
 tokio = { version = "1.47.1", features = ["macros", "process", "rt-multi-thread"] }
 toml = { version = "0.9.5", default-features = false, features = ["std", "serde", "parse"] }
