@@ -142,6 +142,7 @@ pub async fn project_versions(
             ) AS url
         FROM packages
         WHERE effname = $1
+        ORDER BY subrepo, visiblename, origversion, versionclass
     "})
     .bind(&project_name)
     .fetch_all(&state.pool)
@@ -151,6 +152,13 @@ pub async fn project_versions(
     let mut packages_by_repo = packages
         .into_iter()
         .into_group_map_by(|package| package.repo.clone());
+    // TODO #104, #343: added ORDER BY to the query above (and relying on stableness of
+    // sort in crate::package::ordering), to prevent order of entries with the same repo
+    // and version (but different subrepo, for instance) from flapping.
+    // This is sub-par solution, as instead we need to first convert packages to the entities
+    // the endpoint operates on (corresponding to output table rows), then group/sort/unicalize
+    // them explicity. We also need more aggressive grouping for [lots of versions of the same
+    // package] and [lots of packages with the same version (such as lang packs)] cases.
     packages_by_repo
         .values_mut()
         .for_each(|packages| by_version_descending::sort(packages));
