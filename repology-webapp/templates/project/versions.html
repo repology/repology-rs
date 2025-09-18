@@ -23,9 +23,9 @@
 		<th class="text-center">Category</th>
 		<th class="text-left">Maintainer(s)</th>
 	</tr>
-{% for repository_data in repositories_data.active_repositories() %}
-{% if let Some(packages) = packages_by_repo.get(repository_data.name) %}
-{% for package in packages %}
+{%- for repository_data in repositories_data.active_repositories() %}
+{%- if let Some(packages) = packages_by_repo.get(repository_data.name) %}
+{%- for package in packages %}
 	<tr{% if loop.first %} id="{{ repository_data.name }}"{% endif %}>
 		<td class="text-right">
 			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_data.name|ref)])? }}">{{ repository_data.title }}</a>
@@ -73,9 +73,9 @@
 		{%- endif -%}
 		</td>
 	</tr>
-{% endfor %}
-{% endif %}
-{% endfor %}
+{%- endfor %}
+{%- endif %}
+{%- endfor %}
 </table>
 
 </div>
