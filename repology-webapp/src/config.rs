@@ -66,6 +66,7 @@ struct FileConfig {
 
     spam_keywords: Vec<String>,
     spam_networks: Vec<MyIpNetwork>,
+    require_prs_networks: Vec<MyIpNetwork>,
 
     disabled_reports: Vec<String>,
     staff_afk_periods: Vec<StaffAfkPeriod>,
@@ -75,6 +76,7 @@ struct FileConfig {
 pub struct AppConfig {
     pub spam_keywords: Vec<String>,
     pub spam_networks: Vec<IpNetwork>,
+    pub require_prs_networks: Vec<IpNetwork>,
 
     pub disabled_reports: HashSet<String>,
     pub staff_afk_periods: Vec<StaffAfkPeriod>,
@@ -126,6 +128,11 @@ impl Config {
                 spam_keywords: config.spam_keywords,
                 spam_networks: config
                     .spam_networks
+                    .into_iter()
+                    .map(|network| network.0)
+                    .collect(),
+                require_prs_networks: config
+                    .require_prs_networks
                     .into_iter()
                     .map(|network| network.0)
                     .collect(),

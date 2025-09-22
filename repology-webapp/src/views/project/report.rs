@@ -14,7 +14,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
-use tracing::{error, info};
+use tracing::{error, info, warn};
 
 use crate::config::AppConfig;
 use crate::endpoints::Endpoint;
@@ -170,6 +170,19 @@ fn check_new_report(
                 %network, "bad report: report submitter is blacklisted"
             );
             is_spam = true;
+            break;
+        }
+    }
+
+    for network in &config.require_prs_networks {
+        if client_addresses
+            .iter()
+            .any(|address| network.contains(*address))
+        {
+            warn!(
+                %network, "report submitter is suggested to submit PRs instead"
+            );
+            errors.push("Thank you for submitting this many reports, but reports are not meant for bulk input. Please consider submitting ruleset pull requests instead, one PR per project.");
             break;
         }
     }
