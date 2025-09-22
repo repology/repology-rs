@@ -21,7 +21,7 @@ cityhasher = "0.1.0"
 clap = { version = "4.5.47", features = ["derive"] }
 flate2 = "1.1.2"
 include_dir = { version = "0.7.4", features = ["glob", "nightly"] }
-indexmap = "2.11.0"
+indexmap = "2.11.4"
 indoc = "2.0.6"
 ip_network = { version = "0.4.1", features = ["serde"] }
 itertools = "0.14.0"
