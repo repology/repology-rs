@@ -10,7 +10,7 @@ workspace = true
 coverage = []  # used to calculate coverage correctly (see https://github.com/rust-lang/rust/issues/110486)
 
 [dependencies]
-anyhow = "1.0.99"
+anyhow = "1.0.100"
 # Need a release containing https://github.com/askama-rs/askama/pull/400
 askama = "0.14.0"
 # Using dev branch until mainline supports matchit >=0.8.6

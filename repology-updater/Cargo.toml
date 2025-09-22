@@ -8,7 +8,7 @@ workspace = true
 
 [dependencies]
 repology-common = { path = "../repology-common" }
-anyhow = "1.0.99"
+anyhow = "1.0.100"
 strum = { version = "0.27.2", features = ["derive"] }
 bitflags = "2.9.4"
 serde = { version = "1.0.219", features = ["derive"] }
