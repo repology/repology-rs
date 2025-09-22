@@ -161,13 +161,13 @@ fn check_new_report(
         }
     }
 
-    for spam_network in &config.spam_networks {
+    for network in &config.spam_networks {
         if client_addresses
             .iter()
-            .any(|address| spam_network.contains(*address))
+            .any(|address| network.contains(*address))
         {
             error!(
-                %spam_network, "bad report: report submitter is blacklisted"
+                %network, "bad report: report submitter is blacklisted"
             );
             is_spam = true;
             break;
