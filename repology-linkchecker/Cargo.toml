@@ -7,7 +7,7 @@ edition = "2024"
 workspace = true
 
 [dependencies]
-anyhow = "1.0.99"
+anyhow = "1.0.100"
 chrono = { version = "0.4.42", features = ["std", "now", "serde"], default-features = false }
 clap = { version = "4.5.48", features = ["derive"] }
 h2 = { version = "0.4.12", default-features = false }
