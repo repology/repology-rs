@@ -15,7 +15,7 @@ serde = { version = "1.0.226", features = ["derive"] }
 serde_json = "1.0.145"
 walkdir = "2.5.0"
 toml = { version = "0.9.7", default-features = false, features = ["std", "serde", "parse"] }
-regex = "1.11.2"
+regex = "1.11.3"
 
 [dev-dependencies]
 insta = "1.43.2"
