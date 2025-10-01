@@ -70,7 +70,7 @@
 			</td>
 
 			<td class="text-center total-cell">
-			    {% let non_unique = repository.num_projects - repository.num_projects_unique %}
+				{%- let non_unique = repository.num_projects - repository.num_projects_unique %}
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("families", "2-")])? }}">
 					{{- crate::template_funcs::format_number_short(non_unique) -}}
 				</a>
