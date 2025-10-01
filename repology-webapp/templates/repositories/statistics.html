@@ -47,8 +47,8 @@
 			<th class="text-center" rowspan="2">Problems</th>
 		</tr>
 		<tr>
-			<th class="text-center">Total</th>
-			<th class="text-center"><abbr title="Non-unique">N/u</abbr></th>
+			<th class="text-center" title="Total number of projects packaged in this repository">Total</th>
+			<th class="text-center" title="Number of non-unique projects packaged in this repository">N/u</th>
 			<th class="text-center" colspan="2">Newest</th>
 			<th class="text-center" colspan="2">Outdated</th>
 			<th class="text-center" colspan="2">Unique</th>
@@ -63,21 +63,22 @@
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository.name.as_str())])? }}">{{ repository.title }}</a>
 			</th>
 
-			<td class="text-center total-cell" title="Total number of projects packaged in this repository">
+			<td class="text-center total-cell">
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str())])? }}">
-					{{- repository.num_projects -}}
+					{{- crate::template_funcs::format_number_short(repository.num_projects) -}}
 				</a>
 			</td>
 
-			<td class="text-center total-cell" title="Number of non-unique projects packaged in this repository">
+			<td class="text-center total-cell">
+			    {% let non_unique = repository.num_projects - repository.num_projects_unique %}
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("families", "2-")])? }}">
-					{{- repository.num_projects - repository.num_projects_unique -}}
+					{{- crate::template_funcs::format_number_short(non_unique) -}}
 				</a>
 			</td>
 
 			<td class="text-center version-cell version-big version-newest">
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("newest", "1")])? }}">
-					{{- repository.num_projects_newest -}}
+					{{- crate::template_funcs::format_number_short(repository.num_projects_newest) -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-newest">
@@ -86,7 +87,7 @@
 
 			<td class="text-center version-cell version-big version-outdated">
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("outdated", "1")])? }}">
-					{{- repository.num_projects_outdated -}}
+					{{- crate::template_funcs::format_number_short(repository.num_projects_outdated) -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
@@ -98,7 +99,7 @@
 				<span title="This is a shadow repo, e.g. unique packages in it are ignored">n/a</span>
 			{% else %}
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("families", "1")])? }}">
-					{{- repository.num_projects_unique -}}
+					{{- crate::template_funcs::format_number_short(repository.num_projects_unique) -}}
 				</a>
 			{% endif %}
 			</td>
@@ -112,7 +113,7 @@
 
 			<td class="text-center version-cell version-big version-ignored">
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("problematic", "1")])? }}">
-					{{- repository.num_projects_problematic -}}
+					{{- crate::template_funcs::format_number_short(repository.num_projects_problematic) -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-ignored">
@@ -121,7 +122,7 @@
 
 			<td class="text-center{% if repository.num_projects_vulnerable > 0 %} vulnerable-cell{% endif %}">
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository.name.as_str()), ("vulnerable", "1")])? }}">
-					{{- repository.num_projects_vulnerable -}}
+					{{- crate::template_funcs::format_number_short(repository.num_projects_vulnerable) -}}
 				</a>
 			</td>
 			<td class="text-center{% if repository.num_projects_vulnerable > 0 %} vulnerable-cell{% endif %}">
@@ -130,7 +131,7 @@
 
 			<td class="text-center">
 				{%- if repository.num_maintainers > 0 -%}
-				{{- repository.num_maintainers -}}
+				{{- crate::template_funcs::format_number_short(repository.num_maintainers) -}}
 			{%- else -%}
 				?
 			{%- endif -%}
@@ -139,7 +140,7 @@
 			<td class="text-center">
 			{%- if repository.num_problems > 0 -%}
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoryProblems, [("repository_name", repository.name.as_str())])? }}">
-					{{- repository.num_problems -}}
+					{{- crate::template_funcs::format_number_short(repository.num_problems) -}}
 				</a>
 			{%- else -%}
 				0

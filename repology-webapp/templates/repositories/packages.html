@@ -50,21 +50,21 @@
 				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository.name.as_str())])? }}">{{ repository.title }}</a>
 			</th>
 
-			<td class="text-center">{{ repository.num_packages }}</td>
+			<td class="text-center">{{- crate::template_funcs::format_number_short(repository.num_packages) -}}</td>
 
-			<td class="text-center version-cell version-big version-newest">{{ repository.num_packages_newest }}</td>
-			<td class="text-center version-cell version-big version-devel">{{ repository.num_packages_devel }}</td>
-			<td class="text-center version-cell version-big version-unique">{{ repository.num_packages_unique }}</td>
-			<td class="text-center version-cell version-big version-outdated">{{ repository.num_packages_outdated }}</td>
-			<td class="text-center version-cell version-big version-legacy">{{ repository.num_packages_legacy }}</td>
+			<td class="text-center version-cell version-big version-newest">{{- crate::template_funcs::format_number_short(repository.num_packages_newest) -}}</td>
+			<td class="text-center version-cell version-big version-devel">{{- crate::template_funcs::format_number_short(repository.num_packages_devel) -}}</td>
+			<td class="text-center version-cell version-big version-unique">{{- crate::template_funcs::format_number_short(repository.num_packages_unique) -}}</td>
+			<td class="text-center version-cell version-big version-outdated">{{- crate::template_funcs::format_number_short(repository.num_packages_outdated) -}}</td>
+			<td class="text-center version-cell version-big version-legacy">{{- crate::template_funcs::format_number_short(repository.num_packages_legacy) -}}</td>
 
-			<td class="text-center version-cell version-big version-rolling">{{ repository.num_packages_rolling }}</td>
-			<td class="text-center version-cell version-big version-noscheme">{{ repository.num_packages_noscheme }}</td>
-			<td class="text-center version-cell version-big version-incorrect">{{ repository.num_packages_incorrect }}</td>
-			<td class="text-center version-cell version-big version-untrusted">{{ repository.num_packages_untrusted }}</td>
-			<td class="text-center version-cell version-big version-ignored">{{ repository.num_packages_ignored }}</td>
+			<td class="text-center version-cell version-big version-rolling">{{- crate::template_funcs::format_number_short(repository.num_packages_rolling) -}}</td>
+			<td class="text-center version-cell version-big version-noscheme">{{- crate::template_funcs::format_number_short(repository.num_packages_noscheme) -}}</td>
+			<td class="text-center version-cell version-big version-incorrect">{{- crate::template_funcs::format_number_short(repository.num_packages_incorrect) -}}</td>
+			<td class="text-center version-cell version-big version-untrusted">{{- crate::template_funcs::format_number_short(repository.num_packages_untrusted) -}}</td>
+			<td class="text-center version-cell version-big version-ignored">{{- crate::template_funcs::format_number_short(repository.num_packages_ignored) -}}</td>
 
-			<td class="text-center vulnerable-cell">{{ repository.num_packages_vulnerable }}</td>
+			<td class="text-center vulnerable-cell">{{- crate::template_funcs::format_number_short(repository.num_packages_vulnerable) -}}</td>
 		</tr>
 	{% endfor %}
 	</tbody>
