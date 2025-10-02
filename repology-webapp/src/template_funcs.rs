@@ -26,29 +26,11 @@ pub fn format_number_short(number: &i32) -> Safe<String> {
     if *number >= 1_000 {
         let short_value = *number as f32 / 1_000.0;
         Safe(format!(
-            r#"<span title="{}">{}k</span>"#,
-            *number,
-            format_significant(short_value, 3)
+            r#"<span title="{}">{:.2}k</span>"#,
+            *number, short_value
         ))
     } else {
         Safe((*number).to_string())
-    }
-}
-
-fn format_significant(value: f32, sigfigs: usize) -> String {
-    if value == 0.0 {
-        return "0".into();
-    }
-    let order = value.abs().log10().floor() as i32;
-    let decimals = (sigfigs as i32 - order - 1).max(0) as usize;
-    let formatted = format!("{:.*}", decimals, value);
-    if formatted.contains('.') {
-        formatted
-            .trim_end_matches('0')
-            .trim_end_matches('.')
-            .to_string()
-    } else {
-        formatted
     }
 }
 
@@ -108,7 +90,7 @@ mod tests {
     fn test_format_number_short() {
         assert_eq!(
             super::format_number_short(&12345).0,
-            "<span title=\"12345\">12.3k</span>".to_owned()
+            "<span title=\"12345\">12.35k</span>".to_owned()
         );
         assert_eq!(
             super::format_number_short(&2345).0,
@@ -116,16 +98,16 @@ mod tests {
         );
         assert_eq!(
             super::format_number_short(&1500).0,
-            "<span title=\"1500\">1.5k</span>".to_owned()
+            "<span title=\"1500\">1.50k</span>".to_owned()
         );
         assert_eq!(
             super::format_number_short(&1001).0,
-            "<span title=\"1001\">1k</span>".to_owned()
+            "<span title=\"1001\">1.00k</span>".to_owned()
         );
         assert_eq!(super::format_number_short(&999).0, "999".to_owned());
         assert_eq!(
             super::format_number_short(&1000).0,
-            "<span title=\"1000\">1k</span>".to_owned()
+            "<span title=\"1000\">1.00k</span>".to_owned()
         );
         assert_eq!(super::format_number_short(&171).0, "171".to_owned());
         assert_eq!(super::format_number_short(&0).0, "0".to_owned());
