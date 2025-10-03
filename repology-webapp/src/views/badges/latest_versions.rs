@@ -91,7 +91,7 @@ pub async fn badge_latest_versions(
             .map_or(default_caption, String::as_str),
     )
     .collapsible(true);
-    let version_cell = Cell::new(&text).color("#007ec6");
+    let version_cell = Cell::new(&text).clazz("nice");
 
     let body = render_generic_badge(
         &[vec![caption_cell, version_cell]],
