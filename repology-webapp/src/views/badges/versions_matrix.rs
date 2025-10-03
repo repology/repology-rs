@@ -17,7 +17,7 @@ use libversion::VersionStr;
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::badges::{
-    Cell, CellAlignment, SpecialVersionStatus, badge_color_for_package_status, render_generic_badge,
+    Cell, CellAlignment, SpecialVersionStatus, badge_clazz_for_package_status, render_generic_badge,
 };
 use crate::package::processing::pick_representative_package_per_repository;
 use crate::package::traits::{
@@ -229,11 +229,11 @@ pub async fn badge_versions_matrix(
             {
                 let extra_status = Some(SpecialVersionStatus::LowerThanUserGivenThreshold)
                     .filter(|_| !version_restriction.is_passing(&package_version(package)));
-                let color = badge_color_for_package_status(package.status, extra_status);
+                let clazz = badge_clazz_for_package_status(package.status, extra_status);
 
                 row.push(
                     Cell::new(&package.version)
-                        .color(color)
+                        .clazz(clazz)
                         .truncate(13)
                         .min_width(60),
                 );

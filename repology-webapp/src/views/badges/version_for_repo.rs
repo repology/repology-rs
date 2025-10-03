@@ -13,7 +13,7 @@ use sqlx::FromRow;
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::badges::{
-    Cell, SpecialVersionStatus, badge_color_for_package_status, render_generic_badge,
+    Cell, SpecialVersionStatus, badge_clazz_for_package_status, render_generic_badge,
 };
 use crate::package::processing::pick_representative_package;
 use crate::package::traits::{PackageWithFlags, PackageWithStatus, PackageWithVersion};
@@ -92,9 +92,9 @@ pub async fn badge_version_for_repo(
                 .as_ref()
                 .is_some_and(|min_version| package_version(package) < min_version)
                 .then_some(SpecialVersionStatus::LowerThanUserGivenThreshold);
-            let color = badge_color_for_package_status(package.status, extra_status);
+            let clazz = badge_clazz_for_package_status(package.status, extra_status);
 
-            Cell::new(&package.version).color(color).truncate(20)
+            Cell::new(&package.version).clazz(clazz).truncate(20)
         } else {
             Cell::new("-")
         };

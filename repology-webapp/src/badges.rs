@@ -13,7 +13,6 @@ const HEADER_FONT_SIZE: usize = 15;
 const CELL_HEIGHT: usize = 20;
 const CELL_FONT_SIZE: usize = 11;
 const CELL_HORIZONTAL_PADDING: usize = 5;
-const FONT_FAMILY: &str = "DejaVu Sans,Verdana,Geneva,sans-serif";
 
 // visual length is implied here, as we use it to account for ellipsis in truncated string
 const ELLIPSIS_VISUAL_WIDTH_CHARS: usize = 1;
@@ -31,7 +30,7 @@ pub enum CellAlignment {
 pub struct Cell {
     // TODO: switch to Cow here to avoid allocation
     pub text: String,
-    pub color: Option<String>,
+    pub clazz: Option<String>,
     pub min_width: usize,
     pub collapsible: bool,
     pub alignment: CellAlignment,
@@ -52,8 +51,8 @@ impl Cell {
         }
     }
 
-    pub fn color(mut self, color: &str) -> Self {
-        self.color = Some(color.to_owned());
+    pub fn clazz(mut self, clazz: &str) -> Self {
+        self.clazz = Some(clazz.to_owned());
         self
     }
 
@@ -171,33 +170,57 @@ pub fn render_generic_badge(
     // define clip path for rounded corners
     doc.add_child(
         xml!("clipPath", "id" = "clip").with_child(
-            xml!("rect", "rx" = 3, "width" = "100%", "height" = "100%", "fill" = "#000"),
+            xml!("rect", "rx" = 3, "width" = "100%", "height" = "100%", "class" = "clip"),
         ),
     );
 
     // define linear gradient for bevel effect
     doc.add_child(
         xml!("linearGradient", "id" = "grad", "x2" = 0, "y2" = "100%")
-            .with_child(xml!("stop", "offset" = 0, "stop-color" = "#bbb", "stop-opacity" = ".1"))
+            .with_child(xml!("stop", "offset" = 0, "stop-opacity" = ".1"))
             .with_child(xml!("stop", "offset" = 1, "stop-opacity" = ".1")),
     );
+
+    // TODO: use const_format?
+    let style = format!("\
+        g{{\
+            fill:#fff;font-family:DejaVu Sans,Verdana,Geneva,sans-serif;\
+            font-size:{CELL_FONT_SIZE}px\
+        }}\
+        .bg{{fill:#555}}\
+        .clip{{fill:#000}}\
+        .gradient_tone{{stop-color:#bbb}}\
+        .row_bg{{width:100%;height:{CELL_HEIGHT}px;fill:url(#grad)}}\
+        .left,.center,.right,.title{{dominant-baseline:central}}\
+        .title{{text-anchor:middle;font-weight:bold;font-size:15px}}\
+        .left{{text-anchor:start}}\
+        .center{{text-anchor:middle}}\
+        .right{{text-anchor:end}}\
+        .outline{{fill:#010101;fill-opacity:.3}}\
+        .special{{fill:#e00000}}\
+        .outdated,.legacy{{fill:#e05d44}}\
+        .newest,.unique,.devel{{fill:#4c1}}\
+        .other{{fill:#9f9f9f}}\
+        .nice{{fill:#007ec6}}\
+    ");
+    doc.add_child(xml!("style").with_text(&style));
 
     // graphical data
     let mut g = xml!("g", "clip-path" = "url(#clip)");
 
     // background
-    g.add_child(xml!("rect", "width" = "100%", "height" = "100%", "fill" = "#555"));
+    g.add_child(xml!("rect", "width" = "100%", "height" = "100%", "class" = "bg"));
 
     // header
     if let Some(header) = header {
         g.add_child(
-            xml!("g", "fill" = "#fff", "text-anchor" = "middle", "font-family" = FONT_FAMILY, "font-size" = 15, "font-weight" = "bold")
+            xml!("g")
                 .with_child(
-                    xml!("text", "x" = total_width / 2, "y" = HEADER_HEIGHT / 2 + 1, "dominant-baseline" = "central", "fill" = "#010101", "fill-opacity" = ".3")
+                    xml!("text", "x" = total_width / 2, "y" = HEADER_HEIGHT / 2 + 1, "class" = "title outline")
                         .with_text(header),
                 )
                 .with_child(
-                    xml!("text", "x" = total_width / 2, "y" = HEADER_HEIGHT / 2, "dominant-baseline" = "central")
+                    xml!("text", "x" = total_width / 2, "y" = HEADER_HEIGHT / 2, "class" = "title")
                         .with_text(header),
                 )
         );
@@ -209,44 +232,43 @@ pub fn render_generic_badge(
 
         // cell backgrounds
         for (cell, column) in row.iter().zip(columns.iter()) {
-            if let Some(color) = &cell.color {
+            if let Some(clazz) = &cell.clazz {
                 g.add_child(
-                    xml!("rect", "x" = column.offset, "y" = row_y_offset, "width" = column.width, "height" = CELL_HEIGHT, "fill" = color)
+                    xml!("rect", "x" = column.offset, "y" = row_y_offset, "width" = column.width, "height" = CELL_HEIGHT, "class" = clazz)
                 );
             }
         }
 
         // gradient
         g.add_child(
-            xml!("rect", "y" = row_y_offset, "width" = "100%", "height" = CELL_HEIGHT, "fill" = "url(#grad)")
+            xml!("rect", "y" = row_y_offset, "width" = "100%", "height" = CELL_HEIGHT, "class" = "row_bg")
         );
 
         // cell texts
-        let mut cell_text_g =
-            xml!("g", "fill" = "#fff", "font-family" = FONT_FAMILY, "font-size" = CELL_FONT_SIZE);
+        let mut cell_text_g = xml!("g");
 
         for (cell, column) in row.iter().zip(columns.iter()) {
             if cell.text.is_empty() || column.is_collapsed {
                 continue;
             }
 
-            let (text_x, text_anchor) = match cell.alignment {
-                CellAlignment::Left => (column.offset + CELL_HORIZONTAL_PADDING, "start"),
-                CellAlignment::Center => (column.offset + column.width / 2, "middle"),
+            let (text_x, text_class) = match cell.alignment {
+                CellAlignment::Left => (column.offset + CELL_HORIZONTAL_PADDING, "left"),
+                CellAlignment::Center => (column.offset + column.width / 2, "center"),
                 CellAlignment::Right => (
                     column.offset + column.width - CELL_HORIZONTAL_PADDING,
-                    "end",
+                    "right",
                 ),
             };
 
             let text_y = row_y_offset + CELL_HEIGHT / 2;
             cell_text_g.add_child(
-                xml!("text", "x" = text_x, "y" = text_y + 1, "text-anchor" = text_anchor, "dominant-baseline" = "central", "fill" = "#010101", "fill-opacity" = ".3")
+                xml!("text", "x" = text_x, "y" = text_y + 1, "class" = format!("{text_class} outline"))
                     .with_text(&cell.text)
             );
 
             cell_text_g.add_child(
-                xml!("text", "x" = text_x, "y" = text_y, "text-anchor" = text_anchor, "dominant-baseline" = "central")
+                xml!("text", "x" = text_x, "y" = text_y, "class" = text_class)
                     .with_text(&cell.text)
             );
         }
@@ -265,21 +287,24 @@ pub enum SpecialVersionStatus {
 }
 
 #[allow(unused)]
-pub fn badge_color_for_package_status(
+pub fn badge_clazz_for_package_status(
     package_status: PackageStatus,
     special_status: Option<SpecialVersionStatus>,
 ) -> &'static str {
     if let Some(special_status) = special_status {
         use SpecialVersionStatus::*;
         match special_status {
-            LowerThanUserGivenThreshold => "#e00000",
+            LowerThanUserGivenThreshold => "special",
         }
     } else {
         use PackageStatus::*;
         match package_status {
-            Outdated | Legacy => "#e05d44",
-            Newest | Unique | Devel => "#4c1",
-            _ => "#9f9f9f",
+            Outdated => "outdated",
+            Legacy => "legacy",
+            Newest => "newest",
+            Unique => "unique",
+            Devel => "devel",
+            _ => "other",
         }
     }
 }

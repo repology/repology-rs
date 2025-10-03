@@ -39,7 +39,7 @@ pub async fn badge_tiny_repos(
                     .map_or("in repositories", String::as_str),
             )
             .collapsible(true),
-            Cell::new(&format!("{}", num_families.unwrap_or(0))).color("#007ec6"),
+            Cell::new(&format!("{}", num_families.unwrap_or(0))).clazz("nice"),
         ]],
         None,
         0,

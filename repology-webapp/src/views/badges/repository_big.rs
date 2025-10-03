@@ -12,7 +12,7 @@ use sqlx::FromRow;
 
 use repology_common::PackageStatus;
 
-use crate::badges::{Cell, CellAlignment, badge_color_for_package_status, render_generic_badge};
+use crate::badges::{Cell, CellAlignment, badge_clazz_for_package_status, render_generic_badge};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
@@ -80,48 +80,48 @@ pub async fn badge_repository_big(
             Cell::empty(),
         ]);
 
-        let color = badge_color_for_package_status(PackageStatus::Newest, None);
+        let clazz = badge_clazz_for_package_status(PackageStatus::Newest, None);
         cells.push(vec![
             Cell::new("Up to date").align(CellAlignment::Right),
-            Cell::new(&format!("{}", statistics.num_projects_newest)).color(color),
+            Cell::new(&format!("{}", statistics.num_projects_newest)).clazz(clazz),
             Cell::new(&format_percentage(
                 statistics.num_projects_newest,
                 statistics.num_projects_comparable,
             ))
-            .color(color),
+            .clazz(clazz),
         ]);
 
-        let color = badge_color_for_package_status(PackageStatus::Outdated, None);
+        let clazz = badge_clazz_for_package_status(PackageStatus::Outdated, None);
         cells.push(vec![
             Cell::new("Outdated").align(CellAlignment::Right),
-            Cell::new(&format!("{}", statistics.num_projects_outdated)).color(color),
+            Cell::new(&format!("{}", statistics.num_projects_outdated)).clazz(clazz),
             Cell::new(&format_percentage(
                 statistics.num_projects_outdated,
                 statistics.num_projects_comparable,
             ))
-            .color(color),
+            .clazz(clazz),
         ]);
 
-        let color = "#e00000";
+        let clazz = "special";
         cells.push(vec![
             Cell::new("Vulnerable").align(CellAlignment::Right),
-            Cell::new(&format!("{}", statistics.num_projects_vulnerable)).color(color),
+            Cell::new(&format!("{}", statistics.num_projects_vulnerable)).clazz(clazz),
             Cell::new(&format_percentage(
                 statistics.num_projects_vulnerable,
                 statistics.num_projects,
             ))
-            .color(color),
+            .clazz(clazz),
         ]);
 
-        let color = "#9f9f9f";
+        let clazz = "other";
         cells.push(vec![
             Cell::new("Bad versions").align(CellAlignment::Right),
-            Cell::new(&format!("{}", statistics.num_projects_problematic)).color(color),
+            Cell::new(&format!("{}", statistics.num_projects_problematic)).clazz(clazz),
             Cell::new(&format_percentage(
                 statistics.num_projects_problematic,
                 statistics.num_projects,
             ))
-            .color(color),
+            .clazz(clazz),
         ]);
 
         if statistics.num_maintainers > 0 {
@@ -136,7 +136,7 @@ pub async fn badge_repository_big(
         cells.push(vec![
             Cell::new("Repository not known or was removed")
                 .align(CellAlignment::Center)
-                .color("#e00000"),
+                .clazz("special"),
         ]);
     }
 
