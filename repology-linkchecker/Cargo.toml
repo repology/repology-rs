@@ -17,7 +17,7 @@ hyper = "1.7.0"
 indoc = "2.0.6"
 metrics = "0.24.2"
 metrics-exporter-prometheus = { version = "0.17.2", features = ["http-listener"] }
-metrics-process = { version = "2.4.0", features = ["use-gauge-on-cpu-seconds-total"] }
+metrics-process = { version = "2.4.1", features = ["use-gauge-on-cpu-seconds-total"] }
 rand = "0.9.2"
 repology-common = { path = "../repology-common" }
 # if ever switching to native-tls, don't forget to also enable native-tls-alpn
