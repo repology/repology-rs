@@ -8,7 +8,7 @@ use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use serde::Deserialize;
 
-use crate::badges::{Cell, render_generic_badge};
+use crate::badges::{Cell, DEFAULT_THEME, render_generic_badge};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
@@ -30,6 +30,7 @@ pub async fn badge_tiny_repos(
             .fetch_optional(&state.pool)
             .await?;
 
+    let theme = &DEFAULT_THEME;
     let body = render_generic_badge(
         &[vec![
             Cell::new(
@@ -39,11 +40,12 @@ pub async fn badge_tiny_repos(
                     .map_or("in repositories", String::as_str),
             )
             .collapsible(true),
-            Cell::new(&format!("{}", num_families.unwrap_or(0))).color("#007ec6"),
+            Cell::new(&format!("{}", num_families.unwrap_or(0))).color(theme.color_nice),
         ]],
         None,
         0,
         &state.font_measurer,
+        theme,
     )?;
 
     Ok((

@@ -16,7 +16,7 @@ use libversion::AsVersionWithFlags;
 
 use repology_common::PackageFlags;
 
-use crate::badges::{Cell, render_generic_badge};
+use crate::badges::{Cell, DEFAULT_THEME, render_generic_badge};
 use crate::package::traits::{PackageWithFlags, PackageWithVersion};
 use crate::package::version::package_version;
 use crate::result::EndpointResult;
@@ -84,6 +84,8 @@ pub async fn badge_latest_versions(
         ),
     };
 
+    let theme = &DEFAULT_THEME;
+
     let caption_cell = Cell::new(
         query
             .caption
@@ -91,13 +93,14 @@ pub async fn badge_latest_versions(
             .map_or(default_caption, String::as_str),
     )
     .collapsible(true);
-    let version_cell = Cell::new(&text).color("#007ec6");
+    let version_cell = Cell::new(&text).color(theme.color_nice);
 
     let body = render_generic_badge(
         &[vec![caption_cell, version_cell]],
         None,
         0,
         &state.font_measurer,
+        theme,
     )?;
 
     Ok((

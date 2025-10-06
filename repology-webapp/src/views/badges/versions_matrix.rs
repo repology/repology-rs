@@ -17,7 +17,8 @@ use libversion::VersionStr;
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::badges::{
-    Cell, CellAlignment, SpecialVersionStatus, badge_color_for_package_status, render_generic_badge,
+    Cell, CellAlignment, DEFAULT_THEME, SpecialVersionStatus, badge_color_for_package_status,
+    render_generic_badge,
 };
 use crate::package::processing::pick_representative_package_per_repository;
 use crate::package::traits::{
@@ -208,6 +209,8 @@ pub async fn badge_versions_matrix(
         .map(|project_name| Cell::new(project_name))
         .collect_into(&mut cells[0]);
 
+    let theme = &DEFAULT_THEME;
+
     // per-repository rows
     for repository_data in state
         .repository_data_cache
@@ -229,7 +232,7 @@ pub async fn badge_versions_matrix(
             {
                 let extra_status = Some(SpecialVersionStatus::LowerThanUserGivenThreshold)
                     .filter(|_| !version_restriction.is_passing(&package_version(package)));
-                let color = badge_color_for_package_status(package.status, extra_status);
+                let color = badge_color_for_package_status(package.status, theme, extra_status);
 
                 row.push(
                     Cell::new(&package.version)
@@ -259,7 +262,7 @@ pub async fn badge_versions_matrix(
         cells.push(row);
     }
 
-    let body = render_generic_badge(&cells, query.caption.as_deref(), 0, &state.font_measurer)?;
+    let body = render_generic_badge(&cells, query.caption.as_deref(), 0, &state.font_measurer, theme)?;
 
     Ok((
         [(
