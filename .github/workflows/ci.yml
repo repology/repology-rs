@@ -3,7 +3,7 @@ on: [ push, pull_request ]
 jobs:
   test:
     env:
-      POSTGRESQL: 16
+      POSTGRESQL: 18
     runs-on: ubuntu-24.04 # XXX: switch to latest
     name: ${{ matrix.name }}
     steps:
