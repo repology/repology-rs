@@ -5,12 +5,15 @@
 "abf.io".recheck_generated = 21
 "aur.archlinux.org".disable_head = true
 "aur.archlinux.org".generated_sampling_percentage = 10
+"aur.archlinux.org".monitor = true
 "bugs.freebsd.org".delay = 30               # 429s @ 3sec
+"bugs.freebsd.org".monitor = true
 "build.opensuse.org".generated_sampling_percentage = 10
 "build.opensuse.org".recheck_generated = 21
 "buildd.debian.org".delay = 60              # sensitive to load
 "buildd.debian.org".generated_sampling_percentage = 1 # because of huge and large delay
 "codeberg.org".delay = 30                   # 429s @ 30sec
+"codeberg.org".monitor = true
 "codeload.github.com".is = "github.com"
 "community.chocolatey.org".disable_head = true
 "crates.io".recheck_generated = 60
@@ -22,6 +25,7 @@
 "dev.gentoo.org".delay = 1
 "files.pythonhosted.org".delay = 1
 "files.pythonhosted.org".generated_sampling_percentage = 1  # no real need to recheck links provided by pypi itself, right?
+"files.pythonhosted.org".monitor = true
 "files.pythonhosted.org".recheck_generated = 30
 "files.pythonhosted.org".recheck_manual = 30
 "git.alpinelinux.org".generated_sampling_percentage = 10
@@ -29,6 +33,7 @@
 "git.pld-linux.org".timeout = 5             # constant timeouts
 "gitee.com".delay = 5                       # 429s @ 3sec
 "gitee.com".generated_sampling_percentage = 10
+"gitee.com".monitor = true
 "github.com".delay = 2
 "github.com".generated_sampling_percentage = 1
 "github.com".monitor = true
@@ -37,10 +42,12 @@
 "github.io".is = "github.com"
 "githubusercontent.com".is = "github.com"
 "gitlab.com".delay = 1
+"gitlab.com".monitor = true
 "hydra.nixos.org".generated_sampling_percentage = 1
 "kojipkgs.fedoraproject.org".generated_sampling_percentage = 10
 "lib.rs".disable_head = true                # https://gitlab.com/lib.rs/main/-/issues/209
 "madoguchi.fyralabs.com".delay = 5          # 429s @ 3 sec
+"madoguchi.fyralabs.com".monitor = true
 "marketplace.visualstudio.com".disable_head = true
 "metacpan.org".aggregate = true
 "metacpan.org".recheck_manual = 14
@@ -57,9 +64,11 @@
 "pkgs.alpinelinux.org".generated_sampling_percentage = 10
 "pkgs.alpinelinux.org".recheck_generated = 45
 "pypi.org".delay = 1                        # lots of links, claims (XXX: source?) to handle much trafic
+"pypi.org".monitor = true
 "pypi.org".recheck_manual = 14
 "readthedocs.io".aggregate = true
 "rubygems.org".delay = 1
+"rubygems.org".monitor = true
 "rubygems.org".recheck_manual = 14
 "search.cpan.org".recheck_manual = 14
 "sf.net".is = "sourceforge.net"
