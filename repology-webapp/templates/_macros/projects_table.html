@@ -1,12 +1,13 @@
-{%- macro versions_list(versions, empty_placeholder) %}
-{% for version in versions %}
+{%- macro versions_list(versions, empty_placeholder) -%}
+{%- for version in versions -%}
+	{%- if !loop.first %} {% endif -%}
 	<span class="version version-{{ version.status.as_ref() }}{% if version.recalled %} version-property-recalled{% endif %}">
 		{{- version.version -}}
 		{%- if version.vulnerable %}<span class="vulnerable">▲</span>{% endif -%}
 	</span>
-	{%- if version.spread > 1 %}<sup>{{ version.spread }}</sup>{% endif %}
+	{%- if version.spread > 1 %}<sup>{{ version.spread }}</sup>{% endif -%}
 {%- else -%}
-	{{ empty_placeholder }}
+	{{- empty_placeholder -}}
 {%- endfor -%}
 {%- endmacro -%}
 
@@ -35,7 +36,7 @@
 				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|ref)])? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
 				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|ref)])? }}">∗</a>
-				{% endif %}
+				{%- endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
 			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
@@ -76,7 +77,7 @@
 				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|ref)])? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
 				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|ref)])? }}">∗</a>
-				{% endif %}
+				{%- endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
 			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
@@ -102,12 +103,12 @@
 	{%- if loop.first || (headerevery != 0 && loop.index0 % headerevery == 0) %}
 		<tr>
 			<th>Project</th>
-			{% if !repo.is_empty() || !maintainer.is_empty() %}
+			{%- if !repo.is_empty() || !maintainer.is_empty() %}
 			<th class="text-nowrap" title="Packages
 				{%- if !repo.is_empty() %} in {{ repositories_data.repository_title(repo) }}{% endif -%}
 				{%- if !maintainer.is_empty() %} maintained by {{ maintainer }}{% endif -%}
 			">Selected</th>
-			{% endif %}
+			{%- endif %}
 			<th class="text-center" title="Spread - number of repository families a project is present in">Spr</th>
 			<th title="Versions considered newest">Newest</th>
 			<th title="Versions considered outdated">Outdated</th>
@@ -123,11 +124,11 @@
 				<a href="{{ ctx.url_for(ctx.deref(target_project_endpoint), [("project_name", item.project.effname|ref)])? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
 				<a class="non-selectable" href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectRelated, [("project_name", item.project.effname|ref)])? }}">∗</a>
-				{% endif %}
+				{%- endif %}
 			</td>
-			{% if !repo.is_empty() || !maintainer.is_empty() %}
+			{%- if !repo.is_empty() || !maintainer.is_empty() %}
 			<td>{% call versions_list(item.versions.focused|ref, "-") %}</td>
-			{% endif %}
+			{%- endif %}
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
 			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
 			<td>{% call versions_list(item.versions.outdated|ref, "") %}</td>
