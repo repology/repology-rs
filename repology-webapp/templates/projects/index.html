@@ -75,9 +75,9 @@
 				<div class="col-sm-8">
 					<select class="form-control" id="inrepo" name="inrepo">
 						<option value="">-</option>
-					{% for repository_data in repositories_data.active_repositories() %}
+					{%- for repository_data in repositories_data.active_repositories() %}
 						<option value="{{ repository_data.name }}"{% if repository_data.name == query.inrepo %} selected{% endif %}>{{ repository_data.title }}</option>
-					{% endfor %}
+					{%- endfor %}
 					</select>
 				</div>
 			</div>
@@ -86,9 +86,9 @@
 				<div class="col-sm-8">
 					<select class="form-control" id="notinrepo" name="notinrepo">
 						<option value="">-</option>
-					{% for repository_data in repositories_data.active_repositories() %}
+					{%- for repository_data in repositories_data.active_repositories() %}
 						<option value="{{ repository_data.name }}"{% if repository_data.name == query.notinrepo %} selected{% endif %}>{{ repository_data.title }}</option>
-					{% endfor %}
+					{%- endfor %}
 					</select>
 				</div>
 			</div>
