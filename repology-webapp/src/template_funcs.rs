@@ -19,37 +19,25 @@ pub fn extract_domain_for_ssltest(url: &str) -> Option<String> {
 
 /// Format a number into a short string representation
 ///
-/// If the number is greater than or equal to 1,000, it will be
-/// represented in thousands with a "k" suffix (e.g. 1,200 → "1k").
-/// Otherwise, it will be returned as a plain string.
+/// - For numbers below 1,000, returns the number as-is (e.g. `999 → "999"`).
+/// - For numbers from 1,000 up to 9,950 (inclusive), formats with one decimal place and a `"k"` suffix
+///   (e.g. `2,345 → "2.3k"`).
+/// - For numbers above 9,950, rounds to the nearest thousand and formats with no decimal part
+///   (e.g. `12,345 → "12k"`).
 pub fn format_number_short(number: &i32) -> Safe<String> {
-    if *number >= 1_000 {
-        let short_value = *number as f32 / 1_000.0;
-        Safe(format!(
-            r#"<span title="{}">{}k</span>"#,
+    Safe(match *number {
+        0..=999 => (*number).to_string(),
+        1000..=9950 => format!(
+            r#"<span title="{}">{:.1}k</span>"#,
             *number,
-            format_significant(short_value, 3)
-        ))
-    } else {
-        Safe((*number).to_string())
-    }
-}
-
-fn format_significant(value: f32, sigfigs: usize) -> String {
-    if value == 0.0 {
-        return "0".into();
-    }
-    let order = value.abs().log10().floor() as i32;
-    let decimals = (sigfigs as i32 - order - 1).max(0) as usize;
-    let formatted = format!("{:.*}", decimals, value);
-    if formatted.contains('.') {
-        formatted
-            .trim_end_matches('0')
-            .trim_end_matches('.')
-            .to_string()
-    } else {
-        formatted
-    }
+            *number as f32 / 1000.0
+        ),
+        _ => format!(
+            r#"<span title="{}">{:.0}k</span>"#,
+            *number,
+            *number as f32 / 1000.0
+        ),
+    })
 }
 
 #[cfg(test)]
@@ -108,11 +96,11 @@ mod tests {
     fn test_format_number_short() {
         assert_eq!(
             super::format_number_short(&12345).0,
-            "<span title=\"12345\">12.3k</span>".to_owned()
+            "<span title=\"12345\">12k</span>".to_owned()
         );
         assert_eq!(
             super::format_number_short(&2345).0,
-            "<span title=\"2345\">2.35k</span>".to_owned()
+            "<span title=\"2345\">2.3k</span>".to_owned()
         );
         assert_eq!(
             super::format_number_short(&1500).0,
@@ -120,14 +108,26 @@ mod tests {
         );
         assert_eq!(
             super::format_number_short(&1001).0,
-            "<span title=\"1001\">1k</span>".to_owned()
+            "<span title=\"1001\">1.0k</span>".to_owned()
         );
         assert_eq!(super::format_number_short(&999).0, "999".to_owned());
         assert_eq!(
             super::format_number_short(&1000).0,
-            "<span title=\"1000\">1k</span>".to_owned()
+            "<span title=\"1000\">1.0k</span>".to_owned()
         );
         assert_eq!(super::format_number_short(&171).0, "171".to_owned());
         assert_eq!(super::format_number_short(&0).0, "0".to_owned());
+        assert_eq!(
+            super::format_number_short(&9949).0,
+            "<span title=\"9949\">9.9k</span>".to_owned()
+        );
+        assert_eq!(
+            super::format_number_short(&9950).0,
+            "<span title=\"9950\">9.9k</span>".to_owned()
+        );
+        assert_eq!(
+            super::format_number_short(&9951).0,
+            "<span title=\"9951\">10k</span>".to_owned()
+        );
     }
 }
