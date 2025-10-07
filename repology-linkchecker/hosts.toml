@@ -11,10 +11,8 @@
 "buildd.debian.org".delay = 60              # sensitive to load
 "buildd.debian.org".generated_sampling_percentage = 1 # because of huge and large delay
 "codeberg.org".delay = 30                   # 429s @ 30sec
-"community.chocolatey.org".disable_head = true
-"metacpan.org".aggregate = true
-"metacpan.org".recheck_manual = 14
 "codeload.github.com".is = "github.com"
+"community.chocolatey.org".disable_head = true
 "crates.io".recheck_generated = 60
 "crates.io".recheck_manual = 60
 "crates.io".skip = true                     # misconfigured crap, always 404; XXX = this is true only for crate pages, not for e.g. https://crates.io/api/v1/crates/abscissa_core/0.5.2/download
@@ -33,9 +31,9 @@
 "gitee.com".generated_sampling_percentage = 10
 "github.com".delay = 2
 "github.com".generated_sampling_percentage = 1
+"github.com".monitor = true
 "github.com".recheck_generated = 45
 "github.com".recheck_manual = 30
-"github.com".monitor = true
 "github.io".is = "github.com"
 "githubusercontent.com".is = "github.com"
 "gitlab.com".delay = 1
@@ -44,6 +42,8 @@
 "lib.rs".disable_head = true                # https://gitlab.com/lib.rs/main/-/issues/209
 "madoguchi.fyralabs.com".delay = 5          # 429s @ 3 sec
 "marketplace.visualstudio.com".disable_head = true
+"metacpan.org".aggregate = true
+"metacpan.org".recheck_manual = 14
 "mpr.makedeb.org".disable_head = true
 "notabug.org".delay = 60
 "npmjs.com".delay = 10
