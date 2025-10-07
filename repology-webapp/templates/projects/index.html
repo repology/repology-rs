@@ -8,30 +8,30 @@
 {#- NOTE: this woule be come much simpler if we switch to single endpoint with start/end params #}
 <nav>
 	<ul class="pagination">
-		{% let first_item = projects_list.first() %}
+		{%- let first_item = projects_list.first() %}
 		<li{% if first_item.is_none() %} class="disabled"{% endif %}>
-		{% if let Some(first_item) = first_item %}
+		{%- if let Some(first_item) = first_item -%}
 			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(("..".to_string() + first_item.project.effname.as_str()).as_str())).as_slice() )? }}" rel="prev">&laquo;</a>
-		{% else %}
+		{%- else -%}
 			<span>&laquo;</span>
-		{% endif %}
+		{%- endif -%}
 		</li>
 		<li{% if first_item.is_some() && "0123456789".contains(first_item.unwrap().project.effname.chars().nth(0).unwrap_or(' ')) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, query.to_params(None).as_slice())? }}">0-9</a></li>
-		{% for letter in "abcdefghijklmnopqrstuvwxyz".chars() %}
-		<li{% if first_item.is_some() && first_item.unwrap().project.effname.starts_with(ctx.deref(letter)) %} class="active"{% endif %}>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(letter.to_string()|ref)).as_slice())? }}">
-					{{- letter.to_ascii_uppercase() -}}
-				</a>
+		{%- for letter in "abcdefghijklmnopqrstuvwxyz".chars() %}
+		<li{% if first_item.is_some() && first_item.unwrap().project.effname.starts_with(ctx.deref(letter)) %} class="active"{% endif %}>{#- -#}
+			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(letter.to_string()|ref)).as_slice())? }}">
+				{{- letter.to_ascii_uppercase() -}}
+			</a>{#- -#}
 		</li>
-		{% endfor %}
+		{%- endfor %}
 
-		{% let last_item = projects_list.last() %}
+		{%- let last_item = projects_list.last() %}
 		<li{% if last_item.is_none() %} class="disabled"{% endif %}>
-		{% if let Some(last_item) = last_item %}
+		{%- if let Some(last_item) = last_item -%}
 			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(last_item.project.effname.as_str())).as_slice())? }}" rel="next">&raquo;</a>
-		{% else %}
+		{%- else -%}
 			<span>&raquo;</span>
-		{% endif %}
+		{%- endif -%}
 		</li>
 	</ul>
 </nav>
