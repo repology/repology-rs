@@ -34,6 +34,7 @@
 "github.com".generated_sampling_percentage = 1
 "github.com".recheck_generated = 45
 "github.com".recheck_manual = 30
+"github.com".monitor = true
 "github.io".is = "github.com"
 "githubusercontent.com".is = "github.com"
 "gitlab.com".delay = 1

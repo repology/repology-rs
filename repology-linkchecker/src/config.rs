@@ -166,6 +166,7 @@ struct HostSettingsPatch {
     hijacked: Option<bool>,
     disable_ipv6: Option<bool>,
     disable_head: Option<bool>,
+    monitor: Option<bool>,
     generated_sampling_percentage: Option<u8>,
     is: Option<String>,
 }
@@ -186,6 +187,7 @@ impl HostSettingsPatch {
                     && self.hijacked.is_none()
                     && self.disable_ipv6.is_none()
                     && self.disable_head.is_none()
+                    && self.monitor.is_none()
                     && self.generated_sampling_percentage.is_none(),
             "you can't specify any other settings for host with .is"
         );
@@ -221,6 +223,7 @@ impl HostSettings {
         self.hijacked = patch.hijacked.unwrap_or(self.hijacked);
         self.disable_ipv6 = patch.disable_ipv6.unwrap_or(self.disable_ipv6);
         self.disable_head = patch.disable_head.unwrap_or(self.disable_head);
+        self.monitor = patch.monitor.unwrap_or(self.monitor);
         self.generated_sampling_percentage = patch
             .generated_sampling_percentage
             .unwrap_or(self.generated_sampling_percentage);

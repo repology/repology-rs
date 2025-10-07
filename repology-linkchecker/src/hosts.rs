@@ -22,6 +22,7 @@ pub struct HostSettings {
     pub hijacked: bool,
     pub disable_ipv6: bool,
     pub disable_head: bool,
+    pub monitor: bool,
     pub generated_sampling_percentage: u8,
     pub is: Option<String>,
 }
@@ -41,6 +42,7 @@ impl Default for HostSettings {
             hijacked: false,
             disable_ipv6: false,
             disable_head: false,
+            monitor: false,
             generated_sampling_percentage: 100,
             is: None,
         }

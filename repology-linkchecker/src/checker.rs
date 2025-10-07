@@ -109,10 +109,12 @@ impl<'a> Checker<'a> {
         http_client: &HttpClient,
     ) -> HttpResponse {
         let host_settings = hosts.get_settings(host);
-        delayer
-            .reserve(hosts.get_aggregation(host), host_settings.delay)
-            .await;
+        let aggregation = hosts.get_aggregation(host);
+        delayer.reserve(aggregation, host_settings.delay).await;
         counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str()).increment(1);
+        if host_settings.monitor {
+            counter!("repology_linkchecker_checker_http_requests_total", "method" => request.method.as_str(), "aggregation" => aggregation.to_string()).increment(1);
+        }
         let response = http_client.request(request.clone()).await;
 
         match &response.status {
