@@ -14,6 +14,7 @@
 "community.chocolatey.org".disable_head = true
 "metacpan.org".aggregate = true
 "metacpan.org".recheck_manual = 14
+"codeload.github.com".is = "github.com"
 "crates.io".recheck_generated = 60
 "crates.io".recheck_manual = 60
 "crates.io".skip = true                     # misconfigured crap, always 404; XXX = this is true only for crate pages, not for e.g. https://crates.io/api/v1/crates/abscissa_core/0.5.2/download
