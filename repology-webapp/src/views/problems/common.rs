@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 // triggered inside template
+#![allow(clippy::double_parens)]
 #![allow(clippy::manual_range_contains)]
 
 use askama::Template;
