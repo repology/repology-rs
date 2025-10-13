@@ -9,7 +9,7 @@ workspace = true
 [dependencies]
 anyhow = "1.0.100"
 chrono = { version = "0.4.42", features = ["std", "now", "serde"], default-features = false }
-clap = { version = "4.5.48", features = ["derive"] }
+clap = { version = "4.5.49", features = ["derive"] }
 h2 = { version = "0.4.12", default-features = false }
 hickory-resolver = "0.25.2"
 http = "1.3.1"
