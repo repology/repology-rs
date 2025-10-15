@@ -107,6 +107,7 @@ const IMPORTANT_PROJECTS: &[&str] = &[
     "grub",
     "gtk",
     "haproxy",
+    "hyprland",
     "i3",
     "imagemagick",
     "inkscape",
