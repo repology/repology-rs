@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::collections::HashSet;
+use std::sync::LazyLock;
 
 use regex::Regex;
 
-pub fn extract_maintainers(maintainers: &str) -> Vec<String> {
-    // Note: bench below shows that compiling a regexp on each call is
-    // 3x faster than using LazyCell/LazyLock. Is this true?
-    let looks_like_email = Regex::new(r"^[^<>\s]+@[^<>\s]+$").unwrap();
+static LOOKS_LIKE_EMAIL_RE: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"^[^<>\s]+@[^<>\s]+$").unwrap());
 
+pub fn extract_maintainers(maintainers: &str) -> Vec<String> {
     let mut emails = HashSet::new();
 
     for part in maintainers.split(',') {
@@ -22,10 +22,10 @@ pub fn extract_maintainers(maintainers: &str) -> Vec<String> {
             {
                 // email-looking thing in angle brackets is most likely email,
                 // use it right away
-                if looks_like_email.is_match(word) {
+                if LOOKS_LIKE_EMAIL_RE.is_match(word) {
                     emails.insert(word.to_ascii_lowercase());
                 }
-            } else if looks_like_email.is_match(word) {
+            } else if LOOKS_LIKE_EMAIL_RE.is_match(word) {
                 // email-looking thing without brackets may as well be a part
                 // of an obfuscated string, so only use it when there no other
                 // words in the same part with it
