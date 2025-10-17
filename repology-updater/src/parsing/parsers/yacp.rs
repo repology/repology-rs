@@ -8,7 +8,8 @@ use anyhow::Context;
 use repology_common::LinkType;
 
 use crate::parsing::package_maker::{NameType, PackageMaker};
-use crate::parsing::parser::{PackageParser, PackageSink};
+use crate::parsing::parser::PackageParser;
+use crate::parsing::sink::PackageSink;
 
 #[allow(unused)]
 mod data {

@@ -5,9 +5,9 @@ use std::path::Path;
 
 use paste::paste;
 
-use repology_updater::parsing::parser::PackageAccumulator;
 use repology_updater::parsing::parser::PackageParser as _;
 use repology_updater::parsing::parsers::*;
+use repology_updater::parsing::sinks::PackageAccumulator;
 
 macro_rules! parser_test {
     ($parser_name:ident, $test_name:ident) => {

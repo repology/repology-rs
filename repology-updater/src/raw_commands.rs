@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use repology_updater::parsing::parser::{
-    PackageCounter, PackageDumper, PackageNullSink, PackageSink,
-};
 use repology_updater::parsing::parsers::create_parser;
+use repology_updater::parsing::sink::PackageSink;
+use repology_updater::parsing::sinks::{PackageCounter, PackageDumper, PackageNullSink};
 
 use crate::config::RawCommands;
 

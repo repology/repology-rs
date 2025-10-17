@@ -9,7 +9,8 @@ use anyhow::{Context, bail};
 use repology_common::LinkType;
 
 use crate::parsing::package_maker::{NameType, PackageMaker};
-use crate::parsing::parser::{PackageParser, PackageSink};
+use crate::parsing::parser::PackageParser;
+use crate::parsing::sink::PackageSink;
 use crate::parsing::utils::maintainers::extract_maintainers;
 
 #[allow(unused)]
