@@ -19,7 +19,7 @@ mod data {
     use serde::Deserialize;
 
     #[derive(Deserialize)]
-    #[serde(deny_unknown_fields)]
+    #[cfg_attr(feature = "strict-parsers", serde(deny_unknown_fields))]
     pub struct Package {
         pub category: String,
         pub ix_pkg_fs_name: String,

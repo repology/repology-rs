@@ -19,7 +19,7 @@ mod data {
     use serde::Deserialize;
 
     #[derive(Deserialize)]
-    #[serde(deny_unknown_fields)]
+    #[cfg_attr(feature = "strict-parsers", serde(deny_unknown_fields))]
     pub struct Meta {
         pub version: String,
         pub maintainer: String,
@@ -28,7 +28,7 @@ mod data {
     }
 
     #[derive(Deserialize)]
-    #[serde(deny_unknown_fields)]
+    #[cfg_attr(feature = "strict-parsers", serde(deny_unknown_fields))]
     pub struct Package {
         pub meta: Meta,
         pub deps: HashMap<String, String>,

@@ -6,6 +6,9 @@ edition = "2024"
 [lints]
 workspace = true
 
+[features]
+strict-parsers = []
+
 [dependencies]
 repology-common = { path = "../repology-common" }
 anyhow = "1.0.100"
