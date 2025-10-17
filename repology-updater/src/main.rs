@@ -3,14 +3,13 @@
 
 #![feature(file_buffered)]
 #![feature(coverage_attribute)]
-#![allow(unused)]
 
 mod config;
 mod raw_commands;
 
 use clap::Parser;
 
-use config::{CliArgs, Commands, RawCommands};
+use config::{CliArgs, Commands};
 
 fn main() {
     let args = CliArgs::parse();

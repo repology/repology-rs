@@ -24,7 +24,7 @@ pub fn raw_command(command: &RawCommands) {
             let mut counter = PackageCounter::new(sink.as_mut());
             let parser = create_parser(parser_name).unwrap();
             let start = Instant::now();
-            parser.parse(state_path, &mut counter);
+            parser.parse(state_path, &mut counter).unwrap();
             let duration = Instant::now() - start;
             eprintln!(
                 "Parsed {} package(s) in {:.2} sec ({:.2} packages/sec)",
