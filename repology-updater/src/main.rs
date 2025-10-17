@@ -5,4 +5,19 @@
 #![feature(coverage_attribute)]
 #![allow(unused)]
 
-fn main() {}
+mod config;
+mod raw_commands;
+
+use clap::Parser;
+
+use config::{CliArgs, Commands, RawCommands};
+
+fn main() {
+    let args = CliArgs::parse();
+
+    match args.command {
+        Commands::Raw { command } => {
+            raw_commands::raw_command(&command);
+        }
+    }
+}
