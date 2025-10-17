@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+bins="
+cargo rustc rustdoc rust-gdb rust-lldb rls rustfmt
+cargo-fmt cargo-clippy clippy-driver cargo-miri
+"
+
+mkdir -p "$1/usr/bin"
+
+cp "rustup-init" "$1/usr/bin/rustup"
+chmod +x "$1/usr/bin/rustup"
+
+for bin in $bins; do
+    ln -s rustup "$1/usr/bin/$bin"
+done

@@ -54,5 +54,47 @@ Ok(
                 0x0,
             ),
         },
+        Package {
+            srcname: "musl",
+            trackname: "musl",
+            visiblename: "musl",
+            projectname_seed: "musl",
+            rawversion: "1.2.5",
+            maintainers: [
+                "avs.origami@gmail.com",
+            ],
+            links: [
+                Link {
+                    type: UpstreamDownload,
+                    url: "https://musl.libc.org/releases/musl-1.2.5.tar.gz",
+                    fragment: None,
+                },
+            ],
+            version: "1.2.5",
+            flags: PackageFlags(
+                0x0,
+            ),
+        },
+        Package {
+            srcname: "rustup",
+            trackname: "rustup",
+            visiblename: "rustup",
+            projectname_seed: "rustup",
+            rawversion: "1.28.2",
+            maintainers: [
+                "avs.origami@gmail.com",
+            ],
+            links: [
+                Link {
+                    type: UpstreamDownload,
+                    url: "https://static.rust-lang.org/rustup/archive/1.28.2/x86_64-unknown-linux-musl/rustup-init",
+                    fragment: None,
+                },
+            ],
+            version: "1.28.2",
+            flags: PackageFlags(
+                0x0,
+            ),
+        },
     ],
 )

@@ -26,6 +26,7 @@ mod data {
         pub maintainer: String,
         pub sources: Vec<String>,
         pub checksums: Vec<String>,
+        pub strip: Option<bool>,
     }
 
     #[derive(Deserialize)]
@@ -34,6 +35,8 @@ mod data {
         pub meta: Meta,
         pub deps: HashMap<String, String>,
         pub mkdeps: HashMap<String, String>,
+        #[serde(default)]
+        pub provides: HashMap<String, String>,
     }
 }
 

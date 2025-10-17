@@ -1,0 +1,12 @@
+[meta]
+version = "1.28.2"
+maintainer = "AVS Origami <avs.origami@gmail.com>"
+sources = ["https://static.rust-lang.org/rustup/archive/1.28.2/x86_64-unknown-linux-musl/rustup-init"]
+checksums = ["8590b3f2422f50267355dbd787a21e771cda232d03461be153ffc97694ecffdb"]
+
+[deps]
+
+[mkdeps]
+
+[provides]
+rust = "1.88.0"
