@@ -11,7 +11,7 @@ strict-parsers = []
 
 [dependencies]
 anyhow = "1.0.100"
-bitflags = "2.9.4"
+bitflags = "2.10.0"
 clap = { version = "4.5.48", features = ["derive"] }
 regex = "1.12.2"
 repology-common = { path = "../repology-common" }
