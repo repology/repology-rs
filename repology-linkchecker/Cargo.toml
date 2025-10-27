@@ -23,7 +23,7 @@ repology-common = { path = "../repology-common" }
 # if ever switching to native-tls, don't forget to also enable native-tls-alpn
 # feature, see https://github.com/seanmonstar/reqwest/discussions/2227
 reqwest = { version = "0.12.24", default-features = false, features = ["http2", "rustls-tls", "rustls-tls-native-roots"] }
-rustls = { version = "0.23.33", default-features = false }
+rustls = { version = "0.23.34", default-features = false }
 rustls-webpki = { version = "0.103.7", default-features = false }
 serde = { version = "1.0.226", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "postgres", "chrono"] }
