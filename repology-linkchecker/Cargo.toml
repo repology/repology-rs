@@ -14,7 +14,7 @@ h2 = { version = "0.4.12", default-features = false }
 hickory-resolver = "0.25.2"
 http = "1.3.1"
 hyper = "1.7.0"
-indoc = "2.0.6"
+indoc = "2.0.7"
 metrics = "0.24.2"
 metrics-exporter-prometheus = { version = "0.17.2", features = ["http-listener"] }
 metrics-process = { version = "2.4.1", features = ["use-gauge-on-cpu-seconds-total"] }
