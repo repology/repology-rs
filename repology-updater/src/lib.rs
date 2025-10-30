@@ -8,6 +8,7 @@
 #![feature(test)]
 #![feature(trait_alias)]
 
+pub mod fetching;
 pub mod package;
 pub mod parsing;
 pub mod utils;
