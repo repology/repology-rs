@@ -17,6 +17,7 @@ bitflags = "2.10.0"
 clap = { version = "4.5.48", features = ["derive"] }
 faine = { version = "0.2.1", default-features = false }
 futures-util = { version = "0.3.31", default-features = false }
+rayon = "1.11.0"
 regex = "1.12.2"
 repology-common = { path = "../repology-common" }
 reqwest = { version = "0.12.24", default-features = false, features = ["http2", "rustls-tls", "rustls-tls-native-roots", "stream"] }
@@ -25,6 +26,7 @@ serde-saphyr = "0.0.6"
 serde_json = "1.0.145"
 strum = { version = "0.27.2", features = ["derive"] }
 thiserror = "2.0.16"
+tokio = { version = "1.48.0", features = ["macros", "process", "rt-multi-thread"] }
 toml = { version = "0.9.8", default-features = false, features = ["std", "serde", "parse"] }
 walkdir = "2.5.0"
 

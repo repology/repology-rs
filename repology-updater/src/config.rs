@@ -25,6 +25,20 @@ pub enum Commands {
 #[derive(Subcommand)]
 #[command(version = None)]
 pub enum RawCommands {
+    /// Just run a fetcher
+    Fetch {
+        /// Fetcher name
+        #[arg(long = "fetcher", value_name = "PARSER")]
+        fetcher_name: String,
+
+        /// State path
+        #[arg(long, value_name = "PATH")]
+        state_path: PathBuf,
+
+        /// Fetcher options as YAML
+        #[arg(long, value_name = "YAML")]
+        fetcher_options: String,
+    },
     /// Just run a parser
     Parse {
         /// Parser name
@@ -34,6 +48,30 @@ pub enum RawCommands {
         /// State path
         #[arg(long, value_name = "PATH")]
         state_path: PathBuf,
+
+        /// Print parsed packages to stdout
+        #[arg(long)]
+        print: bool,
+    },
+    /// Run both a fetcher and a parser
+    ///
+    /// Freshly fetched state is only accepted if parsing succeeds
+    FetchParse {
+        /// Fetcher name
+        #[arg(long = "fetcher", value_name = "PARSER")]
+        fetcher_name: String,
+
+        /// Parser name
+        #[arg(long = "parser", value_name = "PARSER")]
+        parser_name: String,
+
+        /// State path
+        #[arg(long, value_name = "PATH")]
+        state_path: PathBuf,
+
+        /// Fetcher options as YAML
+        #[arg(long, value_name = "YAML")]
+        fetcher_options: String,
 
         /// Print parsed packages to stdout
         #[arg(long)]
