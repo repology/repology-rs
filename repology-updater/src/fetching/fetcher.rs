@@ -4,12 +4,12 @@
 use std::path::Path;
 
 #[async_trait::async_trait]
-pub trait FetcherFinalizationHandle {
+pub trait FetcherFinalizationHandle: Send + Sync {
     async fn accept(self: Box<Self>) -> anyhow::Result<()>;
     fn path(&self) -> &Path;
 }
 
 #[async_trait::async_trait]
-pub trait Fetcher {
+pub trait Fetcher: Send + Sync {
     async fn fetch(&self, path: &Path) -> anyhow::Result<Box<dyn FetcherFinalizationHandle>>;
 }

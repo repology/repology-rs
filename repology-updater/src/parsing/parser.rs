@@ -8,6 +8,6 @@ use crate::parsing::package_maker::PackageMaker;
 
 pub trait PackageProcessor = FnMut(PackageMaker) -> Result<(), PackageParsingError>;
 
-pub trait PackageParser {
+pub trait PackageParser: Send + Sync {
     fn parse(&self, path: &Path, sink: &mut dyn PackageProcessor) -> anyhow::Result<()>;
 }
