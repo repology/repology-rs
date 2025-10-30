@@ -25,13 +25,13 @@ pub enum Commands {
 #[derive(Subcommand)]
 #[command(version = None)]
 pub enum RawCommands {
-    /// Run a parser and dump output to stdout
+    /// Just run a parser
     Parse {
         /// Parser name
         #[arg(long = "parser", value_name = "PARSER")]
         parser_name: String,
 
-        /// Path to state to fetch/parse
+        /// State path
         #[arg(long, value_name = "PATH")]
         state_path: PathBuf,
 
