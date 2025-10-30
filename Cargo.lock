@@ -772,6 +772,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "faine"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8cf43bd3edc197740b7d62ba89d21ef5aa3804358b2df69ca7e70b1980517985"
+
+[[package]]
 name = "fastrand"
 version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2460,6 +2466,7 @@ dependencies = [
  "anyhow",
  "bitflags",
  "clap",
+ "faine",
  "insta",
  "paste",
  "regex",
@@ -2468,6 +2475,7 @@ dependencies = [
  "serde_json",
  "strum",
  "tempfile",
+ "thiserror 2.0.16",
  "toml",
  "walkdir",
 ]
