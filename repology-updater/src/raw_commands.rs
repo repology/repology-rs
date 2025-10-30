@@ -57,13 +57,17 @@ async fn raw_command_async(command: &RawCommands) {
             fetcher_options,
             print,
         } => {
-            let mut num_packages: u64 = 0;
             let parser = create_parser(parser_name).unwrap();
             let fetcher = create_fetcher_options_yaml(fetcher_name, fetcher_options).unwrap();
 
+            let start = Instant::now();
             let handle = fetcher.fetch(state_path).await.unwrap();
+            let duration = Instant::now() - start;
+
+            eprintln!("Fetched in {:.2} sec", duration.as_secs_f64());
 
             let mut res = Ok(());
+            let mut num_packages: u64 = 0;
             rayon::scope(|scope| {
                 scope.spawn(|_| {
                     res = parser.parse(handle.path(), &mut |package_maker| {
@@ -75,10 +79,18 @@ async fn raw_command_async(command: &RawCommands) {
                     });
                 });
             });
+            let parse_duration = Instant::now() - start;
 
             res.unwrap();
 
             handle.accept().await.unwrap();
+
+            eprintln!(
+                "Parsed {} package(s) in {:.2} sec ({:.2} packages/sec)",
+                num_packages,
+                parse_duration.as_secs_f64(),
+                num_packages as f64 / parse_duration.as_secs_f64()
+            );
         }
     }
 }
