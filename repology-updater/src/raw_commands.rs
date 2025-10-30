@@ -81,7 +81,10 @@ async fn raw_command_async(command: &RawCommands) {
             });
             let parse_duration = Instant::now() - start;
 
-            res.unwrap();
+            if let Err(e) = res {
+                eprintln!("Parsing failed ({:?}), rejecting freshly fetched data", e);
+                return;
+            }
 
             handle.accept().await.unwrap();
 
