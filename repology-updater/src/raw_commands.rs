@@ -9,7 +9,7 @@ use crate::config::RawCommands;
 
 use std::time::Instant;
 
-pub fn raw_command(command: &RawCommands) {
+async fn raw_command_async(command: &RawCommands) {
     match command {
         RawCommands::Parse {
             parser_name,
@@ -44,15 +44,8 @@ pub fn raw_command(command: &RawCommands) {
             let fetcher = create_fetcher_options_yaml(fetcher_name, fetcher_options).unwrap();
             let start = Instant::now();
 
-            {
-                let state_path = state_path.to_path_buf();
-                tokio::runtime::Runtime::new()
-                    .unwrap()
-                    .block_on(async move {
-                        let handle = fetcher.fetch(&state_path).await.unwrap();
-                        handle.accept().await.unwrap();
-                    });
-            }
+            let handle = fetcher.fetch(state_path).await.unwrap();
+            handle.accept().await.unwrap();
 
             let duration = Instant::now() - start;
             eprintln!("Fetched in {:.2} sec", duration.as_secs_f64());
@@ -68,31 +61,30 @@ pub fn raw_command(command: &RawCommands) {
             let parser = create_parser(parser_name).unwrap();
             let fetcher = create_fetcher_options_yaml(fetcher_name, fetcher_options).unwrap();
 
-            {
-                let state_path = state_path.to_path_buf();
-                tokio::runtime::Runtime::new()
-                    .unwrap()
-                    .block_on(async move {
-                        let handle = fetcher.fetch(&state_path).await.unwrap();
+            let handle = fetcher.fetch(state_path).await.unwrap();
 
-                        let mut res = Ok(());
-                        rayon::scope(|scope| {
-                            scope.spawn(|_| {
-                                res = parser.parse(handle.path(), &mut |package_maker| {
-                                    num_packages += 1;
-                                    if *print {
-                                        println!("{:#?}", package_maker.finalize()?)
-                                    }
-                                    Ok(())
-                                });
-                            });
-                        });
-
-                        res.unwrap();
-
-                        handle.accept().await.unwrap();
+            let mut res = Ok(());
+            rayon::scope(|scope| {
+                scope.spawn(|_| {
+                    res = parser.parse(handle.path(), &mut |package_maker| {
+                        num_packages += 1;
+                        if *print {
+                            println!("{:#?}", package_maker.finalize()?)
+                        }
+                        Ok(())
                     });
-            }
+                });
+            });
+
+            res.unwrap();
+
+            handle.accept().await.unwrap();
         }
     }
+}
+
+pub fn raw_command(command: &RawCommands) {
+    tokio::runtime::Runtime::new()
+        .unwrap()
+        .block_on(raw_command_async(command));
 }
