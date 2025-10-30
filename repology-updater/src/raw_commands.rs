@@ -7,7 +7,7 @@ use repology_updater::fetching::fetchers::create_fetcher_options_yaml;
 
 use crate::config::RawCommands;
 
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 async fn raw_command_async(command: &RawCommands) {
     match command {
@@ -66,25 +66,32 @@ async fn raw_command_async(command: &RawCommands) {
 
             eprintln!("Fetched in {:.2} sec", duration.as_secs_f64());
 
-            let mut res = Ok(());
-            let mut num_packages: u64 = 0;
-            rayon::scope(|scope| {
-                scope.spawn(|_| {
-                    res = parser.parse(handle.path(), &mut |package_maker| {
+            let res: anyhow::Result<(u64, Duration)> = {
+                let print = *print;
+                let path = handle.path().to_path_buf();
+                async_rayon::spawn(move || {
+                    let mut num_packages: u64 = 0;
+                    let start = Instant::now();
+                    parser.parse(&path, &mut |package_maker| {
                         num_packages += 1;
-                        if *print {
+                        if print {
                             println!("{:#?}", package_maker.finalize()?)
                         }
                         Ok(())
-                    });
-                });
-            });
-            let parse_duration = Instant::now() - start;
+                    })?;
+                    let parse_duration = Instant::now() - start;
+                    Ok((num_packages, parse_duration))
+                })
+                .await
+            };
 
-            if let Err(e) = res {
-                eprintln!("Parsing failed ({:?}), rejecting freshly fetched data", e);
-                return;
-            }
+            let (num_packages, parse_duration) = match res {
+                Ok(res) => res,
+                Err(e) => {
+                    eprintln!("Parsing failed ({:?}), rejecting freshly fetched data", e);
+                    return;
+                }
+            };
 
             handle.accept().await.unwrap();
 
