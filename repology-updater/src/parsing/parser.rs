@@ -3,8 +3,11 @@
 
 use std::path::Path;
 
-use crate::parsing::sink::PackageSink;
+use crate::parsing::error::PackageParsingError;
+use crate::parsing::package_maker::PackageMaker;
+
+pub trait PackageProcessor = FnMut(PackageMaker) -> Result<(), PackageParsingError>;
 
 pub trait PackageParser {
-    fn parse(&self, path: &Path, sink: &mut dyn PackageSink) -> anyhow::Result<()>;
+    fn parse(&self, path: &Path, sink: &mut dyn PackageProcessor) -> anyhow::Result<()>;
 }

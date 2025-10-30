@@ -8,8 +8,7 @@ use anyhow::{Context, anyhow, bail};
 use repology_common::LinkType;
 
 use crate::parsing::package_maker::{NameType, PackageMaker};
-use crate::parsing::parser::PackageParser;
-use crate::parsing::sink::PackageSink;
+use crate::parsing::parser::{PackageParser, PackageProcessor};
 use crate::parsing::utils::maintainers::extract_maintainers;
 use crate::parsing::utils::walk::{WalkEntry, WalkFileTree};
 
@@ -43,7 +42,10 @@ mod data {
 pub struct TinCanParser {}
 
 impl TinCanParser {
-    fn process_package(entry: &WalkEntry, sink: &mut dyn PackageSink) -> anyhow::Result<()> {
+    fn process_package(
+        entry: &WalkEntry,
+        process: &mut dyn PackageProcessor,
+    ) -> anyhow::Result<()> {
         let package_path_absolute = entry
             .path_absolute
             .parent()
@@ -85,15 +87,15 @@ impl TinCanParser {
 
         pkg.set_extra_field_many("patches", patches);
 
-        Ok(sink.push(pkg)?)
+        Ok(process(pkg)?)
     }
 }
 
 impl PackageParser for TinCanParser {
-    fn parse(&self, path: &Path, sink: &mut dyn PackageSink) -> anyhow::Result<()> {
+    fn parse(&self, path: &Path, process: &mut dyn PackageProcessor) -> anyhow::Result<()> {
         for entry in WalkFileTree::walk_by_name(path, "package.toml") {
             let entry = entry?;
-            Self::process_package(&entry, sink)
+            Self::process_package(&entry, process)
                 .with_context(|| format!("while processing {:?}", entry.path_relative))?;
         }
 

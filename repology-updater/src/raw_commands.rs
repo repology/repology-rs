@@ -2,8 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use repology_updater::parsing::parsers::create_parser;
-use repology_updater::parsing::sink::PackageSink;
-use repology_updater::parsing::sinks::{PackageCounter, PackageDumper, PackageNullSink};
 
 use crate::config::RawCommands;
 
@@ -16,21 +14,24 @@ pub fn raw_command(command: &RawCommands) {
             state_path,
             print,
         } => {
-            let mut sink: Box<dyn PackageSink> = if *print {
-                Box::new(PackageDumper::default())
-            } else {
-                Box::new(PackageNullSink::default())
-            };
-            let mut counter = PackageCounter::new(sink.as_mut());
+            let mut num_packages: u64 = 0;
             let parser = create_parser(parser_name).unwrap();
             let start = Instant::now();
-            parser.parse(state_path, &mut counter).unwrap();
+            parser
+                .parse(state_path, &mut |package_maker| {
+                    num_packages += 1;
+                    if *print {
+                        println!("{:#?}", package_maker.finalize()?)
+                    }
+                    Ok(())
+                })
+                .unwrap();
             let duration = Instant::now() - start;
             eprintln!(
                 "Parsed {} package(s) in {:.2} sec ({:.2} packages/sec)",
-                counter.count,
+                num_packages,
                 duration.as_secs_f64(),
-                counter.count as f64 / duration.as_secs_f64()
+                num_packages as f64 / duration.as_secs_f64()
             );
         }
     }

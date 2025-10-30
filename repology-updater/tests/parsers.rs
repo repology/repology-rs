@@ -7,16 +7,29 @@ use paste::paste;
 
 use repology_updater::parsing::parser::PackageParser as _;
 use repology_updater::parsing::parsers::*;
-use repology_updater::parsing::sinks::PackageAccumulator;
 
 macro_rules! parser_test {
     ($parser_name:ident, $test_name:ident) => {
         paste! {
             #[test]
             fn [<test_ $parser_name:lower _ $test_name>]() {
-                let mut packages = PackageAccumulator::default();
-                let res = [<$parser_name Parser>] {}
-                    .parse(Path::new(concat!("tests/parsers_test_data/", stringify!([<$parser_name:lower>]), "/", stringify!($test_name))), &mut packages).map(|_| packages.packages);
+                let path = Path::new(
+                    concat!(
+                        "tests/parsers_test_data/",
+                        stringify!([<$parser_name:lower>]),
+                        "/",
+                        stringify!($test_name)
+                    )
+                );
+                let parser = [<$parser_name Parser>] {};
+                let mut packages = vec![];
+                let res = parser.parse(
+                    path,
+                    &mut |package_maker| {
+                        packages.push(package_maker.finalize()?);
+                        Ok(())
+                    }
+                ).map(|_| packages);
                 insta::assert_debug_snapshot!(res);
             }
         }

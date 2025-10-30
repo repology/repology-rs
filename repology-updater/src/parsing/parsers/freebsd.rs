@@ -8,8 +8,7 @@ use std::path::Path;
 use repology_common::LinkType;
 
 use crate::parsing::package_maker::{NameType, PackageMaker};
-use crate::parsing::parser::PackageParser;
-use crate::parsing::sink::PackageSink;
+use crate::parsing::parser::{PackageParser, PackageProcessor};
 use crate::parsing::utils::maintainers::extract_maintainers;
 use crate::parsing::utils::version::VersionStripper;
 
@@ -21,7 +20,7 @@ const VERSION_STRIPPER: VersionStripper = VersionStripper::new()
 pub struct FreeBsdParser {}
 
 impl FreeBsdParser {
-    fn parse_line(line: &str, sink: &mut dyn PackageSink) -> anyhow::Result<()> {
+    fn parse_line(line: &str, process: &mut dyn PackageProcessor) -> anyhow::Result<()> {
         let fields: Vec<_> = line.trim().split('|').collect();
 
         if fields.len() != EXPECTED_FIELDS_COUNT {
@@ -60,16 +59,16 @@ impl FreeBsdParser {
             fields[9].split_ascii_whitespace(),
         );
 
-        Ok(sink.push(pkg)?)
+        Ok(process(pkg)?)
     }
 }
 
 impl PackageParser for FreeBsdParser {
-    fn parse(&self, path: &Path, sink: &mut dyn PackageSink) -> anyhow::Result<()> {
+    fn parse(&self, path: &Path, process: &mut dyn PackageProcessor) -> anyhow::Result<()> {
         let f = std::fs::File::open_buffered(path)?;
 
         for (nline, line) in f.lines().enumerate() {
-            Self::parse_line(&line?, sink).with_context(|| format!("on line {}", nline + 1))?;
+            Self::parse_line(&line?, process).with_context(|| format!("on line {}", nline + 1))?;
         }
 
         Ok(())

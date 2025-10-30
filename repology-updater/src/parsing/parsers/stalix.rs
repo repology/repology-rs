@@ -9,8 +9,7 @@ use anyhow::{Context, bail};
 use repology_common::LinkType;
 
 use crate::parsing::package_maker::{NameType, PackageMaker};
-use crate::parsing::parser::PackageParser;
-use crate::parsing::sink::PackageSink;
+use crate::parsing::parser::{PackageParser, PackageProcessor};
 use crate::parsing::utils::maintainers::extract_maintainers;
 
 #[allow(unused)]
@@ -38,7 +37,7 @@ mod data {
 pub struct StalIxParser {}
 
 impl StalIxParser {
-    fn parse_line(line: &str, sink: &mut dyn PackageSink) -> anyhow::Result<()> {
+    fn parse_line(line: &str, process: &mut dyn PackageProcessor) -> anyhow::Result<()> {
         let pkgdata: data::Package = serde_json::from_str(line)?;
 
         // a hack because we have no way to pass arbitrary flag to the ruleset
@@ -76,16 +75,16 @@ impl StalIxParser {
             pkg.add_link(LinkType::UpstreamDownload, url);
         }
 
-        Ok(sink.push(pkg)?)
+        Ok(process(pkg)?)
     }
 }
 
 impl PackageParser for StalIxParser {
-    fn parse(&self, path: &Path, sink: &mut dyn PackageSink) -> anyhow::Result<()> {
+    fn parse(&self, path: &Path, process: &mut dyn PackageProcessor) -> anyhow::Result<()> {
         let f = std::fs::File::open_buffered(path)?;
 
         for (nline, line) in f.lines().enumerate() {
-            Self::parse_line(&line?, sink).with_context(|| format!("on line {}", nline + 1))?;
+            Self::parse_line(&line?, process).with_context(|| format!("on line {}", nline + 1))?;
         }
 
         Ok(())

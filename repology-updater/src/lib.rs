@@ -6,6 +6,7 @@
 #![feature(iter_collect_into)]
 #![feature(const_trait_impl)]
 #![feature(test)]
+#![feature(trait_alias)]
 
 pub mod package;
 pub mod parsing;

@@ -8,8 +8,7 @@ use anyhow::Context;
 use repology_common::LinkType;
 
 use crate::parsing::package_maker::{NameType, PackageMaker};
-use crate::parsing::parser::PackageParser;
-use crate::parsing::sink::PackageSink;
+use crate::parsing::parser::{PackageParser, PackageProcessor};
 
 #[allow(unused)]
 mod data {
@@ -47,7 +46,10 @@ mod data {
 pub struct YacpParser {}
 
 impl YacpParser {
-    fn process_package(package: data::Package, sink: &mut dyn PackageSink) -> anyhow::Result<()> {
+    fn process_package(
+        package: data::Package,
+        process: &mut dyn PackageProcessor,
+    ) -> anyhow::Result<()> {
         let mut pkg = PackageMaker::default();
 
         pkg.set_names(
@@ -68,16 +70,16 @@ impl YacpParser {
                 .map(|subpackage| subpackage.name),
         );
 
-        Ok(sink.push(pkg)?)
+        Ok(process(pkg)?)
     }
 }
 
 impl PackageParser for YacpParser {
-    fn parse(&self, path: &Path, sink: &mut dyn PackageSink) -> anyhow::Result<()> {
+    fn parse(&self, path: &Path, process: &mut dyn PackageProcessor) -> anyhow::Result<()> {
         let data: data::Data = serde_json::from_reader(std::fs::File::open_buffered(path)?)?;
 
         for (npackage, package) in data.packages.into_iter().enumerate() {
-            Self::process_package(package, sink)
+            Self::process_package(package, process)
                 .with_context(|| format!("entry #{}", npackage + 1))?;
         }
 

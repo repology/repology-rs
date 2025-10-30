@@ -5,6 +5,4 @@ pub mod error;
 pub mod package_maker;
 pub mod parser;
 pub mod parsers;
-pub mod sink;
-pub mod sinks;
 pub mod utils;
