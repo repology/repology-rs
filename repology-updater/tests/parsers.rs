@@ -5,8 +5,7 @@ use std::path::Path;
 
 use paste::paste;
 
-use repology_updater::parsing::parser::PackageParser as _;
-use repology_updater::parsing::parsers::*;
+use repology_updater::parsing::parsers::create_parser;
 
 macro_rules! parser_test {
     ($parser_name:ident, $test_name:ident) => {
@@ -21,7 +20,7 @@ macro_rules! parser_test {
                         stringify!($test_name)
                     )
                 );
-                let parser = [<$parser_name Parser>] {};
+                let parser = create_parser(stringify!([<$parser_name Parser>])).unwrap();
                 let mut packages = vec![];
                 let res = parser.parse(
                     path,
