@@ -1,0 +1,237 @@
+---
+source: repology-updater/tests/ruleset.rs
+expression: res.unwrap()
+---
+Ruleset {
+    rules: [
+        Rule {
+            name: [
+                "name1",
+                "name2",
+            ],
+            namepat: Some(
+                "namepat",
+            ),
+            ver: [
+                "1.0",
+                "1.1",
+            ],
+            notver: [
+                "2.0",
+                "2.1",
+            ],
+            verpat: Some(
+                "[0-9]\\.[0-9]",
+            ),
+            wwwpart: [
+                "github.com",
+            ],
+            sourceforge: [
+                "s-tar",
+            ],
+            summpart: [
+                "foo",
+                "bar",
+            ],
+            wwwpat: Some(
+                "https?://github.com",
+            ),
+            ruleset: [
+                "fedora",
+                "centos",
+            ],
+            noruleset: [
+                "freebsd",
+                "openbsd",
+            ],
+            category: [
+                "games",
+            ],
+            categorypat: Some(
+                "games.*",
+            ),
+            maintainer: [
+                "amdmi3@amdmi3.ru",
+            ],
+            vercomps: Some(
+                3,
+            ),
+            verlonger: Some(
+                4,
+            ),
+            vergt: Some(
+                "1.0",
+            ),
+            verge: Some(
+                "1.1",
+            ),
+            verlt: Some(
+                "1.2",
+            ),
+            verle: Some(
+                "1.3",
+            ),
+            vereq: Some(
+                "1.4",
+            ),
+            verne: Some(
+                "1.5",
+            ),
+            relgt: Some(
+                "1.6",
+            ),
+            relge: Some(
+                "1.7",
+            ),
+            rellt: Some(
+                "1.8",
+            ),
+            relle: Some(
+                "1.9",
+            ),
+            releq: Some(
+                "1.10",
+            ),
+            relne: Some(
+                "1.11",
+            ),
+            flag: [
+                "foo",
+            ],
+            noflag: [
+                "bar",
+            ],
+            is_p_is_patch: Some(
+                true,
+            ),
+            hasbranch: Some(
+                true,
+            ),
+            setname: Some(
+                "name3",
+            ),
+            setver: Some(
+                "3.0",
+            ),
+            addflavor: Some(
+                Explicit(
+                    [
+                        "flavor1",
+                    ],
+                ),
+            ),
+            setflavor: Some(
+                Explicit(
+                    [
+                        "flavor2",
+                    ],
+                ),
+            ),
+            resetflavors: Some(
+                true,
+            ),
+            setbranch: Some(
+                "1",
+            ),
+            setbranchcomps: Some(
+                1,
+            ),
+            remove: Some(
+                true,
+            ),
+            ignore: Some(
+                true,
+            ),
+            devel: Some(
+                true,
+            ),
+            weak_devel: Some(
+                true,
+            ),
+            altver: Some(
+                true,
+            ),
+            altscheme: Some(
+                true,
+            ),
+            vulnerable: Some(
+                true,
+            ),
+            p_is_patch: Some(
+                true,
+            ),
+            any_is_patch: Some(
+                true,
+            ),
+            sink: Some(
+                true,
+            ),
+            outdated: Some(
+                true,
+            ),
+            legacy: Some(
+                true,
+            ),
+            nolegacy: Some(
+                true,
+            ),
+            incorrect: Some(
+                true,
+            ),
+            untrusted: Some(
+                true,
+            ),
+            noscheme: Some(
+                true,
+            ),
+            rolling: Some(
+                true,
+            ),
+            snapshot: Some(
+                true,
+            ),
+            successor: Some(
+                true,
+            ),
+            debianism: Some(
+                true,
+            ),
+            generated: Some(
+                true,
+            ),
+            trace: Some(
+                true,
+            ),
+            addflag: [
+                "flag1",
+                "flag2",
+            ],
+            last: Some(
+                true,
+            ),
+            tolowername: Some(
+                true,
+            ),
+            replaceinname: Some(
+                {
+                    " ": "-",
+                },
+            ),
+            warning: Some(
+                "Some warning!",
+            ),
+            setsubrepo: Some(
+                "testing",
+            ),
+            maintenance: Some(
+                true,
+            ),
+            disposable: Some(
+                true,
+            ),
+            precious: Some(
+                true,
+            ),
+        },
+    ],
+}

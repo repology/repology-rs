@@ -1,0 +1,12 @@
+# simple rule (flow)
+- {name: foo, setname: bar}
+
+# simple rule (multiline)
+- name: foo
+  setname: bar
+
+# colons in names
+- {name: python:foo, setname: python:bar}
+
+# regexps
+- {name: foo, verpat: "[0-9]{2}\\.[0-9]{2}", incorrect: true}

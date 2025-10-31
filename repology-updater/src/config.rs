@@ -77,4 +77,10 @@ pub enum RawCommands {
         #[arg(long)]
         print: bool,
     },
+    /// Parse and dump ruleset
+    DumpRuleset {
+        /// Path to ruleset
+        #[arg(long, value_name = "PATH")]
+        ruleset_path: PathBuf,
+    },
 }

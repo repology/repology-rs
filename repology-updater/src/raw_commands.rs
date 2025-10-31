@@ -1,9 +1,9 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use repology_updater::parsing::parsers::create_parser;
-
 use repology_updater::fetching::fetchers::create_fetcher_options_yaml;
+use repology_updater::parsing::parsers::create_parser;
+use repology_updater::ruleset::Ruleset;
 
 use crate::config::RawCommands;
 
@@ -101,6 +101,12 @@ async fn raw_command_async(command: &RawCommands) {
                 parse_duration.as_secs_f64(),
                 num_packages as f64 / parse_duration.as_secs_f64()
             );
+        }
+        RawCommands::DumpRuleset { ruleset_path } => {
+            let ruleset = Ruleset::parse(ruleset_path).unwrap();
+            for rule in &ruleset.rules {
+                print!("- {}", rule.to_yaml().unwrap());
+            }
         }
     }
 }

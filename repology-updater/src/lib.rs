@@ -11,4 +11,5 @@
 pub mod fetching;
 pub mod package;
 pub mod parsing;
+pub mod ruleset;
 pub mod utils;
