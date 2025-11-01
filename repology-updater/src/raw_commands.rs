@@ -45,8 +45,8 @@ async fn raw_command_async(command: &RawCommands) {
             let fetcher = create_fetcher_options_yaml(fetcher_name, fetcher_options).unwrap();
             let start = Instant::now();
 
-            let handle = fetcher.fetch(state_path).await.unwrap();
-            handle.accept().await.unwrap();
+            let fetch_result = fetcher.fetch(state_path).await.unwrap();
+            fetch_result.accept().await.unwrap();
 
             let duration = Instant::now() - start;
             eprintln!("Fetched in {:.2} sec", duration.as_secs_f64());
@@ -62,14 +62,14 @@ async fn raw_command_async(command: &RawCommands) {
             let fetcher = create_fetcher_options_yaml(fetcher_name, fetcher_options).unwrap();
 
             let start = Instant::now();
-            let handle = fetcher.fetch(state_path).await.unwrap();
+            let fetch_result = fetcher.fetch(state_path).await.unwrap();
             let duration = Instant::now() - start;
 
             eprintln!("Fetched in {:.2} sec", duration.as_secs_f64());
 
             let res: anyhow::Result<(u64, Duration)> = {
                 let print = *print;
-                let path = handle.path().to_path_buf();
+                let path = fetch_result.state_path.clone();
                 async_rayon::spawn(move || {
                     let mut num_packages: u64 = 0;
                     let start = Instant::now();
@@ -94,7 +94,7 @@ async fn raw_command_async(command: &RawCommands) {
                 }
             };
 
-            handle.accept().await.unwrap();
+            fetch_result.accept().await.unwrap();
 
             eprintln!(
                 "Parsed {} package(s) in {:.2} sec ({:.2} packages/sec)",

@@ -3,12 +3,12 @@
 
 use std::fs::File;
 use std::io::Write;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 
 use futures_util::StreamExt;
 use serde::Deserialize;
 
-use crate::fetching::fetcher::{Fetcher, FetcherFinalizationHandle};
+use crate::fetching::fetcher::{FetchStatus, Fetcher};
 use crate::utils::transact_dir;
 
 const FILE_NAME: &str = "data";
@@ -16,32 +16,6 @@ const FILE_NAME: &str = "data";
 #[derive(Deserialize)]
 pub struct FileFetcherOptions {
     pub url: String,
-}
-
-struct FinalizationHandle {
-    path: PathBuf,
-    handle: transact_dir::WriteHandle,
-}
-
-impl FinalizationHandle {
-    pub fn new(handle: transact_dir::WriteHandle) -> Self {
-        Self {
-            path: handle.path.join(FILE_NAME),
-            handle,
-        }
-    }
-}
-
-#[async_trait::async_trait]
-impl FetcherFinalizationHandle for FinalizationHandle {
-    async fn accept(self: Box<Self>) -> anyhow::Result<()> {
-        self.handle.commit()?;
-        Ok(())
-    }
-
-    fn path(&self) -> &Path {
-        &self.path
-    }
 }
 
 pub struct FileFetcher {
@@ -56,7 +30,7 @@ impl FileFetcher {
 
 #[async_trait::async_trait]
 impl Fetcher for FileFetcher {
-    async fn fetch(&self, path: &Path) -> anyhow::Result<Box<dyn FetcherFinalizationHandle>> {
+    async fn fetch(&self, path: &Path) -> anyhow::Result<FetchStatus> {
         let dir = transact_dir::TransactionalDir::new(path);
         dir.cleanup()?;
         let tx = dir.begin_replace()?;
@@ -70,6 +44,15 @@ impl Fetcher for FileFetcher {
             file.write_all(&item?)?;
         }
 
-        Ok(Box::new(FinalizationHandle::new(tx)))
+        Ok(FetchStatus {
+            was_modified: true,
+            state_path: tx.path.to_path_buf(),
+            acceptor: Box::new(|| {
+                Box::pin(async {
+                    tx.commit()?;
+                    Ok(())
+                })
+            }),
+        })
     }
 }
