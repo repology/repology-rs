@@ -1,6 +1,6 @@
 ---
 source: repology-updater/tests/ruleset.rs
-expression: res.unwrap()
+expression: res
 ---
 Ruleset {
     rules: [
