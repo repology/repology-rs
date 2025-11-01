@@ -117,55 +117,45 @@ impl RepositoriesConfig {
                     .to_str()
                     .is_some_and(|filename| filename.ends_with(".yaml"))
             {
-                let yaml = {
-                    let template = std::fs::read_to_string(entry.path()).with_context(|| {
-                        format!(
-                            "failed to read repositories config {}",
-                            entry.path().display()
-                        )
-                    })?;
+                let template = std::fs::read_to_string(entry.path()).with_context(|| {
+                    format!(
+                        "failed to read repositories config {}",
+                        entry.path().display()
+                    )
+                })?;
 
+                let use_tera = template.contains("# parse_with_tera")
+                    && !template.contains("# parse_with_jinja");
+
+                let yaml: String = if use_tera {
                     tera::Tera::one_off(&template, &tera::Context::new(), false).with_context(
                         || {
                             format!(
-                                "failed to process templates in repositories config {}",
+                                "failed to preprocess repositories config with tera {}",
                                 entry.path().display()
                             )
                         },
-                    )
-                };
+                    )?
+                } else {
+                    use pyo3::ffi::c_str;
+                    use pyo3::prelude::*;
+                    use pyo3::types::{PyDict, PyString};
 
-                let yaml = match yaml {
-                    Ok(yaml) => yaml,
-                    Err(e) => {
-                        eprintln!(
-                            "Failed to parse repositories config {} with tera ({:?}), falling back to python",
-                            entry.path().display(),
-                            e
-                        );
+                    Python::attach(|py| -> PyResult<String> {
+                        let locals = PyDict::new(py);
+                        locals.set_item("jinja2", py.import("jinja2")?)?;
+                        locals.set_item("input", PyString::from_bytes(py, template.as_bytes())?)?;
+                        let code = c_str!("jinja2.Template(input).render()");
+                        let output: String = py.eval(code, None, Some(&locals))?.extract()?;
 
-                        let output =
-                        std::process::Command::new("python")
-                            .arg("-c")
-                            .arg("import jinja2; import sys; print(jinja2.Template(open(sys.argv[1]).read()).render())")
-                            .arg(entry.path())
-                            .output()
-                            .with_context(|| format!("failed to load repositories config {}", entry.path().display()))?;
-
-                        let output = output.exit_ok().with_context(|| {
-                            format!(
-                                "failed to process repositories config {}",
-                                entry.path().display()
-                            )
-                        })?;
-
-                        String::from_utf8(output.stdout).with_context(|| {
-                            format!(
-                                "failed to process repositories config {}",
-                                entry.path().display()
-                            )
-                        })?
-                    }
+                        Ok(output)
+                    })
+                    .with_context(|| {
+                        format!(
+                            "failed to preprocess repositories config with python {}",
+                            entry.path().display()
+                        )
+                    })?
                 };
 
                 let mut chunk: Vec<Repository> =
