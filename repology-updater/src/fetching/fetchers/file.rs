@@ -9,6 +9,7 @@ use futures_util::StreamExt;
 use serde::Deserialize;
 
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
+use crate::fetching::politeness::FetchPoliteness;
 use crate::utils::transact_dir;
 
 const FILE_NAME: &str = "data";
@@ -30,13 +31,16 @@ impl FileFetcher {
 
 #[async_trait::async_trait]
 impl Fetcher for FileFetcher {
-    async fn fetch(&self, path: &Path) -> anyhow::Result<FetchStatus> {
+    async fn fetch(&self, path: &Path, politeness: FetchPoliteness) -> anyhow::Result<FetchStatus> {
         let dir = transact_dir::TransactionalDir::new(path);
         dir.cleanup()?;
         let tx = dir.begin_replace()?;
         let path = tx.path.join(FILE_NAME);
 
-        let mut stream = reqwest::get(&self.options.url).await?.bytes_stream();
+        let mut stream = {
+            let _permit = politeness.acquire(&self.options.url);
+            reqwest::get(&self.options.url).await?.bytes_stream()
+        };
 
         let mut file = File::create(&path)?;
 

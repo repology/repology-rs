@@ -3,6 +3,8 @@
 
 use std::path::{Path, PathBuf};
 
+use crate::fetching::politeness::FetchPoliteness;
+
 pub struct FetchStatus {
     pub was_modified: bool,
     pub state_path: PathBuf,
@@ -24,5 +26,5 @@ impl FetchStatus {
 
 #[async_trait::async_trait]
 pub trait Fetcher: Send + Sync {
-    async fn fetch(&self, path: &Path) -> anyhow::Result<FetchStatus>;
+    async fn fetch(&self, path: &Path, politeness: FetchPoliteness) -> anyhow::Result<FetchStatus>;
 }
