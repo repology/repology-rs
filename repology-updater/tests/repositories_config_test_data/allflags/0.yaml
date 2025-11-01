@@ -1,0 +1,38 @@
+- name: foorepo
+  sortname: foorepo_0
+  type: repository
+  desc: Foo Repository
+  statsgroup: Foo Group
+  singular: Foo package
+  family: foo_family
+  ruleset: foo_ruleset
+  color: '880000'
+  minpackages: 1
+  update_period: 1w
+  pessimized: false
+  valid_till: 2024-01-01
+  default_maintainer: example@example.com
+  sources:
+    - name: source1
+      fetcher:
+        class: FileFetcher
+        url: https://example.com/data.json
+      parser:
+        class: FooParser
+      subrepo: source1
+    - name: source2
+      fetcher:
+        class: FileFetcher
+        url: https://example.com/data2.json
+      parser:
+        class: FooParser
+      subrepo: source2
+  shadow: false
+  incomplete: false
+  repolinks:
+    - desc: Foo repo home
+      url: https://adelielinux.org/
+  packagelinks:
+    - type: PACKAGE_SOURCES
+      url: 'https://git.example.com/{srcname}'
+  groups: [all, production, foo]

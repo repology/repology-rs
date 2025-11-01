@@ -83,4 +83,10 @@ pub enum RawCommands {
         #[arg(long, value_name = "PATH")]
         ruleset_path: PathBuf,
     },
+    /// Parse and dump repositories config
+    DumpRepositories {
+        /// Path to repositories config
+        #[arg(long, value_name = "PATH")]
+        repositories_path: PathBuf,
+    },
 }

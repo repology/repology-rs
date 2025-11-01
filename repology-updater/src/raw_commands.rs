@@ -3,6 +3,7 @@
 
 use repology_updater::fetching::fetchers::create_fetcher_options_yaml;
 use repology_updater::parsing::parsers::create_parser;
+use repology_updater::repositories_config::RepositoriesConfig;
 use repology_updater::ruleset::Ruleset;
 
 use crate::config::RawCommands;
@@ -107,6 +108,15 @@ async fn raw_command_async(command: &RawCommands) {
             for rule in &ruleset.rules {
                 print!("- {}", rule.to_yaml().unwrap());
             }
+        }
+        RawCommands::DumpRepositories { repositories_path } => {
+            print!(
+                "{}",
+                RepositoriesConfig::parse(repositories_path)
+                    .unwrap()
+                    .to_yaml()
+                    .unwrap()
+            );
         }
     }
 }
