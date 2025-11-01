@@ -39,7 +39,10 @@ impl Fetcher for FileFetcher {
 
         let mut stream = {
             let _permit = politeness.acquire(&self.options.url);
-            reqwest::get(&self.options.url).await?.bytes_stream()
+            reqwest::get(&self.options.url)
+                .await?
+                .error_for_status()?
+                .bytes_stream()
         };
 
         let mut file = File::create(&path)?;
@@ -58,5 +61,57 @@ impl Fetcher for FileFetcher {
                 })
             }),
         })
+    }
+}
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_fetch() {
+        let mut server = mockito::Server::new_async().await;
+        let mock = server
+            .mock("GET", "/data.txt")
+            .with_status(200)
+            .with_body("Success")
+            .create();
+
+        let tmpdir = tempfile::tempdir().unwrap();
+        let state_path = tmpdir.path().join("state");
+
+        let fetcher = FileFetcher::new(FileFetcherOptions {
+            url: server.url() + "/data.txt",
+        });
+        let fetch_result = fetcher
+            .fetch(&state_path, FetchPoliteness::default())
+            .await
+            .unwrap();
+
+        mock.assert();
+        assert!(fetch_result.was_modified);
+        assert_eq!(
+            std::fs::read_to_string(fetch_result.state_path.join("data")).unwrap(),
+            "Success"
+        );
+        assert!(fetch_result.accept().await.is_ok());
+    }
+
+    #[tokio::test]
+    async fn test_fetch_fail() {
+        let mut server = mockito::Server::new_async().await;
+        let mock = server.mock("GET", "/data.txt").with_status(404).create();
+
+        let tmpdir = tempfile::tempdir().unwrap();
+        let state_path = tmpdir.path().join("state");
+
+        let fetcher = FileFetcher::new(FileFetcherOptions {
+            url: server.url() + "/data.txt",
+        });
+        let fetch_result = fetcher.fetch(&state_path, FetchPoliteness::default()).await;
+
+        mock.assert();
+        assert!(fetch_result.is_err());
     }
 }

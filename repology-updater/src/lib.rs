@@ -7,6 +7,7 @@
 #![feature(const_trait_impl)]
 #![feature(test)]
 #![feature(trait_alias)]
+#![feature(debug_closure_helpers)]
 
 pub mod fetching;
 pub mod package;
