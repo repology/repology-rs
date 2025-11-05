@@ -51,6 +51,33 @@ async fn test_fetch_fail() {
     assert!(fetch_result.is_err());
 }
 
+#[tokio::test]
+#[ignore]
+async fn test_user_agent() {
+    let mut server = mockito::Server::new_async().await;
+    let mock = server
+        .mock("GET", "/data.txt")
+        .with_status(200)
+        .match_header(
+            "user-agent",
+            mockito::Matcher::Regex(r"repology-fetcher.*".to_string()),
+        )
+        .create();
+
+    let tmpdir = tempfile::tempdir().unwrap();
+    let state_path = tmpdir.path().join("state");
+
+    FileFetcher::new(FileFetcherOptions {
+        url: server.url() + "/data.txt",
+        ..Default::default()
+    })
+    .fetch(&state_path, FetchPoliteness::default())
+    .await
+    .unwrap();
+
+    mock.assert();
+}
+
 async fn fetch_with_compression(data: &[u8], compression: Compression) -> String {
     let mut server = mockito::Server::new_async().await;
     server
@@ -193,4 +220,73 @@ async fn test_cache_buster() {
     fetch_result.accept().await.unwrap();
 
     assert_ne!(data1, data2);
+}
+
+#[tokio::test]
+#[ignore]
+async fn test_not_modified() {
+    let mut server = mockito::Server::new_async().await;
+    let mock1 = server
+        .mock("GET", "/data")
+        .with_status(200)
+        .with_body("abc")
+        .with_header("etag", "abcdef")
+        .match_header("if-none-match", mockito::Matcher::Missing)
+        .expect(2)
+        .create();
+    let mock2 = server
+        .mock("GET", "/data")
+        .with_status(304)
+        .match_header("if-none-match", "abcdef")
+        .create();
+
+    let tmpdir = tempfile::tempdir().unwrap();
+    let state_path = tmpdir.path().join("state");
+
+    let fetcher = FileFetcher::new(FileFetcherOptions {
+        url: server.url() + "/data",
+        ..Default::default()
+    });
+
+    {
+        let res = fetcher
+            .fetch(&state_path, FetchPoliteness::default())
+            .await
+            .unwrap();
+        assert!(res.was_modified);
+        assert_eq!(
+            std::fs::read_to_string(res.state_path.join("data")).unwrap(),
+            "abc".to_string()
+        );
+        // res is not accepted!
+    }
+
+    {
+        let res = fetcher
+            .fetch(&state_path, FetchPoliteness::default())
+            .await
+            .unwrap();
+        assert!(res.was_modified);
+        assert_eq!(
+            std::fs::read_to_string(res.state_path.join("data")).unwrap(),
+            "abc".to_string()
+        );
+        res.accept().await.unwrap();
+    }
+
+    {
+        let res = fetcher
+            .fetch(&state_path, FetchPoliteness::default())
+            .await
+            .unwrap();
+        assert!(!res.was_modified);
+        assert_eq!(
+            std::fs::read_to_string(res.state_path.join("data")).unwrap(),
+            "abc".to_string()
+        );
+        res.accept().await.unwrap();
+    }
+
+    mock1.assert();
+    mock2.assert();
 }
