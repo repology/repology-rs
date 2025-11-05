@@ -134,7 +134,6 @@ async fn test_fetch_zstd() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_allow_zero_size() {
     let mut server = mockito::Server::new_async().await;
     server

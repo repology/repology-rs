@@ -10,6 +10,7 @@ use std::io::Write;
 use std::path::Path;
 use std::time::Duration;
 
+use anyhow::bail;
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
 
@@ -151,9 +152,16 @@ impl Fetcher for FileFetcher {
         let next_state_path = next_state.path.join(STATE_FILE_NAME);
         let mut file = File::create(&next_state_path)?;
 
+        let mut total_size: usize = 0;
         while let Some(item) = stream.next().await {
-            file.write_all(&item?)?;
+            let item = item?;
+            total_size += item.len();
+            file.write_all(&item)?;
         }
+        if total_size == 0 && !self.options.allow_zero_size {
+            bail!("refusing to accept zero size response");
+        }
+
         file.sync_all()?;
 
         match serde_json::to_string(&new_metadata) {
