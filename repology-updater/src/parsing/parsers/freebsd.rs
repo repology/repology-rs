@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::{Context, anyhow, bail};
+use anyhow::{Context, anyhow};
 use std::io::BufRead as _;
 use std::path::Path;
 
@@ -12,7 +12,58 @@ use crate::parsing::parser::{PackageParser, PackageProcessor};
 use crate::parsing::utils::maintainers::extract_maintainers;
 use crate::parsing::utils::version::VersionStripper;
 
-const EXPECTED_FIELDS_COUNT: usize = 13;
+#[allow(unused)]
+mod data {
+    use anyhow::bail;
+
+    pub struct Package<'a> {
+        pub pkgname: &'a str,
+        pub path: &'a str,
+        pub prefix: &'a str,
+        pub comment: &'a str,
+        pub descr: &'a str,
+        pub maintainer: &'a str,
+        pub categories: &'a str,
+        pub extract_depends: &'a str,
+        pub patch_depends: &'a str,
+        pub fetch_depends: &'a str,
+        pub build_depends: &'a str,
+        pub run_depends: &'a str,
+        pub www: &'a str,
+    }
+
+    impl<'a> TryFrom<&'a str> for Package<'a> {
+        type Error = anyhow::Error;
+
+        fn try_from(line: &'a str) -> anyhow::Result<Package<'a>> {
+            const EXPECTED_FIELDS_COUNT: usize = 13;
+            let fields: Vec<_> = line.trim().split('|').collect();
+            if fields.len() != EXPECTED_FIELDS_COUNT {
+                bail!(
+                    "expected {} fields, got {}",
+                    EXPECTED_FIELDS_COUNT,
+                    fields.len()
+                );
+            };
+            Ok(Self {
+                pkgname: fields[0],
+                path: fields[1],
+                prefix: fields[2],
+                comment: fields[3],
+                descr: fields[4],
+                maintainer: fields[5],
+                categories: fields[6],
+                build_depends: fields[7],
+                run_depends: fields[8],
+                www: fields[9],
+                extract_depends: fields[10],
+                patch_depends: fields[11],
+                fetch_depends: fields[12],
+            })
+        }
+    }
+}
+
 const VERSION_STRIPPER: VersionStripper = VersionStripper::new()
     .with_strip_right(",")
     .with_strip_right("_");
@@ -21,23 +72,16 @@ pub struct FreeBsdParser {}
 
 impl FreeBsdParser {
     fn parse_line(line: &str, process: &mut dyn PackageProcessor) -> anyhow::Result<()> {
-        let fields: Vec<_> = line.trim().split('|').collect();
-
-        if fields.len() != EXPECTED_FIELDS_COUNT {
-            bail!(
-                "expected {} fields, got {}",
-                EXPECTED_FIELDS_COUNT,
-                fields.len()
-            );
-        }
+        let pkgdata = data::Package::try_from(line)?;
 
         let mut pkg = PackageMaker::default();
 
-        let (package_name, version) = fields[0]
+        let (package_name, version) = pkgdata
+            .pkgname
             .rsplit_once('-')
             .ok_or_else(|| anyhow!("expected <package name>-<version> in the first field"))?;
 
-        let mut path_comps = fields[1].rsplit('/');
+        let mut path_comps = pkgdata.path.rsplit('/');
         let port_name = path_comps
             .next()
             .expect("split always returns at least one component");
@@ -51,12 +95,12 @@ impl FreeBsdParser {
             NameType::SrcName | NameType::DisplayName | NameType::TrackName,
         );
         pkg.set_version_stripped(version, &VERSION_STRIPPER);
-        pkg.set_summary(fields[3]);
-        pkg.add_maintainers(extract_maintainers(fields[5]));
-        pkg.add_categories(fields[6].split_ascii_whitespace());
+        pkg.set_summary(pkgdata.comment);
+        pkg.add_maintainers(extract_maintainers(pkgdata.maintainer));
+        pkg.add_categories(pkgdata.categories.split_ascii_whitespace());
         pkg.add_links(
             LinkType::UpstreamHomepage,
-            fields[9].split_ascii_whitespace(),
+            pkgdata.www.split_ascii_whitespace(),
         );
 
         Ok(process(pkg)?)
