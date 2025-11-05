@@ -52,7 +52,6 @@ async fn test_fetch_fail() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_user_agent() {
     let mut server = mockito::Server::new_async().await;
     let mock = server
@@ -157,7 +156,6 @@ async fn test_allow_zero_size() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_timeout() {
     let mut server = mockito::Server::new_async().await;
     // no future or timeout support in mockito (https://github.com/lipanski/mockito/pull/163),
@@ -223,7 +221,6 @@ async fn test_cache_buster() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_not_modified() {
     let mut server = mockito::Server::new_async().await;
     let mock1 = server

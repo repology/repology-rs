@@ -225,6 +225,17 @@ impl WriteHandle {
         }
         Ok(())
     }
+
+    pub fn abort(self) {
+        let parent = Arc::clone(&self.parent);
+        let mut inner = parent.lock().unwrap();
+
+        let _ =
+            inject_override_io_error!(fs::remove_dir_all(&inner.new_path), "commit: remove new");
+
+        inner.num_writing_handles -= 1;
+        std::mem::forget(self);
+    }
 }
 
 impl Drop for WriteHandle {
