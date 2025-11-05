@@ -82,7 +82,7 @@ impl Fetcher for FileFetcher {
 
         Ok(FetchStatus {
             was_modified: true,
-            state_path: tx.path.to_path_buf(),
+            state_path: tx.path.to_path_buf().join(FILE_NAME),
             acceptor: Box::new(|| {
                 Box::pin(async {
                     tx.commit()?;

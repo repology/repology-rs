@@ -27,7 +27,7 @@ async fn test_fetch() {
     mock.assert();
     assert!(fetch_result.was_modified);
     assert_eq!(
-        std::fs::read_to_string(fetch_result.state_path.join("data")).unwrap(),
+        std::fs::read_to_string(&fetch_result.state_path).unwrap(),
         "Success"
     );
     assert!(fetch_result.accept().await.is_ok());
@@ -99,7 +99,7 @@ async fn fetch_with_compression(data: &[u8], compression: Compression) -> String
         .await
         .unwrap();
 
-    std::fs::read_to_string(fetch_result.state_path.join("data")).unwrap()
+    std::fs::read_to_string(&fetch_result.state_path).unwrap()
 }
 
 #[tokio::test]
@@ -207,7 +207,7 @@ async fn test_cache_buster() {
         .fetch(&state_path, FetchPoliteness::default())
         .await
         .unwrap();
-    let data1 = std::fs::read_to_string(fetch_result.state_path.join("data")).unwrap();
+    let data1 = std::fs::read_to_string(&fetch_result.state_path).unwrap();
     fetch_result.accept().await.unwrap();
 
     tokio::time::sleep(Duration::from_secs(1)).await;
@@ -216,7 +216,7 @@ async fn test_cache_buster() {
         .fetch(&state_path, FetchPoliteness::default())
         .await
         .unwrap();
-    let data2 = std::fs::read_to_string(fetch_result.state_path.join("data")).unwrap();
+    let data2 = std::fs::read_to_string(&fetch_result.state_path).unwrap();
     fetch_result.accept().await.unwrap();
 
     assert_ne!(data1, data2);
@@ -255,7 +255,7 @@ async fn test_not_modified() {
             .unwrap();
         assert!(res.was_modified);
         assert_eq!(
-            std::fs::read_to_string(res.state_path.join("data")).unwrap(),
+            std::fs::read_to_string(&res.state_path).unwrap(),
             "abc".to_string()
         );
         // res is not accepted!
@@ -268,7 +268,7 @@ async fn test_not_modified() {
             .unwrap();
         assert!(res.was_modified);
         assert_eq!(
-            std::fs::read_to_string(res.state_path.join("data")).unwrap(),
+            std::fs::read_to_string(&res.state_path).unwrap(),
             "abc".to_string()
         );
         res.accept().await.unwrap();
@@ -281,7 +281,7 @@ async fn test_not_modified() {
             .unwrap();
         assert!(!res.was_modified);
         assert_eq!(
-            std::fs::read_to_string(res.state_path.join("data")).unwrap(),
+            std::fs::read_to_string(&res.state_path).unwrap(),
             "abc".to_string()
         );
         res.accept().await.unwrap();
