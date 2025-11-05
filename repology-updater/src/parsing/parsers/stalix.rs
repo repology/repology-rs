@@ -90,3 +90,13 @@ impl PackageParser for StalIxParser {
         Ok(())
     }
 }
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    parser_test!(StalIxParser {}, stalix, ok);
+    parser_test!(StalIxParser {}, stalix, error_bad_lang_module);
+    parser_test!(StalIxParser {}, stalix, error_bad_json);
+}

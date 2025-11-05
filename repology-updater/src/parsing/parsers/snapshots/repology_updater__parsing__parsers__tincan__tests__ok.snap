@@ -1,0 +1,97 @@
+---
+source: repology-updater/src/parsing/parsers/tincan.rs
+expression: res.unwrap()
+---
+[
+    Package {
+        srcname: "busybox",
+        trackname: "busybox",
+        visiblename: "busybox",
+        projectname_seed: "busybox",
+        rawversion: "1.36.1",
+        maintainers: [
+            "avs.origami@gmail.com",
+        ],
+        links: [
+            Link {
+                type: UpstreamDownload,
+                url: "https://busybox.net/downloads/busybox-1.36.1.tar.bz2",
+                fragment: None,
+            },
+        ],
+        version: "1.36.1",
+        flags: PackageFlags(
+            0x0,
+        ),
+    },
+    Package {
+        srcname: "libelf",
+        trackname: "libelf",
+        visiblename: "libelf",
+        projectname_seed: "libelf",
+        rawversion: "0.191",
+        maintainers: [
+            "avs.origami@gmail.com",
+        ],
+        extrafields: {
+            "patches": ManyValues(
+                [
+                    "files/musl.patch",
+                ],
+            ),
+        },
+        links: [
+            Link {
+                type: UpstreamDownload,
+                url: "https://sourceware.org/elfutils/ftp/0.191/elfutils-0.191.tar.bz2",
+                fragment: None,
+            },
+        ],
+        version: "0.191",
+        flags: PackageFlags(
+            0x0,
+        ),
+    },
+    Package {
+        srcname: "musl",
+        trackname: "musl",
+        visiblename: "musl",
+        projectname_seed: "musl",
+        rawversion: "1.2.5",
+        maintainers: [
+            "avs.origami@gmail.com",
+        ],
+        links: [
+            Link {
+                type: UpstreamDownload,
+                url: "https://musl.libc.org/releases/musl-1.2.5.tar.gz",
+                fragment: None,
+            },
+        ],
+        version: "1.2.5",
+        flags: PackageFlags(
+            0x0,
+        ),
+    },
+    Package {
+        srcname: "rustup",
+        trackname: "rustup",
+        visiblename: "rustup",
+        projectname_seed: "rustup",
+        rawversion: "1.28.2",
+        maintainers: [
+            "avs.origami@gmail.com",
+        ],
+        links: [
+            Link {
+                type: UpstreamDownload,
+                url: "https://static.rust-lang.org/rustup/archive/1.28.2/x86_64-unknown-linux-musl/rustup-init",
+                fragment: None,
+            },
+        ],
+        version: "1.28.2",
+        flags: PackageFlags(
+            0x0,
+        ),
+    },
+]

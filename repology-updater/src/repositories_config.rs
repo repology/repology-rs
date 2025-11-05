@@ -176,3 +176,18 @@ impl RepositoriesConfig {
         Ok(serde_saphyr::to_string(&self.repositories)?)
     }
 }
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use insta::assert_debug_snapshot;
+
+    use super::*;
+
+    #[test]
+    fn test_allflags() {
+        let path = Path::new("src/fixtures/repositories_config/allflags");
+        let res = RepositoriesConfig::parse(path).expect("repositories config should be parsable");
+        assert_debug_snapshot!(res);
+    }
+}

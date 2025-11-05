@@ -372,3 +372,38 @@ impl Ruleset {
         Ok(out)
     }
 }
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use insta::assert_debug_snapshot;
+
+    use super::*;
+
+    #[test]
+    fn test_hier() {
+        let path = Path::new("src/fixtures/ruleset/hier");
+        let res = Ruleset::parse(path).expect("ruleset should be parsable");
+        assert_debug_snapshot!(res);
+    }
+
+    #[test]
+    fn test_simple_cases() {
+        let path = Path::new("src/fixtures/ruleset/simple_cases");
+        let res = Ruleset::parse(path).expect("ruleset should be parsable");
+        assert_debug_snapshot!(res);
+    }
+
+    #[test]
+    fn test_allflags() {
+        let path = Path::new("src/fixtures/ruleset/allflags");
+        let res = Ruleset::parse(path).expect("ruleset should be parsable");
+        assert_debug_snapshot!(res);
+    }
+
+    #[test]
+    fn test_error_duplicate_key() {
+        let path = Path::new("src/fixtures/ruleset/error_duplicate_key");
+        assert!(Ruleset::parse(path).is_err());
+    }
+}

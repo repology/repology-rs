@@ -1,5 +1,5 @@
 ---
-source: repology-updater/tests/repositories_config.rs
+source: repology-updater/src/repositories_config.rs
 expression: res
 ---
 RepositoriesConfig {

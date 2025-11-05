@@ -102,3 +102,11 @@ impl PackageParser for TinCanParser {
         Ok(())
     }
 }
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    parser_test!(TinCanParser {}, tincan, ok);
+}

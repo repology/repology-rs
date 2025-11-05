@@ -1,0 +1,8 @@
+---
+source: repology-updater/src/parsing/parsers/freebsd.rs
+expression: res.unwrap_err()
+---
+Error {
+    context: "on line 1",
+    source: "unexpectedly short port path (expected at least category/name)",
+}

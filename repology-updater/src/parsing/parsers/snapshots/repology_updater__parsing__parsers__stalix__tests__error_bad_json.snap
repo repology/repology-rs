@@ -1,0 +1,8 @@
+---
+source: repology-updater/src/parsing/parsers/stalix.rs
+expression: res.unwrap_err()
+---
+Error {
+    context: "on line 1",
+    source: Error("expected `,` or `}`", line: 1, column: 142),
+}

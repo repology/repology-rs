@@ -1,0 +1,29 @@
+---
+source: repology-updater/src/parsing/parsers/yacp.rs
+expression: res.unwrap()
+---
+[
+    Package {
+        srcname: "ACE",
+        binnames: [
+            "ACE",
+        ],
+        trackname: "ACE",
+        visiblename: "ACE",
+        projectname_seed: "ACE",
+        rawversion: "1.01",
+        category: "Science",
+        comment: "Accurate Correction of Errors",
+        links: [
+            Link {
+                type: UpstreamHomepage,
+                url: "https://github.com/Sheikhizadeh/ACE",
+                fragment: None,
+            },
+        ],
+        version: "1.01",
+        flags: PackageFlags(
+            0x0,
+        ),
+    },
+]

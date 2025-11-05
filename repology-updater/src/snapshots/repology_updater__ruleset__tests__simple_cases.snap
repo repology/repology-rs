@@ -1,5 +1,5 @@
 ---
-source: repology-updater/tests/ruleset.rs
+source: repology-updater/src/ruleset.rs
 expression: res
 ---
 Ruleset {

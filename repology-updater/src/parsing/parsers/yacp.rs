@@ -86,3 +86,11 @@ impl PackageParser for YacpParser {
         Ok(())
     }
 }
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    parser_test!(YacpParser {}, yacp, ok);
+}

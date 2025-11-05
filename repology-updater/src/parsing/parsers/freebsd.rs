@@ -74,3 +74,17 @@ impl PackageParser for FreeBsdParser {
         Ok(())
     }
 }
+
+#[cfg(test)]
+#[coverage(off)]
+mod tests {
+    use super::*;
+
+    parser_test!(FreeBsdParser {}, freebsd, ok);
+    parser_test!(FreeBsdParser {}, freebsd, error_missing_field);
+    parser_test!(FreeBsdParser {}, freebsd, error_extra_field);
+    parser_test!(FreeBsdParser {}, freebsd, error_missing_version);
+    parser_test!(FreeBsdParser {}, freebsd, error_missing_name);
+    parser_test!(FreeBsdParser {}, freebsd, error_bad_package_format);
+    parser_test!(FreeBsdParser {}, freebsd, error_bad_package_path);
+}

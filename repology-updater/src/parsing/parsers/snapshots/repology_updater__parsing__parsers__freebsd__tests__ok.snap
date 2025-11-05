@@ -1,0 +1,30 @@
+---
+source: repology-updater/src/parsing/parsers/freebsd.rs
+expression: res.unwrap()
+---
+[
+    Package {
+        srcname: "arabic/aspell",
+        binname: "ar-aspell",
+        trackname: "arabic/aspell",
+        visiblename: "arabic/aspell",
+        projectname_seed: "ar-aspell",
+        rawversion: "1.2.0_1,1",
+        maintainers: [
+            "office@freebsd.org",
+        ],
+        category: "arabic",
+        comment: "Aspell Arabic dictionaries",
+        links: [
+            Link {
+                type: UpstreamHomepage,
+                url: "https://sourceforge.net/projects/arabic-spell/",
+                fragment: None,
+            },
+        ],
+        version: "1.2.0",
+        flags: PackageFlags(
+            0x0,
+        ),
+    },
+]
