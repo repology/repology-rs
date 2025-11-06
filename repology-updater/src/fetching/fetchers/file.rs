@@ -15,8 +15,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::fetching::compression::Compression;
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
+use crate::fetching::http::Http;
 use crate::fetching::io::save_http_stream_to_file;
-use crate::fetching::politeness::FetchPoliteness;
 use crate::utils::transact_dir;
 
 use tracing::error;
@@ -32,7 +32,6 @@ pub struct FileFetcherOptions {
     pub timeout: Option<Duration>,
     pub allow_zero_size: bool,
     pub cache_buster: Option<String>,
-    pub user_agent: String,
 }
 
 impl Default for FileFetcherOptions {
@@ -43,8 +42,6 @@ impl Default for FileFetcherOptions {
             timeout: Some(Duration::from_mins(1)),
             allow_zero_size: true,
             cache_buster: None,
-            // TODO: make configurable
-            user_agent: "repology-fetcher/0 (+https://repology.org/docs/bots)".to_string(),
         }
     }
 }
@@ -79,7 +76,7 @@ impl FileFetcher {
 
 #[async_trait::async_trait]
 impl Fetcher for FileFetcher {
-    async fn fetch(&self, path: &Path, politeness: FetchPoliteness) -> anyhow::Result<FetchStatus> {
+    async fn fetch(&self, path: &Path, http: &Http) -> anyhow::Result<FetchStatus> {
         let mut url = Cow::Borrowed(&self.options.url);
         if let Some(cache_buster) = &self.options.cache_buster {
             let url = url.to_mut();
@@ -113,9 +110,7 @@ impl Fetcher for FileFetcher {
 
         let _permit;
         let response = {
-            let client = reqwest::Client::builder()
-                .user_agent(&self.options.user_agent)
-                .build()?;
+            let client = http.create_client()?;
             let mut request_builder = client.get(&*url);
             if let Some(timeout) = self.options.timeout {
                 request_builder = request_builder.timeout(timeout);
@@ -124,7 +119,7 @@ impl Fetcher for FileFetcher {
                 request_builder = request_builder.header("if-none-match", etag);
             }
 
-            _permit = http_client.acquire(&url).await;
+            _permit = http.acquire(&url).await;
             request_builder.send().await?.error_for_status()?
         };
 

@@ -24,10 +24,7 @@ async fn test_fetch() {
         url: server.url() + "/foo",
         ..Default::default()
     });
-    let fetch_result = fetcher
-        .fetch(&state_path, FetchPoliteness::default())
-        .await
-        .unwrap();
+    let fetch_result = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
 
     repomd_mock.assert();
     primary_mock.assert();
@@ -62,7 +59,7 @@ async fn test_not_modified() {
             url: server.url() + "/foo",
             ..Default::default()
         })
-        .fetch(&state_path, FetchPoliteness::default())
+        .fetch(&state_path, &Http::default())
         .await
         .unwrap();
 
@@ -79,7 +76,7 @@ async fn test_not_modified() {
             url: server.url() + "/foo",
             ..Default::default()
         })
-        .fetch(&state_path, FetchPoliteness::default())
+        .fetch(&state_path, &Http::default())
         .await
         .unwrap();
 
@@ -96,7 +93,7 @@ async fn test_not_modified() {
             url: server.url() + "/foo",
             ..Default::default()
         })
-        .fetch(&state_path, FetchPoliteness::default())
+        .fetch(&state_path, &Http::default())
         .await
         .unwrap();
 

@@ -4,5 +4,6 @@
 pub mod compression;
 pub mod fetcher;
 pub mod fetchers;
+pub mod http;
 pub mod io;
 pub mod politeness;

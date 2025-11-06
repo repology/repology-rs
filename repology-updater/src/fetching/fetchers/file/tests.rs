@@ -19,10 +19,7 @@ async fn test_fetch() {
         url: server.url() + "/data.txt",
         ..Default::default()
     });
-    let fetch_result = fetcher
-        .fetch(&state_path, FetchPoliteness::default())
-        .await
-        .unwrap();
+    let fetch_result = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
 
     mock.assert();
     assert!(fetch_result.was_modified);
@@ -45,7 +42,7 @@ async fn test_fetch_fail() {
         url: server.url() + "/data.txt",
         ..Default::default()
     });
-    let fetch_result = fetcher.fetch(&state_path, FetchPoliteness::default()).await;
+    let fetch_result = fetcher.fetch(&state_path, &Http::default()).await;
 
     mock.assert();
     assert!(fetch_result.is_err());
@@ -70,7 +67,7 @@ async fn test_user_agent() {
         url: server.url() + "/data.txt",
         ..Default::default()
     })
-    .fetch(&state_path, FetchPoliteness::default())
+    .fetch(&state_path, &Http::default())
     .await
     .unwrap();
 
@@ -93,10 +90,7 @@ async fn fetch_with_compression(data: &[u8], compression: Compression) -> String
         compression: Some(compression),
         ..Default::default()
     });
-    let fetch_result = fetcher
-        .fetch(&state_path, FetchPoliteness::default())
-        .await
-        .unwrap();
+    let fetch_result = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
 
     std::fs::read_to_string(&fetch_result.state_path).unwrap()
 }
@@ -146,7 +140,7 @@ async fn test_allow_zero_size() {
         allow_zero_size: false,
         ..Default::default()
     });
-    let result = fetcher.fetch(&state_path, FetchPoliteness::default()).await;
+    let result = fetcher.fetch(&state_path, &Http::default()).await;
     assert!(result.is_err());
 }
 
@@ -172,7 +166,7 @@ async fn test_timeout() {
         timeout: Some(Duration::from_millis(10)),
         ..Default::default()
     });
-    let result = fetcher.fetch(&state_path, FetchPoliteness::default()).await;
+    let result = fetcher.fetch(&state_path, &Http::default()).await;
     assert!(result.is_err());
 }
 
@@ -196,19 +190,13 @@ async fn test_cache_buster() {
         cache_buster: Some("CACHE_BUSTER".into()),
         ..Default::default()
     });
-    let fetch_result = fetcher
-        .fetch(&state_path, FetchPoliteness::default())
-        .await
-        .unwrap();
+    let fetch_result = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
     let data1 = std::fs::read_to_string(&fetch_result.state_path).unwrap();
     fetch_result.accept().await.unwrap();
 
     tokio::time::sleep(Duration::from_millis(10)).await;
 
-    let fetch_result = fetcher
-        .fetch(&state_path, FetchPoliteness::default())
-        .await
-        .unwrap();
+    let fetch_result = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
     let data2 = std::fs::read_to_string(&fetch_result.state_path).unwrap();
     fetch_result.accept().await.unwrap();
 
@@ -241,10 +229,7 @@ async fn test_not_modified() {
     });
 
     {
-        let res = fetcher
-            .fetch(&state_path, FetchPoliteness::default())
-            .await
-            .unwrap();
+        let res = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
         assert!(res.was_modified);
         assert_eq!(
             std::fs::read_to_string(&res.state_path).unwrap(),
@@ -254,10 +239,7 @@ async fn test_not_modified() {
     }
 
     {
-        let res = fetcher
-            .fetch(&state_path, FetchPoliteness::default())
-            .await
-            .unwrap();
+        let res = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
         assert!(res.was_modified);
         assert_eq!(
             std::fs::read_to_string(&res.state_path).unwrap(),
@@ -267,10 +249,7 @@ async fn test_not_modified() {
     }
 
     {
-        let res = fetcher
-            .fetch(&state_path, FetchPoliteness::default())
-            .await
-            .unwrap();
+        let res = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
         assert!(!res.was_modified);
         assert_eq!(
             std::fs::read_to_string(&res.state_path).unwrap(),

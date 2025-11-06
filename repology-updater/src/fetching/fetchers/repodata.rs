@@ -12,8 +12,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::fetching::compression::Compression;
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
+use crate::fetching::http::Http;
 use crate::fetching::io::save_http_stream_to_file;
-use crate::fetching::politeness::FetchPoliteness;
 use crate::utils::transact_dir;
 
 use tracing::error;
@@ -88,7 +88,6 @@ const METADATA_FILE_NAME: &str = "metadata.json";
 pub struct RepodataFetcherOptions {
     pub url: String,
     pub timeout: Option<Duration>,
-    pub user_agent: String,
 }
 
 impl Default for RepodataFetcherOptions {
@@ -96,7 +95,6 @@ impl Default for RepodataFetcherOptions {
         Self {
             url: String::new(),
             timeout: Some(Duration::from_mins(1)),
-            user_agent: "repology-fetcher/0 (+https://repology.org/docs/bots)".to_string(),
         }
     }
 }
@@ -133,20 +131,14 @@ impl RepodataFetcher {
 }
 
 impl RepodataFetcher {
-    async fn fetch_repo_md(
-        &self,
-        url: &str,
-        politeness: &FetchPoliteness,
-    ) -> anyhow::Result<data::RepoMd> {
-        let client = reqwest::Client::builder()
-            .user_agent(&self.options.user_agent)
-            .build()?;
+    async fn fetch_repo_md(&self, url: &str, http: &Http) -> anyhow::Result<data::RepoMd> {
+        let client = http.create_client()?;
         let mut request_builder = client.get(url);
         if let Some(timeout) = self.options.timeout {
             request_builder = request_builder.timeout(timeout);
         }
 
-        let _permit = http_client.acquire(url).await;
+        let _permit = http.acquire(url).await;
         let xml = request_builder
             .send()
             .await?
@@ -159,17 +151,14 @@ impl RepodataFetcher {
 
 #[async_trait::async_trait]
 impl Fetcher for RepodataFetcher {
-    async fn fetch(&self, path: &Path, politeness: FetchPoliteness) -> anyhow::Result<FetchStatus> {
+    async fn fetch(&self, path: &Path, http: &Http) -> anyhow::Result<FetchStatus> {
         let dir = transact_dir::TransactionalDir::new(path);
         dir.cleanup()?;
 
         let current_state = dir.current_state();
 
         let repo_md_url = format!("{}repodata/repomd.xml", self.options.url);
-        let repo_md_data = self
-            .fetch_repo_md(&repo_md_url, &politeness)
-            .await?
-            .into_data()?;
+        let repo_md_data = self.fetch_repo_md(&repo_md_url, http).await?.into_data()?;
 
         if let Some(current_state) = current_state {
             let current_metadata_path = current_state.path.join(METADATA_FILE_NAME);
@@ -207,15 +196,13 @@ impl Fetcher for RepodataFetcher {
 
         let _permit;
         let response = {
-            let client = reqwest::Client::builder()
-                .user_agent(&self.options.user_agent)
-                .build()?;
+            let client = http.create_client()?;
             let mut request_builder = client.get(&primary_url);
             if let Some(timeout) = self.options.timeout {
                 request_builder = request_builder.timeout(timeout);
             }
 
-            _permit = http_client.acquire(&primary_url).await;
+            _permit = http.acquire(&primary_url).await;
             request_builder.send().await?.error_for_status()?
         };
 

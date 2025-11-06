@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use repology_updater::fetching::fetchers::create_fetcher_options_yaml;
-use repology_updater::fetching::politeness::FetchPoliteness;
+use repology_updater::fetching::http::Http;
 use repology_updater::parsing::parsers::create_parser;
 use repology_updater::repositories_config::RepositoriesConfig;
 use repology_updater::ruleset::Ruleset;
@@ -46,10 +46,7 @@ async fn raw_command_async(command: &RawCommands) {
             let fetcher = create_fetcher_options_yaml(fetcher_name, fetcher_options).unwrap();
             let start = Instant::now();
 
-            let fetch_result = fetcher
-                .fetch(state_path, FetchPoliteness::default())
-                .await
-                .unwrap();
+            let fetch_result = fetcher.fetch(state_path, &Http::default()).await.unwrap();
             fetch_result.accept().await.unwrap();
 
             let duration = Instant::now() - start;
@@ -66,10 +63,7 @@ async fn raw_command_async(command: &RawCommands) {
             let fetcher = create_fetcher_options_yaml(fetcher_name, fetcher_options).unwrap();
 
             let start = Instant::now();
-            let fetch_result = fetcher
-                .fetch(state_path, FetchPoliteness::default())
-                .await
-                .unwrap();
+            let fetch_result = fetcher.fetch(state_path, &Http::default()).await.unwrap();
             let duration = Instant::now() - start;
 
             eprintln!("Fetched in {:.2} sec", duration.as_secs_f64());
