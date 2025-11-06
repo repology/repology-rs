@@ -9,7 +9,6 @@ use std::io;
 use std::path::Path;
 use std::time::Duration;
 
-use anyhow::bail;
 use async_compression::tokio::bufread::{BzDecoder, GzipDecoder, XzDecoder, ZstdDecoder};
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
@@ -17,6 +16,7 @@ use tokio::fs::File;
 use tokio::io::AsyncRead;
 use tokio_util::io::StreamReader;
 
+use crate::fetching::compression::Compression;
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
 use crate::fetching::politeness::FetchPoliteness;
 use crate::utils::transact_dir;
@@ -87,38 +87,6 @@ mod data {
 
 const STATE_FILE_NAME: &str = "state";
 const METADATA_FILE_NAME: &str = "metadata.json";
-
-#[derive(Deserialize)]
-enum Compression {
-    Gz,
-    Xz,
-    Bz2,
-    Zstd,
-}
-
-impl Compression {
-    pub fn from_extension(
-        path_or_url: &str,
-        original_extension: &str,
-    ) -> anyhow::Result<Option<Self>> {
-        if path_or_url.ends_with(&format!(".{}", original_extension)) {
-            Ok(None)
-        } else if path_or_url.ends_with(&format!(".{}.gz", original_extension)) {
-            Ok(Some(Self::Gz))
-        } else if path_or_url.ends_with(&format!(".{}.bz2", original_extension)) {
-            Ok(Some(Self::Bz2))
-        } else if path_or_url.ends_with(&format!(".{}.xz", original_extension)) {
-            Ok(Some(Self::Xz))
-        } else if path_or_url.ends_with(&format!(".{}.zst", original_extension)) {
-            Ok(Some(Self::Zstd))
-        } else {
-            bail!(
-                "cannot determine compression from file extension {}",
-                path_or_url
-            );
-        }
-    }
-}
 
 #[derive(Deserialize)]
 #[serde(default)]
@@ -261,7 +229,7 @@ impl Fetcher for RepodataFetcher {
         let reader = StreamReader::new(stream.map(|r| r.map_err(io::Error::other)));
 
         let mut decoder: Box<dyn AsyncRead + Unpin + Send> =
-            match Compression::from_extension(&primary_url, "xml")? {
+            match Compression::from_extension(&primary_url, ".xml")? {
                 None => Box::new(reader),
                 Some(Compression::Gz) => Box::new(GzipDecoder::new(reader)),
                 Some(Compression::Xz) => Box::new(XzDecoder::new(reader)),

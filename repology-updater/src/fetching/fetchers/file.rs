@@ -19,6 +19,7 @@ use tokio::fs::File;
 use tokio::io::AsyncRead;
 use tokio_util::io::StreamReader;
 
+use crate::fetching::compression::Compression;
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
 use crate::fetching::politeness::FetchPoliteness;
 use crate::utils::transact_dir;
@@ -27,14 +28,6 @@ use tracing::error;
 
 const STATE_FILE_NAME: &str = "state";
 const METADATA_FILE_NAME: &str = "metadata.json";
-
-#[derive(Deserialize)]
-pub enum Compression {
-    Gz,
-    Xz,
-    Bz2,
-    Zstd,
-}
 
 #[derive(Deserialize)]
 #[serde(default)]

@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#![feature(assert_matches)]
 #![feature(const_trait_impl)]
 #![feature(coverage_attribute)]
 #![feature(debug_closure_helpers)]
