@@ -58,9 +58,22 @@ impl Default for FileFetcherOptions {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Default)]
 struct FetchMetadata {
     etag: Option<String>,
+}
+
+impl FetchMetadata {
+    pub fn read(path: &Path) -> anyhow::Result<Self> {
+        Ok(serde_json::from_str::<Self>(&std::fs::read_to_string(
+            path,
+        )?)?)
+    }
+
+    pub fn write(&self, path: &Path) -> anyhow::Result<()> {
+        std::fs::write(path, &serde_json::to_string(&self)?)?;
+        Ok(())
+    }
 }
 
 pub struct FileFetcher {
@@ -80,27 +93,17 @@ impl Fetcher for FileFetcher {
         dir.cleanup()?;
 
         let current_state = dir.current_state();
-        let current_metadata_path = current_state
+        let current_metadata = current_state
             .as_ref()
-            .map(|state| state.path.join(METADATA_FILE_NAME));
-
-        let current_metadata = current_metadata_path.and_then(|metadata_path| {
-            let json = match std::fs::read_to_string(&metadata_path) {
-                Ok(json) => json,
-                Err(err) => {
-                    error!(?err, ?metadata_path, "cannot read fetch metadata");
-                    return None;
-                }
-            };
-
-            match serde_json::from_str::<FetchMetadata>(&json) {
-                Ok(metadata) => Some(metadata),
-                Err(err) => {
-                    error!(?err, ?metadata_path, "cannot parse fetch metadata");
-                    None
-                }
-            }
-        });
+            .and_then(|state| {
+                let path = state.path.join(METADATA_FILE_NAME);
+                FetchMetadata::read(&path)
+                    .inspect_err(|err| {
+                        error!(?err, ?path, "cannot read fetch metadata");
+                    })
+                    .ok()
+            })
+            .unwrap_or_default();
 
         let response = {
             let client = reqwest::Client::builder()
@@ -110,10 +113,7 @@ impl Fetcher for FileFetcher {
             if let Some(timeout) = self.options.timeout {
                 request_builder = request_builder.timeout(timeout);
             }
-            if let Some(etag) = current_metadata
-                .as_ref()
-                .and_then(|metadata| metadata.etag.as_ref())
-            {
+            if let Some(etag) = current_metadata.etag.as_ref() {
                 request_builder = request_builder.header("if-none-match", etag);
             }
 
@@ -174,16 +174,9 @@ impl Fetcher for FileFetcher {
 
         file.sync_all().await?;
 
-        match serde_json::to_string(&new_metadata) {
-            Ok(json) => {
-                let next_metadata_path = next_state.path.join(METADATA_FILE_NAME);
-                if let Err(err) = std::fs::write(&next_metadata_path, json) {
-                    error!(?err, ?next_metadata_path, "cannot write fetch metadata");
-                }
-            }
-            Err(err) => {
-                error!(?err, "cannot serialize fetch metadata");
-            }
+        let next_metadata_path = next_state.path.join(METADATA_FILE_NAME);
+        if let Err(err) = new_metadata.write(&next_metadata_path) {
+            error!(?err, path = ?next_metadata_path, "cannot write fetch metadata");
         }
 
         Ok(FetchStatus {
