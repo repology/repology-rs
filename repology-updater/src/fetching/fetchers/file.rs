@@ -111,6 +111,7 @@ impl Fetcher for FileFetcher {
             })
             .unwrap_or_default();
 
+        let _permit;
         let response = {
             let client = reqwest::Client::builder()
                 .user_agent(&self.options.user_agent)
@@ -123,7 +124,7 @@ impl Fetcher for FileFetcher {
                 request_builder = request_builder.header("if-none-match", etag);
             }
 
-            let _permit = politeness.acquire(&url);
+            _permit = http_client.acquire(&url).await;
             request_builder.send().await?.error_for_status()?
         };
 

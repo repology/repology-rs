@@ -146,7 +146,7 @@ impl RepodataFetcher {
             request_builder = request_builder.timeout(timeout);
         }
 
-        let _permit = politeness.acquire(url);
+        let _permit = http_client.acquire(url).await;
         let xml = request_builder
             .send()
             .await?
@@ -205,6 +205,7 @@ impl Fetcher for RepodataFetcher {
 
         let primary_url = format!("{}{}", self.options.url, repo_md_data.location.href);
 
+        let _permit;
         let response = {
             let client = reqwest::Client::builder()
                 .user_agent(&self.options.user_agent)
@@ -214,7 +215,7 @@ impl Fetcher for RepodataFetcher {
                 request_builder = request_builder.timeout(timeout);
             }
 
-            let _permit = politeness.acquire(&primary_url);
+            _permit = http_client.acquire(&primary_url).await;
             request_builder.send().await?.error_for_status()?
         };
 
