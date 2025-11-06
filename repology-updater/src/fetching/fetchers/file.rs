@@ -5,9 +5,11 @@
 //#[coverage(off)]
 mod tests;
 
+use std::borrow::Cow;
 use std::io;
 use std::path::Path;
 use std::time::Duration;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::bail;
 use async_compression::tokio::bufread::{BzDecoder, GzipDecoder, XzDecoder, ZstdDecoder};
@@ -89,6 +91,21 @@ impl FileFetcher {
 #[async_trait::async_trait]
 impl Fetcher for FileFetcher {
     async fn fetch(&self, path: &Path, politeness: FetchPoliteness) -> anyhow::Result<FetchStatus> {
+        let mut url = Cow::Borrowed(&self.options.url);
+        if let Some(cache_buster) = &self.options.cache_buster {
+            let url = url.to_mut();
+            *url = url.replace(
+                cache_buster,
+                &format!(
+                    "{}",
+                    SystemTime::now()
+                        .duration_since(UNIX_EPOCH)
+                        .unwrap_or_default()
+                        .as_millis()
+                ),
+            );
+        }
+
         let dir = transact_dir::TransactionalDir::new(path);
         dir.cleanup()?;
 
@@ -109,7 +126,7 @@ impl Fetcher for FileFetcher {
             let client = reqwest::Client::builder()
                 .user_agent(&self.options.user_agent)
                 .build()?;
-            let mut request_builder = client.get(&self.options.url);
+            let mut request_builder = client.get(&*url);
             if let Some(timeout) = self.options.timeout {
                 request_builder = request_builder.timeout(timeout);
             }
@@ -117,7 +134,7 @@ impl Fetcher for FileFetcher {
                 request_builder = request_builder.header("if-none-match", etag);
             }
 
-            let _permit = politeness.acquire(&self.options.url);
+            let _permit = politeness.acquire(&url);
             request_builder.send().await?.error_for_status()?
         };
 

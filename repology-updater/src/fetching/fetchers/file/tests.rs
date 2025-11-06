@@ -177,7 +177,6 @@ async fn test_timeout() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_cache_buster() {
     let mut server = mockito::Server::new_async().await;
     // no future or timeout support in mockito (https://github.com/lipanski/mockito/pull/163),
@@ -186,6 +185,7 @@ async fn test_cache_buster() {
         .mock("GET", "/data")
         .with_status(200)
         .with_body_from_request(|request| request.path_and_query().into())
+        .match_query(mockito::Matcher::Any)
         .create();
 
     let tmpdir = tempfile::tempdir().unwrap();
@@ -203,7 +203,7 @@ async fn test_cache_buster() {
     let data1 = std::fs::read_to_string(&fetch_result.state_path).unwrap();
     fetch_result.accept().await.unwrap();
 
-    tokio::time::sleep(Duration::from_secs(1)).await;
+    tokio::time::sleep(Duration::from_millis(10)).await;
 
     let fetch_result = fetcher
         .fetch(&state_path, FetchPoliteness::default())
