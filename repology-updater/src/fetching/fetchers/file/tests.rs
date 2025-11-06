@@ -102,7 +102,6 @@ async fn fetch_with_compression(data: &[u8], compression: Compression) -> String
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_fetch_bz2() {
     let data = include_bytes!("fixtures/data.bz2");
     let result = fetch_with_compression(data, Compression::Bz2);
@@ -110,7 +109,6 @@ async fn test_fetch_bz2() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_fetch_gz() {
     let data = include_bytes!("fixtures/data.gz");
     let result = fetch_with_compression(data, Compression::Gz);
@@ -118,7 +116,6 @@ async fn test_fetch_gz() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_fetch_xz() {
     let data = include_bytes!("fixtures/data.xz");
     let result = fetch_with_compression(data, Compression::Xz);
@@ -126,7 +123,6 @@ async fn test_fetch_xz() {
 }
 
 #[tokio::test]
-#[ignore]
 async fn test_fetch_zstd() {
     let data = include_bytes!("fixtures/data.zst");
     let result = fetch_with_compression(data, Compression::Zstd);
