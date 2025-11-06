@@ -6,21 +6,16 @@
 mod tests;
 
 use std::borrow::Cow;
-use std::io;
 use std::path::Path;
 use std::time::Duration;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::bail;
-use async_compression::tokio::bufread::{BzDecoder, GzipDecoder, XzDecoder, ZstdDecoder};
-use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
-use tokio::fs::File;
-use tokio::io::AsyncRead;
-use tokio_util::io::StreamReader;
 
 use crate::fetching::compression::Compression;
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
+use crate::fetching::io::save_http_stream_to_file;
 use crate::fetching::politeness::FetchPoliteness;
 use crate::utils::transact_dir;
 
@@ -162,26 +157,13 @@ impl Fetcher for FileFetcher {
 
         let next_state = dir.begin_replace()?;
         let next_state_path = next_state.path.join(STATE_FILE_NAME);
-        let mut file = File::create(&next_state_path).await?;
 
-        let stream = response.bytes_stream();
-        let reader = StreamReader::new(stream.map(|r| r.map_err(io::Error::other)));
-
-        let mut decoder: Box<dyn AsyncRead + Unpin + Send> = match self.options.compression {
-            None => Box::new(reader),
-            Some(Compression::Gz) => Box::new(GzipDecoder::new(reader)),
-            Some(Compression::Xz) => Box::new(XzDecoder::new(reader)),
-            Some(Compression::Bz2) => Box::new(BzDecoder::new(reader)),
-            Some(Compression::Zstd) => Box::new(ZstdDecoder::new(reader)),
-        };
-
-        let total_size = tokio::io::copy(&mut decoder, &mut file).await?;
+        let total_size =
+            save_http_stream_to_file(response, &next_state_path, self.options.compression).await?;
 
         if total_size == 0 && !self.options.allow_zero_size {
             bail!("refusing to accept zero size response");
         }
-
-        file.sync_all().await?;
 
         let next_metadata_path = next_state.path.join(METADATA_FILE_NAME);
         if let Err(err) = new_metadata.write(&next_metadata_path) {

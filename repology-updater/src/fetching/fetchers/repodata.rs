@@ -5,19 +5,14 @@
 #[coverage(off)]
 mod tests;
 
-use std::io;
 use std::path::Path;
 use std::time::Duration;
 
-use async_compression::tokio::bufread::{BzDecoder, GzipDecoder, XzDecoder, ZstdDecoder};
-use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
-use tokio::fs::File;
-use tokio::io::AsyncRead;
-use tokio_util::io::StreamReader;
 
 use crate::fetching::compression::Compression;
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
+use crate::fetching::io::save_http_stream_to_file;
 use crate::fetching::politeness::FetchPoliteness;
 use crate::utils::transact_dir;
 
@@ -223,23 +218,12 @@ impl Fetcher for RepodataFetcher {
             request_builder.send().await?.error_for_status()?
         };
 
-        let mut file = File::create(&next_state_path).await?;
-
-        let stream = response.bytes_stream();
-        let reader = StreamReader::new(stream.map(|r| r.map_err(io::Error::other)));
-
-        let mut decoder: Box<dyn AsyncRead + Unpin + Send> =
-            match Compression::from_extension(&primary_url, ".xml")? {
-                None => Box::new(reader),
-                Some(Compression::Gz) => Box::new(GzipDecoder::new(reader)),
-                Some(Compression::Xz) => Box::new(XzDecoder::new(reader)),
-                Some(Compression::Bz2) => Box::new(BzDecoder::new(reader)),
-                Some(Compression::Zstd) => Box::new(ZstdDecoder::new(reader)),
-            };
-
-        tokio::io::copy(&mut decoder, &mut file).await?;
-
-        file.sync_all().await?;
+        save_http_stream_to_file(
+            response,
+            &next_state_path,
+            Compression::from_extension(&primary_url, ".xml")?,
+        )
+        .await?;
 
         let next_metadata_path = next_state.path.join(METADATA_FILE_NAME);
         if let Err(err) = new_metadata.write(&next_metadata_path) {
