@@ -313,7 +313,7 @@ pub async fn project_by_perform(
     })
 }
 
-pub async fn project_by_construct(
+pub fn project_by_construct(
     query: QueryParams,
     gen_query: Vec<(String, String)>,
     state: &AppState,
@@ -361,6 +361,6 @@ pub async fn project_by(
     if let Some(name) = &query.name.clone() {
         project_by_perform(query, gen_query, &state, name).await
     } else {
-        project_by_construct(query, gen_query, &state).await
+        project_by_construct(query, gen_query, &state)
     }
 }

@@ -24,7 +24,7 @@ impl HttpCacheMode {
     }
 }
 
-pub async fn static_file_generic(file_name: &str, headers: HeaderMap) -> EndpointResult {
+pub fn static_file_generic(file_name: &str, headers: HeaderMap) -> EndpointResult {
     let (file, cache_mode) = if let Some(file) = STATIC_FILES.by_hashed_name(file_name) {
         (file, HttpCacheMode::Infinite)
     } else if let Some(file) = STATIC_FILES.by_orig_name(file_name) {
@@ -85,10 +85,10 @@ pub async fn static_file_generic(file_name: &str, headers: HeaderMap) -> Endpoin
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument)]
 pub async fn static_file(Path(file_name): Path<String>, headers: HeaderMap) -> EndpointResult {
-    static_file_generic(&file_name, headers).await
+    static_file_generic(&file_name, headers)
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument)]
 pub async fn favicon(headers: HeaderMap) -> EndpointResult {
-    static_file_generic("repology.v1.ico", headers).await
+    static_file_generic("repology.v1.ico", headers)
 }

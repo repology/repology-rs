@@ -51,7 +51,7 @@ impl<'a> VulnUpdater<'a> {
         Ok(pager)
     }
 
-    async fn setup_continued_full_update(
+    fn setup_continued_full_update(
         &self,
         datasource: &Datasource<'a>,
         offset: u64,
@@ -105,8 +105,7 @@ impl<'a> VulnUpdater<'a> {
             info!("continuing full update at {offset}");
             (
                 true,
-                self.setup_continued_full_update(datasource, offset as u64)
-                    .await?,
+                self.setup_continued_full_update(datasource, offset as u64)?,
             )
         } else if let Some(last_update_time) = source_status.last_update_time {
             if let Some(update_period) = update_period {
