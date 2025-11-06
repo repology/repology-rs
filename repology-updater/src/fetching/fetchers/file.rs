@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #[cfg(test)]
-//#[coverage(off)]
+#[coverage(off)]
 mod tests;
 
 use std::borrow::Cow;
