@@ -37,6 +37,7 @@ pub enum Compression {
 }
 
 #[derive(Deserialize)]
+#[serde(default)]
 pub struct FileFetcherOptions {
     pub url: String,
     pub compression: Option<Compression>,
