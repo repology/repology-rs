@@ -128,7 +128,7 @@ impl Fetcher for FileFetcher {
         {
             return Ok(FetchStatus {
                 was_modified: false,
-                state_path: current_state.path.to_path_buf().join(STATE_FILE_NAME),
+                state_path: current_state.path.join(STATE_FILE_NAME),
                 acceptor: Box::new(|| {
                     Box::pin(async move {
                         let _ = current_state;
