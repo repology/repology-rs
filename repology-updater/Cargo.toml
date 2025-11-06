@@ -30,6 +30,7 @@ strum = { version = "0.27.2", features = ["derive"] }
 tera = { version = "1.20.1", default-features = false }
 thiserror = "2.0.16"
 tokio = { version = "1.48.0", features = ["macros", "process", "rt-multi-thread"] }
+tokio-util = { version = "0.7.17", features = ["io"] }
 toml = { version = "0.9.8", default-features = false, features = ["std", "serde", "parse"] }
 tracing = "0.1.41"
 url = "2.5.7"

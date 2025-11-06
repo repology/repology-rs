@@ -5,14 +5,15 @@
 //#[coverage(off)]
 mod tests;
 
-use std::fs::File;
-use std::io::Write;
+use std::io;
 use std::path::Path;
 use std::time::Duration;
 
 use anyhow::bail;
 use futures_util::StreamExt;
 use serde::{Deserialize, Serialize};
+use tokio::fs::File;
+use tokio_util::io::StreamReader;
 
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
 use crate::fetching::politeness::FetchPoliteness;
@@ -146,23 +147,22 @@ impl Fetcher for FileFetcher {
             },
         };
 
-        let mut stream = response.bytes_stream();
-
         let next_state = dir.begin_replace()?;
         let next_state_path = next_state.path.join(STATE_FILE_NAME);
-        let mut file = File::create(&next_state_path)?;
+        let mut file = File::create(&next_state_path).await?;
 
-        let mut total_size: usize = 0;
-        while let Some(item) = stream.next().await {
-            let item = item?;
-            total_size += item.len();
-            file.write_all(&item)?;
-        }
+        let mut stream = response.bytes_stream();
+        let mut reader = StreamReader::new(
+            stream.map(|r| r.map_err(|e| io::Error::new(io::ErrorKind::Other, e))),
+        );
+
+        let total_size = tokio::io::copy(&mut reader, &mut file).await?;
+
         if total_size == 0 && !self.options.allow_zero_size {
             bail!("refusing to accept zero size response");
         }
 
-        file.sync_all()?;
+        file.sync_all().await?;
 
         match serde_json::to_string(&new_metadata) {
             Ok(json) => {
