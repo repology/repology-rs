@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<repomd xmlns="http://linux.duke.edu/metadata/repo" xmlns:rpm="http://linux.duke.edu/metadata/rpm">
+	<revision>1761765264</revision>
+	<data type="primary">
+		<checksum type="sha256">b17f53f807329932851a689e7f8bbc065ab38f71dc213941daedfa4095bbc72a</checksum>
+		<open-checksum type="sha256">2d29a8889062031e9554632699c65adfdb88aaada21f9d2ba18fba88b909b734</open-checksum>
+		<location href="repodata/b17f53f807329932851a689e7f8bbc065ab38f71dc213941daedfa4095bbc72a-primary.xml.xz"/>
+		<timestamp>1761765260</timestamp>
+		<size>2582296</size>
+		<open-size>22734552</open-size>
+	</data>
+	<data type="filelists">
+		<checksum type="sha256">9ea76a529fbe1cdf247ebbb665d072504e696a3f4256e7d7d9457b860d693b7a</checksum>
+		<open-checksum type="sha256">b5f42e5e04809ca3c4b74dc6984bc95582d369d6c09acd27c5dad90a1dd12146</open-checksum>
+		<location href="repodata/9ea76a529fbe1cdf247ebbb665d072504e696a3f4256e7d7d9457b860d693b7a-filelists.xml.xz"/>
+		<timestamp>1761765262</timestamp>
+		<size>791548</size>
+		<open-size>3803620</open-size>
+	</data>
+	<data type="other">
+		<checksum type="sha256">0004a80524c144a84bf24f6d366dd8083405a08dc7a5c6c97113d3674d9b8415</checksum>
+		<open-checksum type="sha256">62f8fc7b3b35dc51a9017d4d47b0ac3141e28234ecaf65516d596ab7325df01f</open-checksum>
+		<location href="repodata/0004a80524c144a84bf24f6d366dd8083405a08dc7a5c6c97113d3674d9b8415-other.xml.xz"/>
+		<timestamp>1761765263</timestamp>
+		<size>547284</size>
+		<open-size>2130565</open-size>
+	</data>
+	<data type="appstream">
+		<checksum type="sha256">0d6a7e6e0c615f472b47e36be6bb94e3440086b6385fbce5ed467b8c332b0c1e</checksum>
+		<open-checksum type="sha256">2de7095c84613040db17ba63c627a3b0a6082cbe57106533c6bff7c840b6a606</open-checksum>
+		<location href="repodata/0d6a7e6e0c615f472b47e36be6bb94e3440086b6385fbce5ed467b8c332b0c1e-appstream.xml.gz"/>
+		<timestamp>1761765263</timestamp>
+		<size>128</size>
+		<open-size>129</open-size>
+	</data>
+	<data type="appstream-icons">
+		<checksum type="sha256">8e8037be05581d8ba16d6dc3504b295c73de1ef94007f512610bd39d6eb65469</checksum>
+		<open-checksum type="sha256">5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef</open-checksum>
+		<location href="repodata/8e8037be05581d8ba16d6dc3504b295c73de1ef94007f512610bd39d6eb65469-appstream-icons.tar.gz"/>
+		<timestamp>1761765263</timestamp>
+		<size>30</size>
+		<open-size>129</open-size>
+	</data>
+</repomd>
