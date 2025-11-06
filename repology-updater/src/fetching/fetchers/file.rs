@@ -154,9 +154,7 @@ impl Fetcher for FileFetcher {
         let mut file = File::create(&next_state_path).await?;
 
         let stream = response.bytes_stream();
-        let reader = StreamReader::new(
-            stream.map(|r| r.map_err(|e| io::Error::new(io::ErrorKind::Other, e))),
-        );
+        let reader = StreamReader::new(stream.map(|r| r.map_err(io::Error::other)));
 
         let mut decoder: Box<dyn AsyncRead + Unpin + Send> = match self.options.compression {
             None => Box::new(reader),
