@@ -163,7 +163,7 @@ async fn test_timeout() {
 
     let fetcher = FileFetcher::new(FileFetcherOptions {
         url: server.url() + "/data",
-        timeout: Some(Duration::from_millis(10)),
+        timeout: Duration::from_millis(10),
         ..Default::default()
     });
     let result = fetcher.fetch(&state_path, &Http::default()).await;

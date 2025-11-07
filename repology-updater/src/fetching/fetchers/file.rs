@@ -30,7 +30,7 @@ const METADATA_FILE_NAME: &str = "metadata.json";
 pub struct FileFetcherOptions {
     pub url: String,
     pub compression: Option<Compression>,
-    pub timeout: Option<Duration>,
+    pub timeout: Duration,
     pub allow_zero_size: bool,
     pub cache_buster: Option<String>,
 }
@@ -40,7 +40,7 @@ impl Default for FileFetcherOptions {
         Self {
             url: String::new(),
             compression: None,
-            timeout: Some(Duration::from_mins(1)),
+            timeout: Duration::from_mins(1),
             allow_zero_size: true,
             cache_buster: None,
         }
@@ -94,10 +94,7 @@ impl Fetcher for FileFetcher {
         let _permit;
         let response = {
             let client = http.create_client()?;
-            let mut request_builder = client.get(&*url);
-            if let Some(timeout) = self.options.timeout {
-                request_builder = request_builder.timeout(timeout);
-            }
+            let mut request_builder = client.get(&*url).timeout(self.options.timeout);
             if let Some(etag) = current_metadata.etag.as_ref() {
                 request_builder = request_builder.header("if-none-match", etag);
             }

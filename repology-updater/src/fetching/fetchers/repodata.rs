@@ -88,14 +88,14 @@ const METADATA_FILE_NAME: &str = "metadata.json";
 #[serde(default)]
 pub struct RepodataFetcherOptions {
     pub url: String,
-    pub timeout: Option<Duration>,
+    pub timeout: Duration,
 }
 
 impl Default for RepodataFetcherOptions {
     fn default() -> Self {
         Self {
             url: String::new(),
-            timeout: Some(Duration::from_mins(1)),
+            timeout: Duration::from_mins(1),
         }
     }
 }
@@ -113,25 +113,6 @@ impl RepodataFetcher {
     }
 }
 
-impl RepodataFetcher {
-    async fn fetch_repo_md(&self, url: &str, http: &Http) -> anyhow::Result<data::RepoMd> {
-        let client = http.create_client()?;
-        let mut request_builder = client.get(url);
-        if let Some(timeout) = self.options.timeout {
-            request_builder = request_builder.timeout(timeout);
-        }
-
-        let _permit = http.acquire(url).await;
-        let xml = request_builder
-            .send()
-            .await?
-            .error_for_status()?
-            .text()
-            .await?;
-        Ok(serde_xml_rs::from_str(&xml)?)
-    }
-}
-
 #[async_trait::async_trait]
 impl Fetcher for RepodataFetcher {
     async fn fetch(&self, path: &Path, http: &Http) -> anyhow::Result<FetchStatus> {
@@ -140,8 +121,22 @@ impl Fetcher for RepodataFetcher {
 
         let current_state = dir.current_state();
 
-        let repo_md_url = format!("{}repodata/repomd.xml", self.options.url);
-        let repo_md_data = self.fetch_repo_md(&repo_md_url, http).await?.into_data()?;
+        let repo_md_data = {
+            let url = format!("{}repodata/repomd.xml", self.options.url);
+            let _permit = http.acquire(&url).await;
+            serde_xml_rs::from_str::<data::RepoMd>(
+                &http
+                    .create_client()?
+                    .get(&url)
+                    .timeout(self.options.timeout)
+                    .send()
+                    .await?
+                    .error_for_status()?
+                    .text()
+                    .await?,
+            )?
+            .into_data()?
+        };
 
         if let Some(current_state) = current_state {
             let current_metadata_path = current_state.path.join(METADATA_FILE_NAME);
@@ -178,17 +173,14 @@ impl Fetcher for RepodataFetcher {
 
         let primary_url = format!("{}{}", self.options.url, repo_md_data.location.href);
 
-        let _permit;
-        let response = {
-            let client = http.create_client()?;
-            let mut request_builder = client.get(&primary_url);
-            if let Some(timeout) = self.options.timeout {
-                request_builder = request_builder.timeout(timeout);
-            }
-
-            _permit = http.acquire(&primary_url).await;
-            request_builder.send().await?.error_for_status()?
-        };
+        let _permit = http.acquire(&primary_url).await;
+        let response = http
+            .create_client()?
+            .get(&primary_url)
+            .timeout(self.options.timeout)
+            .send()
+            .await?
+            .error_for_status()?;
 
         save_http_stream_to_file(
             response,
