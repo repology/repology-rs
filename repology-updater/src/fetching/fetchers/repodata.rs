@@ -66,16 +66,15 @@ mod data {
     }
 
     impl RepoMd {
-        pub fn into_data(self) -> anyhow::Result<Data> {
-            const REQUIRED_TYPE: &str = "primary";
+        pub fn into_data_by_type(self, r#type: &str) -> anyhow::Result<Data> {
             for data in self.datas {
-                if data.r#type == REQUIRED_TYPE {
+                if data.r#type == r#type {
                     return Ok(data);
                 }
             }
             bail!(
-                "cannot find required <data> entry with type=\"{}\"> in repomd.xml",
-                REQUIRED_TYPE
+                "cannot find required <data> entry of type \"{}\" in repomd.xml",
+                r#type
             );
         }
     }
@@ -89,6 +88,7 @@ const METADATA_FILE_NAME: &str = "metadata.json";
 pub struct RepodataFetcherOptions {
     pub url: String,
     pub timeout: Duration,
+    pub data_type: String,
 }
 
 impl Default for RepodataFetcherOptions {
@@ -96,6 +96,7 @@ impl Default for RepodataFetcherOptions {
         Self {
             url: String::new(),
             timeout: Duration::from_mins(1),
+            data_type: "primary".to_string(),
         }
     }
 }
@@ -126,7 +127,7 @@ impl Fetcher for RepodataFetcher {
             .with_timeout(self.options.timeout)
             .fetch_xml::<data::RepoMd>(&format!("{}repodata/repomd.xml", self.options.url))
             .await?
-            .into_data()?;
+            .into_data_by_type(&self.options.data_type)?;
 
         if let Some(current_state) = current_state {
             let current_metadata_path = current_state.path.join(METADATA_FILE_NAME);
