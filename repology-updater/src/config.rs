@@ -8,6 +8,10 @@ use clap::{Parser, Subcommand};
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 pub struct CliArgs {
+    /// Enable debug logging
+    #[arg(long)]
+    pub debug: bool,
+
     #[command(subcommand)]
     pub command: Commands,
 }

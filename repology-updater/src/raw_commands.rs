@@ -7,11 +7,28 @@ use repology_updater::parsing::parsers::create_parser;
 use repology_updater::repositories_config::RepositoriesConfig;
 use repology_updater::ruleset::Ruleset;
 
-use crate::config::RawCommands;
+use crate::config::{CliArgs, RawCommands};
 
 use std::time::{Duration, Instant};
 
-async fn raw_command_async(command: &RawCommands) {
+fn init_logging(debug: bool) {
+    use tracing_subscriber::filter::EnvFilter;
+    use tracing_subscriber::layer::SubscriberExt;
+    use tracing_subscriber::util::SubscriberInitExt;
+
+    let layer = tracing_subscriber::fmt::Layer::new().with_timer(
+        tracing_subscriber::fmt::time::ChronoLocal::new(String::from("%F %T%.6f")),
+    );
+
+    tracing_subscriber::registry()
+        .with(EnvFilter::new(if debug { "debug" } else { "info" }))
+        .with(layer)
+        .init();
+}
+
+async fn raw_command_async(command: &RawCommands, args: &CliArgs) {
+    init_logging(args.debug);
+
     match command {
         RawCommands::Parse {
             parser_name,
@@ -122,8 +139,8 @@ async fn raw_command_async(command: &RawCommands) {
     }
 }
 
-pub fn raw_command(command: &RawCommands) {
+pub fn raw_command(command: &RawCommands, args: &CliArgs) {
     tokio::runtime::Runtime::new()
         .unwrap()
-        .block_on(raw_command_async(command));
+        .block_on(raw_command_async(command, args));
 }

@@ -14,9 +14,9 @@ use config::{CliArgs, Commands};
 fn main() {
     let args = CliArgs::parse();
 
-    match args.command {
+    match &args.command {
         Commands::Raw { command } => {
-            raw_commands::raw_command(&command);
+            raw_commands::raw_command(command, &args);
         }
     }
 }
