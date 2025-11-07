@@ -6,4 +6,5 @@ pub mod fetcher;
 pub mod fetchers;
 pub mod http;
 pub mod io;
+pub mod metadata;
 pub mod politeness;

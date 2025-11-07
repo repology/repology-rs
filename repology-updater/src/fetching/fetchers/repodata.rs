@@ -8,12 +8,13 @@ mod tests;
 use std::path::Path;
 use std::time::Duration;
 
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use crate::fetching::compression::Compression;
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
 use crate::fetching::http::Http;
 use crate::fetching::io::save_http_stream_to_file;
+use crate::fetching::metadata::FetchMetadata;
 use crate::utils::transact_dir;
 
 use tracing::error;
@@ -99,24 +100,6 @@ impl Default for RepodataFetcherOptions {
     }
 }
 
-#[derive(Serialize, Deserialize, Default)]
-struct FetchMetadata {
-    checksum: Option<String>,
-}
-
-impl FetchMetadata {
-    pub fn read(path: &Path) -> anyhow::Result<Self> {
-        Ok(serde_json::from_str::<Self>(&std::fs::read_to_string(
-            path,
-        )?)?)
-    }
-
-    pub fn write(&self, path: &Path) -> anyhow::Result<()> {
-        std::fs::write(path, &serde_json::to_string(&self)?)?;
-        Ok(())
-    }
-}
-
 pub struct RepodataFetcher {
     options: RepodataFetcherOptions,
 }
@@ -187,6 +170,7 @@ impl Fetcher for RepodataFetcher {
 
         let new_metadata = FetchMetadata {
             checksum: Some(repo_md_data.checksum().into()),
+            ..Default::default()
         };
 
         let next_state = dir.begin_replace()?;
@@ -213,10 +197,7 @@ impl Fetcher for RepodataFetcher {
         )
         .await?;
 
-        let next_metadata_path = next_state.path.join(METADATA_FILE_NAME);
-        if let Err(err) = new_metadata.write(&next_metadata_path) {
-            error!(?err, path = ?next_metadata_path, "cannot write fetch metadata");
-        }
+        new_metadata.write(&next_state.path.join(METADATA_FILE_NAME))?;
 
         Ok(FetchStatus {
             was_modified: true,
