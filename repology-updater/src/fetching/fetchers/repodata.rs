@@ -121,7 +121,8 @@ impl Fetcher for RepodataFetcher {
         let current_state = dir.current_state();
 
         let base_url = if self.options.url.ends_with("mirror.list") {
-            // XXX: could use `super let` here, and then borrow, but this breaks async_trait
+            // XXX: could use `super let` here, and then borrow, but this breaks syn → async_trait
+            // See https://github.com/dtolnay/syn/issues/1889
             let urls: String = http
                 .start_request()
                 .with_timeout(self.options.timeout)
