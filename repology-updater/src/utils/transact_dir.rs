@@ -1,6 +1,10 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 
+// this may be extracted into separate crate someday,
+// there are parts of public API not used in Repology
+#![allow(unused)]
+
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::{fmt, fs, io};

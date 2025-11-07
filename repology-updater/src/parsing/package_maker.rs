@@ -200,6 +200,7 @@ impl PackageMaker {
         self
     }
 
+    #[cfg_attr(not(test), expect(unused))] // will be used in parsers
     pub fn set_extra_field_one(&mut self, name: &str, value: impl Into<String>) {
         self.extrafields
             .insert(name.to_string(), ExtraField::OneValue(value.into()));

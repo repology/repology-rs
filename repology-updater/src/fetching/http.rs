@@ -73,6 +73,7 @@ impl<'a> RequestWrapper<'a> {
             .await?)
     }
 
+    #[expect(unused)] // will be used in fetchers; otherwise, convenient to have for future
     pub async fn fetch_json<T>(&self, url: &str) -> anyhow::Result<T>
     where
         T: for<'de> Deserialize<'de>,

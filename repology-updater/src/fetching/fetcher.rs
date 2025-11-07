@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 use crate::fetching::http::Http;
 
 pub struct FetchStatus {
+    #[cfg_attr(not(test), expect(unused))] // will be used in update process
     pub was_modified: bool,
     pub state_path: PathBuf,
     // XXX: shouldn't this work?

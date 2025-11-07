@@ -120,6 +120,7 @@ impl std::fmt::Debug for ParsedPackage {
     }
 }
 
+#[expect(unused)] // sample of complete package, will be removed after more Package bits are added
 #[derive(Debug, PartialEq, Eq)]
 pub struct Package {
     pub repo: String,

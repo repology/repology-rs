@@ -363,6 +363,7 @@ impl Ruleset {
         Ok(Self { rules })
     }
 
+    #[expect(unused)]
     pub fn to_yaml(&self) -> anyhow::Result<String> {
         let mut out = String::new();
         for rule in &self.rules {

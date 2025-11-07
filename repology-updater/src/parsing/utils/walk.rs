@@ -28,6 +28,7 @@ impl<'a> WalkFileTree<'a> {
         }
     }
 
+    #[cfg_attr(not(test), expect(unused))] // will be used in parsers
     pub fn walk_by_suffix(path: &'a Path, suffix: &'a str) -> Self {
         Self {
             path,

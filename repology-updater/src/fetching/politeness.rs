@@ -17,6 +17,7 @@ pub struct FetchPoliteness {
 }
 
 impl FetchPoliteness {
+    #[cfg_attr(not(test), expect(unused))] // will be configurable
     pub fn new(delay: Duration) -> Self {
         Self {
             delay,

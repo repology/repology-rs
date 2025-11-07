@@ -26,21 +26,27 @@ impl VersionStripper {
         }
     }
 
+    #[cfg_attr(not(test), expect(unused))] // will be used in parsers
     pub const fn with_strip_left(mut self, separator: &'static str) -> Self {
         self.strips[self.len] = Some((VersionStripKind::Left, separator));
         self.len += 1;
         self
     }
+
+    #[cfg_attr(not(test), expect(unused))] // will be used in parsers
     pub const fn with_strip_left_greedy(mut self, separator: &'static str) -> Self {
         self.strips[self.len] = Some((VersionStripKind::LeftGreedy, separator));
         self.len += 1;
         self
     }
+
     pub const fn with_strip_right(mut self, separator: &'static str) -> Self {
         self.strips[self.len] = Some((VersionStripKind::Right, separator));
         self.len += 1;
         self
     }
+
+    #[cfg_attr(not(test), expect(unused))] // will be used in parsers
     pub const fn with_strip_right_greedy(mut self, separator: &'static str) -> Self {
         self.strips[self.len] = Some((VersionStripKind::RightGreedy, separator));
         self.len += 1;
