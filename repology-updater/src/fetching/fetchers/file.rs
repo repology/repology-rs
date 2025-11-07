@@ -121,13 +121,20 @@ impl Fetcher for FileFetcher {
         }
 
         let new_metadata = FetchMetadata {
-            etag: match response.headers().get("etag").map(|etag| etag.to_str()) {
-                Some(Ok(etag)) => Some(etag.to_string()),
-                Some(Err(err)) => {
-                    error!(?err, "cannot parse etag header");
+            etag: match response
+                .headers()
+                .get("etag")
+                .map(|etag| etag.to_str())
+                .transpose()?
+            {
+                Some(etag) => {
+                    info!(etag, "got etag value");
+                    Some(etag.to_string())
+                }
+                None => {
+                    info!("no etag header in reply");
                     None
                 }
-                None => None,
             },
             ..Default::default()
         };
