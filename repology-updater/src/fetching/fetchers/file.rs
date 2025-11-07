@@ -12,7 +12,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use anyhow::bail;
 use serde::Deserialize;
-use tracing::error;
+use tracing::{error, info};
 
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
 use crate::fetching::http::Http;
@@ -24,7 +24,7 @@ use crate::utils::transact_dir;
 const STATE_FILE_NAME: &str = "state";
 const METADATA_FILE_NAME: &str = "metadata.json";
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Debug)]
 #[serde(default)]
 pub struct FileFetcherOptions {
     pub url: String,
@@ -58,6 +58,7 @@ impl FileFetcher {
 
 #[async_trait::async_trait]
 impl Fetcher for FileFetcher {
+    #[tracing::instrument(name = "FileFetcher", skip_all, fields(url = ?self.options.url))]
     async fn fetch(&self, path: &Path, http: &Http) -> anyhow::Result<FetchStatus> {
         let mut url = Cow::Borrowed(&self.options.url);
         if let Some(cache_buster) = &self.options.cache_buster {
@@ -95,6 +96,7 @@ impl Fetcher for FileFetcher {
             let client = http.create_client()?;
             let mut request_builder = client.get(&*url).timeout(self.options.timeout);
             if let Some(etag) = current_metadata.etag.as_ref() {
+                info!(etag, "adding if-none-match header");
                 request_builder = request_builder.header("if-none-match", etag);
             }
 
@@ -105,6 +107,7 @@ impl Fetcher for FileFetcher {
         if let Some(current_state) = current_state
             && response.status() == reqwest::StatusCode::NOT_MODIFIED
         {
+            info!("server responded with 304 Not Modified");
             return Ok(FetchStatus {
                 was_modified: false,
                 state_path: current_state.path.join(STATE_FILE_NAME),

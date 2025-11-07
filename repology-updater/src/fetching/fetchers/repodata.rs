@@ -10,7 +10,7 @@ use std::path::Path;
 use std::time::Duration;
 
 use serde::Deserialize;
-use tracing::error;
+use tracing::{error, info};
 
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
 use crate::fetching::http::Http;
@@ -113,6 +113,7 @@ impl RepodataFetcher {
 
 #[async_trait::async_trait]
 impl Fetcher for RepodataFetcher {
+    #[tracing::instrument(name = "RepodataFetcher", skip_all, fields(url = ?self.options.url))]
     async fn fetch(&self, path: &Path, http: &Http) -> anyhow::Result<FetchStatus> {
         let dir = transact_dir::TransactionalDir::new(path);
         dir.cleanup()?;
@@ -131,6 +132,7 @@ impl Fetcher for RepodataFetcher {
                 .next()
                 .expect("split should return non-empty iterator")
                 .trim();
+            info!(url, "got base url from mirrors list");
             Cow::from(url.to_string())
         } else if self.options.url.ends_with("/") {
             Cow::from(&self.options.url)
@@ -154,9 +156,12 @@ impl Fetcher for RepodataFetcher {
                 .unwrap_or_default()
                 .checksum;
 
+            info!(checksum = metadata_checksum, "got checksum");
+
             if metadata_checksum
                 .is_some_and(|metadata_checksum| metadata_checksum == repomd_data.checksum())
             {
+                info!("checksum has not changed, repository was not modified");
                 return Ok(FetchStatus {
                     was_modified: false,
                     state_path: current_state.path.join(STATE_FILE_NAME),

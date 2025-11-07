@@ -6,6 +6,7 @@ use std::sync::{Arc, Mutex as StdMutex};
 use std::time::{Duration, Instant};
 
 use tokio::sync::{Mutex as TokioMutex, OwnedMutexGuard};
+use tracing::debug;
 use url::Url;
 
 type HostLock = Arc<TokioMutex<Option<Instant>>>;
@@ -33,7 +34,8 @@ impl FetchPoliteness {
             .and_then(|url| url.host_str().map(|host| host.to_owned()))
             .unwrap_or_default();
 
-        let lock = Arc::clone(self.hosts.lock().unwrap().entry(key).or_default());
+        debug!(key, "acquiring host politeness permit");
+        let lock = Arc::clone(self.hosts.lock().unwrap().entry(key.clone()).or_default());
         let guard = lock.lock_owned().await;
         let now = Instant::now();
 
@@ -43,16 +45,18 @@ impl FetchPoliteness {
             tokio::time::sleep_until((last_freed + self.delay).into()).await;
         }
 
-        HostPermit { guard }
+        HostPermit { key, guard }
     }
 }
 
 pub struct HostPermit {
+    key: String,
     guard: OwnedMutexGuard<Option<Instant>>,
 }
 
 impl Drop for HostPermit {
     fn drop(&mut self) {
+        debug!(key = self.key, "releasing host politeness permit");
         *self.guard = Some(Instant::now());
     }
 }
