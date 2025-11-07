@@ -1,9 +1,10 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use anyhow::{Context, anyhow};
 use std::io::BufRead as _;
 use std::path::Path;
+
+use anyhow::{Context, anyhow};
 
 use repology_common::LinkType;
 

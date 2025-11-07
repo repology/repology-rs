@@ -10,15 +10,14 @@ use std::path::Path;
 use std::time::Duration;
 
 use serde::Deserialize;
+use tracing::error;
 
-use crate::fetching::compression::Compression;
 use crate::fetching::fetcher::{FetchStatus, Fetcher};
 use crate::fetching::http::Http;
-use crate::fetching::io::save_http_stream_to_file;
-use crate::fetching::metadata::FetchMetadata;
+use crate::fetching::utils::compression::Compression;
+use crate::fetching::utils::io::save_http_stream_to_file;
+use crate::fetching::utils::metadata::FetchMetadata;
 use crate::utils::transact_dir;
-
-use tracing::error;
 
 #[allow(unused)]
 mod data {

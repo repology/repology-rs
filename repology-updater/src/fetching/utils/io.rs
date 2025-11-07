@@ -10,7 +10,7 @@ use tokio::fs::File;
 use tokio::io::AsyncRead;
 use tokio_util::io::StreamReader;
 
-use crate::fetching::compression::Compression;
+use crate::fetching::utils::compression::Compression;
 
 pub async fn save_http_stream_to_file(
     response: reqwest::Response,

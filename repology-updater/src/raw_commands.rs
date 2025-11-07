@@ -1,15 +1,14 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use repology_updater::fetching::fetchers::create_fetcher_options_yaml;
-use repology_updater::fetching::http::Http;
-use repology_updater::parsing::parsers::create_parser;
-use repology_updater::repositories_config::RepositoriesConfig;
-use repology_updater::ruleset::Ruleset;
+use std::time::{Duration, Instant};
 
 use crate::config::{CliArgs, RawCommands};
-
-use std::time::{Duration, Instant};
+use crate::fetching::fetchers::create_fetcher_options_yaml;
+use crate::fetching::http::Http;
+use crate::parsing::parsers::create_parser;
+use crate::repositories_config::RepositoriesConfig;
+use crate::ruleset::Ruleset;
 
 fn init_logging(debug: bool) {
     use tracing_subscriber::filter::EnvFilter;

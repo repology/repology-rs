@@ -1,13 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#[cfg(test)]
-#[macro_use]
-mod testing;
-
-mod error;
-mod package_maker;
-mod parser;
-mod utils;
-
-pub mod parsers;
+pub mod compression;
+pub mod io;
+pub mod metadata;
