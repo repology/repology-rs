@@ -108,3 +108,41 @@ async fn test_not_modified() {
     repomd_mock.assert();
     primary_mock.assert();
 }
+
+#[tokio::test]
+async fn test_mirror_list() {
+    let mut server = mockito::Server::new_async().await;
+    let mirrorlist_mock = server
+        .mock("GET", "/foo/mirror.list")
+        .with_status(200)
+        .with_body(&format!("{}/foo/\nhttps://example.com/foo", server.url()))
+        .create();
+    let repomd_mock = server
+        .mock("GET", "/foo/repodata/repomd.xml")
+        .with_status(200)
+        .with_body(include_bytes!("fixtures/repomd.xml"))
+        .create();
+    let primary_mock = server
+        .mock("GET", "/foo/repodata/b17f53f807329932851a689e7f8bbc065ab38f71dc213941daedfa4095bbc72a-primary.xml.xz")
+        .with_status(200)
+        .with_body(include_bytes!("fixtures/primary.xml.xz"))
+        .create();
+
+    let tmpdir = tempfile::tempdir().unwrap();
+    let state_path = tmpdir.path().join("state");
+
+    let fetcher = RepodataFetcher::new(RepodataFetcherOptions {
+        url: server.url() + "/foo/mirror.list",
+        ..Default::default()
+    });
+    let fetch_result = fetcher.fetch(&state_path, &Http::default()).await.unwrap();
+
+    mirrorlist_mock.assert();
+    repomd_mock.assert();
+    primary_mock.assert();
+    assert_eq!(
+        std::fs::read_to_string(&fetch_result.state_path).unwrap(),
+        "...xml..."
+    );
+    assert!(fetch_result.accept().await.is_ok());
+}

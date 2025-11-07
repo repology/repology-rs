@@ -5,6 +5,7 @@
 #[coverage(off)]
 mod tests;
 
+use std::borrow::Cow;
 use std::path::Path;
 use std::time::Duration;
 
@@ -106,10 +107,7 @@ pub struct RepodataFetcher {
 }
 
 impl RepodataFetcher {
-    pub fn new(mut options: RepodataFetcherOptions) -> Self {
-        if !options.url.ends_with("/") {
-            options.url += "/";
-        }
+    pub fn new(options: RepodataFetcherOptions) -> Self {
         Self { options }
     }
 }
@@ -122,10 +120,29 @@ impl Fetcher for RepodataFetcher {
 
         let current_state = dir.current_state();
 
-        let repo_md_data = http
+        let base_url = if self.options.url.ends_with("mirror.list") {
+            // XXX: could use `super let` here, and then borrow, but this breaks async_trait
+            let urls: String = http
+                .start_request()
+                .with_timeout(self.options.timeout)
+                .fetch_text(&self.options.url)
+                .await?;
+            let url = urls
+                .split(|c: char| c.is_ascii_whitespace())
+                .next()
+                .expect("split should return non-empty iterator")
+                .trim();
+            Cow::from(url.to_string())
+        } else if self.options.url.ends_with("/") {
+            Cow::from(&self.options.url)
+        } else {
+            Cow::from(format!("{}/", self.options.url))
+        };
+
+        let repomd_data = http
             .start_request()
             .with_timeout(self.options.timeout)
-            .fetch_xml::<data::RepoMd>(&format!("{}repodata/repomd.xml", self.options.url))
+            .fetch_xml::<data::RepoMd>(&format!("{}repodata/repomd.xml", base_url))
             .await?
             .into_data_by_type(&self.options.data_type)?;
 
@@ -139,7 +156,7 @@ impl Fetcher for RepodataFetcher {
                 .checksum;
 
             if metadata_checksum
-                .is_some_and(|metadata_checksum| metadata_checksum == repo_md_data.checksum())
+                .is_some_and(|metadata_checksum| metadata_checksum == repomd_data.checksum())
             {
                 return Ok(FetchStatus {
                     was_modified: false,
@@ -155,14 +172,14 @@ impl Fetcher for RepodataFetcher {
         }
 
         let new_metadata = FetchMetadata {
-            checksum: Some(repo_md_data.checksum().into()),
+            checksum: Some(repomd_data.checksum().into()),
             ..Default::default()
         };
 
         let next_state = dir.begin_replace()?;
         let next_state_path = next_state.path.join(STATE_FILE_NAME);
 
-        let primary_url = format!("{}{}", self.options.url, repo_md_data.location.href);
+        let primary_url = format!("{}{}", base_url, repomd_data.location.href);
 
         let _permit = http.acquire(&primary_url).await;
         let response = http
