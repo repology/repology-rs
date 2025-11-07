@@ -121,22 +121,12 @@ impl Fetcher for RepodataFetcher {
 
         let current_state = dir.current_state();
 
-        let repo_md_data = {
-            let url = format!("{}repodata/repomd.xml", self.options.url);
-            let _permit = http.acquire(&url).await;
-            serde_xml_rs::from_str::<data::RepoMd>(
-                &http
-                    .create_client()?
-                    .get(&url)
-                    .timeout(self.options.timeout)
-                    .send()
-                    .await?
-                    .error_for_status()?
-                    .text()
-                    .await?,
-            )?
-            .into_data()?
-        };
+        let repo_md_data = http
+            .start_request()
+            .with_timeout(self.options.timeout)
+            .fetch_xml::<data::RepoMd>(&format!("{}repodata/repomd.xml", self.options.url))
+            .await?
+            .into_data()?;
 
         if let Some(current_state) = current_state {
             let current_metadata_path = current_state.path.join(METADATA_FILE_NAME);
