@@ -12,7 +12,9 @@ use sqlx::FromRow;
 
 use repology_common::PackageStatus;
 
-use crate::badges::{Cell, CellAlignment, badge_color_for_package_status, render_generic_badge};
+use crate::badges::{
+    Cell, CellAlignment, DEFAULT_THEME, badge_color_for_package_status, render_generic_badge,
+};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
@@ -64,6 +66,8 @@ pub async fn badge_repository_big(
     .fetch_optional(&state.pool)
     .await?;
 
+    let theme = &DEFAULT_THEME;
+
     let caption = query
         .caption
         .as_deref()
@@ -80,7 +84,7 @@ pub async fn badge_repository_big(
             Cell::empty(),
         ]);
 
-        let color = badge_color_for_package_status(PackageStatus::Newest, None);
+        let color = badge_color_for_package_status(PackageStatus::Newest, theme, None);
         cells.push(vec![
             Cell::new("Up to date").align(CellAlignment::Right),
             Cell::new(&format!("{}", statistics.num_projects_newest)).color(color),
@@ -91,7 +95,7 @@ pub async fn badge_repository_big(
             .color(color),
         ]);
 
-        let color = badge_color_for_package_status(PackageStatus::Outdated, None);
+        let color = badge_color_for_package_status(PackageStatus::Outdated, theme, None);
         cells.push(vec![
             Cell::new("Outdated").align(CellAlignment::Right),
             Cell::new(&format!("{}", statistics.num_projects_outdated)).color(color),
@@ -102,7 +106,7 @@ pub async fn badge_repository_big(
             .color(color),
         ]);
 
-        let color = "#e00000";
+        let color = theme.color_special;
         cells.push(vec![
             Cell::new("Vulnerable").align(CellAlignment::Right),
             Cell::new(&format!("{}", statistics.num_projects_vulnerable)).color(color),
@@ -113,7 +117,7 @@ pub async fn badge_repository_big(
             .color(color),
         ]);
 
-        let color = "#9f9f9f";
+        let color = theme.color_other;
         cells.push(vec![
             Cell::new("Bad versions").align(CellAlignment::Right),
             Cell::new(&format!("{}", statistics.num_projects_problematic)).color(color),
@@ -136,11 +140,11 @@ pub async fn badge_repository_big(
         cells.push(vec![
             Cell::new("Repository not known or was removed")
                 .align(CellAlignment::Center)
-                .color("#e00000"),
+                .color(theme.color_special),
         ]);
     }
 
-    let body = render_generic_badge(&cells, caption, 0, &state.font_measurer)?;
+    let body = render_generic_badge(&cells, caption, 0, &state.font_measurer, theme)?;
 
     Ok((
         [(
