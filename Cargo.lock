@@ -3214,7 +3214,7 @@ dependencies = [
 [[package]]
 name = "serde-saphyr"
 version = "0.0.8-alpha-pre"
-source = "git+https://github.com/bourumir-wyngs/serde-saphyr?branch=master#f34cdedf3d12bc016021db3f3a3badef124d8caa"
+source = "git+https://github.com/bourumir-wyngs/serde-saphyr?branch=master#f667da05d88fa95a886f92d62340a09e549d1222"
 dependencies = [
  "base64",
  "encoding_rs_io",
