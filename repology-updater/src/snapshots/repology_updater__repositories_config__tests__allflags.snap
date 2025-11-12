@@ -39,9 +39,7 @@ RepositoriesConfig {
             ),
             sources: [
                 Source {
-                    name: [
-                        "source1",
-                    ],
+                    name: "source1",
                     fetcher: Object {
                         "class": String("FileFetcher"),
                         "url": String("https://example.com/data.json"),
@@ -55,9 +53,7 @@ RepositoriesConfig {
                     packagelinks: [],
                 },
                 Source {
-                    name: [
-                        "source2",
-                    ],
+                    name: "source2",
                     fetcher: Object {
                         "class": String("FileFetcher"),
                         "url": String("https://example.com/data2.json"),

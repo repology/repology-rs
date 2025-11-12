@@ -61,8 +61,7 @@ pub struct PackageLink {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Source {
-    #[serde(deserialize_with = "from_string_or_vec")]
-    pub name: Vec<String>,
+    pub name: String,
     pub fetcher: serde_json::Value,
     pub parser: serde_json::Value,
     pub subrepo: Option<String>,
