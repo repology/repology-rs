@@ -2,5 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 pub mod maintainers;
+pub mod rpm;
 pub mod version;
 pub mod walk;
