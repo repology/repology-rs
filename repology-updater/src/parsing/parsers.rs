@@ -8,7 +8,10 @@ mod yacp;
 
 use crate::parsing::parser::PackageParser;
 
-pub fn create_parser(name: &str) -> anyhow::Result<Box<dyn PackageParser>> {
+pub fn create_parser_options_yaml(
+    name: &str,
+    options_yaml: &str,
+) -> anyhow::Result<Box<dyn PackageParser>> {
     match name {
         "FreeBsdParser" => Ok(Box::new(freebsd::FreeBsdParser {})),
         "StalIxParser" => Ok(Box::new(stalix::StalIxParser {})),

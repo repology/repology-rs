@@ -6,7 +6,7 @@ use std::time::{Duration, Instant};
 use crate::config::{CliArgs, RawCommands};
 use crate::fetching::fetchers::create_fetcher_options_yaml;
 use crate::fetching::http::Http;
-use crate::parsing::parsers::create_parser;
+use crate::parsing::parsers::create_parser_options_yaml;
 use crate::repositories_config::RepositoriesConfig;
 use crate::ruleset::Ruleset;
 
@@ -31,11 +31,16 @@ async fn raw_command_async(command: &RawCommands, args: &CliArgs) {
     match command {
         RawCommands::Parse {
             parser_name,
+            parser_options,
             state_path,
             print,
         } => {
             let mut num_packages: u64 = 0;
-            let parser = create_parser(parser_name).unwrap();
+            let parser = create_parser_options_yaml(
+                parser_name,
+                parser_options.as_deref().unwrap_or_default(),
+            )
+            .unwrap();
             let start = Instant::now();
             parser
                 .parse(state_path, &mut |package_maker| {
@@ -70,12 +75,17 @@ async fn raw_command_async(command: &RawCommands, args: &CliArgs) {
         }
         RawCommands::FetchParse {
             parser_name,
+            parser_options,
             fetcher_name,
-            state_path,
             fetcher_options,
+            state_path,
             print,
         } => {
-            let parser = create_parser(parser_name).unwrap();
+            let parser = create_parser_options_yaml(
+                parser_name,
+                parser_options.as_deref().unwrap_or_default(),
+            )
+            .unwrap();
             let fetcher = create_fetcher_options_yaml(fetcher_name, fetcher_options).unwrap();
 
             let start = Instant::now();
