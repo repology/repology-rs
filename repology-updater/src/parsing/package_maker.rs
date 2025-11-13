@@ -229,6 +229,12 @@ impl PackageMaker {
         }
     }
 
+    pub fn set_arch(&mut self, arch: impl Into<String>) -> &mut Self {
+        // TODO: strip, limit length
+        self.arch = Some(arch.into());
+        self
+    }
+
     pub fn finalize(self) -> Result<ParsedPackage, PackageParsingError> {
         let projectname_seed = self
             .projectname_seed
@@ -467,5 +473,13 @@ mod tests {
                 fragment: Some("frag".to_string()),
             }],
         );
+    }
+
+    #[test]
+    fn test_arch() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_arch("x86");
+        pkg.set_arch("x64_64");
+        assert_eq!(finalize_test_package(pkg).arch, Some("x64_64".into()));
     }
 }
