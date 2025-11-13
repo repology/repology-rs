@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![feature(coverage_attribute)]
+#![feature(iter_intersperse)]
 
 pub mod link_status;
 pub mod link_type;
