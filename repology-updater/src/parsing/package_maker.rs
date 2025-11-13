@@ -451,6 +451,39 @@ mod tests {
     }
 
     #[test]
+    fn test_category() {
+        let mut pkg = PackageMaker::default();
+        pkg.add_category("Foo");
+        pkg.add_category("Bar");
+        pkg.add_categories(vec!["Baz".to_string(), "Quux".to_string()]);
+        assert_eq!(
+            finalize_test_package(pkg).category,
+            Some("Foo".to_string(),)
+        );
+        /* TODO
+        assert_eq!(
+            finalize_test_package(pkg).category,
+            vec![
+                "Foo".to_string(),
+                "Bar".to_string(),
+                "Baz".to_string(),
+                "Quux".to_string()
+            ]
+        );*/
+    }
+
+    #[test]
+    fn test_category_uniq() {
+        let mut pkg = PackageMaker::default();
+        pkg.add_category("Foo");
+        pkg.add_category("Foo");
+        assert_eq!(
+            finalize_test_package(pkg).category,
+            Some("Foo".to_string(),)
+        );
+    }
+
+    #[test]
     fn test_license() {
         let mut pkg = PackageMaker::default();
         pkg.add_license("GPL2");
