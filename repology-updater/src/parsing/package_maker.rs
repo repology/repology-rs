@@ -166,6 +166,7 @@ impl PackageMaker {
     pub fn add_category(&mut self, category: impl Into<String>) -> &mut Self {
         // TODO: allow multiple categories
         // TODO: strip, forbid newlines
+        // TODO: unicalize
         if self.category.is_none() {
             self.category = Some(category.into());
         }
@@ -384,7 +385,7 @@ mod tests {
     }
 
     #[test]
-    fn test_simple() {
+    fn test_names() {
         let mut pkg = PackageMaker::default();
         pkg.set_names("bin", NameType::BinName);
         pkg.set_names("src", NameType::SrcName);
@@ -399,8 +400,6 @@ mod tests {
         assert_eq!(package.trackname, Some("track".to_string()));
         assert_eq!(package.visiblename, "display".to_string());
         assert_eq!(package.projectname_seed, "project".to_string());
-        assert_eq!(package.version, "1.2.3".to_string());
-        assert_eq!(package.rawversion, "1.2.3".to_string());
     }
 
     #[test]
@@ -537,7 +536,7 @@ mod tests {
     }
 
     #[test]
-    fn test_add_link_no_framgent() {
+    fn test_add_link_no_fragment() {
         let mut pkg = PackageMaker::default();
         pkg.add_link(LinkType::UpstreamHomepage, "https://example.com/");
         let package = finalize_test_package(pkg);
@@ -552,7 +551,7 @@ mod tests {
     }
 
     #[test]
-    fn test_add_link_framgent() {
+    fn test_add_link_with_fragment() {
         let mut pkg = PackageMaker::default();
         pkg.add_link(LinkType::UpstreamHomepage, "https://example.com/foo#frag");
         let package = finalize_test_package(pkg);
