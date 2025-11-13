@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://linux.duke.edu/metadata/common" xmlns:rpm="http://linux.duke.edu/metadata/rpm" packages="3556">
+<package type="rpm">
+  <name>0xproto-nerd-fonts</name>
+  <arch>noarch</arch>
+  <version epoch="0" ver="3.4.0" rel="1.fcrawhide"/>
+  <checksum type="sha256" pkgid="YES">a24549130e2d910a7d9a0f244b0d4b28490a57c699fd015b263e4f5a40cc8468</checksum>
+  <summary>Patched Nerd fonts: 0xProto</summary>
+  <description>
+Nerd Fonts is a project that patches developer targeted fonts with a high
+number of glyphs (icons).. The package contains the patched version of 0xProto.</description>
+  <packager></packager>
+  <url>https://nerdfonts.com/</url>
+  <time file="1751544105" build="1751543164"/>
+  <size package="3291644" installed="21852192" archive="21855000"/>
+  <location href="0xproto-nerd-fonts-0:3.4.0-1.fcrawhide.noarch.rpm"/>
+  <format>
+    <rpm:license>OFL-1.1</rpm:license>
+    <rpm:vendor>Terra</rpm:vendor>
+    <rpm:group>Unspecified</rpm:group>
+    <rpm:buildhost>0368c63542c9</rpm:buildhost>
+    <rpm:sourcerpm>nerd-fonts-3.4.0-1.fcrawhide.src.rpm</rpm:sourcerpm>
+    <rpm:header-range start="4504" end="9685"/>
+    <rpm:provides>
+      <rpm:entry name="0xproto-nerd-fonts" flags="EQ" epoch="0" ver="3.4.0" rel="1.fcrawhide"/>
+    </rpm:provides>
+  </format>
+</package>
+</metadata>

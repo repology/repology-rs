@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://linux.duke.edu/metadata/common" xmlns:rpm="http://linux.duke.edu/metadata/rpm" packages="1389">
+<package type="rpm">
+  <name>ModemManager</name>
+  <arch>src</arch>
+  <version epoch="0" ver="1.22.0" rel="5.el10"/>
+  <checksum type="sha256" pkgid="YES">a9e9be65d990c08b420daecf7f7dd0b9a9ad8ab172b47af2db7a01df8c23c8b7</checksum>
+  <summary>Mobile broadband modem management service</summary>
+  <description>The ModemManager service manages WWAN modems and provides a consistent API for
+interacting with these devices to client applications.</description>
+  <packager>builder@centos.org</packager>
+  <url>http://www.freedesktop.org/wiki/Software/ModemManager/</url>
+  <time file="1719834822" build="1719307496"/>
+  <size package="1486280" installed="1469289" archive="1471520"/>
+  <location href="Packages/ModemManager-1.22.0-5.el10.src.rpm"/>
+  <format>
+    <rpm:license>GPL-2.0-or-later</rpm:license>
+    <rpm:vendor>CentOS</rpm:vendor>
+    <rpm:group>Unspecified</rpm:group>
+    <rpm:buildhost>aarch64-05.stream.rdu2.redhat.com</rpm:buildhost>
+    <rpm:sourcerpm></rpm:sourcerpm>
+    <rpm:header-range start="5624" end="44875"/>
+    <rpm:provides>
+      <rpm:entry name="ModemManager" flags="EQ" epoch="0" ver="1.22.0" rel="5.el10"/>
+      <rpm:entry name="ModemManager-devel" flags="EQ" epoch="0" ver="1.22.0" rel="5.el10"/>
+      <rpm:entry name="ModemManager-glib" flags="EQ" epoch="0" ver="1.22.0" rel="5.el10"/>
+      <rpm:entry name="ModemManager-glib-devel" flags="EQ" epoch="0" ver="1.22.0" rel="5.el10"/>
+      <rpm:entry name="ModemManager-vala" flags="EQ" epoch="0" ver="1.22.0" rel="5.el10"/>
+      <rpm:entry name="ModemManager-debuginfo" flags="EQ" epoch="0" ver="1.22.0" rel="5.el10"/>
+      <rpm:entry name="ModemManager-debugsource" flags="EQ" epoch="0" ver="1.22.0" rel="5.el10"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="dbus-daemon"/>
+      <rpm:entry name="dbus-devel"/>
+      <rpm:entry name="gettext-devel" flags="GE" epoch="0" ver="0.19.8"/>
+      <rpm:entry name="glib2-devel" flags="GE" epoch="0" ver="2.56"/>
+      <rpm:entry name="gobject-introspection-devel" flags="GE" epoch="0" ver="1.38"/>
+      <rpm:entry name="gtk-doc"/>
+      <rpm:entry name="libgudev1-devel" flags="GE" epoch="0" ver="232"/>
+      <rpm:entry name="libmbim-devel" flags="GE" epoch="0" ver="1.30.0"/>
+      <rpm:entry name="libqmi-devel" flags="GE" epoch="0" ver="1.32.0"/>
+      <rpm:entry name="libqrtr-glib-devel" flags="GE" epoch="0" ver="1.0.0"/>
+      <rpm:entry name="meson" flags="GE" epoch="0" ver="0.53"/>
+      <rpm:entry name="polkit-devel"/>
+      <rpm:entry name="systemd"/>
+      <rpm:entry name="systemd-devel" flags="GE" epoch="0" ver="209"/>
+      <rpm:entry name="vala"/>
+    </rpm:requires>
+  </format>
+</package>
+</metadata>

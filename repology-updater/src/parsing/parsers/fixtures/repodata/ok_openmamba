@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://linux.duke.edu/metadata/common" xmlns:rpm="http://linux.duke.edu/metadata/rpm" packages="5703">
+<package type="rpm">
+  <name>54321</name>
+  <arch>src</arch>
+  <version epoch="0" ver="1.0.2001.11.16" rel="4mamba"/>
+  <checksum type="sha256" pkgid="YES">5749c1ac74c5c53fb2d6198cc839bef8eeb607043e715b502fabb7704774e721</checksum>
+  <summary>54321 is five games in four-, three-, or two-dimensions for one player.</summary>
+  <description>54321 is five games in four-, three-, or two-dimensions for one player. 54321 takes five classic two-dimensional puzzle games and extends them into three and four dimensions.</description>
+  <packager>Silvan Calarco &lt;silvan.calarco@mambasoft.it&gt;</packager>
+  <url>http://www.nklein.com/products/54321/</url>
+  <time file="1614502406" build="1614453432"/>
+  <size package="3085630" installed="3079239" archive="3080008"/>
+  <location href="54321-1.0.2001.11.16-4mamba.src.rpm"/>
+  <format>
+    <rpm:license>Freeware</rpm:license>
+    <rpm:vendor>openmamba</rpm:vendor>
+    <rpm:group>Graphical Desktop/Applications/Educational</rpm:group>
+    <rpm:buildhost>buildvm01.openmamba.org</rpm:buildhost>
+    <rpm:sourcerpm></rpm:sourcerpm>
+    <rpm:header-range start="4504" end="7572"/>
+    <rpm:requires>
+      <rpm:entry name="glibc-devel"/>
+      <rpm:entry name="ldconfig"/>
+      <rpm:entry name="libSDL-devel"/>
+      <rpm:entry name="libSDL_image-devel"/>
+      <rpm:entry name="libgcc"/>
+      <rpm:entry name="libpng-devel"/>
+      <rpm:entry name="libstdc++6-devel"/>
+    </rpm:requires>
+  </format>
+</package>
+</metadata>

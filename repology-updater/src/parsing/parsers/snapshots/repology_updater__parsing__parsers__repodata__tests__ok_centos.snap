@@ -1,0 +1,30 @@
+---
+source: repology-updater/src/parsing/parsers/repodata.rs
+expression: res.unwrap()
+---
+[
+    Package {
+        srcname: "ModemManager",
+        trackname: "ModemManager",
+        visiblename: "ModemManager",
+        projectname_seed: "ModemManager",
+        rawversion: "1.22.0-5.el10",
+        arch: "src",
+        maintainers: [
+            "builder@centos.org",
+        ],
+        category: "Unspecified",
+        comment: "Mobile broadband modem management service",
+        licenses: [
+            "GPL-2.0-or-later",
+        ],
+        links: [
+            Link {
+                type: UpstreamHomepage,
+                url: "http://www.freedesktop.org/wiki/Software/ModemManager/",
+                fragment: None,
+            },
+        ],
+        version: "1.22.0",
+    },
+]

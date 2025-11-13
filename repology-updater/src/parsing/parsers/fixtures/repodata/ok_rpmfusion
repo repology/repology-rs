@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata xmlns="http://linux.duke.edu/metadata/common" xmlns:rpm="http://linux.duke.edu/metadata/rpm" packages="194">
+<package type="rpm">
+  <name>acoustid-fingerprinter</name>
+  <arch>src</arch>
+  <version epoch="0" ver="0.6" rel="36.fc43"/>
+  <checksum type="sha256" pkgid="YES">7525d45c61dafb6328826678c62ad1f090e2c7b7a4194458296c235dd63c73eb</checksum>
+  <summary>Music AcoustID fingerprinting application</summary>
+  <description>Acoustid fingerprinter is a cross-platform GUI application that uses
+Chromaprint to submit audio fingerprints from your music collection
+to the Acoustid database. Only tagged audio files are submitted.
+Files tagged by MusicBrainz applications such as Picard are preferred,
+but it will submit fingerprints for any files that have tags such as
+track title, artist name, album name, etc.</description>
+  <packager>RPM Fusion</packager>
+  <url>https://github.com/acoustid/acoustid-fingerprinter</url>
+  <time file="1753821315" build="1753575152"/>
+  <size package="122307" installed="115681" archive="117044"/>
+  <location href="a/acoustid-fingerprinter-0.6-36.fc43.src.rpm"/>
+  <format>
+    <rpm:license>GPLv2+</rpm:license>
+    <rpm:vendor>RPM Fusion</rpm:vendor>
+    <rpm:group>Unspecified</rpm:group>
+    <rpm:buildhost>buildvm-07.virt.rpmfusion.net</rpm:buildhost>
+    <rpm:sourcerpm/>
+    <rpm:header-range start="5624" end="19764"/>
+    <rpm:provides>
+      <rpm:entry name="acoustid-fingerprinter" flags="EQ" epoch="0" ver="0.6" rel="36.fc43"/>
+    </rpm:provides>
+    <rpm:requires>
+      <rpm:entry name="cmake"/>
+      <rpm:entry name="compat-ffmpeg4-devel"/>
+      <rpm:entry name="desktop-file-utils"/>
+      <rpm:entry name="libchromaprint-devel"/>
+      <rpm:entry name="ninja-build"/>
+      <rpm:entry name="qt5-qtbase-devel"/>
+      <rpm:entry name="taglib-devel"/>
+    </rpm:requires>
+  </format>
+</package>
+</metadata>

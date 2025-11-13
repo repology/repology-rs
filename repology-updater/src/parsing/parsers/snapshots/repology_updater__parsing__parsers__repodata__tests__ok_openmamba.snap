@@ -1,0 +1,30 @@
+---
+source: repology-updater/src/parsing/parsers/repodata.rs
+expression: res.unwrap()
+---
+[
+    Package {
+        srcname: "54321",
+        trackname: "54321",
+        visiblename: "54321",
+        projectname_seed: "54321",
+        rawversion: "1.0.2001.11.16-4mamba",
+        arch: "src",
+        maintainers: [
+            "silvan.calarco@mambasoft.it",
+        ],
+        category: "Graphical Desktop/Applications/Educational",
+        comment: "54321 is five games in four-, three-, or two-dimensions for one player.",
+        licenses: [
+            "Freeware",
+        ],
+        links: [
+            Link {
+                type: UpstreamHomepage,
+                url: "http://www.nklein.com/products/54321/",
+                fragment: None,
+            },
+        ],
+        version: "1.0.2001.11.16",
+    },
+]

@@ -1,0 +1,27 @@
+---
+source: repology-updater/src/parsing/parsers/repodata.rs
+expression: res.unwrap()
+---
+[
+    Package {
+        srcname: "acoustid-fingerprinter",
+        trackname: "acoustid-fingerprinter",
+        visiblename: "acoustid-fingerprinter",
+        projectname_seed: "acoustid-fingerprinter",
+        rawversion: "0.6-36.fc43",
+        arch: "src",
+        category: "Unspecified",
+        comment: "Music AcoustID fingerprinting application",
+        licenses: [
+            "GPLv2+",
+        ],
+        links: [
+            Link {
+                type: UpstreamHomepage,
+                url: "https://github.com/acoustid/acoustid-fingerprinter",
+                fragment: None,
+            },
+        ],
+        version: "0.6",
+    },
+]

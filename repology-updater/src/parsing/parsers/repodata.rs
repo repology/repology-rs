@@ -193,8 +193,43 @@ mod tests {
     use super::*;
 
     parser_test!(
-        RepodataParser::new(RepodataParserOptions::default()),
+        RepodataParser::new(RepodataParserOptions {
+            disttags: vec!["el".to_string()],
+            ..Default::default()
+        }),
+        repodata,
+        ok_centos
+    );
+    parser_test!(
+        RepodataParser::new(RepodataParserOptions {
+            disttags: vec!["fc".to_string()],
+            ..Default::default()
+        }),
         repodata,
         ok_fedora
+    );
+    parser_test!(
+        RepodataParser::new(RepodataParserOptions {
+            disttags: vec!["fc".to_string()],
+            ..Default::default()
+        }),
+        repodata,
+        ok_rpmfusion
+    );
+    parser_test!(
+        RepodataParser::new(RepodataParserOptions {
+            disttags: vec!["fcrawhide".to_string()],
+            ..Default::default()
+        }),
+        repodata,
+        ok_terra
+    );
+    parser_test!(
+        RepodataParser::new(RepodataParserOptions {
+            disttags: vec!["mamba".to_string()],
+            ..Default::default()
+        }),
+        repodata,
+        ok_openmamba
     );
 }

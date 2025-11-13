@@ -1,0 +1,28 @@
+---
+source: repology-updater/src/parsing/parsers/repodata.rs
+expression: res.unwrap()
+---
+[
+    Package {
+        srcname: "nerd-fonts",
+        binname: "0xproto-nerd-fonts",
+        trackname: "nerd-fonts",
+        visiblename: "0xproto-nerd-fonts",
+        projectname_seed: "nerd-fonts",
+        rawversion: "3.4.0-1.fcrawhide",
+        arch: "noarch",
+        category: "Unspecified",
+        comment: "Patched Nerd fonts: 0xProto",
+        licenses: [
+            "OFL-1.1",
+        ],
+        links: [
+            Link {
+                type: UpstreamHomepage,
+                url: "https://nerdfonts.com/",
+                fragment: None,
+            },
+        ],
+        version: "3.4.0",
+    },
+]
