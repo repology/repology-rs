@@ -117,6 +117,17 @@ impl PackageMaker {
         self
     }
 
+    pub fn set_version_with_raw(
+        &mut self,
+        version: impl Into<String>,
+        raw_version: impl Into<String>,
+    ) -> &mut Self {
+        // TODO: strip, forbid newlines
+        self.rawversion = Some(raw_version.into());
+        self.version = Some(version.into());
+        self
+    }
+
     pub fn set_version_stripped(
         &mut self,
         version: impl Into<String>,
@@ -355,6 +366,44 @@ mod tests {
         assert_eq!(package.projectname_seed, "project".to_string());
         assert_eq!(package.version, "1.2.3".to_string());
         assert_eq!(package.rawversion, "1.2.3".to_string());
+    }
+
+    #[test]
+    fn test_set_version() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foobar", NameType::all());
+        pkg.set_version("1.2.3");
+        let package = pkg.finalize().unwrap();
+
+        assert_eq!(package.version, "1.2.3".to_string());
+        assert_eq!(package.rawversion, "1.2.3".to_string());
+    }
+
+    #[test]
+    fn test_set_version_with_raw() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foobar", NameType::all());
+        pkg.set_version_with_raw("1.2.3", "0:1.2.3-4");
+        let package = pkg.finalize().unwrap();
+
+        assert_eq!(package.version, "1.2.3".to_string());
+        assert_eq!(package.rawversion, "0:1.2.3-4".to_string());
+    }
+
+    #[test]
+    fn test_set_version_striped() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foobar", NameType::all());
+        pkg.set_version_stripped(
+            "0:1.2.3-4",
+            &VersionStripper::new()
+                .with_strip_left(":")
+                .with_strip_right("-"),
+        );
+        let package = pkg.finalize().unwrap();
+
+        assert_eq!(package.version, "1.2.3".to_string());
+        assert_eq!(package.rawversion, "0:1.2.3-4".to_string());
     }
 
     fn finalize_test_package(mut pkg: PackageMaker) -> ParsedPackage {
