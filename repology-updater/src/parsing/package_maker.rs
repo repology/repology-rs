@@ -182,6 +182,24 @@ impl PackageMaker {
         self
     }
 
+    pub fn add_license(&mut self, license: impl Into<String>) -> &mut Self {
+        // TODO: strip, forbid newlines
+        // TODO: unicalize
+        self.licenses.push(license.into());
+        self
+    }
+
+    #[cfg_attr(not(test), expect(unused))] // will be used in parsers
+    pub fn add_licenses(
+        &mut self,
+        licenses: impl IntoIterator<Item = impl Into<String>>,
+    ) -> &mut Self {
+        licenses.into_iter().for_each(|license| {
+            self.add_license(license);
+        });
+        self
+    }
+
     pub fn add_link(&mut self, link_type: LinkType, url: impl Into<String>) -> &mut Self {
         let url: String = url.into();
         if let Some((url, fragment)) = url.split_once('#') {
@@ -430,6 +448,35 @@ mod tests {
         pkg.set_names("foobar", NameType::all());
         pkg.set_version("1.2.3");
         pkg.finalize().unwrap()
+    }
+
+    #[test]
+    fn test_license() {
+        let mut pkg = PackageMaker::default();
+        pkg.add_license("GPL2");
+        pkg.add_license("GPL3");
+        pkg.add_licenses(vec!["BSD2".to_string(), "BSD3".to_string()]);
+        assert_eq!(
+            finalize_test_package(pkg).licenses,
+            vec![
+                "GPL2".to_string(),
+                "GPL3".to_string(),
+                "BSD2".to_string(),
+                "BSD3".to_string()
+            ]
+        );
+    }
+
+    #[test]
+    #[ignore]
+    fn test_license_uniq() {
+        let mut pkg = PackageMaker::default();
+        pkg.add_license("GPL2");
+        pkg.add_license("GPL2");
+        assert_eq!(
+            finalize_test_package(pkg).licenses,
+            vec!["GPL2".to_string(),]
+        );
     }
 
     #[test]
