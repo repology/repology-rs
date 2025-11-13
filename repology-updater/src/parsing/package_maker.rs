@@ -98,14 +98,18 @@ impl PackageMaker {
         self
     }
 
+    pub fn add_binname(&mut self, binname: impl Into<String>) -> &mut Self {
+        self.binnames.push(binname.into());
+        self
+    }
+
     pub fn add_binnames(
         &mut self,
         binnames: impl IntoIterator<Item = impl Into<String>>,
     ) -> &mut Self {
-        binnames
-            .into_iter()
-            .map(|binname| binname.into())
-            .collect_into(&mut self.binnames);
+        binnames.into_iter().for_each(|binname| {
+            self.add_binname(binname);
+        });
         self
     }
 
@@ -297,6 +301,14 @@ impl PackageMaker {
             return Err(PackageParsingError::EmptyBinName);
         }
 
+        if !self.binnames.is_empty() && self.binname.is_some() {
+            return Err(PackageParsingError::BinNameWithBinNames);
+        }
+
+        if !self.binnames.is_empty() && self.srcname.is_none() {
+            return Err(PackageParsingError::BinNamesWithoutSrcName);
+        }
+
         Ok(ParsedPackage {
             subrepo: self.subrepo,
 
@@ -444,9 +456,68 @@ mod tests {
         // set mandatory fields
         // XXX: provide in PackageMaker API and use here a way to
         // check whether the field has been set before
-        pkg.set_names("foobar", NameType::all());
+        pkg.set_names(
+            "foobar",
+            NameType::DisplayName | NameType::ProjectNameSeed | NameType::SrcName,
+        );
         pkg.set_version("1.2.3");
         pkg.finalize().unwrap()
+    }
+
+    #[test]
+    fn test_binname() {
+        let mut pkg = PackageMaker::default();
+        pkg.add_binname("A");
+        pkg.add_binname("B");
+        pkg.add_binnames(vec!["C".to_string(), "D".to_string()]);
+        assert_eq!(
+            finalize_test_package(pkg).binnames,
+            vec![
+                "A".to_string(),
+                "B".to_string(),
+                "C".to_string(),
+                "D".to_string()
+            ]
+        );
+    }
+
+    #[test]
+    #[ignore]
+    fn test_binname_uniq() {
+        let mut pkg = PackageMaker::default();
+        pkg.add_binname("A");
+        pkg.add_binname("A");
+        assert_eq!(finalize_test_package(pkg).binnames, vec!["A".to_string()]);
+    }
+
+    #[test]
+    fn test_err_binname_with_binnames() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names(
+            "foo",
+            NameType::DisplayName
+                | NameType::ProjectNameSeed
+                | NameType::BinName
+                | NameType::SrcName,
+        );
+        pkg.add_binname("foo");
+        pkg.set_version("1.2.3");
+        assert_eq!(
+            pkg.finalize(),
+            Err(PackageParsingError::BinNameWithBinNames)
+        );
+    }
+
+    #[test]
+    fn test_err_binnames_without_srcname() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_names("foo", NameType::DisplayName | NameType::ProjectNameSeed);
+        pkg.add_binname("foo");
+        pkg.set_version("1.2.3");
+        assert_eq!(
+            pkg.finalize(),
+            Err(PackageParsingError::BinNamesWithoutSrcName)
+        );
     }
 
     #[test]
