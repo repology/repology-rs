@@ -114,7 +114,10 @@ impl std::fmt::Debug for ParsedPackage {
 
         field!(f, self.version);
 
-        field!(f, self.flags);
+        if !self.flags.is_empty() {
+            f.field("flags", &self.flags);
+        }
+
         field_vec!(f, self.flavors);
         f.finish()
     }

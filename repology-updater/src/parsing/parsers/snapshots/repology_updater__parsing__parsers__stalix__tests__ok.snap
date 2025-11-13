@@ -22,9 +22,6 @@ expression: res.unwrap()
             },
         ],
         version: "48.1",
-        flags: PackageFlags(
-            0x0,
-        ),
     },
     Package {
         srcname: "lib/py/wlroots/module",
@@ -45,8 +42,5 @@ expression: res.unwrap()
             },
         ],
         version: "0.17.0",
-        flags: PackageFlags(
-            0x0,
-        ),
     },
 ]

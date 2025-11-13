@@ -23,8 +23,5 @@ expression: res.unwrap()
             },
         ],
         version: "1.2.0",
-        flags: PackageFlags(
-            0x0,
-        ),
     },
 ]

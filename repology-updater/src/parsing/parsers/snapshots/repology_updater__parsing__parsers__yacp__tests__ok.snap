@@ -22,8 +22,5 @@ expression: res.unwrap()
             },
         ],
         version: "1.01",
-        flags: PackageFlags(
-            0x0,
-        ),
     },
 ]
