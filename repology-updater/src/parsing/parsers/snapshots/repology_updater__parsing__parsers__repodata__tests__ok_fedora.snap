@@ -1,0 +1,28 @@
+---
+source: repology-updater/src/parsing/parsers/repodata.rs
+expression: res.unwrap()
+---
+[
+    Package {
+        srcname: "0ad",
+        trackname: "0ad",
+        visiblename: "0ad",
+        projectname_seed: "0ad",
+        rawversion: "0.27.1-5.fc44",
+        arch: "src",
+        category: "Unspecified",
+        comment: "Cross-Platform RTS Game of Ancient Warfare",
+        licenses: [
+            "GPL-2.0-or-later AND LicenseRef-Callaway-BSD AND LicenseRef-Callaway-MIT AND IPL-1.0 AND MPL-2.0",
+        ],
+        links: [
+            Link {
+                type: UpstreamHomepage,
+                url: "http://play0ad.com",
+                fragment: None,
+            },
+        ],
+        version: "0.27.1",
+        flags: Ignore,
+    },
+]

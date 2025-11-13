@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 mod freebsd;
+mod repodata;
 mod stalix;
 mod tincan;
 mod yacp;
@@ -17,6 +18,10 @@ pub fn create_parser_options_yaml(
         "StalIxParser" => Ok(Box::new(stalix::StalIxParser {})),
         "TinCanParser" => Ok(Box::new(tincan::TinCanParser {})),
         "YacpParser" => Ok(Box::new(yacp::YacpParser {})),
+        "RepodataParser" => {
+            let options: repodata::RepodataParserOptions = serde_saphyr::from_str(options_yaml)?;
+            Ok(Box::new(repodata::RepodataParser::new(options)))
+        }
         _ => Err(anyhow::anyhow!("invalid parser name {}", name)),
     }
 }
