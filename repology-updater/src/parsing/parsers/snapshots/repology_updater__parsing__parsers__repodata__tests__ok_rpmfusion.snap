@@ -5,6 +5,9 @@ expression: res.unwrap()
 [
     Package {
         srcname: "acoustid-fingerprinter",
+        binnames: [
+            "acoustid-fingerprinter",
+        ],
         trackname: "acoustid-fingerprinter",
         visiblename: "acoustid-fingerprinter",
         projectname_seed: "acoustid-fingerprinter",

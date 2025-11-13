@@ -5,6 +5,15 @@ expression: res.unwrap()
 [
     Package {
         srcname: "ModemManager",
+        binnames: [
+            "ModemManager",
+            "ModemManager-devel",
+            "ModemManager-glib",
+            "ModemManager-glib-devel",
+            "ModemManager-vala",
+            "ModemManager-debuginfo",
+            "ModemManager-debugsource",
+        ],
         trackname: "ModemManager",
         visiblename: "ModemManager",
         projectname_seed: "ModemManager",

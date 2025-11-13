@@ -5,6 +5,9 @@ expression: res.unwrap()
 [
     Package {
         srcname: "0ad",
+        binnames: [
+            "0ad",
+        ],
         trackname: "0ad",
         visiblename: "0ad",
         projectname_seed: "0ad",

@@ -7,6 +7,7 @@
 #![feature(debug_closure_helpers)]
 #![feature(file_buffered)]
 #![feature(iter_collect_into)]
+#![feature(iter_intersperse)]
 #![feature(test)]
 #![feature(trait_alias)]
 #![feature(trim_prefix_suffix)]

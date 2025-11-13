@@ -1,11 +1,13 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::collections::HashMap;
 use std::fs::File;
 use std::path::Path;
 
 use anyhow::bail;
 use serde::Deserialize;
+use tracing::{error, info, warn};
 
 use repology_common::LinkType;
 
@@ -22,6 +24,28 @@ mod data {
     use serde::Deserialize;
 
     #[derive(Deserialize)]
+    #[cfg_attr(feature = "strict-parsers", serde(deny_unknown_fields))]
+    pub struct Entry {
+        #[serde(rename = "@name")]
+        pub name: String,
+        #[serde(rename = "@flags")]
+        pub flags: Option<String>,
+        #[serde(rename = "@epoch")]
+        pub epoch: Option<String>,
+        #[serde(rename = "@ver")]
+        pub ver: Option<String>,
+        #[serde(rename = "@rel")]
+        pub rel: Option<String>,
+    }
+
+    #[derive(Deserialize, Default)]
+    #[cfg_attr(feature = "strict-parsers", serde(deny_unknown_fields))]
+    pub struct Provides {
+        #[serde(rename = "rpm:entry")]
+        pub entries: Vec<Entry>,
+    }
+
+    #[derive(Deserialize)]
     //#[cfg_attr(feature = "strict-parsers", serde(deny_unknown_fields))]
     pub struct Format {
         #[serde(rename = "rpm:license")]
@@ -34,8 +58,8 @@ mod data {
         pub sourcerpm: String,
         //#[serde(rename = "rpm:header-range")]
         //header-range
-        //#[serde(rename = "rpm:provides")]
-        //provides
+        #[serde(rename = "rpm:provides", default)]
+        pub provides: Provides,
         //#[serde(rename = "rpm:required")]
         //required
     }
@@ -84,6 +108,7 @@ pub struct RepodataParserOptions {
     pub allow_src: bool,
     pub allow_bin: bool,
     pub disttags: Vec<String>,
+    pub binnames_from_provides: bool,
 }
 
 impl Default for RepodataParserOptions {
@@ -92,6 +117,73 @@ impl Default for RepodataParserOptions {
             allow_src: true,
             allow_bin: true,
             disttags: vec![],
+            binnames_from_provides: true,
+        }
+    }
+}
+
+#[derive(Default)]
+struct Statistics {
+    pub skipped_archs: HashMap<String, u64>,
+    pub has_provides: bool,
+    pub num_skipped_provides_without_version: u64,
+    pub skipped_provides_without_version_sample: Vec<String>,
+    pub num_skipped_provides_with_parentheses: u64,
+    pub skipped_provides_with_parentheses_sample: Vec<String>,
+}
+
+impl Statistics {
+    pub fn push_skipped_provides_without_version(&mut self, name: String) {
+        self.num_skipped_provides_without_version += 1;
+        const SAMPLE_SIZE: usize = 10;
+        if self.skipped_provides_without_version_sample.len() < SAMPLE_SIZE {
+            self.skipped_provides_without_version_sample.push(name);
+        }
+    }
+
+    pub fn push_skipped_provides_with_parentheses(&mut self, name: String) {
+        self.num_skipped_provides_with_parentheses += 1;
+        const SAMPLE_SIZE: usize = 10;
+        if self.skipped_provides_with_parentheses_sample.len() < SAMPLE_SIZE {
+            self.skipped_provides_with_parentheses_sample.push(name);
+        }
+    }
+
+    pub fn trace(&self, options: &RepodataParserOptions) {
+        for (arch, count) in &self.skipped_archs {
+            info!(count, arch, "skipped packages with disallowed architecture");
+        }
+
+        if self.has_provides && !options.binnames_from_provides {
+            error!(
+                "not extracting binary package names from <rpm:provides> entries for this repository, because explicitly disabled in config"
+            );
+        }
+
+        if self.num_skipped_provides_without_version > 0 {
+            warn!(
+                count = self.num_skipped_provides_without_version,
+                sample = self
+                    .skipped_provides_without_version_sample
+                    .iter()
+                    .map(String::as_ref)
+                    .intersperse(", ")
+                    .collect::<String>(),
+                "skipped <rpm:provides> entries with incomplete version (rel/ver)"
+            )
+        }
+
+        if self.num_skipped_provides_with_parentheses > 0 {
+            warn!(
+                count = self.num_skipped_provides_with_parentheses,
+                sample = self
+                    .skipped_provides_with_parentheses_sample
+                    .iter()
+                    .map(String::as_ref)
+                    .intersperse(", ")
+                    .collect::<String>(),
+                "skipped <rpm:provides> entries with parentheses"
+            )
         }
     }
 }
@@ -109,6 +201,7 @@ impl RepodataParser {
         &self,
         pkgdata: data::Package,
         process: &mut dyn PackageProcessor,
+        statistics: &mut Statistics,
     ) -> anyhow::Result<()> {
         let mut pkg = PackageMaker::default();
 
@@ -121,11 +214,18 @@ impl RepodataParser {
 
         let is_src = pkgdata.arch == "src";
 
-        if is_src {
-            if !self.options.allow_src {
-                return Ok(());
-            }
+        let skip_arch = if is_src {
+            !self.options.allow_src
+        } else {
+            !self.options.allow_bin
+        };
 
+        if skip_arch {
+            *statistics.skipped_archs.entry(pkgdata.arch).or_default() += 1;
+            return Ok(());
+        }
+
+        if is_src {
             pkg.set_names(
                 pkgdata.name,
                 NameType::SrcName
@@ -134,10 +234,6 @@ impl RepodataParser {
                     | NameType::ProjectNameSeed,
             );
         } else {
-            if !self.options.allow_bin {
-                return Ok(());
-            }
-
             pkg.set_names(pkgdata.name, NameType::BinName | NameType::DisplayName);
             pkg.set_names(
                 Nevra::parse(&pkgdata.format.sourcerpm)?.name,
@@ -166,7 +262,34 @@ impl RepodataParser {
         pkg.set_arch(pkgdata.arch);
         pkg.add_maintainers(extract_maintainers(&pkgdata.packager));
 
-        // TODO: provides -> binnames
+        if is_src {
+            // Provides can contain all kinds of garbage apart from binary packages,
+            // especially in Terra repositories. Examples:
+            //   <rpm:entry name="rpm_macro(_sccache)"/>
+            //   <rpm:entry name="libapparmor.so.1.18.0-4.0.2-1.fc41.aarch64.debug()(64bit)"/>
+            //   <rpm:entry name="pkgconfig(libapparmor)" flags="EQ" epoch="0" ver="4.0.2"/>
+            //   <rpm:entry name="debuginfo(build-id)" flags="EQ" epoch="0" ver="06b5e8418ffeef59bc0d31a91900ebdd8bddc2b5"/>
+            // We only try to extract entries which are likely to be binary package names,
+            // e.g. entries with version defined and without parentheses in the name.
+            for provides in pkgdata.format.provides.entries {
+                statistics.has_provides = true;
+
+                if !self.options.binnames_from_provides {
+                    continue;
+                }
+
+                // epoch is optional for e.g. openmandriva
+                if provides.rel.is_none() || provides.ver.is_none() {
+                    statistics.push_skipped_provides_without_version(provides.name);
+                    continue;
+                }
+                if provides.name.contains('(') {
+                    statistics.push_skipped_provides_with_parentheses(provides.name);
+                    continue;
+                }
+                pkg.add_binname(provides.name);
+            }
+        }
 
         Ok(process(pkg)?)
     }
@@ -177,11 +300,13 @@ impl PackageParser for RepodataParser {
     fn parse(&self, path: &Path, process: &mut dyn PackageProcessor) -> anyhow::Result<()> {
         let metadata: data::Metadata = serde_xml_rs::from_reader(File::open_buffered(path)?)?;
 
-        // TODO: statistics
+        let mut statistics = Statistics::default();
 
         for package in metadata.packages {
-            self.process_package(package, process)?;
+            self.process_package(package, process, &mut statistics)?;
         }
+
+        statistics.trace(&self.options);
 
         Ok(())
     }
@@ -219,6 +344,7 @@ mod tests {
     parser_test!(
         RepodataParser::new(RepodataParserOptions {
             disttags: vec!["fcrawhide".to_string()],
+            binnames_from_provides: false,
             ..Default::default()
         }),
         repodata,
