@@ -235,6 +235,17 @@ impl PackageMaker {
         self
     }
 
+    pub fn set_flags(&mut self, flags: PackageFlags) -> &mut Self {
+        self.flags |= flags;
+        self
+    }
+
+    #[cfg_attr(not(test), expect(unused))] // will be used in parsers
+    pub fn clear_flags(&mut self, flags: PackageFlags) -> &mut Self {
+        self.flags &= !flags;
+        self
+    }
+
     pub fn finalize(self) -> Result<ParsedPackage, PackageParsingError> {
         let projectname_seed = self
             .projectname_seed
@@ -481,5 +492,21 @@ mod tests {
         pkg.set_arch("x86");
         pkg.set_arch("x64_64");
         assert_eq!(finalize_test_package(pkg).arch, Some("x64_64".into()));
+    }
+
+    #[test]
+    fn test_flags() {
+        let mut pkg = PackageMaker::default();
+        pkg.set_flags(PackageFlags::Incorrect | PackageFlags::Untrusted);
+        assert_eq!(
+            finalize_test_package(pkg.clone()).flags,
+            PackageFlags::Incorrect | PackageFlags::Untrusted
+        );
+        pkg.set_flags(PackageFlags::Devel);
+        pkg.clear_flags(PackageFlags::Incorrect);
+        assert_eq!(
+            finalize_test_package(pkg).flags,
+            PackageFlags::Devel | PackageFlags::Untrusted
+        );
     }
 }
