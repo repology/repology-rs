@@ -9,6 +9,7 @@
 #![feature(iter_collect_into)]
 #![feature(test)]
 #![feature(trait_alias)]
+#![feature(trim_prefix_suffix)]
 
 mod config;
 mod fetching;
