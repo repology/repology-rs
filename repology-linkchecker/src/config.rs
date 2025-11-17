@@ -287,16 +287,18 @@ impl Config {
     pub fn parse() -> Result<Self> {
         let args = CliArgs::parse();
 
-        let mut config = args
-            .config
-            .map(|path| {
-                let config: Result<FileConfig> = try {
-                    toml::from_str::<FileConfig>(std::str::from_utf8(&std::fs::read(&path)?)?)?
-                };
-                config.with_context(|| format!("cannot parse config file {}", path.display()))
-            })
-            .transpose()?
-            .unwrap_or_default();
+        let mut config: FileConfig = if let Some(path) = args.config {
+            // XXX: a good case for try block to avoid with_context repetition, but heterogeneous
+            // try blocks are currently broken, see https://github.com/rust-lang/rust/issues/149025
+            let toml = std::fs::read(&path)
+                .with_context(|| format!("cannot read config file {}", path.display()))?;
+            let toml = std::str::from_utf8(&toml)
+                .with_context(|| format!("cannot parse config file {}", path.display()))?;
+            toml::from_str(toml)
+                .with_context(|| format!("cannot parse config file {}", path.display()))?
+        } else {
+            Default::default()
+        };
 
         let dsn = args
             .dsn

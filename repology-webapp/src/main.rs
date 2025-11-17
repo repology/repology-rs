@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![feature(iterator_try_collect)]
-#![feature(try_blocks)]
 
 use anyhow::{Context, Result};
 use metrics::{counter, gauge};

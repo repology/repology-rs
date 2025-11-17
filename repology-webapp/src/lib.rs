@@ -6,7 +6,6 @@
 #![feature(stmt_expr_attributes)]
 #![feature(assert_matches)]
 #![feature(duration_constructors)]
-#![feature(try_blocks)]
 #![feature(lock_value_accessors)]
 #![feature(iter_collect_into)]
 #![feature(default_field_values)]
