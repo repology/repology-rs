@@ -4,6 +4,7 @@
 #![feature(assert_matches)]
 #![feature(const_trait_impl)]
 #![feature(coverage_attribute)]
+#![feature(cow_is_borrowed)]
 #![feature(debug_closure_helpers)]
 #![feature(file_buffered)]
 #![feature(iter_collect_into)]

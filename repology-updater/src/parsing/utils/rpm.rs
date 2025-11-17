@@ -364,6 +364,13 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_cow() {
+        assert!(Cow::is_borrowed(
+            &normalize_rpm_version("1.0.0", "0.mga8", &["mga"]).0
+        ));
+    }
+
     extern crate test;
     use test::Bencher;
     use test::black_box;
