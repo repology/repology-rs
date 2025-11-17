@@ -44,8 +44,6 @@ pub struct CheckTask {
     pub prev_ipv4_status: LinkStatus,
     pub prev_ipv6_status: LinkStatus,
     pub last_success: Option<DateTime<Utc>>,
-    // TODO[#260]: use for faster recheck of just-failed links, but first we need
-    // to accumulate some failures #279 not to consider them just-failed
     pub failure_streak: Option<u16>,
 }
 
