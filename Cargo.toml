@@ -11,6 +11,7 @@ manual_let_else = "warn"
 clone_on_ref_ptr = "warn"
 unused_async = "warn"
 large_futures = "warn"
+ignore_without_reason = "deny"
 
 [profile.dev.package]
 insta.opt-level = 3

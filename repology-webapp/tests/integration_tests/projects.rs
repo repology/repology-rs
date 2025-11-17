@@ -8,6 +8,7 @@ use sqlx::PgPool;
 use repology_webapp_test_utils::{HtmlValidationFlags, Request};
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
+#[allow(clippy::regex_creation_in_loops, reason = "readability vs. performance which is not critical in this test")]
 async fn test_params_retained_by_the_form(pool: PgPool) {
     for url in ["/projects/", "/projects/foo/", "/projects/..foo/"] {
         let parametrized_url = url.to_string()

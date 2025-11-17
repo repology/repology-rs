@@ -482,7 +482,7 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
+    #[ignore = "unicalization not implemented yet"]
     fn test_binname_uniq() {
         let mut pkg = PackageMaker::default();
         pkg.add_binname("A");
@@ -571,7 +571,7 @@ mod tests {
     }
 
     #[test]
-    #[ignore]
+    #[ignore = "unicalization not implemented yet"]
     fn test_license_uniq() {
         let mut pkg = PackageMaker::default();
         pkg.add_license("GPL2");

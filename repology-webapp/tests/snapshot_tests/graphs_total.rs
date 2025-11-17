@@ -6,28 +6,28 @@ use sqlx::PgPool;
 
 use repology_webapp_test_utils::Request;
 
-#[ignore]
+#[ignore = "flaky due to dependency on the current time"]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_packages(pool: PgPool) {
     let response = Request::new(pool, "/graph/total/packages.svg").perform().await;
     assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
-#[ignore]
+#[ignore = "flaky due to dependency on the current time"]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_projects(pool: PgPool) {
     let response = Request::new(pool, "/graph/total/projects.svg").perform().await;
     assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
-#[ignore]
+#[ignore = "flaky due to dependency on the current time"]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_maintainers(pool: PgPool) {
     let response = Request::new(pool, "/graph/total/maintainers.svg").perform().await;
     assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
-#[ignore]
+#[ignore = "flaky due to dependency on the current time"]
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("graphs_data.sql"))]
 async fn test_problems(pool: PgPool) {
     let response = Request::new(pool, "/graph/total/problems.svg").perform().await;

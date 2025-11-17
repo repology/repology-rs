@@ -313,9 +313,7 @@ mod tests {
     }
 
     #[test]
-    // not handled - invalid prerelease keyword; even if we allow it,
-    // but there will not be correct ordering between prealpha/alpha/beta/...
-    #[ignore]
+    #[ignore = "not handled - invalid prerelease keyword; even if we allow it, but there will not be correct ordering between prealpha/alpha/beta/..."]
     fn test_real_world_pocketsphinx() {
         assert_eq!(
             normalize_rpm_version("0.9", "0.5prealpha", &["el"]),
@@ -324,9 +322,7 @@ mod tests {
     }
 
     #[test]
-    // not handled - there's no knowing that `.2` is in fact not related to `beta`,
-    // and `beta.2` is much more likely intention (XXX: recheck this claim)
-    #[ignore]
+    #[ignore = "not handled - there's no knowing that `.2` is in fact not related to `beta`, and `beta.2` is much more likely intention (XXX: recheck this claim)"]
     fn test_real_world_php_pear_console_progressbar() {
         assert_eq!(
             normalize_rpm_version("0.5.2", "0.beta.2", &["el"]),
@@ -343,8 +339,7 @@ mod tests {
     }
 
     #[test]
-    // not handled - invalid prerelease keyword
-    #[ignore]
+    #[ignore = "not handled, invalid prerelease keyword"]
     fn test_real_world_remmina() {
         assert_eq!(
             normalize_rpm_version("1.2.0", "5.rcgit.15.2", &["el"]),
