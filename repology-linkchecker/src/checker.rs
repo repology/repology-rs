@@ -57,6 +57,7 @@ pub struct Checker<'a> {
     disable_ipv6: bool,
     satisfy_with_ipv6: bool,
     fast_failure_recheck: bool,
+    always_retry_with_get: bool,
 }
 
 impl<'a> Checker<'a> {
@@ -76,6 +77,7 @@ impl<'a> Checker<'a> {
             disable_ipv6: false,
             satisfy_with_ipv6: false,
             fast_failure_recheck: false,
+            always_retry_with_get: false,
         }
     }
 
@@ -96,6 +98,11 @@ impl<'a> Checker<'a> {
 
     pub fn with_fast_failure_recheck(mut self, fast_failure_recheck: bool) -> Self {
         self.fast_failure_recheck = fast_failure_recheck;
+        self
+    }
+
+    pub fn with_always_retry_with_get(mut self, always_retry_with_get: bool) -> Self {
+        self.always_retry_with_get = always_retry_with_get;
         self
     }
 
@@ -134,6 +141,7 @@ impl<'a> Checker<'a> {
         delayer: &Delayer,
         resolver_cache: &mut ResolverCache,
         http_client: &HttpClient,
+        always_retry_with_get: bool,
     ) -> Result<HttpResponse, LinkStatus> {
         let host = url
             .host_str()
@@ -169,9 +177,14 @@ impl<'a> Checker<'a> {
                     )
                     .await;
 
-                    if head_response.status
-                        != LinkStatus::Http(StatusCode::METHOD_NOT_ALLOWED.as_u16())
-                    {
+                    let should_retry_with_get = if always_retry_with_get {
+                        head_response.status != LinkStatus::Http(StatusCode::OK.as_u16())
+                    } else {
+                        head_response.status
+                            == LinkStatus::Http(StatusCode::METHOD_NOT_ALLOWED.as_u16())
+                    };
+
+                    if !should_retry_with_get {
                         return Ok(head_response);
                     }
                 }
@@ -200,6 +213,7 @@ impl<'a> Checker<'a> {
         delayer: &Delayer,
         resolver_cache: &mut ResolverCache,
         http_client: &HttpClient,
+        always_retry_with_get: bool,
     ) -> LinkStatusWithRedirect {
         let mut url = url;
         let mut num_redirects = 0;
@@ -207,15 +221,21 @@ impl<'a> Checker<'a> {
         let mut permanent_redirect_target: Option<String> = None;
 
         loop {
-            let response =
-                match Self::handle_one_request(&url, hosts, delayer, resolver_cache, http_client)
-                    .await
-                {
-                    Ok(response) => response,
-                    Err(status) => {
-                        return status.into();
-                    }
-                };
+            let response = match Self::handle_one_request(
+                &url,
+                hosts,
+                delayer,
+                resolver_cache,
+                http_client,
+                always_retry_with_get,
+            )
+            .await
+            {
+                Ok(response) => response,
+                Err(status) => {
+                    return status.into();
+                }
+            };
 
             let (status, location) = (response.status, response.location);
 
@@ -344,6 +364,7 @@ impl<'a> Checker<'a> {
                         self.delayer,
                         &mut self.resolver_cache_ipv6,
                         self.http_client,
+                        self.always_retry_with_get,
                     )
                     .await;
                     skip_ipv4 = self.satisfy_with_ipv6 && ipv6_status.is_success() == Some(true);
@@ -360,6 +381,7 @@ impl<'a> Checker<'a> {
                         self.delayer,
                         &mut self.resolver_cache_ipv4,
                         self.http_client,
+                        self.always_retry_with_get,
                     )
                     .await;
                 }

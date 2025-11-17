@@ -64,6 +64,7 @@ pub struct Queuer {
     disable_ipv6: bool,
     satisfy_with_ipv6: bool,
     fast_failure_recheck: bool,
+    always_retry_with_get: bool,
 }
 
 impl Queuer {
@@ -88,6 +89,7 @@ impl Queuer {
             disable_ipv6: false,
             satisfy_with_ipv6: false,
             fast_failure_recheck: false,
+            always_retry_with_get: false,
         }
     }
 
@@ -126,6 +128,11 @@ impl Queuer {
         self
     }
 
+    pub fn with_always_retry_with_get(mut self, always_retry_with_get: bool) -> Self {
+        self.always_retry_with_get = always_retry_with_get;
+        self
+    }
+
     // many args is legal here IMO, however may be reducer a bit by
     // grouping parameters which are only passed through to Checker
     #[allow(clippy::too_many_arguments)]
@@ -141,6 +148,7 @@ impl Queuer {
         disable_ipv6: bool,
         satisfy_with_ipv6: bool,
         fast_failure_recheck: bool,
+        always_retry_with_get: bool,
     ) {
         let mut num_processed: usize = 0;
         let mut last_log_time = Instant::now();
@@ -149,7 +157,8 @@ impl Queuer {
             .with_disable_ipv4(disable_ipv4)
             .with_disable_ipv6(disable_ipv6)
             .with_satisfy_with_ipv6(satisfy_with_ipv6)
-            .with_fast_failure_recheck(fast_failure_recheck);
+            .with_fast_failure_recheck(fast_failure_recheck)
+            .with_always_retry_with_get(always_retry_with_get);
 
         // Give a newborn bucket some time to fill up, otherwise buckets which
         // tend to process tasks without delays (e.g. when a host is skipped)
@@ -335,6 +344,7 @@ impl Queuer {
                     self.disable_ipv6,
                     self.satisfy_with_ipv6,
                     self.fast_failure_recheck,
+                    self.always_retry_with_get,
                 ));
 
                 debug!(key = bucket_key, "bucket created");
