@@ -7,11 +7,56 @@ edition = "2024"
 rust-version = "1.94"
 
 [workspace.lints.clippy]
-manual_let_else = "warn"
+# There's a bunch of (allowed by default) lints which look useful
+# to enable. All commented out lints produce warnings ATOW, so if
+# feeling adventurous, one is welcome to uncomment the lint, check
+# if it's in fact useful, and depending on that, fix the code or
+# remove the lint
+
+#allow_attributes_without_reason = "warn"
+#as_conversions = "warn" # see https://rust-lang.github.io/rust-clippy/master/index.html#as_conversions, may only pick some sublints
+#assertions_on_result_states = "warn"
+#branches_sharing_code = "warn"
 clone_on_ref_ptr = "warn"
-unused_async = "warn"
-large_futures = "warn"
+#create_dir = "warn"
+#default_trait_access = "warn"
+#doc_paragraphs_missing_punctuation = "warn" # unknown lint?
+elidable_lifetime_names = "warn"
+#empty_structs_with_brackets = "warn"
+equatable_if_let = "warn"
+#error_impl_error = "warn"
+#expect_used = "warn" # for updater parsers/fetchers?
+#filetype_is_file = "warn"
+#fn_params_excessive_bools = "warn"
+#format_push_string = "warn"
+get_unwrap = "warn"
+#if_not_else = "warn"
+#if_then_some_else_none = "warn"
 ignore_without_reason = "deny"
+large_futures = "warn"
+large_types_passed_by_value = "warn"
+literal_string_with_formatting_args = "warn"
+#manual_instant_elapsed = "warn"
+manual_let_else = "warn"
+#manual_string_new = "warn"
+#map_unwrap_or = "warn"
+#multiple_inherent_impl = "warn"
+#must_use_candidate = "warn"
+needless_bitwise_bool = "warn"
+needless_continue = "warn"
+#needless_for_each = "warn"
+#needless_pass_by_value = "warn"
+non_std_lazy_statics = "warn"
+#option_if_let_else = "warn"
+or_fun_call = "warn"
+#print_stderr = "warn"
+#redundant_clone = "warn"
+#redundant_else = "warn"
+#should_panic_without_expect = "warn"
+#single_char_pattern = "warn"
+stable_sort_primitive = "warn"
+#str_to_string = "warn" # (?)
+unused_async = "warn"
 
 [profile.dev.package]
 insta.opt-level = 3
