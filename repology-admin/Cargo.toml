@@ -14,7 +14,7 @@ anyhow = "1.0.100"
 axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6", features = ["macros"] }
 axum-htmx = "0.8.1"
 chrono = { version = "0.4.42", features = ["std", "now", "serde"], default-features = false }
-clap = { version = "4.5.51", features = ["derive"] }
+clap = { version = "4.5.53", features = ["derive"] }
 indoc = "2.0.7"
 maud = { version = "0.27.0", features = ["axum"] }
 metrics = "0.24.2"
