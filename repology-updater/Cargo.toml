@@ -41,7 +41,7 @@ url = "2.5.7"
 walkdir = "2.5.0"
 
 [dev-dependencies]
-insta = "1.43.2"
+insta = "1.44.1"
 mockito = "1.7.0"
 paste = "1.0.15"
 tempfile = "3.23.0"
