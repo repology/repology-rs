@@ -15,6 +15,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a15f179cd60c4584b8a8c596927aadc462e27f2ca70c04e0071964a73ba7a75"
 dependencies = [
  "cfg-if",
+ "getrandom 0.3.4",
  "once_cell",
  "version_check",
  "zerocopy",
@@ -3213,9 +3214,10 @@ dependencies = [
 
 [[package]]
 name = "serde-saphyr"
-version = "0.0.8-alpha-pre"
-source = "git+https://github.com/bourumir-wyngs/serde-saphyr?branch=master#f34cdedf3d12bc016021db3f3a3badef124d8caa"
+version = "0.0.11"
+source = "git+https://github.com/bourumir-wyngs/serde-saphyr?branch=master#94847d076bad37a646383a9c804a5573382528cd"
 dependencies = [
+ "ahash",
  "base64",
  "encoding_rs_io",
  "nohash-hasher",
@@ -3224,7 +3226,7 @@ dependencies = [
  "saphyr-parser",
  "serde",
  "serde_json",
- "smallvec 2.0.0-alpha.11",
+ "smallvec 2.0.0-alpha.12",
 ]
 
 [[package]]
@@ -3406,9 +3408,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "2.0.0-alpha.11"
+version = "2.0.0-alpha.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87b96efa4bd6bdd2ff0c6615cc36fc4970cbae63cfd46ddff5cee35a1b4df570"
+checksum = "ef784004ca8777809dcdad6ac37629f0a97caee4c685fcea805278d81dd8b857"
 
 [[package]]
 name = "snap"
