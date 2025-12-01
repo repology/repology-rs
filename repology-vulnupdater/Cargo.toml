@@ -14,7 +14,7 @@ chrono = { version = "0.4.42", default-features = false, features = ["now"] }
 clap = { version = "4.5.51", features = ["derive"] }
 indoc = "2.0.7"
 metrics = "0.24.2"
-metrics-exporter-prometheus = { version = "0.17.2", default-features = false, features = ["http-listener"] }
+metrics-exporter-prometheus = { version = "0.18.0", default-features = false, features = ["http-listener"] }
 metrics-process = { version = "2.4.2", features = ["use-gauge-on-cpu-seconds-total"] }
 reqwest = { version = "0.12.24", features = ["stream"] }
 serde = { version = "1.0.228", features = ["derive"] }
