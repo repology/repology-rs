@@ -19,7 +19,7 @@ This repository is a gradual rewrite of Repology components to Rust.
 
 ## Requirements
 
-This code requires at least Rust 1.93-nightly.
+This code requires at least Rust 1.94-nightly.
 
 ## Author
 
