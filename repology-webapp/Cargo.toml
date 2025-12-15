@@ -27,7 +27,7 @@ indoc = "2.0.7"
 ip_network = { version = "0.4.1", features = ["serde"] }
 itertools = "0.14.0"
 libversion = { path = "../libversion" }
-metrics = "0.24.2"
+metrics = "0.24.3"
 metrics-exporter-prometheus = { version = "0.17.2", default-features = false, features = ["http-listener"] }
 metrics-process = { version = "2.4.2", features = ["use-gauge-on-cpu-seconds-total"] }
 mime = "0.3.17"
