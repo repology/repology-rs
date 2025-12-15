@@ -31,7 +31,7 @@ jobs:
           sudo pg_ctlcluster $POSTGRESQL main restart
       - name: Save rust version for proper cache setup
         run: rustc -V > .rustc.version
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ~/.cargo/bin/
@@ -40,7 +40,7 @@ jobs:
             ~/.cargo/git/db/
           key: cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: cargo-
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             target/
