@@ -2,7 +2,7 @@
 {% import "_macros/autorefresh.html" as autorefresh %}
 
 {% block extrameta %}
-	{% call autorefresh::enable_autorefresh(3600) %}
+	{{ autorefresh::enable_autorefresh(3600) }}
 {% endblock %}
 
 {% block title %}Repository statistics - Repology{% endblock %}
@@ -34,7 +34,7 @@
 
 	<p>Note that sum of columns does not need to match total count, as there may be packages with different status for a single project in a repository. Percentages are also calculated differently.</p>
 
-	{% call autorefresh::autorefresh_toggler() %}
+	{{ autorefresh::autorefresh_toggler() }}
 </div>
 
 <div class="table-responsive">

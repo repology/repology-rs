@@ -2,7 +2,7 @@
 {% import "_macros/autorefresh.html" as autorefresh %}
 
 {% block extrameta %}
-	{% call autorefresh::enable_autorefresh(3600) %}
+	{{ autorefresh::enable_autorefresh(3600) }}
 {% endblock %}
 
 {% block title %}Raw repository package counts - Repology{% endblock %}
@@ -14,7 +14,7 @@
 <div class="clearfix">
 	<p>Total individual packages known to repology: <b>{{ total_packages }}</b>.</p>
 
-	{% call autorefresh::autorefresh_toggler() %}
+	{{ autorefresh::autorefresh_toggler() }}
 </div>
 
 {% include "_includes/versionclass/legend.html" %}

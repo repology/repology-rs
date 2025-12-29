@@ -3,7 +3,7 @@
 {% import "_macros/autorefresh.html" as autorefresh %}
 
 {% block extrameta %}
-{% call autorefresh::enable_autorefresh(600) %}
+{{ autorefresh::enable_autorefresh(600) }}
 {% endblock %}
 
 {% block title %}Important updates - Repology{% endblock %}
@@ -15,7 +15,7 @@
 <p>These are 100 updates of the most widely spread projects in the latest 24 hours.</p>
 <p>Note that version rollbacks are also included, so this is not yet production ready.</p>
 
-{% call autorefresh::autorefresh_toggler() %}
+{{ autorefresh::autorefresh_toggler() }}
 
 <table class="table table-striped">
 	<thead>
@@ -39,7 +39,7 @@
 				{%- endfor -%}
 			</td>
 			<td class="text-nowrap minimal-column">
-				{%- call time::format_time_interval(Utc::now() - update.timestamp) -%}
+				{{- time::format_time_interval(Utc::now() - update.timestamp) -}}
 			</td>
 		</tr>
 	{% endfor %}

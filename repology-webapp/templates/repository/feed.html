@@ -3,7 +3,7 @@
 {% import "_macros/time.html" as time %}
 
 {% block extrameta %}
-{% call autorefresh::enable_autorefresh(3600) %}
+{{ autorefresh::enable_autorefresh(3600) }}
 	<link rel="alternate" href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoryFeedAtom, [("repository_name", repository_name)])? }}" type="application/atom+xml" />
 {% endblock %}
 
@@ -16,17 +16,17 @@
 
 <p>This feed is also available in <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoryFeedAtom, [("repository_name", repository_name)])? }}">atom<img src="{{ ctx.url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a> format</p>
 
-{% call autorefresh::autorefresh_toggler() %}
+{{ autorefresh::autorefresh_toggler() }}
 
 {% if !events.is_empty() %}
 <table class="table table-striped">
 	<tr>
-		<th class="text-center">Date{% call time::timezone_abbr() %}</th>
+		<th class="text-center">Date{{ time::timezone_abbr() }}</th>
 		<th class="text-center">Event</th>
 	</tr>
 	{% for event in events %}
 	<tr>
-		<td class="minimal-column">{% call time::format_absolute_time(event.timestamp) %}</td>
+		<td class="minimal-column">{{ time::format_absolute_time(event.timestamp) }}</td>
 		<td>
 			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", event.project_name.as_str())])? }}">{{ event.project_name }}</a>
 			{% if event.event_type == "added" %}

@@ -185,7 +185,7 @@
 						By <b>total</b> number of packaged projects
 					</div>
 					<div class="panel-body">
-						{% call toplist(top_by_total, 0, "") %}
+						{{ toplist(top_by_total, 0, "") }}
 					</div>
 				</div>
 			</div>
@@ -195,7 +195,7 @@
 						By number of <b>non-unique</b><sup><a href="#top-footnote-1">1</a></sup> packaged projects
 					</div>
 					<div class="panel-body">
-						{% call toplist(top_by_nonunique, 0, "") %}
+						{{ toplist(top_by_nonunique, 0, "") }}
 					</div>
 				</div>
 			</div>
@@ -205,7 +205,7 @@
 						By number of <b>maintainers</b>
 					</div>
 					<div class="panel-body">
-						{% call toplist(top_by_maintainers, 0, "") %}
+						{{ toplist(top_by_maintainers, 0, "") }}
 					</div>
 				</div>
 			</div>
@@ -217,7 +217,7 @@
 						By number of projects <b>per maintainer</b><sup><a href="#top-footnote-2">2</a>,<a href="#top-footnote-3">3</a></sup>
 					</div>
 					<div class="panel-body">
-						{% call toplist(top_by_ppm, 1, "") %}
+						{{ toplist(top_by_ppm, 1, "") }}
 					</div>
 				</div>
 			</div>
@@ -227,7 +227,7 @@
 						By number of projects with <b>up to date</b> packages
 					</div>
 					<div class="panel-body">
-						{% call toplist(top_by_newest, 0, "") %}
+						{{ toplist(top_by_newest, 0, "") }}
 					</div>
 				</div>
 			</div>
@@ -237,7 +237,7 @@
 						By percentage of <b>up to date</b> projects<sup><a href="#top-footnote-2">2</a></sup>
 					</div>
 					<div class="panel-body">
-						{% call toplist(top_by_pnewest, 2, "%") %}
+						{{ toplist(top_by_pnewest, 2, "%") }}
 					</div>
 				</div>
 			</div>
@@ -257,7 +257,7 @@
 
 		{% include "_includes/versionclass/legend.html" %}
 
-		{% call projects_table::projects_table(projects_list, target_project_endpoint=crate::endpoints::Endpoint::ProjectVersions) %}
+		{{ projects_table::projects_table(projects_list, target_project_endpoint=crate::endpoints::Endpoint::ProjectVersions) }}
 	</section>
 
 	<section>

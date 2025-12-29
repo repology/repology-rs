@@ -2,7 +2,7 @@
 {% import "_macros/autorefresh.html" as autorefresh %}
 
 {% block extrameta %}
-	{% call autorefresh::enable_autorefresh(3600) %}
+	{{ autorefresh::enable_autorefresh(3600) }}
 {% endblock %}
 
 {% block title %}Graphs - Repology{% endblock %}
@@ -11,7 +11,7 @@
 {% block content %}
 <div class="container">
 
-{% call autorefresh::autorefresh_toggler() %}
+{{ autorefresh::autorefresh_toggler() }}
 
 <h3 id="freshness_map">Repository size/freshness map</h3>
 <img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphMapRepoSizeFresh, [])? }}" alt="Repository size/freshness map">

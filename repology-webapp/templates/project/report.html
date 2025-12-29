@@ -44,7 +44,7 @@
 {% for report in reports %}
 <div class="panel {% if let Some(accepted) = report.accepted %}{% if accepted %}panel-success{% else %}panel-danger{% endif %}{% else %}panel-default{% endif %}">
 	<div class="panel-heading">
-		Created {% call time::format_time_interval(Utc::now() - report.created) %} ago,
+		Created {{ time::format_time_interval(Utc::now() - report.created) }} ago,
 		{% if let Some(accepted) = report.accepted %}{% if accepted %}accepted{% else %}rejected{% endif %}{% else %}not processed yet{% endif %}
 	</div>
 	<ul class="list-group">

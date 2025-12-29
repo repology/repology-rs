@@ -13,7 +13,7 @@
 
 <div class="alert alert-warning" role="alert">
 	<p>Sorry, but Repology no longer tracks repository <strong>{{ repository.title }}</strong>.</p>
-	<p>Last time Repology has processed this repository was {% call time::format_absolute_time(repository.last_seen.ok_or("last seen time missing")?) %}{% call time::timezone_abbr() %} ({% call time::format_time_interval(chrono::Utc::now() - repository.last_seen.ok_or("last seen time missing")?) %} ago).</p>
+	<p>Last time Repology has processed this repository was {{ time::format_absolute_time(repository.last_seen.ok_or("last seen time missing")?) }}{{ time::timezone_abbr() }} ({{ time::format_time_interval(chrono::Utc::now() - repository.last_seen.ok_or("last seen time missing")?) }} ago).</p>
 	<p>Some of the reasons which may have caused this:</p>
 	<ul>
 		<li>The repository has reached it's end of life, is no longer updated or supported, should no longer be used, and has probably disappeared from the mirrors. There may be a newer version of this repository available though, check <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}">the list</a>.</li>

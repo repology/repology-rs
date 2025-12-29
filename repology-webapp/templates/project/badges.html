@@ -3,7 +3,7 @@
 {% block title %}{{ project_name }} packaging badges - Repology{% endblock %}
 {% block header %}Badges for <strong>{{ project_name }}</strong>{% endblock %}
 {% block description %}SVG badges with packaging information for project {{ project_name }}{% endblock %}
-{% block keywords %}{% call super() %}, badge{% endblock %}
+{% block keywords %}{{ super() }}, badge{% endblock %}
 
 {% macro badge_example(endpoint, alt) %}
 {% let project_url = ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name)])? %}
@@ -41,7 +41,7 @@
 
 <p>This badge shows versions and up to date status of this project in all known repositories.</p>
 
-{% call badge_example(crate::endpoints::Endpoint::BadgeVerticalAllRepos, "Packaging status") %}
+{{ badge_example(crate::endpoints::Endpoint::BadgeVerticalAllRepos, "Packaging status") }}
 
 <p>HTML code for right-aligned badge (most useful for README.md as it allows other content to flow around it not leading to space waste):</p>
 <pre>
@@ -63,7 +63,7 @@
 
 <p>This shows total number of repository families featuring this package. Repository family is an aggregation of related repositories, e.g. Debian Stable, Testing, Unstable and Experimental all belong to a single family and are thus only counted once.</p>
 
-{% call badge_example(crate::endpoints::Endpoint::BadgeTinyRepos, "Packaging status") %}
+{{ badge_example(crate::endpoints::Endpoint::BadgeTinyRepos, "Packaging status") }}
 
 <p>May be tweaked with <code>header</code> parameter (see below).</p>
 
@@ -75,7 +75,7 @@
 
 <p>This shows latest version(s) known to repology. There may be multiple versions, for example devel and newest, or multiple variations of the same version encountered in some repositories (e.g.<code>1.0.0</code> and <code>1.0</code>). These badges also support <code>minversion=</code> parameter.</p>
 
-{% call badge_example(crate::endpoints::Endpoint::BadgeLatestVersions, "latest packaged version(s)") %}
+{{ badge_example(crate::endpoints::Endpoint::BadgeLatestVersions, "latest packaged version(s)") }}
 
 <p>May be tweaked with <code>header</code> parameter (see below).</p>
 

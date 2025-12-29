@@ -4,7 +4,7 @@
 {% import "_macros/time.html" as time %}
 
 {% block extrameta %}
-	{% call autorefresh::enable_autorefresh(3600) %}
+	{{ autorefresh::enable_autorefresh(3600) }}
 {% endblock %}
 
 {% block title %}Recent CPE bindings - Repology{% endblock %}
@@ -15,7 +15,7 @@
 
 <p>This is a list of recently added <a href="https://en.wikipedia.org/wiki/Common_Platform_Enumeration">CPE</a> bindings which allow matching Repology projects to <a href="https://nvd.nist.gov/">NVD</a> entries. These bindings are regularly added manually based on new and updated CVEs in NVD. After a binding is added, all past and future vulnerabilities with matching CPE are recognized for a given Repology project. You may see vulnerabilities for a given project under <b>CVEs</b> tab (only present when there are matching vulnerabilities), and missing bindings may be reported via <b>Report</b> tab.</p>
 
-{% call autorefresh::autorefresh_toggler() %}
+{{ autorefresh::autorefresh_toggler() }}
 
 {% if cpes.is_empty() %}
 <div class="alert alert-warning" role="alert">Nothing here yet</div>
@@ -25,7 +25,7 @@
 <table class="table table-striped">
 	<thead>
 		<tr>
-			<th class="minimal-column text-center">Added{% call time::timezone_abbr() %}</th>
+			<th class="minimal-column text-center">Added{{ time::timezone_abbr() }}</th>
 			<th class="minimal-column">Project</th>
 			<th>CPE</th>
 		</tr>
@@ -33,9 +33,9 @@
 	<tbody>
 	{% for cpe in cpes %}
 		<tr>
-			<td class="minimal-column">{% call time::format_absolute_time(cpe.added_ts) %}</td>
+			<td class="minimal-column">{{ time::format_absolute_time(cpe.added_ts) }}</td>
 			<td class="minimal-column"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", cpe.project_name.as_str())])? }}">{{ cpe.project_name }}</a></td>
-			<td>{% call cpes::cpe_components_struct(cpe, true) %}</td>
+			<td>{{ cpes::cpe_components_struct(cpe, true) }}</td>
 		</tr>
 	{% endfor %}
 	</tbody>

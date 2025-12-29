@@ -2,18 +2,18 @@
 {% import "_macros/autorefresh.html" as autorefresh %}
 
 {% block extrameta %}
-{% call autorefresh::enable_autorefresh(3600) %}
+{{ autorefresh::enable_autorefresh(3600) }}
 {% endblock %}
 
 {% block title %}{{ repository.title }} repository information - Repology{% endblock %}
 {% block header %}Repository <strong>{{ repository.title }}</strong>{% endblock %}
 {% block description %}Information on repository {{ repository.title }}{% endblock %}
-{% block keywords %}{% call super() %}, repository{% endblock %}
+{% block keywords %}{{ super() }}, repository{% endblock %}
 
 {% block content %}
 <div class="container">
 
-{% call autorefresh::autorefresh_toggler() %}
+{{ autorefresh::autorefresh_toggler() }}
 
 {% if
 	!used_package_link_types.contains(repology_common::LinkType::UpstreamHomepage|ref) &&

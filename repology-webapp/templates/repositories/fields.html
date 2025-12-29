@@ -2,7 +2,7 @@
 {% import "_macros/autorefresh.html" as autorefresh %}
 
 {% block extrameta %}
-	{% call autorefresh::enable_autorefresh(3600) %}
+	{{ autorefresh::enable_autorefresh(3600) }}
 {% endblock %}
 
 {% block title %}Repository support details - Repology{% endblock %}
@@ -13,7 +13,7 @@
 
 <p>A table of supported data fields for each repository. The more data is provided the better. Note that links information is crucial for distinguishing unrelated projects with similar names, so it's now mandatory.</p>
 
-{% call autorefresh::autorefresh_toggler() %}
+{{ autorefresh::autorefresh_toggler() }}
 
 <div class="table-responsive">
 <table class="table table-striped table-hover">

@@ -4,7 +4,7 @@
 {% import "_macros/time.html" as time %}
 
 {% block extrameta %}
-{% call autorefresh::enable_autorefresh(3600) %}
+{{ autorefresh::enable_autorefresh(3600) }}
 {% endblock %}
 
 {% block title %}{{ project_name }} packaging history - Repology{% endblock %}
@@ -29,16 +29,16 @@ by repology. For example, if two projects are merged it will look
 like one project has appeared in more repositories and another one
 removed from all repositories.</p>
 
-{% call autorefresh::autorefresh_toggler() %}
+{{ autorefresh::autorefresh_toggler() }}
 
 <table class="table table-striped">
 	<tr>
-		<th class="text-center">Date{% call time::timezone_abbr() %}</th>
+		<th class="text-center">Date{{ time::timezone_abbr() }}</th>
 		<th class="text-center">Event</th>
 	</tr>
 {% for event in events %}
 	<tr>
-		<td class="minimal-column">{% call time::format_absolute_time(event.timestamp) %}</td>
+		<td class="minimal-column">{{ time::format_absolute_time(event.timestamp) }}</td>
 		<td>
 		{%- if let EventData::HistoryStart{actual_repos, old_repos, devel_versions, newest_versions} = event.data -%}
 			<b>
@@ -60,14 +60,14 @@ removed from all repositories.</p>
 			{%- if !actual_repos.is_empty() -%}
 				, up to date in
 				{%- for repo in actual_repos %}
-					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
+					{%- if !loop.first %},{% endif %} {{ links::repository_link(repo) }}
 				{%- endfor %}
 			{%- endif %}
 
 			{%- if !old_repos.is_empty() -%}
 				, {% if !actual_repos.is_empty() %}also {% endif %}present in
 				{%- for repo in old_repos %}
-					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
+					{%- if !loop.first %},{% endif %} {{ links::repository_link(repo) }}
 				{%- endfor %}
 			{%- endif %}
 			</b>
@@ -83,7 +83,7 @@ removed from all repositories.</p>
 					by
 
 					{%- for repo in repos %}
-					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
+					{%- if !loop.first %},{% endif %} {{ links::repository_link(repo) }}
 					{%- endfor %}
 				{%- endif %}
 			{%- else -%}
@@ -91,25 +91,25 @@ removed from all repositories.</p>
 			{%- endif %}
 
 			{%- if let Some(passed) = passed -%}
-				, in {% call time::format_time_interval(passed) %} since the last update
+				, in {{ time::format_time_interval(passed) }} since the last update
 			{%- endif %}
 			</b>
 		{%- else if let EventData::CatchUp{repos, branch, lag} = event.data -%}
 			{%- for repo in repos -%}
-				{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
+				{%- if !loop.first %},{% endif %} {{ links::repository_link(repo) }}
 			{%- endfor %}
 
 			{%- if repos.len() == 1 %} has{% else %} have{% endif %} caught up with the {{ branch }} version
 
 			{%- if let Some(lag) = lag %}
-                in {% call time::format_time_interval(lag) %}
+                in {{ time::format_time_interval(lag) }}
             {%- endif %}
 		{%- else if let EventData::RepositoriesUpdate{repos_added, repos_removed} = event.data -%}
 			Project
 			{%- if !repos_added.is_empty() %}
 				added to
 				{%- for repo in repos_added %}
-					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
+					{%- if !loop.first %},{% endif %} {{ links::repository_link(repo) }}
 				{%- endfor %}
 			{%- endif %}
 
@@ -118,7 +118,7 @@ removed from all repositories.</p>
 			{%- if !repos_removed.is_empty() %}
 				removed from
 				{%- for repo in repos_removed %}
-					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
+					{%- if !loop.first %},{% endif %} {{ links::repository_link(repo) }}
 				{%- endfor %}
 			{% endif %}
 		{%- else if let EventData::HistoryEnd{last_repos} = event.data -%}
@@ -128,7 +128,7 @@ removed from all repositories.</p>
 			{%- if !last_repos.is_empty() -%}
 				, last repositor{% if last_repos.len() == 1 %}y was{% else %}ies were{% endif %}
 				{%- for repo in last_repos %}
-					{%- if !loop.first %},{% endif %} {% call links::repository_link(repo) %}
+					{%- if !loop.first %},{% endif %} {{ links::repository_link(repo) }}
 				{%- endfor %}
 			{% endif %}
 			</b>

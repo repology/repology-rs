@@ -4,7 +4,7 @@
 {% block title %}{{ project_name }} vulnerabilities - Repology{% endblock %}
 {% block header %}Vulnerabilities for <strong>{{ project_name }}</strong>{% endblock %}
 {% block description %}Known vulnerabilities for project {{ project_name }}{% endblock %}
-{% block keywords %}{% call super() %}, vulnerability{% endblock %}
+{% block keywords %}{{ super() }}, vulnerability{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -43,7 +43,7 @@
 				<span class="cell-subitem" title="Published date">{{ aggregation.published }}</span>
 				<span class="cell-subitem" title="Last modified date">{{ aggregation.last_modified }}</span>
 			</td>
-			<td class="minimal-column">{% call cpes::cpe_components_struct(aggregation, true) %}</td>
+			<td class="minimal-column">{{ cpes::cpe_components_struct(aggregation, true) }}</td>
 			<td class="text-left">
 			{%- for range in version_ranges -%}
 				{%- if !loop.first %} {% endif -%}

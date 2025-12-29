@@ -12,7 +12,7 @@
 <div class="container">
 
 <div class="alert alert-warning" role="alert">
-	<p>Sorry, but Repology no longer knows maintainer <strong>{{ maintainer_name }}</strong>{% if let Some(orphaned_at) = maintainer.orphaned_at %} since {% call time::format_absolute_time(orphaned_at) %}{% call time::timezone_abbr() %} ({% call time::format_time_interval(chrono::Utc::now() - orphaned_at) %} ago){% endif %}.</p>
+	<p>Sorry, but Repology no longer knows maintainer <strong>{{ maintainer_name }}</strong>{% if let Some(orphaned_at) = maintainer.orphaned_at %} since {{ time::format_absolute_time(orphaned_at) }}{{ time::timezone_abbr() }} ({{ time::format_time_interval(chrono::Utc::now() - orphaned_at) }} ago){% endif %}.</p>
 	<p>Some of the reasons which may have caused this:</p>
 	<ul>
 		<li>The maintainer no longer maintains any packages.</li>

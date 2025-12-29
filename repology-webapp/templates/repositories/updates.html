@@ -3,7 +3,7 @@
 {% import "_macros/time.html" as time %}
 
 {% block extrameta %}
-    {% call autorefresh::enable_autorefresh(3600) %}
+    {{ autorefresh::enable_autorefresh(3600) }}
 {% endblock %}
 
 {% block title %}Update status - Repology{% endblock %}
@@ -11,7 +11,7 @@
 
 {% macro update_run_info(run_id, start, errors, warnings) -%}
 {%- if let Some(run_id) = run_id -%}
-	<b><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", run_id.to_string().as_ref())])? }}" rel="nofollow">{% call time::format_time_interval_short(Utc::now() - start.unwrap()) %}</a> ago</b>
+	<b><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", run_id.to_string().as_ref())])? }}" rel="nofollow">{{ time::format_time_interval_short(Utc::now() - start.unwrap()) }}</a> ago</b>
 	{%- if let Some(errors) = errors %}{% if ctx.deref(ctx.deref(errors)) > 0 %}, <span class="text-danger">{{ errors }} err</span>{% endif %}{% endif -%}
 	{%- if let Some(warnings) = warnings %}{% if ctx.deref(ctx.deref(warnings)) > 0 %}, <span class="text-warning">{{ warnings }} warn</span>{% endif %}{% endif -%}
 {%- else -%}
@@ -24,7 +24,7 @@
 
 <p>A brief explanation of update process: each repository is updated in two phases: <em>fetch</em> (⬊), which only involves downloading new data, then <em>parse</em> (⬈), which involves converting upstream format into Repology packages and applying transformation rules. Each phase may fail independently. Also, fetch phase may return no new data (⬂) (e.g. HTTP 403 not modified, no new git commits etc.), in which case parse phase may be skipped as long as the ruleset hasn't changed either. Note that actual database update happens only after trying to fetch and parse all the repositories, so there's additional delay between times shown on this page and actual website update.</p>
 
-{% call autorefresh::autorefresh_toggler() %}
+{{ autorefresh::autorefresh_toggler() }}
 
 <table class="table table-striped">
 	<thead>
@@ -43,30 +43,30 @@
 			<td class="text-center
 					{%- if repository.last_fetch_status.as_deref() == Some("failed") %} danger
 					{%- else if repository.last_fetch_status.as_deref() == Some("running") %} info
-					{%- endif -%}">{%
-				call update_run_info(
+					{%- endif -%}">{{
+				update_run_info(
 					repository.last_fetch_id,
 					repository.last_fetch_start,
 					repository.last_fetch_errors,
 					repository.last_fetch_warnings
-				) %}</td>
+				) }}</td>
 			<td class="text-center
 					{%- if repository.last_parse_status.as_deref() == Some("failed") %} danger
 					{%- else if repository.last_parse_status.as_deref() == Some("running") %} info
-					{%- endif %}">{%
-				call update_run_info(
+					{%- endif %}">{{
+				update_run_info(
 					repository.last_parse_id,
 					repository.last_parse_start,
 					repository.last_parse_errors,
 					repository.last_parse_warnings
-				) %}</td>
-			<td class="text-center{% if repository.last_failed_id.is_some() %} warning{% endif %}">{%
-				call update_run_info(
+				) }}</td>
+			<td class="text-center{% if repository.last_failed_id.is_some() %} warning{% endif %}">{{
+				update_run_info(
 					repository.last_failed_id,
 					repository.last_failed_start,
 					repository.last_failed_errors,
 					repository.last_failed_warnings
-				) %}</td>
+				) }}</td>
 			<td class="text-center">
 			{%- if !repository.history.is_empty() -%}
 			{%- for histitem in repository.history -%}

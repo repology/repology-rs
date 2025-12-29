@@ -4,7 +4,7 @@
 {% block title %}Maintainers list - Repology{% endblock %}
 {% block header %}Maintainers{% endblock %}
 {% block description %}Package maintainers listing{% endblock %}
-{% block keywords %}{% call super() %}, maintainer, maintainers{% endblock %}
+{% block keywords %}{{ super() }}, maintainer, maintainers{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -117,7 +117,7 @@
 				</a>
 			</td>
 			<td class="text-center">
-				{%- call time::format_time_interval(Utc::now() - maintainer.first_seen) -%}
+				{{- time::format_time_interval(Utc::now() - maintainer.first_seen) -}}
 			</td>
 		</tr>
 	{% endfor %}

@@ -4,7 +4,7 @@
 {% block title %}Projects list - Repology{% endblock %}
 {% block header %}Projects{% endblock %}
 
-{% macro pagination() %}
+{% macro pagination(projects_list) %}
 {#- NOTE: this woule be come much simpler if we switch to single endpoint with start/end params #}
 <nav>
 	<ul class="pagination">
@@ -155,11 +155,11 @@
 	</form>
 </nav>
 
-{% call pagination() %}
+{{ pagination(projects_list) }}
 
-{% call projects_table::projects_table_with_focus(projects_list, repo=query.inrepo|ref, maintainer=query.maintainer|ref, target_project_endpoint=crate::endpoints::Endpoint::ProjectVersions) %}
+{{ projects_table::projects_table_with_focus(projects_list, repo=query.inrepo|ref, maintainer=query.maintainer|ref, target_project_endpoint=crate::endpoints::Endpoint::ProjectVersions) }}
 
-{% call pagination() %}
+{{ pagination(projects_list) }}
 
 {% include "_includes/versionclass/legend.html" %}
 

@@ -3,7 +3,7 @@
 {% block title %}{{ maintainer_name }} maintainer information - Repology{% endblock %}
 {% block header %}Maintainer <strong>{{ maintainer_name }}</strong>{% endblock %}
 {% block description %}Information on package maintainer {{ maintainer_name }}{% endblock %}
-{% block keywords %}{% call super() %}, maintainer{% endblock %}
+{% block keywords %}{{ super() }}, maintainer{% endblock %}
 
 {% block content %}
 <div class="container">

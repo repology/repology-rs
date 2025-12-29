@@ -39,9 +39,9 @@
 				{%- endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
-			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
-			<td>{% call versions_list(item.versions.outdated|ref, "") %}</td>
-			<td>{% call versions_list(item.versions.ignored|ref, "") %}</td>
+			<td>{{ versions_list(item.versions.newest|ref, "") }}</td>
+			<td>{{ versions_list(item.versions.outdated|ref, "") }}</td>
+			<td>{{ versions_list(item.versions.ignored|ref, "") }}</td>
 		</tr>
 	{%- endfor %}
 	</tbody>
@@ -80,9 +80,9 @@
 				{%- endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
-			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
-			<td>{% call versions_list(item.versions.outdated|ref, "") %}</td>
-			<td>{% call versions_list(item.versions.ignored|ref, "") %}</td>
+			<td>{{ versions_list(item.versions.newest|ref, "") }}</td>
+			<td>{{ versions_list(item.versions.outdated|ref, "") }}</td>
+			<td>{{ versions_list(item.versions.ignored|ref, "") }}</td>
 			<td>{{ item.project.rank|fmt("{:.2}") }}</td>
 		</tr>
 	{%- endfor %}
@@ -127,12 +127,12 @@
 				{%- endif %}
 			</td>
 			{%- if !repo.is_empty() || !maintainer.is_empty() %}
-			<td>{% call versions_list(item.versions.focused|ref, "-") %}</td>
+			<td>{{ versions_list(item.versions.focused|ref, "-") }}</td>
 			{%- endif %}
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
-			<td>{% call versions_list(item.versions.newest|ref, "") %}</td>
-			<td>{% call versions_list(item.versions.outdated|ref, "") %}</td>
-			<td>{% call versions_list(item.versions.ignored|ref, "") %}</td>
+			<td>{{ versions_list(item.versions.newest|ref, "") }}</td>
+			<td>{{ versions_list(item.versions.outdated|ref, "") }}</td>
+			<td>{{ versions_list(item.versions.ignored|ref, "") }}</td>
 		</tr>
 	{%- endfor %}
 	</tbody>

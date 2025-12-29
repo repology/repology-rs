@@ -9,7 +9,7 @@
 <div class="container">
 
 <div class="alert alert-warning" role="alert">
-	<p>Sorry, but Repology no longer knows project <strong>{{ project_name }}</strong>{% if let Some(orphaned_at) = project.orphaned_at %} since {% call time::format_absolute_time(orphaned_at) %}{% call time::timezone_abbr() %} ({% call time::format_time_interval(chrono::Utc::now() - orphaned_at) %} ago){% endif %}.</p>
+	<p>Sorry, but Repology no longer knows project <strong>{{ project_name }}</strong>{% if let Some(orphaned_at) = project.orphaned_at %} since {{ time::format_absolute_time(orphaned_at) }}{{ time::timezone_abbr() }} ({{ time::format_time_interval(chrono::Utc::now() - orphaned_at) }} ago){% endif %}.</p>
 	<p>Some of the reasons which may have caused this:</p>
 	<ul>
 		<li>You're looking for package name as it's spelled in some repository, while Repology normalizes project names and may spell them differently.</li>
@@ -30,7 +30,7 @@
 </div>
 
 {% if !redirect_projects_list.is_empty() %}
-{% call projects_table::projects_table(redirect_projects_list, target_project_endpoint=ctx.endpoint) %}
+{{ projects_table::projects_table(redirect_projects_list, target_project_endpoint=ctx.endpoint) }}
 {% endif %}
 
 </div>
