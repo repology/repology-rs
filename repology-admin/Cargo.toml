@@ -23,7 +23,7 @@ metrics-process = { version = "2.4.2", features = ["use-gauge-on-cpu-seconds-tot
 serde = { version = "1.0.228", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "postgres", "chrono"] }
 tokio = { version = "1.48.0", features = ["rt-multi-thread"] }
-tracing = "0.1.41"
+tracing = "0.1.44"
 tracing-appender = "0.2.4"
 tracing-loki = { version = "0.2.6", default-features = false, features = ["compat-0-2-1"] }
 tracing-subscriber = { version = "0.3.20", features = ["chrono", "env-filter"] }
