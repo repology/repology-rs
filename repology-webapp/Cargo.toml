@@ -45,7 +45,7 @@ tower-cookies = "0.11.0"
 tracing = "0.1.41"
 tracing-appender = "0.2.4"
 tracing-loki = { version = "0.2.6", default-features = false, features = ["compat-0-2-1"] }
-tracing-subscriber = { version = "0.3.20", features = ["chrono", "env-filter"] }
+tracing-subscriber = { version = "0.3.22", features = ["chrono", "env-filter"] }
 ttf-parser = "0.25.1"
 url = "2.5.7"
 url-escape = "0.1.1"

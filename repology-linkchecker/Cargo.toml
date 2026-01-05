@@ -33,7 +33,7 @@ toml = { version = "0.9.10", default-features = false, features = ["std", "serde
 tracing = "0.1.41"
 tracing-appender = "0.2.4"
 tracing-loki = { version = "0.2.6", default-features = false, features = ["compat-0-2-1"] }
-tracing-subscriber = { version = "0.3.20", features = ["chrono", "env-filter"] }
+tracing-subscriber = { version = "0.3.22", features = ["chrono", "env-filter"] }
 url = { version = "2.5.7", features = ["serde"] }
 
 [dev-dependencies]
