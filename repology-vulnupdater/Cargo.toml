@@ -16,7 +16,7 @@ indoc = "2.0.7"
 metrics = "0.24.3"
 metrics-exporter-prometheus = { version = "0.18.1", default-features = false, features = ["http-listener"] }
 metrics-process = { version = "2.4.2", features = ["use-gauge-on-cpu-seconds-total"] }
-reqwest = { version = "0.12.28", features = ["stream"] }
+reqwest = { version = "0.13.1", features = ["stream"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 sqlx = { version = "0.8.6", features = ["postgres", "chrono", "runtime-tokio"] }

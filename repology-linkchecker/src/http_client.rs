@@ -74,7 +74,6 @@ impl HttpClient {
             .user_agent(&self.user_agent)
             .redirect(reqwest::redirect::Policy::none())
             .dns_resolver(Arc::new(FakeResolver::new(request.address)))
-            .use_rustls_tls()
             .retry(reqwest::retry::never())
             .build()
             .expect("expected to always be able to build reqwest client");
