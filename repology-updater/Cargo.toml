@@ -12,36 +12,35 @@ strict-parsers = []
 
 [dependencies]
 anyhow = "1.0.100"
-async-compression = { version = "0.4.36", features = ["gzip", "bzip2", "xz", "zstd", "tokio"] }
+async-compression = { version = "0.4.37", features = ["gzip", "bzip2", "xz", "zstd", "tokio"] }
 async-rayon = "0.1.0"
 async-trait = "0.1.89"
 bitflags = "2.10.0"
-clap = { version = "4.5.51", features = ["derive"] }
+clap = { version = "4.5.54", features = ["derive"] }
 faine = { version = "0.2.1", default-features = false }
 futures-util = { version = "0.3.31", default-features = false }
-pyo3 = { version = "0.27.1", features = ["auto-initialize"] }
+pyo3 = { version = "0.27.2", features = ["auto-initialize"] }
 rayon = "1.11.0"
 regex = "1.12.2"
 repology-common = { path = "../repology-common" }
-reqwest = { version = "0.12.24", default-features = false, features = ["http2", "rustls-tls", "rustls-tls-native-roots", "stream"] }
+reqwest = { version = "0.12.28", default-features = false, features = ["http2", "rustls-tls", "rustls-tls-native-roots", "stream"] }
 serde = { version = "1.0.228", features = ["derive"] }
-serde-saphyr = { git = "https://github.com/bourumir-wyngs/serde-saphyr", branch = "master" }
-serde-xml-rs = "0.8.1"
-#serde-saphyr = "0.0.8"
-serde_json = "1.0.145"
+serde-saphyr = "0.0.14"
+serde-xml-rs = "0.8.2"
+serde_json = "1.0.149"
 strum = { version = "0.27.2", features = ["derive"] }
 tera = { version = "1.20.1", default-features = false }
 thiserror = "2.0.17"
-tokio = { version = "1.48.0", features = ["macros", "process", "rt-multi-thread"] }
-tokio-util = { version = "0.7.17", features = ["io"] }
-toml = { version = "0.9.10", default-features = false, features = ["std", "serde", "parse"] }
-tracing = "0.1.41"
-tracing-subscriber = { version = "0.3.20", features = ["chrono", "env-filter"] }
-url = "2.5.7"
+tokio = { version = "1.49.0", features = ["macros", "process", "rt-multi-thread"] }
+tokio-util = { version = "0.7.18", features = ["io"] }
+toml = { version = "0.9.11", default-features = false, features = ["std", "serde", "parse"] }
+tracing = "0.1.44"
+tracing-subscriber = { version = "0.3.22", features = ["chrono", "env-filter"] }
+url = { version = "2.5.8", features = ["serde"] }
 walkdir = "2.5.0"
 
 [dev-dependencies]
-insta = "1.43.2"
-mockito = "1.7.0"
+insta = "1.46.0"
+mockito = "1.7.1"
 paste = "1.0.15"
 tempfile = "3.24.0"

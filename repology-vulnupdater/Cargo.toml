@@ -11,18 +11,18 @@ workspace = true
 anyhow = "1.0.100"
 async-trait = "0.1.89"
 chrono = { version = "0.4.42", default-features = false, features = ["now"] }
-clap = { version = "4.5.51", features = ["derive"] }
+clap = { version = "4.5.54", features = ["derive"] }
 indoc = "2.0.7"
-metrics = "0.24.2"
-metrics-exporter-prometheus = { version = "0.17.2", default-features = false, features = ["http-listener"] }
+metrics = "0.24.3"
+metrics-exporter-prometheus = { version = "0.18.1", default-features = false, features = ["http-listener"] }
 metrics-process = { version = "2.4.2", features = ["use-gauge-on-cpu-seconds-total"] }
-reqwest = { version = "0.12.24", features = ["stream"] }
+reqwest = { version = "0.12.28", features = ["stream"] }
 serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.145"
+serde_json = "1.0.149"
 sqlx = { version = "0.8.6", features = ["postgres", "chrono", "runtime-tokio"] }
-tokio = { version = "1.48.0", features = ["macros", "rt-multi-thread"] }
-tracing = "0.1.41"
+tokio = { version = "1.49.0", features = ["macros", "rt-multi-thread"] }
+tracing = "0.1.44"
 tracing-appender = "0.2.4"
 tracing-loki = { version = "0.2.6", default-features = false, features = ["compat-0-2-1"] }
-tracing-subscriber = { version = "0.3.20", features = ["chrono", "env-filter"] }
-url = "2.5.7"
+tracing-subscriber = { version = "0.3.22", features = ["chrono", "env-filter"] }
+url = { version = "2.5.8", features = ["serde"] }
