@@ -277,7 +277,6 @@ pub async fn project_by_perform(
         )
             .into_response(),
         _ => {
-            use serde_json::json;
             let (content_type, body) = match target_page.target_type {
                 TargetType::Html => (
                     mime::TEXT_HTML.as_ref(),
@@ -293,7 +292,7 @@ pub async fn project_by_perform(
                     let targets = target_projects.into_iter().collect::<serde_json::Value>();
                     (
                         mime::APPLICATION_JSON.as_ref(),
-                        json!({
+                        serde_json::json!({
                             "_comment": "Ambiguous redirect, multiple target projects are possible",
                             "targets": targets,
                         })
