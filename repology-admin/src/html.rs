@@ -37,7 +37,7 @@ pub fn render_html(inner_content: Markup) -> Markup {
                 footer .footer {
                     .container {
                         p {
-                            "Copyright (C) 2016-2025 Dmitry Marakasov";
+                            "Copyright (C) 2016-2026 Dmitry Marakasov";
                             br;
                             "Code licensed under GPLv3+."
                         }
