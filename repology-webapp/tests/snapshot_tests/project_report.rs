@@ -11,37 +11,37 @@ use repology_webapp_test_utils::Request;
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_nonexistent(pool: PgPool) {
     let response = Request::new(pool, "/project/nonexistent/report").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_orphaned_without_reports(pool: PgPool) {
     let response = Request::new(pool, "/project/orphaned-without-reports/report").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_orphaned_with_reports(pool: PgPool) {
     let response = Request::new(pool, "/project/orphaned-with-reports/report").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_too_many_reports(pool: PgPool) {
     let response = Request::new(pool, "/project/many-reports/report").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_xss_attempt(pool: PgPool) {
     let response = Request::new(pool, "/project/xss-attempt/report").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_all_flags(pool: PgPool) {
     let response = Request::new(pool, "/project/all-flags/report").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
@@ -54,5 +54,5 @@ async fn test_afk(pool: PgPool) {
         .perform()
         .await;
 
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }

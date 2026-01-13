@@ -4,7 +4,7 @@
 use super::*;
 
 #[tokio::test]
-async fn test_as_snapshot() {
+async fn test_as_text_snapshot() {
     let resp = perform_mock_request("abc").await;
-    insta::assert_snapshot!(resp.as_snapshot().unwrap());
+    insta::assert_snapshot!(resp.as_text_snapshot().unwrap());
 }

@@ -1,7 +1,6 @@
 ---
 source: repology-webapp-test-utils/tests/integration_tests/snapshot.rs
-expression: resp.as_snapshot().unwrap()
-snapshot_kind: text
+expression: resp.as_text_snapshot().unwrap()
 ---
 Status: 200
 Header: content-type: text/plain

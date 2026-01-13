@@ -9,11 +9,11 @@ use repology_webapp_test_utils::Request;
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("project_cves_data"))]
 async fn test_recent_cves(pool: PgPool) {
     let response = Request::new(pool, "/security/recent-cves").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("project_cves_data"))]
 async fn test_recent_cpes(pool: PgPool) {
     let response = Request::new(pool, "/security/recent-cpes").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }

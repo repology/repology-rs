@@ -284,13 +284,26 @@ impl Response {
     }
 
     // snapshot
-    pub fn as_snapshot(&self) -> Result<String, ResponseError> {
+    pub fn as_text_snapshot(&self) -> Result<String, ResponseError> {
         let mut snapshot: String = format!("Status: {}\n", self.status.as_u16());
         for (k, v) in &self.headers {
             snapshot += &format!("Header: {}: {}\n", k, v.to_str().unwrap());
         }
         snapshot += "---\n";
         snapshot += self.text()?;
+        Ok(snapshot)
+    }
+
+    pub fn as_json_snapshot(&self) -> Result<String, ResponseError> {
+        let mut snapshot: String = format!("Status: {}\n", self.status.as_u16());
+        for (k, v) in &self.headers {
+            snapshot += &format!("Header: {}: {}\n", k, v.to_str().unwrap());
+        }
+        snapshot += "---\n";
+        let mut json = self.json()?;
+        json.sort_all_objects();
+        snapshot += &serde_json::to_string_pretty(&json)
+            .map_err(|e| ResponseError::JsonError(format!("{e}")))?;
         Ok(snapshot)
     }
 }

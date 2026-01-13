@@ -9,5 +9,5 @@ use repology_webapp_test_utils::Request;
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("important_updates"))]
 async fn test_base(pool: PgPool) {
     let response = Request::new(pool, "/tools/important-updates").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }

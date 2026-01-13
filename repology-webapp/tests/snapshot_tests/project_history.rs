@@ -9,23 +9,23 @@ use repology_webapp_test_utils::Request;
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_history_data"))]
 async fn test_nonexistent(pool: PgPool) {
     let response = Request::new(pool, "/project/nonexistent/hitstory").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_history_data"))]
 async fn test_orphaned_with_history(pool: PgPool) {
     let response = Request::new(pool, "/project/orphaned-with-history/history").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_history_data"))]
 async fn test_orphaned_without_history(pool: PgPool) {
     let response = Request::new(pool, "/project/orphaned-without-history/history").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_history_data"))]
 async fn test_normal(pool: PgPool) {
     let response = Request::new(pool, "/project/zsh/history").perform().await;
-    assert_snapshot!(response.as_snapshot().unwrap());
+    assert_snapshot!(response.as_text_snapshot().unwrap());
 }
