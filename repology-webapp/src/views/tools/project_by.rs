@@ -1,7 +1,6 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use std::collections::HashMap;
 use std::sync::Arc;
 
 use anyhow::Result;
@@ -291,7 +290,7 @@ pub async fn project_by_perform(
                     .render()?,
                 ),
                 TargetType::Json => {
-                    let targets = target_projects.into_iter().collect::<HashMap<_, _>>();
+                    let targets = target_projects.into_iter().collect::<serde_json::Value>();
                     (
                         mime::APPLICATION_JSON.as_ref(),
                         json!({
