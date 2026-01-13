@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+#![allow(clippy::regex_creation_in_loops)]
+
 use sqlx::PgPool;
 
 use repology_webapp_test_utils::{HtmlValidationFlags, Request};

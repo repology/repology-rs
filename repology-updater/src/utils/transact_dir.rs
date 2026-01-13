@@ -260,7 +260,7 @@ mod tests {
     use std::path::Path;
 
     fn write_to_dir(path: &Path, name: &str) {
-        fs::File::create(&path.join(name)).unwrap();
+        fs::File::create(path.join(name)).unwrap();
     }
 
     fn read_dir(path: &Path) -> Vec<String> {
@@ -336,7 +336,7 @@ mod tests {
         let res = res.inspect_err(|err| {
             assert_eq!(format!("{:?}", err), "Busy".to_string());
             assert_eq!(
-                format!("{}", err.to_string()),
+                format!("{}", err),
                 "operation cannot be performed because of concurrent transaction".to_string()
             );
         });
@@ -362,7 +362,7 @@ mod tests {
         let _ = res.inspect_err(|err| {
             assert_eq!(format!("{:?}", err), "Busy".to_string());
             assert_eq!(
-                format!("{}", err.to_string()),
+                format!("{}", err),
                 "operation cannot be performed because of concurrent transaction".to_string()
             );
         });
@@ -404,10 +404,10 @@ mod tests {
                         }
                     };
 
-                    if faine::inject_override!(false, "forced cleanup", true) {
-                        if dir.cleanup().is_ok() {
-                            assert!(dir.is_clean());
-                        }
+                    if faine::inject_override!(false, "forced cleanup", true)
+                        && dir.cleanup().is_ok()
+                    {
+                        assert!(dir.is_clean());
                     }
 
                     assert_eq!(

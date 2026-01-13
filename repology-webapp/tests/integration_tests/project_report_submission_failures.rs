@@ -24,7 +24,7 @@ async fn test_empty_form(pool: PgPool) {
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_report_data"))]
 async fn test_comment_too_long(pool: PgPool) {
     let form = ReportSubmission {
-        comment: std::iter::repeat('x').take(1024 * 100).collect(),
+        comment: std::iter::repeat_n('x', 1024 * 100).collect(),
         ..Default::default()
     };
     let response = Request::new(pool, "/project/zsh/report").with_form(form).perform().await;

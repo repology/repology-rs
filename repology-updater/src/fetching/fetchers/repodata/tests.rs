@@ -115,7 +115,7 @@ async fn test_mirror_list() {
     let mirrorlist_mock = server
         .mock("GET", "/foo/mirror.list")
         .with_status(200)
-        .with_body(&format!("{}/foo/\nhttps://example.com/foo", server.url()))
+        .with_body(format!("{}/foo/\nhttps://example.com/foo", server.url()))
         .create();
     let repomd_mock = server
         .mock("GET", "/foo/repodata/repomd.xml")
