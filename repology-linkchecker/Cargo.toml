@@ -25,7 +25,7 @@ repology-common = { path = "../repology-common" }
 # feature, see https://github.com/seanmonstar/reqwest/discussions/2227
 reqwest = { version = "0.13.1", default-features = false, features = ["http2"] }
 rustls = { version = "0.23.36", default-features = false }
-rustls-webpki = { version = "0.103.8", default-features = false }
+rustls-webpki = { version = "0.103.9", default-features = false }
 serde = { version = "1.0.228", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "postgres", "chrono"] }
 tokio = { version = "1.49.0", features = ["macros", "process", "rt-multi-thread"] }
