@@ -18,6 +18,7 @@ jobs:
         with:
           toolchain: nightly-2026-01-19
           components: rustfmt,llvm-tools-preview,clippy
+      - uses: taiki-e/install-action@cargo-hack
       - name: Install dependencies
         run: |
           curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
@@ -51,7 +52,9 @@ jobs:
       - name: Clippy check
         run: cargo clippy --all-targets
       - name: Build
-        run: cargo build
+        run: |
+          cargo build
+          cargo hack --workspace build
       - name: Test
         run: cargo test
         env:
