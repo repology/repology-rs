@@ -1,0 +1,8 @@
+---
+source: repology-webapp/tests/snapshot_tests/tool_project_by.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 302
+Header: location: /badge/vertical-allrepos/zsh.svg
+Header: content-length: 0
+---

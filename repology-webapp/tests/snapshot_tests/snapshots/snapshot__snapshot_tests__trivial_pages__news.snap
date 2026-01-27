@@ -1,0 +1,198 @@
+---
+source: repology-webapp/tests/snapshot_tests/trivial_pages.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 5673
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>Repology news</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="active"><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">News</h1>
+</div>
+
+
+
+<div class="container">
+
+<article>
+	<h3 id="2025-06-10">2025-06-10</h3>
+	<ul>
+		<li>Added <a href="/repository/tincan">Tin Can Linux</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2025-05-22">2025-05-22</h3>
+	<ul>
+		<li>We've started removing old (EoLed more than 2 years ago) repositories. See <a href="https://github.com/repology/repology-updater/issues/1499">issue</a> for details.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2025-04-25">2025-04-25</h3>
+	<ul>
+		<li>Added <a href="/repository/ptxdist">PTXdist</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2025-04-14">2025-04-14</h3>
+	<ul>
+		<li>Added <a href="/repository/stalix">stal/IX</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2024-09-23">2024-09-23</h3>
+	<ul>
+		<li>Added <a href="/repository/openvsx">Open VSX</a> VS Code extension registry.
+			Unfortunately it currently only <a href="/projects/?search=vscode%3A&#38;families=2-">intersects</a>
+			with Nix repository, so we encourage all repositories to use compatible and unambiguous naming scheme for vscode extensions, which
+			contains dot-separated namespace and extension name, for instance <code>vscode-ms-python.flake8</code>.
+		</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2024-09-17">2024-09-17</h3>
+	<ul>
+		<li>Added <a href="/repository/tur">Termux User Repository</a>.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2024-07-23">2024-07-23</h3>
+	<ul>
+		<li>Added <a href="/repository/opam">opam</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2024-07-18">2024-07-18</h3>
+	<ul>
+		<li>Added <a href="/repository/serpentos">Serpent OS</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2024-07-08">2024-07-08</h3>
+	<ul>
+		<li>Added <a href="/repository/chromebrew">Chromebrew</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2024-04-09">2024-04-09</h3>
+	<ul>
+		<li>Added <a href="/repository/chimera">Chimera Linux</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2023-08-28">2023-08-28</h3>
+	<ul>
+		<li>Added <a href="/repository/buildroot_master">Buildroot</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2023-06-01">2023-06-01</h3>
+	<ul>
+		<li>Added <a href="/repository/bioarch">BioArch</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2023-03-28">2023-03-28</h3>
+	<ul>
+		<li>Added <a href="/repository/wakemeops">WakeMeOps</a> repository.</li>
+	</ul>
+</article>
+
+<article>
+	<h3 id="2023-02-06">2023-02-06</h3>
+	<ul>
+		<li>IPv6 is now treated as primary protocol for link checking: IPv4 check is now skipped if IPv6 check succeeds. The way link check status is displayed is now more verbose and readable. For the record, more than 51% links (including upstream homepages and downloads, package pages, repositories and recipes) known to Repology already support IPv6.</li>
+	</ul>
+</article>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

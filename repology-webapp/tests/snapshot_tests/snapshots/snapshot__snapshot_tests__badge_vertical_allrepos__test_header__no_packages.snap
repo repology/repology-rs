@@ -1,0 +1,9 @@
+---
+source: repology-webapp/tests/snapshot_tests/badge_vertical_allrepos.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: image/svg+xml
+Header: content-length: 683
+---
+<svg xmlns="http://www.w3.org/2000/svg" width="178" height="25"><clipPath id="clip"><rect rx="3" width="100%" height="100%" fill="#000"/></clipPath><linearGradient id="grad" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><g clip-path="url(#clip)"><rect width="100%" height="100%" fill="#555"/><g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="15" font-weight="bold"><text x="89" y="13" dominant-baseline="central" fill="#010101" fill-opacity=".3">No known packages</text><text x="89" y="12" dominant-baseline="central">No known packages</text></g></g></svg>

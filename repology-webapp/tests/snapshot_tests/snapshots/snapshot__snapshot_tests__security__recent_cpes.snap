@@ -1,0 +1,181 @@
+---
+source: repology-webapp/tests/snapshot_tests/security.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 5787
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+	
+
+	<title>Recent CPE bindings - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li class="active"><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+<div class="btn-group pageheader-right">
+	<a href="/security/recent-cves" class="btn btn-default">Recent CVEs</a>
+	<a href="/security/recent-cpes" class="btn btn-default active">CPE bindings</a>
+</div>
+
+	<h1 class="page-header">Recent CPE bindings</h1>
+</div>
+
+
+
+<div class="container">
+
+<p>This is a list of recently added <a href="https://en.wikipedia.org/wiki/Common_Platform_Enumeration">CPE</a> bindings which allow matching Repology projects to <a href="https://nvd.nist.gov/">NVD</a> entries. These bindings are regularly added manually based on new and updated CVEs in NVD. After a binding is added, all past and future vulnerabilities with matching CPE are recognized for a given Repology project. You may see vulnerabilities for a given project under <b>CVEs</b> tab (only present when there are matching vulnerabilities), and missing bindings may be reported via <b>Report</b> tab.</p>
+
+<p>
+		<a href="/security/recent-cpes?autorefresh=1" rel="nofollow">Enable</a> autorefresh.</p>
+
+
+<p><b>3</b> binding(s) on this page, latest first</p>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<th class="minimal-column text-center">Added<span class="tzfix_zone"> (UTC)</span></th>
+			<th class="minimal-column">Project</th>
+			<th>CPE</th>
+		</tr>
+	</thead>
+	<tbody>
+	
+		<tr>
+			<td class="minimal-column"><time class="tzfix_time" datetime="2024-01-01T00:00+0000">2024-01-01 00:00</time></td>
+			<td class="minimal-column"><a href="/project/orphaned-with-cves/versions">orphaned-with-cves</a></td>
+			<td><div class="cpe-component">
+			<div class="cpe-component-header non-selectable">vendor</div>
+			<div class="cpe-component-value">foo</div>
+		</div>
+	<div class="cpe-component">
+			<div class="cpe-component-header non-selectable">product</div>
+			<div class="cpe-component-value">foo</div>
+		</div>
+	
+	
+	
+	
+	
+	</td>
+		</tr>
+	
+		<tr>
+			<td class="minimal-column"><time class="tzfix_time" datetime="2024-01-01T00:00+0000">2024-01-01 00:00</time></td>
+			<td class="minimal-column"><a href="/project/manyranges/versions">manyranges</a></td>
+			<td><div class="cpe-component">
+			<div class="cpe-component-header non-selectable">vendor</div>
+			<div class="cpe-component-value">bar</div>
+		</div>
+	<div class="cpe-component">
+			<div class="cpe-component-header non-selectable">product</div>
+			<div class="cpe-component-value">bar</div>
+		</div>
+	
+	
+	
+	
+	
+	</td>
+		</tr>
+	
+		<tr>
+			<td class="minimal-column"><time class="tzfix_time" datetime="2024-01-01T00:00+0000">2024-01-01 00:00</time></td>
+			<td class="minimal-column"><a href="/project/tworanges/versions">tworanges</a></td>
+			<td><div class="cpe-component">
+			<div class="cpe-component-header non-selectable">vendor</div>
+			<div class="cpe-component-value">baz</div>
+		</div>
+	<div class="cpe-component">
+			<div class="cpe-component-header non-selectable">product</div>
+			<div class="cpe-component-value">baz</div>
+		</div>
+	
+	
+	
+	
+	
+	</td>
+		</tr>
+	
+	</tbody>
+</table>
+
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

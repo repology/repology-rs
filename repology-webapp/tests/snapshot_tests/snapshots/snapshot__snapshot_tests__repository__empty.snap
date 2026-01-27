@@ -1,0 +1,277 @@
+---
+source: repology-webapp/tests/snapshot_tests/repository.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 9099
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Information on repository Empty">
+	<meta name="keywords" content="repository, package, packages, version, repository">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+
+	<title>Empty repository information - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li class="active"><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">Repository <strong>Empty</strong></h1>
+</div>
+
+
+
+<div class="container">
+
+<p>
+		<a href="/repository/empty?autorefresh=1" rel="nofollow">Enable</a> autorefresh.</p>
+
+
+
+
+
+
+
+
+
+<h2>Packages</h2>
+<div class="row">
+	<div class="col-md-3">
+		<div class="panel panel-primary">
+			<div class="panel-heading"><h3>Total</h3></div>
+			<div class="panel-body">
+				0
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="panel panel-success">
+			<div class="panel-heading"><h3>Newest</h3></div>
+			<div class="panel-body">
+				0
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="panel panel-danger">
+			<div class="panel-heading"><h3>Outdated</h3></div>
+			<div class="panel-body">
+				0
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="panel panel-default">
+			<div class="panel-heading"><h3>Ignored</h3></div>
+			<div class="panel-body">
+				0
+			</div>
+		</div>
+	</div>
+</div>
+
+<h2>Projects</h2>
+<div class="row">
+	<div class="col-md-3">
+		<div class="panel panel-primary">
+			<div class="panel-heading"><h3>Total</h3></div>
+			<div class="panel-body">
+				<a href="/projects/?inrepo=empty">
+					0
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="panel panel-success">
+			<div class="panel-heading"><h3>Newest</h3></div>
+			<div class="panel-body">
+				<a href="/projects/?inrepo=empty&#38;newest=1">
+					0
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="panel panel-danger">
+			<div class="panel-heading"><h3>Outdated</h3></div>
+			<div class="panel-body">
+				<a href="/projects/?inrepo=empty&#38;outdated=1">
+					0
+				</a>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-3">
+		<div class="panel panel-info">
+			<div class="panel-heading"><h3>Unique</h3></div>
+			<div class="panel-body">
+				<a href="/projects/?inrepo=empty&#38;families=1">
+					0
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+<h2>Package lists</h2>
+
+<p>Package filtering in Repology is very flexible, so you can combine all kinds of conditions. But here are some preset queries to start with:</p>
+
+<ul>
+	<li><a href="/projects/?inrepo=empty">All packages</a> present in this repository.</li>
+	<li>Packages which are <a href="/projects/?inrepo=empty&#38;newest=1">up to date</a> in this repository.</li>
+	<li>Packages which are <a href="/projects/?inrepo=empty&#38;outdated=1">outdated</a> in this repository.</li>
+	<li>Packages which are <a href="/projects/?inrepo=empty&#38;outdated=1&#38;families_newest=2-">outdated</a> in this repository, but newest in 2+ families. Compared to the previous query this has smaller possibility of false positives.</li>
+	<li>Packages which are <a href="/projects/?inrepo=empty&#38;vulnerable=1">potentially vulnerable</a> in this repository.</li>
+</ul>
+<ul>
+	<li>Packages which <a href="/projects/?inrepo=empty&#38;problematic=1">have ignored versions</a> in this repository. There may be incorrect versions which needs fixing among these.</li>
+	<li>Packages which are up to date <a href="/projects/?inrepo=empty&#38;newest=1&#38;families_newest=1">only in this repository family</a>. There may be incorrect versions which needs fixing among these.</li>
+	<li>Packages which <a href="/projects/?inrepo=empty&#38;has_related=1">have related ones</a> (with the same homepage). There may be projects which require merging these.</li>
+</ul>
+<ul>
+	<li>Unique projects present <a href="/projects/?inrepo=empty&#38;families=1">only in this repository family</a>.</li>
+	<li>Unique projects present <a href="/projects/?inrepo=empty&#38;repos=1">only in this repository</a>.</li>
+</ul>
+<ul>
+	<li>Project in other repositories <a href="/projects/?notinrepo=empty">not present in this one</a>.</li>
+	<li>Popular projects <a href="/projects/?notinrepo=empty&#38;families=5-">present in 5+ repository families</a>, but absent in this one - likely good candidates for inclusion.</li>
+</ul>
+
+<h2>Maintainers</h2>
+
+<p>There are no known maintainer(s) for this repository</p>
+
+
+
+<h2>Badge</h2>
+
+<p><a href="/repository/empty"><img src="/badge/repository-big/empty.svg" alt="Repository status"></a></p>
+
+<p>Markdown code:</p>
+<pre>
+[![Repository status](https://repology.org/badge/repository-big/empty.svg)](https://repology.org/repository/empty)
+</pre>
+
+<p>HTML code:</p>
+<pre>
+&lt;a href=&quot;https://repology.org/repository/empty&quot;&gt;
+    &lt;img src=&quot;https://repology.org/badge/repository-big/empty.svg&quot; alt=&quot;Repository status&quot;&gt;
+&lt;/a&gt;
+</pre>
+
+<p>Badge header may be changed or removed by <code>header</code> URL parameter, for example: <code>https://repology.org/badge/repository-big/empty.svg?header=Empty</code></p>
+
+<h2>Graphs</h2>
+<h3>Total projects</h3>
+<img src="/graph/repo/empty/projects_total.svg" alt="Total projects graph">
+
+<h3>Newest projects</h3>
+<img src="/graph/repo/empty/projects_newest.svg" alt="Newest projects graph">
+
+<h3>Newest projects percentage</h3>
+<img src="/graph/repo/empty/projects_newest_percent.svg" alt="Newest projects percentage graph">
+
+<h3>Outdated projects</h3>
+<img src="/graph/repo/empty/projects_outdated.svg" alt="Outdated projects graph">
+
+<h3>Outdated projects percentage</h3>
+<img src="/graph/repo/empty/projects_outdated_percent.svg" alt="Outdated projects percentage graph">
+
+<h3>Unique projects</h3>
+<img src="/graph/repo/empty/projects_unique.svg" alt="Unique projects graph">
+
+<h3>Unique projects percentage</h3>
+<img src="/graph/repo/empty/projects_unique_percent.svg" alt="Unique projects percentage graph">
+
+<h3>Problematic projects</h3>
+<img src="/graph/repo/empty/projects_problematic.svg" alt="Problematic projects graph">
+
+<h3>Problematic projects percentage</h3>
+<img src="/graph/repo/empty/projects_problematic_percent.svg" alt="Problematic projects percentage graph">
+
+<h3>Potentially vulnerable projects</h3>
+<img src="/graph/repo/empty/projects_vulnerable.svg" alt="Potentially vulnerable projects graph">
+
+<h3>Potentially vulnerable projects percentage</h3>
+<img src="/graph/repo/empty/projects_vulnerable_percent.svg" alt="Potentially vulnerable projects percentage graph">
+
+<h3>Maintainers</h3>
+<img src="/graph/repo/empty/maintainers.svg" alt="Maintainers graph">
+
+<h3>Problems</h3>
+<img src="/graph/repo/empty/problems.svg" alt="Problems graph">
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

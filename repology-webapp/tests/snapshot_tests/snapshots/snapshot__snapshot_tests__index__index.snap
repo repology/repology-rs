@@ -1,0 +1,383 @@
+---
+source: repology-webapp/tests/snapshot_tests/index.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 15251
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+
+
+<div class="container">
+	<header class="jumbotron">
+		<h1>Repology, the packaging hub</h1>
+		<p>Repology monitors a huge number of
+		<a href="https://en.wikipedia.org/wiki/Package_(package_management_system)">package</a>
+		<a href="https://en.wikipedia.org/wiki/Software_repository">repositories</a> and other
+		<a href="#repos-footnote">sources</a>
+		comparing packages versions across them and gathering other information. Repology shows you in which
+		repositories a given project is packaged, which version is the latest and which needs updating, who
+		maintains the package, and other related information. Repology might be useful</p>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading text-center">
+						<h3 class="panel-title">For package maintainers</h3>
+					</div>
+					<div class="panel-body">
+						<ul class="list-jumbotron-items">
+							<li>Discover new releases of software you maintain packages for</li>
+							<li>Find new projects to package</li>
+							<li>Get in touch with fellow maintainers to improve packages together</li>
+							<li>Keep package naming and versioning schemes in sync to other repos</li>
+							<li>Fix problems detected by repology, such as broken links</li>
+							<li>Get notified of vulnerable software versions</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading text-center">
+						<h3 class="panel-title">For software authors</h3>
+					</div>
+					<div class="panel-body">
+						<ul class="list-jumbotron-items">
+							<li>Keep track of where and how well your project is packaged</li>
+							<li>Keep in touch with your product package maintainers</li>
+							<li>Use packaging badges like this one:
+								<img class="jumbotron-badge" src="/static/demobadge.v1.66475070169abc06.svg" alt="Repology badge example">
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading text-center">
+						<h3 class="panel-title">For users</h3>
+					</div>
+					<div class="panel-body">
+						<ul class="list-jumbotron-items">
+							<li>Discover new releases of software you use</li>
+							<li>Pick distribution most suitable for you, in terms of package quantity, freshness or stability</li>
+							<li>Keep in touch with maintainers of software you use</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<section>
+		<h2>News highlights</h2>
+
+		<div class="row">
+			<div class="col-md-4">
+				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2025-06-10">2025-06-10</time>
+						added <a href="/repository/tincan">Tin Can Linux</a> repository</li>
+					<li><time class="news-summary-time" datetime="2025-05-22">2025-05-22</time>
+						started <a href="https://github.com/repology/repology-updater/issues/1499">removing</a> very old repositories</li>
+					<li><time class="news-summary-time" datetime="2025-04-25">2025-04-25</time>
+						added <a href="/repository/ptxdist">PTXdist</a> repository</li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2025-04-14">2025-04-14</time>
+						added <a href="/repository/stalix">stal/IX</a> repository</li>
+					<li><time class="news-summary-time" datetime="2024-09-23">2024-09-23</time>
+						added <a href="/repository/openvsx">Open VSX</a> registry</li>
+					<li><time class="news-summary-time" datetime="2024-09-17">2024-09-17</time>
+						added <a href="/repository/tur">Termux User Repository</a></li>
+				</ul>
+			</div>
+			<div class="col-md-4">
+				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2024-07-23">2024-07-23</time>
+						added <a href="/repository/opam">opam</a> repository</li>
+					<li><time class="news-summary-time" datetime="2024-07-18">2024-07-18</time>
+						added <a href="/repository/serpentos">Serpent OS</a> repository</li>
+					<li><time class="news-summary-time" datetime="2024-07-08">2024-07-08</time>
+						added <a href="/repository/chromebrew">Chromebrew</a> repository</li>
+				</ul>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<h2>Quick navigation</h2>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Search <b>packages</b>
+					</div>
+					<div class="panel-body">
+						<form action="/projects/" method="GET">
+							<div class="input-group">
+								<input type="text" class="form-control" name="search" placeholder="e.g. &quot;firefox&quot;">
+								<div class="input-group-btn">
+									<button type="submit" class="btn btn-default">Go</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="panel-footer">
+						or <a href="/projects/">browse</a> list of all packages
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						Search <b>maintainers</b>
+					</div>
+					<div class="panel-body">
+						<form action="/maintainers/" method="GET">
+							<div class="input-group">
+								<input type="text" class="form-control" name="search" placeholder="e.g. &quot;foo@bar.com&quot;">
+								<div class="input-group-btn">
+									<button type="submit" class="btn btn-default">Go</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="panel-footer">
+						or <a href="/maintainers/">browse</a> list of all maintainers
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						...or
+					</div>
+					<div class="panel-body">
+						See some <a href="/maintainers/">statistics</a> and a list of all
+						supported <a href="/repositories/statistics">repositories</a>, and navigate
+						to per-repository package lists from there.
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section>
+		<h2>Top repositories</h2>
+
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						By <b>total</b> number of packaged projects
+					</div>
+					<div class="panel-body">
+						<ol>
+
+</ol>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						By number of <b>non-unique</b><sup><a href="#top-footnote-1">1</a></sup> packaged projects
+					</div>
+					<div class="panel-body">
+						<ol>
+
+</ol>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						By number of <b>maintainers</b>
+					</div>
+					<div class="panel-body">
+						<ol>
+
+</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						By number of projects <b>per maintainer</b><sup><a href="#top-footnote-2">2</a>,<a href="#top-footnote-3">3</a></sup>
+					</div>
+					<div class="panel-body">
+						<ol>
+
+</ol>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						By number of projects with <b>up to date</b> packages
+					</div>
+					<div class="panel-body">
+						<ol>
+
+</ol>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						By percentage of <b>up to date</b> projects<sup><a href="#top-footnote-2">2</a></sup>
+					</div>
+					<div class="panel-body">
+						<ol>
+
+</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<ol>
+			<li id="top-footnote-1">Projects packaged in multiple repository families, e.g. not unique to single repository</li>
+			<li id="top-footnote-2">Only repositories with more than 1000 projects are counted</li>
+			<li id="top-footnote-3">Less is better</li>
+		</ol>
+
+		<p>For repositories which belong to a group (e.g. CentOS versions), best repository is always considered.</p>
+	</section>
+
+	<section>
+		<h2>Popular packages</h2>
+
+		
+<p>Legend:</p>
+
+
+<ul id="versions-legend">
+	
+<li><b>Spread</b> means how many repository families (e.g. all Debian versions as well as Ubuntu and other derivatives make a single family) contain this package.</li>
+
+	<li><span class="version version-newest">newest</span><sup>#repos</sup> - newest known version. The number shows how many repository families have this version.</li>
+	<li><span class="version version-devel">devel</span> - newest known devel (or unstable) version. There may be both devel and newest versions for a given package.</li>
+	<li><span class="version version-unique">unique</span> - package is only present in a single repository family, there are no other sources to compare it against, so although it's the latest version known to repology, is not really reliable.</li>
+	<li><span class="version version-outdated">outdated</span> - outdated version which requires updating.</li>
+	<li><span class="version version-legacy">legacy</span> - outdated version when a newer version is present. This is assumed to be legacy version preserved for e.g. compatibility.</li>
+
+	<li><span class="version version-rolling">rolling</span> - package is fetched from always latest snapshot or VCS master/trunk, so it is always latest and is not a subject for comparison.</li>
+	<li><span class="version version-noscheme">noscheme</span> - the project does not have official versioning scheme, so versions used in repositories which are basically random.</li>
+	<li><span class="version version-incorrect">incorrect</span> - version is known to be incorrect (e.g. version not officially released yet, or lacking alpha/beta/rc qualifier).</li>
+	<li><span class="version version-untrusted">untrusted</span> - this source is known to likely supply incorrect versions, so is ignored proactively.</li>
+	<li><span class="version version-ignored">ignored</span> - version is ignored and excluded from comparison for some other reason (e.g. snapshots).</li>
+	<li><span class="version version-newest">vulnerable<span class="vulnerable">▲</span></span> - version is potentially vulnerable as there are related CVEs.</li>
+</ul>
+
+		
+<div class="alert alert-warning" role="alert">No projects found matching the criteria</div>
+	</section>
+
+	<section>
+		<h2>Footnotes</h2>
+
+		<p id="repos-footnote">
+			* current and past supported repositories and other package information sources include:
+		</p>
+
+		<ul>
+	<li><b>Linux repositories:</b> Adélie, AlmaLinux, Alpine, ALT, Antergos, Amazon Linux, antiX, AOSC, Apertis, Arch and AUR, Artix, Ataraxia, BlackArch, Calculate, Carbs, CentOS, Chakra, Chimera, CRUX, Debian, Deepin, Devuan, Distri, ELRepo, Endless OS, Entware-ng, EPEL, Exherbo, Fedora, Funtoo, Gentoo, glaucus, Guix, GoboLinux, Hyperbola, KaOS, KISS, Kwort, LEDE, LiGurOS, Linuxbrew, Maemo, Mageia, Manjaro, Mer Project, Mint, MX Linux, Nix, NOIR, openEuler, openmamba, OpenMandriva, openSUSE, OpenWrt, Parabola, Pardus, Parrot, PCLinuxOS, Pisi, PLD Linux, PTXdist, PureOS, Raspbian, RebornOS, Rocky Linux, Rosa, Sabayon, Salix, Serpent OS, Siduction, SlackBuilds, Slackware, SliTaz, Software Collections, Solus, SparkyLinux, stal/IX, T2 SDE, Tails, Tin Can Linux, Trisquel, UBI, Ubuntu, Void, Whonix, yiffOS</li>
+	<li><b>*BSD repositories:</b> DragonFly DPorts, FreeBSD ports, MidnightBSD Mports, OpenBSD packages, pkgsrc, Ravenports</li>
+	<li><b>Third party repositories:</b> BioArch, Buildroot, Chromebrew, Deb Multimedia, Debian Janitor, Gentoo overlays, GetDeb/Playdeb, KDE neon, MPR, OpenPKG, openSUSE additional repositories, PackMan, pacstall, RPM Fusion, RPM Sphere, SageMath, Spack, Terra, UnitedRPMs, WakeMeOps</li>
+	<li><b>Other *nix repositories:</b> AIX Open Source Packages, AIX Toolbox, HaikuPorts, Homebrew, HP-UX, IBM i, OpenIndiana, MacPorts, postmarketOS, Rudix</li>
+	<li><b>And non-*nix repositories:</b> Baulk, Chocolatey, ConanCenter, Cygwin, F-Droid, just-install, MSYS2 (msys2, mingw), Npackd, OS4Depot, ReactOS rapps, Scoop, Termux, Vcpkg, winget, YACP</li>
+	<li><b>Upstream module collections or programming language specific package managers:</b> Buckaroo, CPAN, CRAN, crates.io, GNU ELPA, Hackage, LuaRocks, MELPA, OPAM, Open VSX, PyPI, RubyGems, Stackage</li>
+	<li><b>F/OSS news sites:</b> DistroWatch, freshcode.club, libregamewiki</li>
+	<li><b>Other sources:</b> Wikidata</li>
+</ul>
+	</section>
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

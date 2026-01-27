@@ -1,0 +1,346 @@
+---
+source: repology-webapp/tests/snapshot_tests/trivial_pages.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 10295
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>Not supported repositories - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li class="active"><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">Not supported repositories</h1>
+</div>
+
+
+
+<div class="container">
+
+<p>This is (an incomplete) list of repositories not added to Repology
+after a request, or removed from Repology due to not meeting our
+<a href="/docs/requirements">requirements</a> (e.g.
+not being compatible). We'll be glad to add them as soon as they
+fix the mentioned issues and publish package data in a usable
+format.</p>
+
+<ul class="list-unstyled">
+	<li>
+		<h3>4M Linux</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/266">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Astra Linux</h3>
+		<p>Repository contents gone.</p>
+	</li>
+	<li>
+		<h3>Buckaroo</h3>
+		<p>No usable data. Unlike <a href="https://github.com/LoopPerfect/buckaroo-recipes">older</a> buckaroo which contained recipes pointing to upstream releases, <a href="https://github.com/buckaroo-pm">new</a> buckaroo just forks upstream repositories to add their machinery and Repology cannot extract versions from repositories (yet).</p>
+	</li>
+	<li>
+		<h3>Clear Linux</h3>
+		<p>No compatible package names.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/989">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Collective Knowledge</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/714">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>conda</h3>
+		<p>No upstream URLs, modules are not prefixed.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/518">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>CTAN</h3>
+		<p>No suitable way to fetch data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/886">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Cydia</h3>
+		<p>No way to fetch just the needed data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/605">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Distrowatch</h3>
+		<p>Removed for recurrent incorrect release submissions and then permanent "connection refused" errors.</p>
+	</li>
+	<li>
+		<h3>EasyBuild</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/705">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Entware</h3>
+		<p>No longer parses.</p>
+	</li>
+	<li>
+		<h3>Fink</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/243">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>flathub</h3>
+		<p>No usable data. Also Repology does not support self-contained blobs like flatpaks, which require versions of all bundled components to be considered.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/363">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Freshcode</h3>
+		<p>Feed no longer available, replies with HTTP 500.</p>
+	</li>
+	<li>
+		<h3>frugalware</h3>
+		<p>No usable data (either shell FrugalBuilds, or arch-like metadata with no compatible package names (basenames) and no upstream URLs).</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/169">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Gentoo binary repositories</h3>
+		<p>No way to reliably extract name and version from <code>CPV</code>, lack upstream URLs.</p>
+		<ul>
+			<li>Red Core (<a href="https://mirror.math.princeton.edu/pub/redcorelinux/amd64/packages/">repository</a>).</li>
+			<li>Calculate (<a href="https://github.com/repology/repology-updater/issues/1134">issue</a>).</li>
+		</ul>
+	</li>
+	<li>
+		<h3>Hunter</h3>
+		<p>Requires complex parser (CMake), does not provide upstream URLs.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/pull/1184">Pull</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Hyperbola</h3>
+		<p>Repository <a href="https://repo.hyperbola.info:50012/gnu-plus-linux-libre/stable/core/os/x86_64/core.db.tar.gz">data</a> disappeared.</p>
+	</li>
+	<li>
+		<h3>KISS</h3>
+		<p>Delisted after data format change. New format involves variable substitutions and requires a complex parser.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/1166">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>libreELEC</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/1025">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Lunar Linux</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/785">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Meson WrapDB</h3>
+		<p>No suitable way to fetch data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/1138">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>OpenCSW</h3>
+		<p>No compatible package names.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/367">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>OpenELEC</h3>
+		<p>No usable data, dead.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/205">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>pkgsrc-wip</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/810">Issue</a></li>
+			<li><a href="https://github.com/repology/repology-updater/issues/1030">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>poky</h3>
+		<p>Requres complex parser (shell).</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/603">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Puppy Linux</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/324">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>snapcraft</h3>
+		<p>API requires authorization, no usable data. Also Repology does not support self-contained blobs like snaps, which require versions of all bundled components to be considered.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/627">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Source Mage</h3>
+		<p>No upstream URLs, modules are not prefixed.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/364">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Spack</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/706">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>SWORD</h3>
+		<p>Requires parsing HTML.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/1076">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>SystemRescueCD</h3>
+		<p>No compatible package names (basenames), no upstream URLs, requires parsing HTML.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/1031">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>Tiny Core</h3>
+		<p>Incompatible package names and versions.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/784">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>ToaruOS</h3>
+		<p>No upstream URLs, too little packages.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/900">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>UNIX Packages</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/663">Issue</a></li>
+		</ul>
+	</li>
+	<li>
+		<h3>webinstall.dev</h3>
+		<p>No suitable way to fetch data, no upstream URLs.</p>
+	</li>
+	<li>
+		<h3>Yggdrasil</h3>
+		<p>No usable data.</p>
+		<ul>
+			<li><a href="https://github.com/repology/repology-updater/issues/1185">Issue</a></li>
+		</ul>
+	</li>
+</ul>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

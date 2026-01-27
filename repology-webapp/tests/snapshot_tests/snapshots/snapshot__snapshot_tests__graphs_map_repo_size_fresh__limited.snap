@@ -1,0 +1,9 @@
+---
+source: repology-webapp/tests/snapshot_tests/graphs_map_repo_size_fresh.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: image/svg+xml
+Header: content-length: 1502
+---
+<svg xmlns="http://www.w3.org/2000/svg" width="1140" height="800"><defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="2" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L2,3 L0,6 L9,3 z" fill="#000"/></marker></defs><rect width="1140" height="800" fill="#f0f0f0"/><path d="M 40.5,780.5 V 15.5 H 1111.5 Z" fill="#d0d0d0"/><line marker-end="url(#arrow)" x1="40.5" x2="40.5" y1="780.5" y2="15.5" stroke="#000"/><line marker-end="url(#arrow)" x1="40.5" x2="1115.5" y1="780.5" y2="780.5" stroke="#000"/><g fill="#000" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="13" font-weight="bold" text-anchor="middle"><text x="565.5" y="793.5">Number of packages in repository</text><text x="0" y="0" transform="translate(20.5,405.5),rotate(-90)">Number of fresh packages in repository</text></g><g fill="#000" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11"><text text-anchor="middle" x="1093.5" y="793.5">10000</text><text text-anchor="middle" x="40.5" y="790.5">0</text><text text-anchor="end" x="35.5" y="783.5">0</text><text text-anchor="end" x="35.5" y="33.5">10000</text></g><g font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11" text-anchor="end"><text stroke-linecap="round" stroke-width="3" fill="#f0f0f0" stroke="#f0f0f0" x="1085.5" y="33.5">Ubuntu 12</text><text fill="#000" x="1085.5" y="33.5">Ubuntu 12</text></g><circle cx="1090.5" cy="30.5" r="5" fill="#f0f0f0"/><circle cx="1090.5" cy="30.5" r="4" fill="#aabbcc"/></svg>

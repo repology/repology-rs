@@ -1,0 +1,219 @@
+---
+source: repology-webapp/tests/snapshot_tests/maintainer.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 8290
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Information on package maintainer active@example.com">
+	<meta name="keywords" content="repository, package, packages, version, maintainer">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>active@example.com maintainer information - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li class="active"><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">Maintainer <strong>active@example.com</strong></h1>
+</div>
+
+
+
+<div class="container">
+
+
+
+
+<h2>Contact</h2>
+<ul>
+
+
+	<li><b>E-Mail:</b> <a href="mailto:active@example.com">active@example.com</a></li>
+
+
+</ul>
+
+
+<h2>Repository activity</h2>
+
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th class="text-right" rowspan="2">Repository</th>
+			<th class="text-center" rowspan="2">Packages</th>
+			<th class="text-center" colspan="10">Projects</th>
+			<th class="text-center" rowspan="2">Feeds</th>
+		</tr>
+		<tr>
+			<th class="text-center">Total</th>
+			<th class="text-center" colspan="2">Newest</th>
+			<th class="text-center" colspan="2">Outdated</th>
+			<th class="text-center" colspan="2">Problematic</th>
+			<th class="text-center" colspan="2">Potentially vulnerable</th>
+			<th class="text-center">Other lists</th>
+		</tr>
+	</thead>
+	<tbody>
+	
+		<tr>
+			<td class="text-right break-word">
+				<a href="/repository/freebsd">FreeBSD</a>
+			</td>
+			<td class="text-center total-cell">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd">10</a>
+			</td>
+			<td class="text-center total-cell">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd">11</a>
+			</td><td class="text-center version-cell version-big version-newest">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;newest=1">12</a>
+			</td>
+			<td class="text-center version-cell version-big version-newest">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;newest=1">109.1%</a>
+			</td><td class="text-center version-cell version-big version-outdated">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;outdated=1">13</a>
+			</td>
+			<td class="text-center version-cell version-big version-outdated">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;outdated=1">118.2%</a>
+			</td><td class="text-center version-cell version-big version-ignored">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;problematic=1">14</a>
+			</td>
+			<td class="text-center version-cell version-big version-ignored">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;problematic=1">127.3%</a>
+			</td><td class="text-center vulnerable-cell">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;vulnerable=1">15</a>
+			</td>
+			<td class="text-center vulnerable-cell">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;vulnerable=1">136.36%</a>
+			</td><td class="text-center">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;outdated=1&#38;families_newest=2-"
+					title="High confidence (newest in 2 or more other repository families) outdated packages">HCO</a>
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;newest=1&#38;families_newest=1"
+					title="Lone (not present in other repository families, so may be either very fresh or incorrect) newest versions">LN</a>
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;has_related=1"
+					title="Packages which have related ones (may require merging)">∗</a>
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;families=1"
+					title="Unique packages (not present in other repository families)">U</a>
+				<a href="/maintainer/active%40example.com/problems-for-repo/freebsd">Problems</a>
+			</td>
+			<td class="text-center">
+				<a href="/maintainer/active%40example.com/feed-for-repo/freebsd">html</a>,
+				<a href="/maintainer/active%40example.com/feed-for-repo/freebsd/atom">atom<img src="/static/feed.v1.210d8fdde71150a5.svg" width="16" height="16" alt="Atom feed"></a>
+			</td>
+		</tr>
+	
+		<tr><td colspan="14"></td></tr>
+		<tr>
+			<td class="text-right break-word total-cell">Total</td>
+			<td class="text-center total-cell">
+				<a href="/projects/?maintainer=active%40example.com">10</a>
+			</td>
+			<td class="text-center total-cell">
+				<a href="/projects/?maintainer=active%40example.com">10</a>
+			</td><td class="text-center" colspan="2">-</td><td class="text-center" colspan="2">-</td><td class="text-center" colspan="2">-</td><td class="text-center" colspan="2">-</td><td class="text-center">
+				<a href="/projects/?maintainer=active%40example.com&#38;outdated=1&#38;families_newest=2-"
+					title="High confidence (newest in 2 or more other repository families) outdated packages">HCO</a>
+				<a href="/projects/?maintainer=active%40example.com&#38;newest=1&#38;families_newest=1"
+					title="Lone (not present in other repository families) newest versions">LN</a>
+				<a href="/projects/?maintainer=active%40example.com&#38;has_related=1"
+					title="Packages which have related ones (may require merging)">∗</a>
+				<a href="/projects/?maintainer=active%40example.com&#38;families=1"
+					title="Unique packages (not present in other repository families)">U</a>
+			</td>
+			<td class="text-center"></td>
+		</tr>
+	</tbody>
+</table>
+
+
+<h2>Categories</h2>
+
+<p>This maintainer is active in the following package categories:</p>
+
+<ul>
+	
+	<li>
+		<strong>games</strong> (<a href="/projects/?maintainer=active%40example.com&#38;category=games">10</a>)
+	</li>
+	
+</ul>
+
+
+<h2>Projects</h2>
+
+<p>, <a href="/projects/?maintainer=active%40example.com">…</a></p>
+
+
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

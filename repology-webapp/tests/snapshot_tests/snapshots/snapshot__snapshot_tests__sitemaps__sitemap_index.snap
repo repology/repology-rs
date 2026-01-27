@@ -1,0 +1,15 @@
+---
+source: repology-webapp/tests/snapshot_tests/sitemaps.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: application/xml
+Header: content-length: 399
+---
+<?xml version="1.0"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<sitemap><loc>https://repology.org/sitemaps/main.xml</loc></sitemap>
+<sitemap><loc>https://repology.org/sitemaps/repositories.xml</loc></sitemap>
+<sitemap><loc>https://repology.org/sitemaps/maintainers.xml</loc></sitemap>
+<sitemap><loc>https://repology.org/sitemaps/projects.xml</loc></sitemap>
+</sitemapindex>

@@ -1,0 +1,12 @@
+---
+source: repology-webapp/tests/snapshot_tests/sitemaps.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: application/xml
+Header: content-length: 215
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://repology.org/maintainer/johndoe%40example.com</loc><changefreq>daily</changefreq></url>
+</urlset>

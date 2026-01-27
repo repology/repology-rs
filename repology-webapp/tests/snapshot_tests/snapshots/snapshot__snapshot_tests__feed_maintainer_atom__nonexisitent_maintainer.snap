@@ -1,0 +1,18 @@
+---
+source: repology-webapp/tests/snapshot_tests/feed_maintainer_atom.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: application/atom+xml
+Header: content-length: 680
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>Repology feed for nonexistent@example.com</title>
+	<icon>https://repology.org/static/repology40x40.v1.png</icon>
+	<link href="https://repology.org/maintainer/nonexistent%40example.com/feed-for-repo/freebsd/atom" rel="self" type="application/atom+xml" />
+	<link href="https://repology.org/maintainer/nonexistent%40example.com/feed-for-repo/freebsd" rel="alternate" type="text/html" />
+	<author><name>Repology</name><uri>https://repology.org/</uri></author>
+	<id>tag:repology.org,2018-04-25:maintainer-repo:nonexistent@example.com:freebsd</id>
+	<updated>2000-01-01T00:00:00Z</updated>
+</feed>

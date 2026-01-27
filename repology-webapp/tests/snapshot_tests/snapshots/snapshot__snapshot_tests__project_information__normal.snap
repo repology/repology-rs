@@ -1,0 +1,187 @@
+---
+source: repology-webapp/tests/snapshot_tests/project_information.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 4650
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Aggregated information from all packages for project zsh">
+	<meta name="keywords" content="repository, package, packages, version, zsh">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>zsh packages dissection - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+<div class="btn-group pageheader-right">
+	
+	<a href="/project/zsh/versions" class="btn btn-default">Versions</a>
+	<a href="/project/zsh/packages" class="btn btn-default">Packages</a>
+	<a href="/project/zsh/information" class="btn btn-default active">Information</a>
+	
+	<a href="/project/zsh/history" class="btn btn-default">History</a>
+	
+	
+	
+	<a href="/project/zsh/badges" class="btn btn-default">Badges</a>
+	
+	
+	<a href="/project/zsh/report" class="btn btn-default" rel="nofollow"><span class="text-danger">Report</span></a>
+</div>
+
+	<h1 class="page-header">Information for <strong>zsh</strong></h1>
+</div>
+
+
+
+<div class="container">
+
+
+
+<div class="row">
+	<div class="col-md-4">
+		<section id="Versions">
+			<h2>Versions</h2>
+			<ul class="list-sparse">
+			
+				<li>
+					<span class="version version-big version-ignored" title="ignored version">1.2</span></li>
+			
+				<li>
+					<span class="version version-big version-newest" title="newest version">1.1</span></li>
+			
+				<li>
+					<span class="version version-big version-outdated" title="outdated version">1.0</span> <b>(2)</b></li>
+			
+				<li>
+					<span class="version version-big version-outdated" title="outdated version">0.9</span></li>
+			
+			</ul>
+		</section>
+		
+		<section id="Package_names">
+			<h2>Package names</h2>
+			<ul>
+			
+				<li>zsh <b>(3)</b></li>
+			
+			</ul>
+		</section>
+		
+
+		<section id="Repositories">
+			<h2>Repositories</h2>
+			<ul>
+			
+			<li><a href="/repository/freebsd">FreeBSD</a></li>
+			
+			<li><a href="/repository/freshcode">freshcode.club</a></li>
+			
+			<li><a href="/repository/ubuntu_12">Ubuntu 12</a></li>
+			
+			<li><a href="/repository/ubuntu_24">Ubuntu 24</a></li>
+			
+			</ul>
+		</section>
+
+		
+
+		
+	</div>
+	<div class="col-md-8">
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+	</div>
+</div>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

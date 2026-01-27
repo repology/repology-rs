@@ -1,0 +1,9 @@
+---
+source: repology-webapp/tests/snapshot_tests/tool_project_by.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 300
+Header: content-type: application/json
+Header: content-length: 152
+---
+{"_comment":"Ambiguous redirect, multiple target projects are possible","targets":{"iperf2":"/api/v1/project/iperf2","iperf3":"/api/v1/project/iperf3"}}

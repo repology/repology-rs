@@ -1,0 +1,209 @@
+---
+source: repology-webapp/tests/snapshot_tests/repositories.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 6677
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+	
+
+	<title>Repository support details - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li class="active"><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+<div class="btn-group pageheader-right">
+	<a href="/repositories/statistics" class="btn btn-default">Statistics</a>
+	<a href="/repositories/packages" class="btn btn-default">Packages</a>
+	<a href="/repositories/graphs" class="btn btn-default">Graphs</a>
+	<a href="/repositories/updates" class="btn btn-default">Updates</a>
+	<a href="/repositories/fields" class="btn btn-default active">Fields</a>
+</div>
+
+	<h1 class="page-header">Repository support details</h1>
+</div>
+
+
+
+<div class="container">
+
+<p>A table of supported data fields for each repository. The more data is provided the better. Note that links information is crucial for distinguishing unrelated projects with similar names, so it's now mandatory.</p>
+
+<p>
+		<a href="/repositories/fields?autorefresh=1" rel="nofollow">Enable</a> autorefresh.</p>
+
+<div class="table-responsive">
+<table class="table table-striped table-hover">
+	<thead>
+	
+	
+	
+		<tr>
+			<th class="text-right">Repository</th>
+			<th class="text-center">Summary</th>
+			<th class="text-center">Maintainer</th>
+			<th class="text-center">Categories</th>
+			<th class="text-center">License</th>
+			<th class="text-center">Links</th>
+			<th class="text-center">Sources</th>
+			<th class="text-center">Patches</th>
+			<th class="text-center">Build logs</th>
+			<th class="text-center">Names</th>
+			<th class="text-center">CPE</th>
+		</tr>
+	</thead><tbody>
+	
+		<tr id="freebsd">
+			<th class="text-right">
+				<a href="/repository/freebsd">FreeBSD</a>
+			</th>
+
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"><span class="text-danger" title="Repository must provide link to upstream">✘</span></td>
+			<td class="text-center"><span class="text-danger" title="Repository must provide link to package sources">✘</span></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+		</tr>
+	
+	
+	
+		<tr id="freshcode">
+			<th class="text-right">
+				<a href="/repository/freshcode">freshcode.club</a>
+			</th>
+
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"><span class="text-danger" title="Repository must provide link to upstream">✘</span></td>
+			<td class="text-center">-</td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+		</tr>
+	
+	
+	
+		<tr id="ubuntu_12">
+			<th class="text-right">
+				<a href="/repository/ubuntu_12">Ubuntu 12</a>
+			</th>
+
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"><span class="text-danger" title="Repository must provide link to upstream">✘</span></td>
+			<td class="text-center"><span class="text-danger" title="Repository must provide link to package sources">✘</span></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+		</tr>
+	
+	
+	
+		<tr id="ubuntu_24">
+			<th class="text-right">
+				<a href="/repository/ubuntu_24">Ubuntu 24</a>
+			</th>
+
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"><span class="text-danger" title="Repository must provide link to upstream">✘</span></td>
+			<td class="text-center"><span class="text-danger" title="Repository must provide link to package sources">✘</span></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+			<td class="text-center"></td>
+		</tr>
+	
+	</tbody>
+</table>
+</div>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

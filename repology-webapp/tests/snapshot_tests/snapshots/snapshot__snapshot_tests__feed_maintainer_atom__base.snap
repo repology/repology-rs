@@ -1,0 +1,66 @@
+---
+source: repology-webapp/tests/snapshot_tests/feed_maintainer_atom.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: application/atom+xml
+Header: content-length: 3068
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>Repology feed for johndoe@example.com</title>
+	<icon>https://repology.org/static/repology40x40.v1.png</icon>
+	<link href="https://repology.org/maintainer/johndoe%40example.com/feed-for-repo/freebsd/atom" rel="self" type="application/atom+xml" />
+	<link href="https://repology.org/maintainer/johndoe%40example.com/feed-for-repo/freebsd" rel="alternate" type="text/html" />
+	<author><name>Repology</name><uri>https://repology.org/</uri></author>
+	<id>tag:repology.org,2018-04-25:maintainer-repo:johndoe@example.com:freebsd</id>
+	<updated>2124-01-01T00:00:00+00:00</updated>
+	<entry>
+		<id>tag:repology.org,2018-04-25:maintainer-repo:johndoe@example.com:freebsd:2</id>
+		<updated>2124-01-01T00:00:00+00:00</updated>
+		<link href="https://repology.org/project/zsh/versions#freebsd" />
+		<title>zsh is no longer tracked</title>
+		<content>Package for zsh is no longer maintained by johndoe@example.com and/or was removed from FreeBSD</content>
+		<category term="removed" label="Package was removed" />
+	</entry>
+	<entry>
+		<id>tag:repology.org,2018-04-25:maintainer-repo:johndoe@example.com:freebsd:6</id>
+		<updated>2123-12-31T23:59:59+00:00</updated>
+		<link href="https://repology.org/project/zsh/versions#freebsd" />
+		<title>zsh 666 is ignored</title>
+		<content>Package zsh version 666 in FreeBSD is ignored</content>
+		<category term="ignored" label="Package is ignored" />
+	</entry>
+	<entry>
+		<id>tag:repology.org,2018-04-25:maintainer-repo:johndoe@example.com:freebsd:4</id>
+		<updated>2123-12-31T23:59:58+00:00</updated>
+		<link href="https://repology.org/project/zsh/versions#freebsd" />
+		<title>zsh 222 is outdated by 333, 444</title>
+		<content>Package zsh version 222 in FreeBSD is outdated by 333, 444</content>
+		<category term="outdated" label="Package is outdated" />
+	</entry>
+	<entry>
+		<id>tag:repology.org,2018-04-25:maintainer-repo:johndoe@example.com:freebsd:5</id>
+		<updated>2123-12-31T23:59:57+00:00</updated>
+		<link href="https://repology.org/project/zsh/versions#freebsd" />
+		<title>zsh 555 is outdated</title>
+		<content>Package zsh version 555 in FreeBSD is outdated</content>
+		<category term="outdated" label="Package is outdated" />
+	</entry>
+	<entry>
+		<id>tag:repology.org,2018-04-25:maintainer-repo:johndoe@example.com:freebsd:3</id>
+		<updated>2123-12-31T23:59:56+00:00</updated>
+		<link href="https://repology.org/project/zsh/versions#freebsd" />
+		<title>zsh 111 is up to date</title>
+		<content>Package zsh version 111 in FreeBSD is up to date</content>
+		<category term="uptodate" label="Package is up to date" />
+	</entry>
+	<entry>
+		<id>tag:repology.org,2018-04-25:maintainer-repo:johndoe@example.com:freebsd:1</id>
+		<updated>2123-12-31T23:59:55+00:00</updated>
+		<link href="https://repology.org/project/zsh/versions#freebsd" />
+		<title>zsh is now tracked</title>
+		<content>Package for zsh was added to FreeBSD and/or assigned to johndoe@example.com</content>
+		<category term="added" label="Package was added" />
+	</entry>
+</feed>

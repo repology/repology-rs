@@ -1,0 +1,15 @@
+---
+source: repology-webapp/tests/snapshot_tests/sitemaps.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: application/xml
+Header: content-length: 483
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://repology.org/repository/freebsd</loc><changefreq>daily</changefreq></url>
+<url><loc>https://repology.org/repository/freshcode</loc><changefreq>daily</changefreq></url>
+<url><loc>https://repology.org/repository/ubuntu_12</loc><changefreq>daily</changefreq></url>
+<url><loc>https://repology.org/repository/ubuntu_24</loc><changefreq>daily</changefreq></url>
+</urlset>

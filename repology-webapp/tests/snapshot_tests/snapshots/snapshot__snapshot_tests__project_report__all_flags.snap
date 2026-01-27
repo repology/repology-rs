@@ -1,0 +1,226 @@
+---
+source: repology-webapp/tests/snapshot_tests/project_report.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 8717
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version, all-flags">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>all-flags reports - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+<div class="btn-group pageheader-right">
+	
+	<a href="/project/all-flags/versions" class="btn btn-default">Versions</a>
+	<a href="/project/all-flags/packages" class="btn btn-default">Packages</a>
+	<a href="/project/all-flags/information" class="btn btn-default">Information</a>
+	
+	<a href="/project/all-flags/history" class="btn btn-default">History</a>
+	
+	
+	
+	<a href="/project/all-flags/badges" class="btn btn-default">Badges</a>
+	
+	
+	<a href="/project/all-flags/report" class="btn btn-default active" rel="nofollow"><span class="text-danger">Report</span></a>
+</div>
+
+	<h1 class="page-header">Report problem for <strong>all-flags</strong></h1>
+</div>
+
+
+
+<div class="container">
+
+
+
+
+
+
+
+<p>While repology tries its best in matching packages across different repositories, this is quite a complex task:</p>
+<ul>
+	<li>Packages of a single software project may be named differently in some repositories (for instance, <b>libagg</b> vs. <b>agg</b>, <b>dungeoncrawl</b> vs. <b>dungeon-crawl</b>, <b>fonts-linuxlibertine</b> vs. <b>fonts-ttf-linuxlibertine</b> vs. <b>linux-libertine-fonts</b> vs. <b>linuxlibertine-fonts-ttf</b>).</li>
+	<li>There may be multiple unrelated software projects with a same name (for instance, <b>clementine</b> is both X11 window manager and a media player).</li>
+	<li>Some packages may use incorrect versions (for instance, picking "next" version number which was not released yet when packaging a git snapshot, or using dates and commit hashes instead of version numbers).</li>
+</ul>
+<p>Repology uses a set of manually edited rules to resolve these cases. You may submit a change to the <a href="https://github.com/repology/repology-rules">ruleset</a> directly or use this form to suggest an improvement to the ruleset. Please only use this for problems which may be fixed by the ruleset (which are basically problems listed above).</p>
+
+
+<h2>Current reports (1)</h2>
+
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		Created more than a year ago,
+		not processed yet
+	</div>
+	<ul class="list-group">
+	
+		<li class="list-group-item"><b>The project needs some version(s) to be marked as ignored</b></li>
+	
+	
+		<li class="list-group-item"><b>The project needs to be split into multiple projects</b></li>
+	
+	
+		<li class="list-group-item"><b>The project needs other projects merged into it</b></li>
+	
+	
+		<li class="list-group-item"><b>The project needs vulnerability info updated</b></li>
+	
+	
+		<li class="list-group-item break-word"><b>Comment:</b><br>
+			Some comment
+		</li>
+	
+	
+	</ul>
+</div>
+
+
+
+
+<h2 id="new_report_form">New report</h2>
+
+
+<form action="/project/all-flags/report" method="POST">
+	<div class="form-group">
+		<label><input type="checkbox" name="need_verignore"> Needs version ignore</label>
+		<div class="help-block">
+			<p>Check if the latest version detected for this project is incorrect (e.g. a non-existing version, version with incorrect format, version with date or a git commit hash) and should be ignored.
+			Please provide a prooflink for unapparent cases (e.g. a list of VCS tags or official site mentioning actual latest version).</p>
+			<p>Prerequisites:</p>
+			<ul>
+				<li>If upstream does not tag/publish official releases, please submit an issue asking them to do so first.</li>
+			</ul>
+		</div>
+	</div>
+	<div class="form-group">
+		<label><input type="checkbox" name="need_split"> Needs split</label><br>
+		<div class="help-block">
+			<p>Check if this entry refers to multiple unrelated projects and thus needs to be split into multiple entries.
+			Naming suggestions for new projects are welcome.</p>
+			<p>Will <b>not</b> split:</p>
+			<ul>
+				<li>Legacy or ESR branches of the same project.</li>
+				<li><code>*-unclassified</code> projects which lack valid homepage information.</li>
+				<li>Maintained forks of abandoned projects, unless a fork has known fatal drawbacks.</li>
+			</ul>
+		</div>
+	</div>
+	<div class="form-group">
+		<label><input type="checkbox" name="need_merge"> Needs merge</label>
+		<div class="help-block">
+			<p>Check if there are other Repology entries for the same project under different names which should be merged into one.
+			Please list them in the comment field, as well as suggested target name.</p>
+			<p>Will <b>not</b> merge:</p>
+			<ul>
+				<li>Modules (e.g. python) without consistent prefix (such as <code>python-</code> or <code>python3-</code>) (common problem for Slackbuilds and Debian source packages).</li>
+				<li><code>go:*</code> packages, which have no official naming scheme.</li>
+				<li>Packages with incorrect names (should be renamed in repositories instead).</li>
+				<li>Lots of package variants (common for AUR and Nix) - repositories are expected to provide master project name for these.</li>
+			</ul>
+		</div>
+	</div>
+	<div class="form-group">
+		<label><input type="checkbox" name="need_vuln"> Needs vulnerability information update</label>
+		<div class="help-block">
+			<p>
+			
+			Check if there are known older CVEs (vulnerabilities) for this project.
+			
+			Note that there's expected lag of CVE information propagation so there's no need to report very recent CVEs. The idea is to fill missing <a href="https://en.wikipedia.org/wiki/Common_Platform_Enumeration">CPE</a> bindings which allow matching both past and future vulnerabilities to projects.
+			</p>
+
+			<p>Will <b>not</b> accept:</p>
+			<ul>
+				<li>Reports for recent CVEs which have not been analyzed by <a href="https://nvd.nist.gov/">NVD</a> yet (so please check NVD first).</li>
+				<li>Reports for incorrect version ranges - please <a href="https://nvd.nist.gov/info">report</a> these to NVD.</li>
+			</ul>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="comment">Additional comments</label>
+		<textarea class="form-control" id="comment" name="comment" rows="5"></textarea>
+	</div>
+	<button type="submit" class="btn btn-default">Submit</button>
+</form>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

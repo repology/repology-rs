@@ -1,0 +1,9 @@
+---
+source: repology-webapp/tests/snapshot_tests/feed_repository_atom.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 404
+Header: content-type: text/plain; charset=utf-8
+Header: content-length: 20
+---
+repository not found

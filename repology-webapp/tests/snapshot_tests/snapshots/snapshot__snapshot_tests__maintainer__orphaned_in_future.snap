@@ -1,0 +1,111 @@
+---
+source: repology-webapp/tests/snapshot_tests/maintainer.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 404
+Header: content-type: text/html
+Header: content-length: 4326
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+	<meta http-equiv="robots" content="noindex">
+
+	<title>Gone maintainer orphaned-in-future@example.com - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li class="active"><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">Gone maintainer <strong>orphaned-in-future@example.com</strong></h1>
+</div>
+
+
+
+<div class="container">
+
+<div class="alert alert-warning" role="alert">
+	<p>Sorry, but Repology no longer knows maintainer <strong>orphaned-in-future@example.com</strong> since <time class="tzfix_time" datetime="2124-01-01T00:00+0000">2124-01-01 00:00</time><span class="tzfix_zone"> (UTC)</span> (a second ago).</p>
+	<p>Some of the reasons which may have caused this:</p>
+	<ul>
+		<li>The maintainer no longer maintains any packages.</li>
+		<li>The maintainer obfuscates his email in package metadata, so repology cannot parse it.</li>
+		<li>The maintainer opted out from repology processing and was manually blacklisted.</li>
+		<li>The maintainer opted to merge this entry into another one.</li>
+		<li>Repology no longer supports any repositories this maintainer is active in. Check <a href="/repositories/statistics">the list</a>.</li>
+		<li>The maintainer identifier (email) is misspelled, or have changed. Try <a href="/maintainers/">searching</a>. It is quite common for only domain part to change.</li>
+		<li>Repology is no longer able to parse maintainer information for repositories this maintainer is active in. Check <a href="/repositories/fields">repository support table</a>. This can be fixed if repositories in question setup a more complete dump of information on their packages.</li>
+	</ul>
+</div>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

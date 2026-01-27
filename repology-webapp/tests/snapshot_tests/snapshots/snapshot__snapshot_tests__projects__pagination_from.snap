@@ -1,0 +1,332 @@
+---
+source: repology-webapp/tests/snapshot_tests/projects.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 12639
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>Projects list - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">Projects</h1>
+</div>
+
+
+
+<div class="container">
+
+<nav>
+	<form class="form-horizontal" action="/projects/" method="GET">
+		<div class="form-group" id="advanced-search-toggle-root">
+			<label for="search" class="col-sm-2 control-label">Name search</label>
+			<div class="col-sm-6">
+				<div class="input-group">
+					<input type="text" class="form-control" id="search" name="search" value="" placeholder="e.g. &quot;firefox&quot;">
+					<div class="input-group-btn">
+						<button type="submit" class="btn btn-default">Go</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-2">
+				<label for="advanced-search-toggle" class="btn btn-default">Advanced...</label>
+			</div>
+		</div>
+		<input type="checkbox" class="hidden" id="advanced-search-toggle">
+		<div class="advanced-search">
+			<div class="form-group">
+				<label for="maintainer" class="col-sm-2 control-label">Maintainer</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="maintainer" name="maintainer" value="" placeholder="e.g. &quot;foo@bar.com&quot;">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="category" class="col-sm-2 control-label">Category</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="category" name="category" value="" placeholder="e.g. &quot;games&quot;">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="inrepo" class="col-sm-2 control-label">In repo</label>
+				<div class="col-sm-8">
+					<select class="form-control" id="inrepo" name="inrepo">
+						<option value="">-</option>
+						<option value="freebsd">FreeBSD</option>
+						<option value="freshcode">freshcode.club</option>
+						<option value="ubuntu_12">Ubuntu 12</option>
+						<option value="ubuntu_24">Ubuntu 24</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="notinrepo" class="col-sm-2 control-label">Not in repo</label>
+				<div class="col-sm-8">
+					<select class="form-control" id="notinrepo" name="notinrepo">
+						<option value="">-</option>
+						<option value="freebsd">FreeBSD</option>
+						<option value="freshcode">freshcode.club</option>
+						<option value="ubuntu_12">Ubuntu 12</option>
+						<option value="ubuntu_24">Ubuntu 24</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="repos" class="col-sm-2 control-label">Repositories</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="repos" name="repos" value="" placeholder="e.g. 1 (unique) or 2- (non-unique) or 3-5">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="spread" class="col-sm-2 control-label">Families (spread)</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="families" name="families" value="" placeholder="e.g. 1 or 2- or 3-5">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="repos" class="col-sm-2 control-label">Repositories newest</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="repos_newest" name="repos_newest" value="" placeholder="e.g. 1 or 2- or 3-5">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="spread" class="col-sm-2 control-label">Families newest</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="families_newest" name="families_newest" value="" placeholder="e.g. 1 or 2- or 3-5">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="newest"> Newest
+						</label>
+					</div>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="outdated"> Outdated
+						</label>
+					</div>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="problematic"> Problematic
+						</label>
+					</div>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="vulnerable"> Potentially vulnerable
+						</label>
+					</div>
+					<div class="checkbox">
+						<label>
+							<input type="checkbox" name="has_related"> Has related
+						</label>
+					</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary">Search</button>
+					<a href="/projects/" class="btn btn-default">Clear</a>
+				</div>
+			</div>
+		</div>
+	</form>
+</nav>
+
+
+<nav>
+	<ul class="pagination">
+		<li><a href="/projects/..pkg_foofoo_/" rel="prev">&laquo;</a></li>
+		<li><a href="/projects/">0-9</a></li>
+		<li><a href="/projects/a/">A</a></li>
+		<li><a href="/projects/b/">B</a></li>
+		<li><a href="/projects/c/">C</a></li>
+		<li><a href="/projects/d/">D</a></li>
+		<li><a href="/projects/e/">E</a></li>
+		<li><a href="/projects/f/">F</a></li>
+		<li><a href="/projects/g/">G</a></li>
+		<li><a href="/projects/h/">H</a></li>
+		<li><a href="/projects/i/">I</a></li>
+		<li><a href="/projects/j/">J</a></li>
+		<li><a href="/projects/k/">K</a></li>
+		<li><a href="/projects/l/">L</a></li>
+		<li><a href="/projects/m/">M</a></li>
+		<li><a href="/projects/n/">N</a></li>
+		<li><a href="/projects/o/">O</a></li>
+		<li class="active"><a href="/projects/p/">P</a></li>
+		<li><a href="/projects/q/">Q</a></li>
+		<li><a href="/projects/r/">R</a></li>
+		<li><a href="/projects/s/">S</a></li>
+		<li><a href="/projects/t/">T</a></li>
+		<li><a href="/projects/u/">U</a></li>
+		<li><a href="/projects/v/">V</a></li>
+		<li><a href="/projects/w/">W</a></li>
+		<li><a href="/projects/x/">X</a></li>
+		<li><a href="/projects/y/">Y</a></li>
+		<li><a href="/projects/z/">Z</a></li>
+		<li><a href="/projects/pkg_foofoo_/" rel="next">&raquo;</a></li>
+	</ul>
+</nav>
+
+
+
+<p><b>1</b> project(s) on this page</p>
+<table class="table table-striped table-condensed">
+	<thead>
+		<tr>
+			<th>Project</th>
+			<th class="text-center" title="Spread - number of repository families a project is present in">Spr</th>
+			<th title="Versions considered newest">Newest</th>
+			<th title="Versions considered outdated">Outdated</th>
+			<th title="Versions excluded from comparison">Ignored</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="text-nowrap">
+				<a href="/project/pkg_foofoo_/versions">pkg_foofoo_</a>
+			</td>
+			<td class="text-center"><b>1</b></td>
+			<td><span class="version version-newest"></span></td>
+			<td></td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+
+
+<nav>
+	<ul class="pagination">
+		<li><a href="/projects/..pkg_foofoo_/" rel="prev">&laquo;</a></li>
+		<li><a href="/projects/">0-9</a></li>
+		<li><a href="/projects/a/">A</a></li>
+		<li><a href="/projects/b/">B</a></li>
+		<li><a href="/projects/c/">C</a></li>
+		<li><a href="/projects/d/">D</a></li>
+		<li><a href="/projects/e/">E</a></li>
+		<li><a href="/projects/f/">F</a></li>
+		<li><a href="/projects/g/">G</a></li>
+		<li><a href="/projects/h/">H</a></li>
+		<li><a href="/projects/i/">I</a></li>
+		<li><a href="/projects/j/">J</a></li>
+		<li><a href="/projects/k/">K</a></li>
+		<li><a href="/projects/l/">L</a></li>
+		<li><a href="/projects/m/">M</a></li>
+		<li><a href="/projects/n/">N</a></li>
+		<li><a href="/projects/o/">O</a></li>
+		<li class="active"><a href="/projects/p/">P</a></li>
+		<li><a href="/projects/q/">Q</a></li>
+		<li><a href="/projects/r/">R</a></li>
+		<li><a href="/projects/s/">S</a></li>
+		<li><a href="/projects/t/">T</a></li>
+		<li><a href="/projects/u/">U</a></li>
+		<li><a href="/projects/v/">V</a></li>
+		<li><a href="/projects/w/">W</a></li>
+		<li><a href="/projects/x/">X</a></li>
+		<li><a href="/projects/y/">Y</a></li>
+		<li><a href="/projects/z/">Z</a></li>
+		<li><a href="/projects/pkg_foofoo_/" rel="next">&raquo;</a></li>
+	</ul>
+</nav>
+
+
+
+<p>Legend:</p>
+
+
+<ul id="versions-legend">
+	
+<li><b>Spread</b> means how many repository families (e.g. all Debian versions as well as Ubuntu and other derivatives make a single family) contain this package.</li>
+
+	<li><span class="version version-newest">newest</span><sup>#repos</sup> - newest known version. The number shows how many repository families have this version.</li>
+	<li><span class="version version-devel">devel</span> - newest known devel (or unstable) version. There may be both devel and newest versions for a given package.</li>
+	<li><span class="version version-unique">unique</span> - package is only present in a single repository family, there are no other sources to compare it against, so although it's the latest version known to repology, is not really reliable.</li>
+	<li><span class="version version-outdated">outdated</span> - outdated version which requires updating.</li>
+	<li><span class="version version-legacy">legacy</span> - outdated version when a newer version is present. This is assumed to be legacy version preserved for e.g. compatibility.</li>
+
+	<li><span class="version version-rolling">rolling</span> - package is fetched from always latest snapshot or VCS master/trunk, so it is always latest and is not a subject for comparison.</li>
+	<li><span class="version version-noscheme">noscheme</span> - the project does not have official versioning scheme, so versions used in repositories which are basically random.</li>
+	<li><span class="version version-incorrect">incorrect</span> - version is known to be incorrect (e.g. version not officially released yet, or lacking alpha/beta/rc qualifier).</li>
+	<li><span class="version version-untrusted">untrusted</span> - this source is known to likely supply incorrect versions, so is ignored proactively.</li>
+	<li><span class="version version-ignored">ignored</span> - version is ignored and excluded from comparison for some other reason (e.g. snapshots).</li>
+	<li><span class="version version-newest">vulnerable<span class="vulnerable">▲</span></span> - version is potentially vulnerable as there are related CVEs.</li>
+</ul>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

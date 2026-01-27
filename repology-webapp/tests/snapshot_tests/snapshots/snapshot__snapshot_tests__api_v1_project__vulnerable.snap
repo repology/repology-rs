@@ -1,0 +1,18 @@
+---
+source: repology-webapp/tests/snapshot_tests/api_v1_project.rs
+expression: response.as_json_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: application/json
+Header: content-length: 119
+---
+[
+  {
+    "origversion": "1.0_1",
+    "repo": "repo",
+    "status": "newest",
+    "version": "1.0",
+    "visiblename": "visiblename",
+    "vulnerable": true
+  }
+]

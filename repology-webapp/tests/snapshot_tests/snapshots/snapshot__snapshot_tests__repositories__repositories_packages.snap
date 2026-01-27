@@ -1,0 +1,252 @@
+---
+source: repology-webapp/tests/snapshot_tests/repositories.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 10680
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+	
+
+	<title>Raw repository package counts - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li class="active"><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+<div class="btn-group pageheader-right">
+	<a href="/repositories/statistics" class="btn btn-default">Statistics</a>
+	<a href="/repositories/packages" class="btn btn-default active">Packages</a>
+	<a href="/repositories/graphs" class="btn btn-default">Graphs</a>
+	<a href="/repositories/updates" class="btn btn-default">Updates</a>
+	<a href="/repositories/fields" class="btn btn-default">Fields</a>
+</div>
+
+	<h1 class="page-header">Raw repository package counts</h1>
+</div>
+
+
+
+<div class="container">
+
+<div class="clearfix">
+	<p>Total individual packages known to repology: <b>0</b>.</p>
+
+	<p>
+		<a href="/repositories/packages?autorefresh=1" rel="nofollow">Enable</a> autorefresh.</p>
+</div>
+
+
+<p>Legend:</p>
+
+
+<ul id="versions-legend">
+	
+<li><b>Spread</b> means how many repository families (e.g. all Debian versions as well as Ubuntu and other derivatives make a single family) contain this package.</li>
+
+	<li><span class="version version-newest">newest</span><sup>#repos</sup> - newest known version. The number shows how many repository families have this version.</li>
+	<li><span class="version version-devel">devel</span> - newest known devel (or unstable) version. There may be both devel and newest versions for a given package.</li>
+	<li><span class="version version-unique">unique</span> - package is only present in a single repository family, there are no other sources to compare it against, so although it's the latest version known to repology, is not really reliable.</li>
+	<li><span class="version version-outdated">outdated</span> - outdated version which requires updating.</li>
+	<li><span class="version version-legacy">legacy</span> - outdated version when a newer version is present. This is assumed to be legacy version preserved for e.g. compatibility.</li>
+
+	<li><span class="version version-rolling">rolling</span> - package is fetched from always latest snapshot or VCS master/trunk, so it is always latest and is not a subject for comparison.</li>
+	<li><span class="version version-noscheme">noscheme</span> - the project does not have official versioning scheme, so versions used in repositories which are basically random.</li>
+	<li><span class="version version-incorrect">incorrect</span> - version is known to be incorrect (e.g. version not officially released yet, or lacking alpha/beta/rc qualifier).</li>
+	<li><span class="version version-untrusted">untrusted</span> - this source is known to likely supply incorrect versions, so is ignored proactively.</li>
+	<li><span class="version version-ignored">ignored</span> - version is ignored and excluded from comparison for some other reason (e.g. snapshots).</li>
+	<li><span class="version version-newest">vulnerable<span class="vulnerable">▲</span></span> - version is potentially vulnerable as there are related CVEs.</li>
+</ul>
+
+<div class="table-responsive">
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th class="text-right" rowspan="2">Repository</th>
+			<th class="text-center" colspan="12">Packages</th>
+		</tr>
+		<tr>
+			<th class="text-center">Total</th>
+			<th class="text-center"><abbr title="Newest">New.</abbr></th>
+			<th class="text-center"><abbr title="Devel">Dev.</abbr></th>
+			<th class="text-center"><abbr title="Unique">Unq.</abbr></th>
+			<th class="text-center"><abbr title="Outdated">Out.</abbr></th>
+			<th class="text-center"><abbr title="Legacy">Leg.</abbr></th>
+
+			<th class="text-center"><abbr title="Rolling">Rol.</abbr></th>
+			<th class="text-center"><abbr title="No upstream version scheme">Nov.</abbr></th>
+			<th class="text-center"><abbr title="Incorrect">Inc.</abbr></th>
+			<th class="text-center"><abbr title="Untrusted">Unt.</abbr></th>
+			<th class="text-center"><abbr title="Ignored">Ign.</abbr></th>
+
+			<th class="text-center"><abbr title="Potentially vulnerable">Vul.</abbr></th>
+		</tr>
+	</thead>
+	<tbody>
+	
+		<tr id="freebsd">
+			<th class="text-right">
+				<a href="/repository/freebsd">FreeBSD</a>
+			</th>
+
+			<td class="text-center"><span title="12345">12k</span></td>
+
+			<td class="text-center version-cell version-big version-newest">0</td>
+			<td class="text-center version-cell version-big version-devel">0</td>
+			<td class="text-center version-cell version-big version-unique">0</td>
+			<td class="text-center version-cell version-big version-outdated">0</td>
+			<td class="text-center version-cell version-big version-legacy">0</td>
+
+			<td class="text-center version-cell version-big version-rolling">0</td>
+			<td class="text-center version-cell version-big version-noscheme">0</td>
+			<td class="text-center version-cell version-big version-incorrect">0</td>
+			<td class="text-center version-cell version-big version-untrusted">0</td>
+			<td class="text-center version-cell version-big version-ignored">0</td>
+
+			<td class="text-center vulnerable-cell">0</td>
+		</tr>
+	
+		<tr id="freshcode">
+			<th class="text-right">
+				<a href="/repository/freshcode">freshcode.club</a>
+			</th>
+
+			<td class="text-center"><span title="12345">12k</span></td>
+
+			<td class="text-center version-cell version-big version-newest">0</td>
+			<td class="text-center version-cell version-big version-devel">0</td>
+			<td class="text-center version-cell version-big version-unique">0</td>
+			<td class="text-center version-cell version-big version-outdated">0</td>
+			<td class="text-center version-cell version-big version-legacy">0</td>
+
+			<td class="text-center version-cell version-big version-rolling">0</td>
+			<td class="text-center version-cell version-big version-noscheme">0</td>
+			<td class="text-center version-cell version-big version-incorrect">0</td>
+			<td class="text-center version-cell version-big version-untrusted">0</td>
+			<td class="text-center version-cell version-big version-ignored">0</td>
+
+			<td class="text-center vulnerable-cell">0</td>
+		</tr>
+	
+		<tr id="ubuntu_12">
+			<th class="text-right">
+				<a href="/repository/ubuntu_12">Ubuntu 12</a>
+			</th>
+
+			<td class="text-center"><span title="12345">12k</span></td>
+
+			<td class="text-center version-cell version-big version-newest">0</td>
+			<td class="text-center version-cell version-big version-devel">0</td>
+			<td class="text-center version-cell version-big version-unique">0</td>
+			<td class="text-center version-cell version-big version-outdated">0</td>
+			<td class="text-center version-cell version-big version-legacy">0</td>
+
+			<td class="text-center version-cell version-big version-rolling">0</td>
+			<td class="text-center version-cell version-big version-noscheme">0</td>
+			<td class="text-center version-cell version-big version-incorrect">0</td>
+			<td class="text-center version-cell version-big version-untrusted">0</td>
+			<td class="text-center version-cell version-big version-ignored">0</td>
+
+			<td class="text-center vulnerable-cell">0</td>
+		</tr>
+	
+		<tr id="ubuntu_24">
+			<th class="text-right">
+				<a href="/repository/ubuntu_24">Ubuntu 24</a>
+			</th>
+
+			<td class="text-center"><span title="12345">12k</span></td>
+
+			<td class="text-center version-cell version-big version-newest">0</td>
+			<td class="text-center version-cell version-big version-devel">0</td>
+			<td class="text-center version-cell version-big version-unique">0</td>
+			<td class="text-center version-cell version-big version-outdated">0</td>
+			<td class="text-center version-cell version-big version-legacy">0</td>
+
+			<td class="text-center version-cell version-big version-rolling">0</td>
+			<td class="text-center version-cell version-big version-noscheme">0</td>
+			<td class="text-center version-cell version-big version-incorrect">0</td>
+			<td class="text-center version-cell version-big version-untrusted">0</td>
+			<td class="text-center version-cell version-big version-ignored">0</td>
+
+			<td class="text-center vulnerable-cell">0</td>
+		</tr>
+	
+	</tbody>
+</table>
+</div>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

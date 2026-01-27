@@ -1,0 +1,183 @@
+---
+source: repology-webapp/tests/snapshot_tests/project_related.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 6992
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="List of packages with same homepage as gcc in all repositories">
+	<meta name="keywords" content="repository, package, packages, version, gcc">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>gcc related projects - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+<div class="btn-group pageheader-right">
+	
+	<a href="/project/gcc/versions" class="btn btn-default">Versions</a>
+	<a href="/project/gcc/packages" class="btn btn-default">Packages</a>
+	<a href="/project/gcc/information" class="btn btn-default">Information</a>
+	
+	<a href="/project/gcc/history" class="btn btn-default">History</a>
+	
+	
+	<a href="/project/gcc/related" class="btn btn-default active">Related</a>
+	
+	
+	<a href="/project/gcc/badges" class="btn btn-default">Badges</a>
+	
+	
+	<a href="/project/gcc/report" class="btn btn-default" rel="nofollow"><span class="text-danger">Report</span></a>
+</div>
+
+	<h1 class="page-header">Related for <strong>gcc</strong></h1>
+</div>
+
+
+
+<div class="container">
+
+
+
+
+
+
+
+<p>Related projects are determined by recursively matching package homepage URLs. Note that this list may be incomplete as Repology may not be able to get homepage URLs from some repositories.</p>
+
+
+<p><b>2</b> project(s) on this page</p>
+<table class="table table-striped table-condensed">
+	<thead>
+		<tr>
+			<th>Project</th>
+			<th class="text-center" title="Spread - number of repository families a project is present in">Spr</th>
+			<th title="Versions considered newest">Newest</th>
+			<th title="Versions considered outdated">Outdated</th>
+			<th title="Versions excluded from comparison">Ignored</th>
+			<th>Rank</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="text-nowrap">
+				<a href="/project/binutils/versions">binutils</a><a class="non-selectable" href="/project/binutils/related">∗</a>
+			</td>
+			<td class="text-center"><b>1</b></td>
+			<td><span class="version version-newest">1.0</span></td>
+			<td></td>
+			<td></td>
+			<td>100.00</td>
+		</tr>
+		<tr>
+			<td class="text-nowrap">
+				<a href="/project/gcc/versions">gcc</a><a class="non-selectable" href="/project/gcc/related">∗</a>
+			</td>
+			<td class="text-center"><b>1</b></td>
+			<td><span class="version version-newest">1.0</span></td>
+			<td></td>
+			<td></td>
+			<td>100.00</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<p>Legend:</p>
+
+
+<ul id="versions-legend">
+	
+<li><b>Spread</b> means how many repository families (e.g. all Debian versions as well as Ubuntu and other derivatives make a single family) contain this package.</li>
+
+	<li><span class="version version-newest">newest</span><sup>#repos</sup> - newest known version. The number shows how many repository families have this version.</li>
+	<li><span class="version version-devel">devel</span> - newest known devel (or unstable) version. There may be both devel and newest versions for a given package.</li>
+	<li><span class="version version-unique">unique</span> - package is only present in a single repository family, there are no other sources to compare it against, so although it's the latest version known to repology, is not really reliable.</li>
+	<li><span class="version version-outdated">outdated</span> - outdated version which requires updating.</li>
+	<li><span class="version version-legacy">legacy</span> - outdated version when a newer version is present. This is assumed to be legacy version preserved for e.g. compatibility.</li>
+
+	<li><span class="version version-rolling">rolling</span> - package is fetched from always latest snapshot or VCS master/trunk, so it is always latest and is not a subject for comparison.</li>
+	<li><span class="version version-noscheme">noscheme</span> - the project does not have official versioning scheme, so versions used in repositories which are basically random.</li>
+	<li><span class="version version-incorrect">incorrect</span> - version is known to be incorrect (e.g. version not officially released yet, or lacking alpha/beta/rc qualifier).</li>
+	<li><span class="version version-untrusted">untrusted</span> - this source is known to likely supply incorrect versions, so is ignored proactively.</li>
+	<li><span class="version version-ignored">ignored</span> - version is ignored and excluded from comparison for some other reason (e.g. snapshots).</li>
+	<li><span class="version version-newest">vulnerable<span class="vulnerable">▲</span></span> - version is potentially vulnerable as there are related CVEs.</li>
+</ul>
+
+
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

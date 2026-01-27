@@ -1,0 +1,220 @@
+---
+source: repology-webapp/tests/snapshot_tests/maintainers.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 8605
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Package maintainers listing">
+	<meta name="keywords" content="repository, package, packages, version, maintainer, maintainers">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>Maintainers list - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li class="active"><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">Maintainers</h1>
+</div>
+
+
+
+<div class="container">
+<nav>
+	<div class="form-group">
+		<form class="form-inline" action="/maintainers/" method="GET">
+			<div class="btn-group">
+			
+				<a href="/maintainers/" class="btn btn-default">&laquo;&laquo;</a>
+				
+				<a href="/maintainers/..active%40example.com/" class="btn btn-default" rel="prev">&laquo;</a>
+				<a href="/maintainers/no-vuln-column%40example.com/" class="btn btn-default" rel="next">&raquo;</a>
+				
+				<a href="/maintainers/..%F4%8F%BF%BF/" class="btn btn-default">&raquo;&raquo;</a>
+			
+			</div>
+			<div class="input-group">
+				<input class="form-control" type="text" name="search" value="" placeholder="Search maintainers">
+				<div class="input-group-btn">
+					<button type="submit" class="btn btn-default">Go</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</nav>
+
+<table class="table table-striped table-condensed">
+	<thead>
+		<tr>
+			<th class="text-right" rowspan="2">Maintainer</th>
+			<th class="text-center" rowspan="2">Most active in</th>
+			<th class="text-center" colspan="6">Projects in "most active" repo</th>
+			<th class="text-center" rowspan="2">Projects in<br>all repos</th>
+			<th class="text-center" rowspan="2">Known for</th>
+		</tr>
+		<tr>
+			<th class="text-center">Total</th>
+			<th class="text-center" colspan="2">Newest</th>
+			<th class="text-center" colspan="2">Outdated</th>
+			<th class="text-center">Problematic</th>
+		</tr>
+	</thead>
+	<tbody>
+	
+		<tr>
+			<td class="text-right break-word">
+				<a href="/maintainer/active%40example.com">active@example.com</a>
+			</td>
+			<td class="text-center">
+				<a href="/repository/freebsd">FreeBSD</a>
+			</td>
+			<td class="text-center total-cell">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd">11</a>
+			</td><td class="text-center version-cell version-big version-newest">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;newest=1">12</a>
+			</td>
+			<td class="text-center version-cell version-big version-newest">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;newest=1">109.1%</a>
+			</td><td class="text-center version-cell version-big version-outdated">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;outdated=1">13</a>
+			</td>
+			<td class="text-center version-cell version-big version-outdated">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;outdated=1">118.2%</a>
+			</td><td class="text-center version-cell version-big version-ignored">
+				<a href="/projects/?maintainer=active%40example.com&#38;inrepo=freebsd&#38;problematic=1">14</a>
+			</td><td class="text-center total-cell">
+				<a href="/projects/?maintainer=active%40example.com">10</a>
+			</td>
+			<td class="text-center">more than a year</td>
+		</tr>
+	
+		<tr>
+			<td class="text-right break-word">
+				<a href="/maintainer/fallback-mnt-foo%40repology">fallback-mnt-foo@repology</a>
+			</td>
+			<td class="text-center">
+				<a href="/repository/freebsd">FreeBSD</a>
+			</td>
+			<td class="text-center total-cell">
+				<a href="/projects/?maintainer=fallback-mnt-foo%40repology&#38;inrepo=freebsd">1</a>
+			</td><td class="text-center version-cell version-big version-newest">
+				<a href="/projects/?maintainer=fallback-mnt-foo%40repology&#38;inrepo=freebsd&#38;newest=1">1</a>
+			</td>
+			<td class="text-center version-cell version-big version-newest">
+				<a href="/projects/?maintainer=fallback-mnt-foo%40repology&#38;inrepo=freebsd&#38;newest=1">100.0%</a>
+			</td><td class="text-center version-cell version-big version-outdated">
+				<a href="/projects/?maintainer=fallback-mnt-foo%40repology&#38;inrepo=freebsd&#38;outdated=1">1</a>
+			</td>
+			<td class="text-center version-cell version-big version-outdated">
+				<a href="/projects/?maintainer=fallback-mnt-foo%40repology&#38;inrepo=freebsd&#38;outdated=1">100.0%</a>
+			</td><td class="text-center version-cell version-big version-ignored">
+				<a href="/projects/?maintainer=fallback-mnt-foo%40repology&#38;inrepo=freebsd&#38;problematic=1">1</a>
+			</td><td class="text-center total-cell">
+				<a href="/projects/?maintainer=fallback-mnt-foo%40repology">1</a>
+			</td>
+			<td class="text-center">more than a year</td>
+		</tr>
+	
+		<tr>
+			<td class="text-right break-word">
+				<a href="/maintainer/no-vuln-column%40example.com">no-vuln-column@example.com</a>
+			</td>
+			<td class="text-center">
+				<a href="/repository/freebsd">FreeBSD</a>
+			</td>
+			<td class="text-center total-cell">
+				<a href="/projects/?maintainer=no-vuln-column%40example.com&#38;inrepo=freebsd">11</a>
+			</td><td class="text-center version-cell version-big version-newest">
+				<a href="/projects/?maintainer=no-vuln-column%40example.com&#38;inrepo=freebsd&#38;newest=1">12</a>
+			</td>
+			<td class="text-center version-cell version-big version-newest">
+				<a href="/projects/?maintainer=no-vuln-column%40example.com&#38;inrepo=freebsd&#38;newest=1">109.1%</a>
+			</td><td class="text-center version-cell version-big version-outdated">
+				<a href="/projects/?maintainer=no-vuln-column%40example.com&#38;inrepo=freebsd&#38;outdated=1">13</a>
+			</td>
+			<td class="text-center version-cell version-big version-outdated">
+				<a href="/projects/?maintainer=no-vuln-column%40example.com&#38;inrepo=freebsd&#38;outdated=1">118.2%</a>
+			</td><td class="text-center version-cell version-big version-ignored">
+				<a href="/projects/?maintainer=no-vuln-column%40example.com&#38;inrepo=freebsd&#38;problematic=1">14</a>
+			</td><td class="text-center total-cell">
+				<a href="/projects/?maintainer=no-vuln-column%40example.com">10</a>
+			</td>
+			<td class="text-center">more than a year</td>
+		</tr>
+	
+	</tbody>
+</table>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

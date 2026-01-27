@@ -1,0 +1,32 @@
+---
+source: repology-webapp/tests/snapshot_tests/api_v1_project.rs
+expression: response.as_json_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: application/json
+Header: content-length: 285
+---
+[
+  {
+    "binname": "binname",
+    "categories": [
+      "games"
+    ],
+    "licenses": [
+      "GPLv2",
+      "GPLv3"
+    ],
+    "maintainers": [
+      "foo@example.com",
+      "bar@example.com"
+    ],
+    "origversion": "1.0_1",
+    "repo": "repo",
+    "srcname": "srcname",
+    "status": "newest",
+    "subrepo": "subrepo",
+    "summary": "Summary",
+    "version": "1.0",
+    "visiblename": "visiblename"
+  }
+]

@@ -1,0 +1,6 @@
+---
+source: repology-webapp/tests/snapshot_tests/badge_tiny_repos.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 404
+---

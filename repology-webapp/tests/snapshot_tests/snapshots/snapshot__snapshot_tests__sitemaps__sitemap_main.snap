@@ -1,0 +1,19 @@
+---
+source: repology-webapp/tests/snapshot_tests/sitemaps.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: application/xml
+Header: content-length: 786
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://repology.org/docs</loc><changefreq>weekly</changefreq></url>
+<url><loc>https://repology.org/docs/about</loc><changefreq>weekly</changefreq></url>
+<url><loc>https://repology.org/docs/requirements</loc><changefreq>weekly</changefreq></url>
+<url><loc>https://repology.org/api/v1</loc><changefreq>weekly</changefreq></url>
+<url><loc>https://repology.org/</loc><changefreq>hourly</changefreq></url>
+<url><loc>https://repology.org/news</loc><changefreq>daily</changefreq></url>
+<url><loc>https://repology.org/repositories/statistics</loc><changefreq>hourly</changefreq></url>
+<url><loc>https://repology.org/tools/trending</loc><changefreq>hourly</changefreq></url>
+</urlset>

@@ -1,0 +1,327 @@
+---
+source: repology-webapp/tests/snapshot_tests/project_badges.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 12852
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="SVG badges with packaging information for project zsh">
+	<meta name="keywords" content="repository, package, packages, version, zsh, badge">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>zsh packaging badges - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+<div class="btn-group pageheader-right">
+	
+	<a href="/project/zsh/versions" class="btn btn-default">Versions</a>
+	<a href="/project/zsh/packages" class="btn btn-default">Packages</a>
+	<a href="/project/zsh/information" class="btn btn-default">Information</a>
+	
+	<a href="/project/zsh/history" class="btn btn-default">History</a>
+	
+	
+	
+	<a href="/project/zsh/badges" class="btn btn-default active">Badges</a>
+	
+	
+	<a href="/project/zsh/report" class="btn btn-default" rel="nofollow"><span class="text-danger">Report</span></a>
+</div>
+
+	<h1 class="page-header">Badges for <strong>zsh</strong></h1>
+</div>
+
+
+
+<div class="container">
+
+
+
+<article>
+
+<section>
+
+<h2>Vertical badge</h2>
+
+<p>This badge shows versions and up to date status of this project in all known repositories.</p>
+
+
+
+
+
+<p><a href="https://repology.org/project/zsh/versions"><img src="https://repology.org/badge/vertical-allrepos/zsh.svg" alt="Packaging status"></a></p>
+
+<p>Markdown code:</p>
+<pre>
+[![Packaging status](https://repology.org/badge/vertical-allrepos/zsh.svg)](https://repology.org/project/zsh/versions)
+</pre>
+
+<p>HTML code:</p>
+<pre>
+&lt;a href=&quot;https://repology.org/project/zsh/versions&quot;&gt;
+    &lt;img src=&quot;https://repology.org/badge/vertical-allrepos/zsh.svg&quot; alt=&quot;Packaging status&quot;&gt;
+&lt;/a&gt;
+</pre>
+
+
+<p>HTML code for right-aligned badge (most useful for README.md as it allows other content to flow around it not leading to space waste):</p>
+<pre>
+&lt;a href=&quot;https://repology.org/project/zsh/versions&quot;&gt;
+    &lt;img src=&quot;https://repology.org/badge/vertical-allrepos/zsh.svg&quot; alt=&quot;Packaging status&quot; <strong>align=&quot;right&quot;</strong>&gt;
+&lt;/a&gt;
+</pre>
+
+<p>May be tweaked with <code>header</code>, <code>minversion</code>, and <code>allow_ignored</code> parameters (see below).</p>
+<p>It's also possible to specify number of columns with <code>columns=&lt;N&gt;</code> parameter.</p>
+<p>You may exclude specific kinds of sources (<code>repository</code>, <code>modules</code>, <code>site</code>) with <code>exclude_sources</code> parameter. E.g. use <code>exclude_sources=modules,site</code> to exclude e.g. PyPI and Wikidata.</p>
+<p>You may also exclude old and no longer supported repositories with <code>exclude_unsupported=1</code> parameter. Note however that this will only work for repositories which have end of life date (<code>valid_till</code>) set in the <a href="https://github.com/repology/repology-updater/tree/master/repos.d">configs</a>. Feel free to submit PRs with missing dates.</p>
+
+</section>
+
+<section>
+
+<h2>Tiny badge with number of repositories</h2>
+
+<p>This shows total number of repository families featuring this package. Repository family is an aggregation of related repositories, e.g. Debian Stable, Testing, Unstable and Experimental all belong to a single family and are thus only counted once.</p>
+
+
+
+
+
+<p><a href="https://repology.org/project/zsh/versions"><img src="https://repology.org/badge/tiny-repos/zsh.svg" alt="Packaging status"></a></p>
+
+<p>Markdown code:</p>
+<pre>
+[![Packaging status](https://repology.org/badge/tiny-repos/zsh.svg)](https://repology.org/project/zsh/versions)
+</pre>
+
+<p>HTML code:</p>
+<pre>
+&lt;a href=&quot;https://repology.org/project/zsh/versions&quot;&gt;
+    &lt;img src=&quot;https://repology.org/badge/tiny-repos/zsh.svg&quot; alt=&quot;Packaging status&quot;&gt;
+&lt;/a&gt;
+</pre>
+
+
+<p>May be tweaked with <code>header</code> parameter (see below).</p>
+
+</section>
+
+<section>
+
+<h2>Tiny badge with latest packaged version(s)</h2>
+
+<p>This shows latest version(s) known to repology. There may be multiple versions, for example devel and newest, or multiple variations of the same version encountered in some repositories (e.g.<code>1.0.0</code> and <code>1.0</code>). These badges also support <code>minversion=</code> parameter.</p>
+
+
+
+
+
+<p><a href="https://repology.org/project/zsh/versions"><img src="https://repology.org/badge/latest-versions/zsh.svg" alt="latest packaged version(s)"></a></p>
+
+<p>Markdown code:</p>
+<pre>
+[![latest packaged version(s)](https://repology.org/badge/latest-versions/zsh.svg)](https://repology.org/project/zsh/versions)
+</pre>
+
+<p>HTML code:</p>
+<pre>
+&lt;a href=&quot;https://repology.org/project/zsh/versions&quot;&gt;
+    &lt;img src=&quot;https://repology.org/badge/latest-versions/zsh.svg&quot; alt=&quot;latest packaged version(s)&quot;&gt;
+&lt;/a&gt;
+</pre>
+
+
+<p>May be tweaked with <code>header</code> parameter (see below).</p>
+
+</section>
+
+<section>
+
+<h2>Tiny per-repository badges with version</h2>
+
+<p>These show version in specific repository. Pick as many as you want! You may add <code>?header=</code> to the URL to leave only the version.</p>
+
+<table class="table">
+	<tr><th>Sample</th><th>Markdown code</th><th>HTML code</th></tr>
+	
+	
+	
+	<tr>
+		<td>
+			<a href="https://repology.org/project/zsh/versions">
+				<img src="https://repology.org/badge/version-for-repo/freebsd/zsh.svg" alt="FreeBSD port">
+			</a>
+		</td>
+		<td><code>[![FreeBSD port](https://repology.org/badge/version-for-repo/freebsd/zsh.svg)](https://repology.org/project/zsh/versions)</code></td>
+		<td><code>&lt;a href=&quot;https://repology.org/project/zsh/versions&quot;&gt;<br>&nbsp;&nbsp;&lt;img src=&quot;https://repology.org/badge/version-for-repo/freebsd/zsh.svg&quot; alt=&quot;FreeBSD port&quot;&gt;<br>&lt;/a&gt;</code></td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td>
+			<a href="https://repology.org/project/zsh/versions">
+				<img src="https://repology.org/badge/version-for-repo/freshcode/zsh.svg" alt="freshcode.club entry">
+			</a>
+		</td>
+		<td><code>[![freshcode.club entry](https://repology.org/badge/version-for-repo/freshcode/zsh.svg)](https://repology.org/project/zsh/versions)</code></td>
+		<td><code>&lt;a href=&quot;https://repology.org/project/zsh/versions&quot;&gt;<br>&nbsp;&nbsp;&lt;img src=&quot;https://repology.org/badge/version-for-repo/freshcode/zsh.svg&quot; alt=&quot;freshcode.club entry&quot;&gt;<br>&lt;/a&gt;</code></td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td>
+			<a href="https://repology.org/project/zsh/versions">
+				<img src="https://repology.org/badge/version-for-repo/ubuntu_12/zsh.svg" alt="Ubuntu 12 package">
+			</a>
+		</td>
+		<td><code>[![Ubuntu 12 package](https://repology.org/badge/version-for-repo/ubuntu_12/zsh.svg)](https://repology.org/project/zsh/versions)</code></td>
+		<td><code>&lt;a href=&quot;https://repology.org/project/zsh/versions&quot;&gt;<br>&nbsp;&nbsp;&lt;img src=&quot;https://repology.org/badge/version-for-repo/ubuntu_12/zsh.svg&quot; alt=&quot;Ubuntu 12 package&quot;&gt;<br>&lt;/a&gt;</code></td>
+	</tr>
+	
+	
+	
+	<tr>
+		<td>
+			<a href="https://repology.org/project/zsh/versions">
+				<img src="https://repology.org/badge/version-for-repo/ubuntu_24/zsh.svg" alt="Ubuntu 24 package">
+			</a>
+		</td>
+		<td><code>[![Ubuntu 24 package](https://repology.org/badge/version-for-repo/ubuntu_24/zsh.svg)](https://repology.org/project/zsh/versions)</code></td>
+		<td><code>&lt;a href=&quot;https://repology.org/project/zsh/versions&quot;&gt;<br>&nbsp;&nbsp;&lt;img src=&quot;https://repology.org/badge/version-for-repo/ubuntu_24/zsh.svg&quot; alt=&quot;Ubuntu 24 package&quot;&gt;<br>&lt;/a&gt;</code></td>
+	</tr>
+	
+</table>
+
+<p>May be tweaked with <code>header</code>, <code>minversion</code>, and <code>allow_ignored</code> parameters (see below).</p>
+
+</section>
+<section>
+
+<h2>Additional parameters</h2>
+
+
+
+<p>Most badges may be tweaked by specifying additional parameters in the URL.</p>
+
+<h3><code>header</code></h3>
+
+<p>Works for all badges. Changes the header/caption of the badge. Specify empty header to remove it completely.</p>
+
+<table class="table table-condensed">
+	<tr>
+		<td><code>https://repology.org/badge/version-for-repo/freebsd/zsh.svg</code></td>
+		<td><img src="https://repology.org/badge/version-for-repo/freebsd/zsh.svg" alt="Version badge example, with default caption"></td>
+	</tr>
+	<tr>
+		<td><code>https://repology.org/badge/version-for-repo/freebsd/zsh.svg?header=</code></td>
+		<td><img src="https://repology.org/badge/version-for-repo/freebsd/zsh.svg?header=" alt="Version badge example, with caption removed"></td>
+	</tr>
+	<tr>
+		<td><code>https://repology.org/badge/version-for-repo/freebsd/zsh.svg?header=PACKAGE</code></td>
+		<td><img src="https://repology.org/badge/version-for-repo/freebsd/zsh.svg?header=PACKAGE" alt="Version badge example, with custom caption set to &quot;PACKAGE&quot;"></td>
+	</tr>
+</table>
+
+<h3><code>minversion</code></h3>
+
+<p>Specify "minimal acceptable version" - any versions lesser than it will be marked with crimson color. Useful to mark unacceptable versions based on arbitrary criteria, for instance unsupported dependency versions.</p>
+
+<table class="table table-condensed">
+	<tr>
+		<td><code>https://repology.org/badge/version-for-repo/freebsd/zsh.svg</code></td>
+		<td><img src="https://repology.org/badge/version-for-repo/freebsd/zsh.svg" alt="Version badge example"></td>
+	</tr>
+	<tr>
+		<td><code>https://repology.org/badge/version-for-repo/freebsd/zsh.svg?minversion=999999999</code></td>
+		<td><img src="https://repology.org/badge/version-for-repo/freebsd/zsh.svg?minversion=999999999" alt="Version badge example, with minimal version set"></td>
+	</tr>
+</table>
+
+<h3><code>allow_ignored</code></h3>
+
+<p>By default, when picking the version to show on badge, all <span class="version version-rolling">rolling</span>, <span class="version version-noscheme">noscheme</span>, <span class="version version-incorrect">incorrect</span>, <span class="version version-untrusted">untrusted</span>, <span class="version version-ignored">ignored</span> versions are skipped (so, for instance, rolling <code>9999</code> versions in Gentoo do not hide real stable versions). When <code>allow_ignored</code> parameter is specified (with some non-empty value), the greatest version is always picked regardless of status.</p>
+
+<p><code>https://repology.org/badge/version-for-repo/freebsd/zsh.svg?allow_ignored=1</code></p>
+
+</section>
+
+</article>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

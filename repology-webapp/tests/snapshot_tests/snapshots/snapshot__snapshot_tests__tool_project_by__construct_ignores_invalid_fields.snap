@@ -1,0 +1,189 @@
+---
+source: repology-webapp/tests/snapshot_tests/tool_project_by.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 6474
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>Project by package name - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li class="active"><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">Project by package name</h1>
+</div>
+
+
+
+<div class="container">
+
+<p>
+This tool generates redirect to Repology project page (or badge) by given
+package name in a specific repository. You may find it useful to generate
+links to Repology pages or badges for each package in specific repository.
+</p>
+
+<p>
+Note that there are different name types which have different meaning in
+each repository. See <a href="/repositories/fields">the
+table</a> no know which name types are available for each repository.
+Generally, "real" repositories use either or both of source and binary
+package names, and module collections or news sites use some generic name.
+</p>
+
+<p>
+Also note that you may add additional parameters to a URL, such as
+<code>&amp;header=...</code> for a badge.
+</p>
+
+<form class="form-horizontal" action="/tools/project-by" method="GET">
+	<div class="form-group">
+		<label for="repo" class="col-sm-2 control-label">Repository</label>
+		<div class="col-sm-8">
+			<select class="form-control" id="repo" name="repo">
+			
+				<option value="freebsd">FreeBSD</option>
+			
+				<option value="freshcode">freshcode.club</option>
+			
+				<option value="ubuntu_12">Ubuntu 12</option>
+			
+				<option value="ubuntu_24">Ubuntu 24</option>
+			
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="name_type" class="col-sm-2 control-label">Name type</label>
+		<div class="col-sm-8">
+			<select class="form-control" id="name_type" name="name_type">
+				<option value="srcname">Source package name</option>
+				<option value="binname">Binary package name</option>
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="target_page" class="col-sm-2 control-label">Target page</label>
+		<div class="col-sm-8">
+			<select class="form-control" id="target_page" name="target_page">
+			
+				<option value="project_versions">Project versions — /project/&#60;name&#62;/versions</option>
+			
+				<option value="project_packages">Project packages — /project/&#60;name&#62;/packages</option>
+			
+				<option value="project_information">Project information — /project/&#60;name&#62;/information</option>
+			
+				<option value="project_history">Project history — /project/&#60;name&#62;/history</option>
+			
+				<option value="project_badges">Project badges — /project/&#60;name&#62;/badges</option>
+			
+				<option value="project_reports">Project reports — /project/&#60;name&#62;/reports</option>
+			
+				<option value="badge_vertical_allrepos">Vertical badge — /badge/vertical-allrepos/&#60;name&#62;.svg</option>
+			
+				<option value="badge_tiny_repos">Tiny badge with number of repositories — /badge/tiny-repos/&#60;name&#62;.svg</option>
+			
+				<option value="badge_latest_versions">Tiny badge with latest packaged version(s) — /badge/tiny-versions/&#60;name&#62;.svg</option>
+			
+				<option value="badge_version_for_repo">Tiny badge with version for this repository — /badge/version-for-repo/&#60;repo&#62;/&#60;name&#62;.svg</option>
+			
+				<option value="api_v1_project">API v1 project information — /api/v1/project/&#60;name&#62;</option>
+			
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" name="noautoresolve"> Disable automatic ambiguity resolution (e.g. show list of target projects if there are multiple, instead of redirecting to any of them)
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button type="submit" class="btn btn-primary">Generate</button>
+		</div>
+	</div>
+</form>
+
+
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+---
+source: repology-webapp/tests/snapshot_tests/legacy_redirects.rs
+expression: response.as_snapshot().unwrap()
+---
+Status: 301
+Header: location: /badge/version-for-repo/foo/bar.svg
+Header: content-length: 0
+---

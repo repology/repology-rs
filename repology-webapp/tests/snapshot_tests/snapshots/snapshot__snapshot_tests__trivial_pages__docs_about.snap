@@ -1,0 +1,211 @@
+---
+source: repology-webapp/tests/snapshot_tests/trivial_pages.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 10418
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Multiple package repositories analyzer">
+	<meta name="keywords" content="repository, package, packages, version">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>About Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li class="active"><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+	<h1 class="page-header">About</h1>
+</div>
+
+
+
+<div class="container">
+
+<article>
+
+<p>Repology is a service which tracks and compares package versions in more than 120 package repositories.</p>
+
+<h3>Purpose</h3>
+
+<ul>
+	<li>For package/port maintainers:
+		<ul>
+			<li>Discover new releases of software you maintain packages for</li>
+			<li>Find new projects to package</li>
+			<li>Get in touch with fellow maintainers to improve packages together</li>
+			<li>Keep package naming and versioning schemes in sync to other repos for your and your user's convenience</li>
+			<li>Fix problems detected by repology, such as broken links</li>
+		</ul>
+	</li>
+	<li>For software authors:
+		<ul>
+			<li>Keep track of where and how well your project is packaged</li>
+			<li>Keep in touch with your product package maintainers</li>
+		</ul>
+	</li>
+	<li>For users:
+		<ul>
+			<li>Discover new releases of software you use</li>
+			<li>Pick distribution most suitable for you, in terms of package quantity, freshness or stability</li>
+			<li>Keep in touch with maintainers of software you use</li>
+		</ul>
+	</li>
+</ul>
+
+<h3>Current and past supported repositories</h3>
+
+<ul>
+	<li><b>Linux repositories:</b> Adélie, AlmaLinux, Alpine, ALT, Antergos, Amazon Linux, antiX, AOSC, Apertis, Arch and AUR, Artix, Ataraxia, BlackArch, Calculate, Carbs, CentOS, Chakra, Chimera, CRUX, Debian, Deepin, Devuan, Distri, ELRepo, Endless OS, Entware-ng, EPEL, Exherbo, Fedora, Funtoo, Gentoo, glaucus, Guix, GoboLinux, Hyperbola, KaOS, KISS, Kwort, LEDE, LiGurOS, Linuxbrew, Maemo, Mageia, Manjaro, Mer Project, Mint, MX Linux, Nix, NOIR, openEuler, openmamba, OpenMandriva, openSUSE, OpenWrt, Parabola, Pardus, Parrot, PCLinuxOS, Pisi, PLD Linux, PTXdist, PureOS, Raspbian, RebornOS, Rocky Linux, Rosa, Sabayon, Salix, Serpent OS, Siduction, SlackBuilds, Slackware, SliTaz, Software Collections, Solus, SparkyLinux, stal/IX, T2 SDE, Tails, Tin Can Linux, Trisquel, UBI, Ubuntu, Void, Whonix, yiffOS</li>
+	<li><b>*BSD repositories:</b> DragonFly DPorts, FreeBSD ports, MidnightBSD Mports, OpenBSD packages, pkgsrc, Ravenports</li>
+	<li><b>Third party repositories:</b> BioArch, Buildroot, Chromebrew, Deb Multimedia, Debian Janitor, Gentoo overlays, GetDeb/Playdeb, KDE neon, MPR, OpenPKG, openSUSE additional repositories, PackMan, pacstall, RPM Fusion, RPM Sphere, SageMath, Spack, Terra, UnitedRPMs, WakeMeOps</li>
+	<li><b>Other *nix repositories:</b> AIX Open Source Packages, AIX Toolbox, HaikuPorts, Homebrew, HP-UX, IBM i, OpenIndiana, MacPorts, postmarketOS, Rudix</li>
+	<li><b>And non-*nix repositories:</b> Baulk, Chocolatey, ConanCenter, Cygwin, F-Droid, just-install, MSYS2 (msys2, mingw), Npackd, OS4Depot, ReactOS rapps, Scoop, Termux, Vcpkg, winget, YACP</li>
+	<li><b>Upstream module collections or programming language specific package managers:</b> Buckaroo, CPAN, CRAN, crates.io, GNU ELPA, Hackage, LuaRocks, MELPA, OPAM, Open VSX, PyPI, RubyGems, Stackage</li>
+	<li><b>F/OSS news sites:</b> DistroWatch, freshcode.club, libregamewiki</li>
+	<li><b>Other sources:</b> Wikidata</li>
+</ul>
+
+<h3>How does it work?</h3>
+
+<p>First, repology fetches and parses available sources of data on
+packages. There is a built-in set of fetchers and parsers for many
+types of sources, such as text index files, git repositories, web
+pages and JSON API output.</p>
+
+<p>After raw package data is obtained from all available sources,
+it is aggregated per upstream project. By default, package names
+are used to aggregate packages, and though it works fine for most
+cases, real world data contains inconsistencies, so first an elaborate
+ruleset is used to handle inconsistencies specially. For instance,
+rules allow merging packages with different names into a single
+project (for example, <b>firefox</b>, <b>firefox-lts</b> and
+<b>firefox43</b> into a single <b>firefox</b>), or, instead, split
+packages with a same name into multiple project (for example,
+<b>clementine</b> may be either a player or window manager, which
+are unrelated projects).</p>
+
+<p>Last, for each project versions are compared with a custom
+general algorithm, and each package is classified by its version.</p>
+
+
+
+
+<ul id="versions-legend">
+	
+	
+	<li><span class="version version-newest">newest</span><sup>#repos</sup> - newest known version. The number shows how many repository families have this version.</li>
+	<li><span class="version version-devel">devel</span> - newest known devel (or unstable) version. There may be both devel and newest versions for a given package.</li>
+	<li><span class="version version-unique">unique</span> - package is only present in a single repository family, there are no other sources to compare it against, so although it's the latest version known to repology, is not really reliable.</li>
+	<li><span class="version version-outdated">outdated</span> - outdated version which requires updating.</li>
+	<li><span class="version version-legacy">legacy</span> - outdated version when a newer version is present. This is assumed to be legacy version preserved for e.g. compatibility.</li>
+
+	<li><span class="version version-rolling">rolling</span> - package is fetched from always latest snapshot or VCS master/trunk, so it is always latest and is not a subject for comparison.</li>
+	<li><span class="version version-noscheme">noscheme</span> - the project does not have official versioning scheme, so versions used in repositories which are basically random.</li>
+	<li><span class="version version-incorrect">incorrect</span> - version is known to be incorrect (e.g. version not officially released yet, or lacking alpha/beta/rc qualifier).</li>
+	<li><span class="version version-untrusted">untrusted</span> - this source is known to likely supply incorrect versions, so is ignored proactively.</li>
+	<li><span class="version version-ignored">ignored</span> - version is ignored and excluded from comparison for some other reason (e.g. snapshots).</li>
+	<li><span class="version version-newest">vulnerable<span class="vulnerable">▲</span></span> - version is potentially vulnerable as there are related CVEs.</li>
+</ul>
+
+<p>Ruleset is also used to mark ignored and devel versions</p>
+
+<h3>Updates</h3>
+
+<p>The repository data and the website are updated hourly.</p>
+
+<h3>Development</h3>
+
+<p>Repology is developed on GitHub.</p>
+
+<ul>
+	<li>Web application (the one you're currently browsing) <a href="https://github.com/repology/repology-webapp">code</a>, <a href="https://github.com/repology/repology-webapp/issues">issues</a> and <a href="https://github.com/repology/repology-webapp/pulls">pull requests</a>.</li>
+	<li>Updater backend (responsible for fetching and processing package data) <a href="https://github.com/repology/repology-updater">code</a>, <a href="https://github.com/repology/repology-updater/issues">issues</a> and <a href="https://github.com/repology/repology-updater/pulls">pull requests</a>.</li>
+	<li>Ruleset <a href="https://github.com/repology/repology-rules">code</a>, <a href="https://github.com/repology/repology-rules/issues">issues</a> and <a href="https://github.com/repology/repology-rules/pulls">pull requests</a>.</li>
+</ul>
+
+<p>Junior tasks include proofreading English texts (README, html templates), finding more mismatched packages and adding name transformation rules for them.</p>
+
+<h3>Alternatives</h3>
+
+<p>Some alternatives to Repology, and related projects:</p>
+
+<ul>
+	<li><a href="https://pkgs.org/">pkgs.org</a> - packages search for Linux and Unix</li>
+	<li><a href="https://release-monitoring.org/">release-monitoring.org</a> - upstream release monitoring</li>
+</ul>
+
+</article>
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>

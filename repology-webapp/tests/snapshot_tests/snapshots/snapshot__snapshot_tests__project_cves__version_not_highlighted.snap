@@ -1,0 +1,157 @@
+---
+source: repology-webapp/tests/snapshot_tests/project_cves.rs
+expression: response.as_text_snapshot().unwrap()
+---
+Status: 200
+Header: content-type: text/html
+Header: content-length: 4554
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<meta name="description" content="Known vulnerabilities for project tworanges">
+	<meta name="keywords" content="repository, package, packages, version, tworanges, vulnerability">
+	<meta name="author" content="Dmitry Marakasov">
+
+
+	<title>tworanges vulnerabilities - Repology</title>
+	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
+	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
+</head>
+<body>
+
+
+
+<nav class="navbar navbar-default navbar-static-top">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#repology-navbar-collapse" aria-expanded="false">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="/">
+				<img alt="Repology" src="/static/repology40x40.v1.0ea026630d9180a2.png" width="40" height="40">
+			</a>
+		</div>
+
+		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="/projects/">Projects</a></li>
+				<li><a href="/maintainers/">Maintainers</a></li>
+				<li><a href="/repositories/statistics">Repositories</a></li>
+				<li><a href="/tools">Tools</a></li>
+				<li><a href="/security/recent-cves">Security</a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="/news">News</a></li>
+				<li><a href="/docs">Docs</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+<div class="container">
+	
+<div class="btn-group pageheader-right">
+	
+	<a href="/project/tworanges/versions" class="btn btn-default">Versions</a>
+	<a href="/project/tworanges/packages" class="btn btn-default">Packages</a>
+	<a href="/project/tworanges/information" class="btn btn-default">Information</a>
+	
+	<a href="/project/tworanges/history" class="btn btn-default">History</a>
+	
+	
+	
+	<a href="/project/tworanges/badges" class="btn btn-default">Badges</a>
+	
+	
+	<a href="/project/tworanges/report" class="btn btn-default" rel="nofollow"><span class="text-danger">Report</span></a>
+</div>
+
+	<h1 class="page-header">Vulnerabilities for <strong>tworanges</strong></h1>
+</div>
+
+
+
+<div class="container">
+
+
+
+
+
+
+
+
+
+<table class="table table-striped table-hover">
+	<thead>
+		<tr>
+			<th class="minimal-column">CVE ID</th>
+			<th class="minimal-column">CPE</th>
+			<th>Affected version(s)</th>
+		</tr>
+	</thead>
+	<tbody>
+	
+		<tr>
+			<td class="minimal-column">
+				<a href="https://nvd.nist.gov/vuln/detail/CVE-3-3">CVE-3-3</a>
+				<span class="cell-subitem" title="Published date">2024-01-01T00:00Z</span>
+				<span class="cell-subitem" title="Last modified date">2024-02-01T00:00Z</span>
+			</td>
+			<td class="minimal-column"><div class="cpe-component">
+			<div class="cpe-component-header non-selectable">vendor</div>
+			<div class="cpe-component-value">baz</div>
+		</div>
+	<div class="cpe-component">
+			<div class="cpe-component-header non-selectable">product</div>
+			<div class="cpe-component-value">baz</div>
+		</div>
+	
+	
+	
+	
+	
+	</td>
+			<td class="text-left"><span class="version version-rolling">(1.3, 1.4]</span> <span class="version version-rolling">[1.5, 1.6)</span></td>
+		</tr>
+	
+	</tbody>
+</table>
+
+
+</div>
+
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right footer-links">
+			GitHub repositories:
+			<a href="https://github.com/repology/repology-rs/tree/master/repology-webapp">webapp</a>,
+			<a href="https://github.com/repology/repology-updater">updater</a>,
+			<a href="https://github.com/repology/repology-rules">ruleset</a>
+		</p>
+		<p>
+			Copyright (C) 2016-2026 Dmitry Marakasov<br>
+			Code licensed under GPLv3+.
+			
+		</p>
+	</div>
+</footer>
+
+<script src="/static/jquery-3.7.1.min.cc6904672d4db9a3.js"></script>
+<script src="/static/bootstrap.min.v3.3.7.66502a3c5769c640.js"></script>
+<script src="/static/moment.min.v2.29.2.b7efa16ed0d164d6.js"></script>
+<script src="/static/repology.v2.ee0228ab3d88406f.js"></script>
+
+</body>
+</html>
