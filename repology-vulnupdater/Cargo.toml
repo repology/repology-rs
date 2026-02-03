@@ -11,7 +11,7 @@ workspace = true
 anyhow = "1.0.100"
 async-trait = "0.1.89"
 chrono = { version = "0.4.43", default-features = false, features = ["now"] }
-clap = { version = "4.5.54", features = ["derive"] }
+clap = { version = "4.5.56", features = ["derive"] }
 indoc = "2.0.7"
 metrics = "0.24.3"
 metrics-exporter-prometheus = { version = "0.18.1", default-features = false, features = ["http-listener"] }
