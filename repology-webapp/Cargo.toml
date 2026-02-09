@@ -55,6 +55,6 @@ float-cmp = "0.10.0"
 http = "1.4.0"
 insta = { version = "1.46.0", features = ["json"] }
 pretty_assertions = "1.4.1"
-regex = "1.12.2"
+regex = "1.12.3"
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }
 tower-service = "0.3.3"
