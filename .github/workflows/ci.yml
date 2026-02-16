@@ -16,7 +16,7 @@ jobs:
           submodules: true
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly-2026-01-26
+          toolchain: nightly-2026-02-15
           components: rustfmt,llvm-tools-preview,clippy
       - uses: taiki-e/install-action@cargo-hack
       - name: Install dependencies

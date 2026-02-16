@@ -4,7 +4,6 @@
 #![feature(iterator_try_collect)]
 #![feature(coverage_attribute)]
 #![feature(stmt_expr_attributes)]
-#![feature(assert_matches)]
 #![feature(duration_constructors)]
 #![feature(lock_value_accessors)]
 #![feature(iter_collect_into)]
