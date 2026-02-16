@@ -8,7 +8,7 @@ rust-version.workspace = true
 workspace = true
 
 [dependencies]
-anyhow = "1.0.100"
+anyhow = "1.0.101"
 async-trait = "0.1.89"
 chrono = { version = "0.4.43", default-features = false, features = ["now"] }
 clap = { version = "4.5.54", features = ["derive"] }
