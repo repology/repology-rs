@@ -15,7 +15,7 @@ anyhow = "1.0.100"
 async-compression = { version = "0.4.37", features = ["gzip", "bzip2", "xz", "zstd", "tokio"] }
 async-rayon = "0.1.0"
 async-trait = "0.1.89"
-bitflags = "2.10.0"
+bitflags = "2.11.0"
 clap = { version = "4.5.54", features = ["derive"] }
 faine = { version = "0.2.1", default-features = false }
 futures-util = { version = "0.3.31", default-features = false }
