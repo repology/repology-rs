@@ -12,8 +12,6 @@ jobs:
     name: ${{ matrix.name }}
     steps:
       - uses: actions/checkout@v6
-        with:
-          submodules: true
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: nightly-2026-02-15
