@@ -4,7 +4,7 @@
 "abf.io".generated_sampling_percentage = 10
 "abf.io".recheck_generated = 21
 "artixlinux.org".aggregate = true
-"artixlinux.org".delay = 10
+"artixlinux.org".delay = 20
 "aur.archlinux.org".disable_head = true
 "aur.archlinux.org".generated_sampling_percentage = 10
 "aur.archlinux.org".monitor = true
