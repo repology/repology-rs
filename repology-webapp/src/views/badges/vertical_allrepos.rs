@@ -15,7 +15,8 @@ use sqlx::FromRow;
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::badges::{
-    Cell, CellAlignment, SpecialVersionStatus, badge_color_for_package_status, render_generic_badge,
+    Cell, CellAlignment, DEFAULT_THEME, SpecialVersionStatus, badge_color_for_package_status,
+    render_generic_badge,
 };
 use crate::package::processing::pick_representative_package_per_repository;
 use crate::package::traits::{
@@ -114,6 +115,8 @@ pub async fn badge_vertical_allrepos(
     .fetch_all(&state.pool)
     .await?;
 
+    let theme = &DEFAULT_THEME;
+
     let package_per_repository =
         pick_representative_package_per_repository(&packages, query.allow_ignored);
 
@@ -132,7 +135,7 @@ pub async fn badge_vertical_allrepos(
                 .is_some_and(|min_version| package_version(package) < min_version)
                 .then_some(SpecialVersionStatus::LowerThanUserGivenThreshold);
 
-            let color = badge_color_for_package_status(package.status, extra_status);
+            let color = badge_color_for_package_status(package.status, theme, extra_status);
 
             cells.push(vec![
                 Cell::new(&repository_data.title).align(CellAlignment::Right),
@@ -178,7 +181,7 @@ pub async fn badge_vertical_allrepos(
         }
     };
 
-    let body = render_generic_badge(&cells, caption, 0, &state.font_measurer)?;
+    let body = render_generic_badge(&cells, caption, 0, &state.font_measurer, theme)?;
 
     Ok((
         [(
