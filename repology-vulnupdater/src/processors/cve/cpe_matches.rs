@@ -7,7 +7,7 @@ use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 use std::str::FromStr as _;
 
-use tracing::{info, warn};
+use tracing::warn;
 
 use crate::cpe::Cpe;
 
@@ -92,6 +92,7 @@ impl<'a> CpeMatches<'a> {
         if node.negate {
             // TODO: complex node trees are not supported yet
             counter!("repology_vulnupdater_processor_cve_nodes_total", "status" => "skipped", "skip_reason" => "negate").increment(1);
+            warn!("unsupported negated node");
             return;
         }
 
@@ -102,17 +103,13 @@ impl<'a> CpeMatches<'a> {
             counter!("repology_vulnupdater_processor_cve_cpes_total").increment(1);
 
             if !cpe_match.vulnerable {
-                // TODO: investigate if vulnerability exclusions are relevant
-                counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "skipped", "skip_reason" => "not vulnerable").increment(1);
+                // CpeMatches serving as a limit and not denoting a vulnerability,
                 continue;
             }
 
             let Ok(cpe) = Cpe::from_str(&cpe_match.criteria) else {
                 counter!("repology_vulnupdater_processor_cve_cpes_total", "status" => "skipped", "skip_reason" => "unparsable CPE").increment(1);
-                warn!(
-                    criteria = cpe_match.criteria.as_ref(),
-                    "rejecting CpeMatch with unparsable CPE"
-                );
+                warn!(criteria = cpe_match.criteria.as_ref(), "unparsable CPE");
                 continue;
             };
 
@@ -166,90 +163,20 @@ impl<'a> CpeMatches<'a> {
         }
     }
 
-    /// Collects matches from a Configuration.
-    ///
-    /// Configuration/Node trees may imply complex logic we don't know
-    /// how to properly handle yet. This function checks for known cases,
-    /// which are currently:
-    ///
-    /// - Configuration without operator or with OR operatior, which is
-    ///   considered trivial (CVE applies to a set of products of any kind).
-    /// - Configuration with AND operator and two nodes, one of which
-    ///   only lists application matches, and another lists OperatingSystems
-    ///   matches. This is supposed to denote an Application only vulnerable
-    ///   on specified OSes, so we process application nodes, and ignore OS
-    ///   nodes in this case.
-    ///
-    /// More cases may be added after careful consideration.
-    fn collect_from_configuration(&mut self, configuration: &'a schema::Configuration) {
-        if configuration.operator == Some("AND") {
-            let mut application_nodes = vec![];
-            let mut operating_system_nodes = vec![];
-
-            for node in &configuration.nodes {
-                let mut node_part = None;
-
-                for cpe_match in &node.cpe_match {
-                    let Ok(cpe) = Cpe::from_str(&cpe_match.criteria) else {
-                        counter!("repology_vulnupdater_processor_cve_configurations_total", "status" => "skipped", "skip_reason" => "unparsable CPE").increment(1);
-                        warn!(
-                            criteria = cpe_match.criteria.as_ref(),
-                            "rejecting configuration with unparsable CPE"
-                        );
-                        return;
-                    };
-
-                    match node_part {
-                        Some(prev_part) if prev_part == cpe.part => {}
-                        Some(prev_part) => {
-                            counter!("repology_vulnupdater_processor_cve_configurations_total", "status" => "skipped", "skip_reason" => "mixed type CPE").increment(1);
-                            info!(one = ?prev_part, two = ?cpe.part, "rejecting non-trivial Configuration with node of mixed-type CPEs");
-                            return;
-                        }
-                        None => {
-                            node_part = Some(cpe.part);
-                        }
-                    };
-                }
-
-                match node_part {
-                    Some(crate::cpe::Part::Applications) => {
-                        application_nodes.push(node);
-                    }
-                    Some(crate::cpe::Part::OperatingSystems) => {
-                        operating_system_nodes.push(node);
-                    }
-                    other => {
-                        counter!("repology_vulnupdater_processor_cve_configurations_total", "status" => "skipped", "skip_reason" => "bad CPE part").increment(1);
-                        info!(type = ?other, "rejecting non-trivial Configuration with node of unexpected type");
-                        return;
-                    }
-                }
-            }
-
-            if application_nodes.len() == 1 && operating_system_nodes.len() == 1 {
-                counter!("repology_vulnupdater_processor_cve_configurations_total", "status" => "processed non-trivial").increment(1);
-                info!("accepting non-trivial Configuration: app limited with os");
-                for node in application_nodes {
-                    self.collect_from_node(node);
-                }
-            } else {
-                counter!("repology_vulnupdater_processor_cve_configurations_total", "status" => "unsupported tot-trivial").increment(1);
-                info!("rejecting unsupported non-trivial Configuration");
-            }
-        } else {
-            counter!("repology_vulnupdater_processor_cve_configurations_total", "status" => "processed trivial").increment(1);
-            for node in &configuration.nodes {
-                self.collect_from_node(node)
-            }
-        }
-    }
-
     #[tracing::instrument(skip_all, fields(cve_id = cve.id))]
     pub fn from_cve(cve: &'a schema::Cve<'a>) -> Self {
         let mut res: Self = Default::default();
         for configuration in &cve.configurations {
-            res.collect_from_configuration(configuration);
+            // TODO: configuration has rather complex structure allowing
+            // to denote, for instance, that a vulnerability only applies
+            // on specific OS or hardware. We ignore it though, as we cannot
+            // handle platform/arch limits for CVEs anyway - we tell CPEs
+            // which refer to vulnerable products from CPEs which refer to
+            // limits by vulnerable flag on CpeMatch, and that should be
+            // enough for now.
+            for node in &configuration.nodes {
+                res.collect_from_node(node)
+            }
         }
         res
     }
@@ -307,6 +234,8 @@ mod tests {
 
     #[test]
     fn test_basic() {
+        let cpe = "cpe:2.3:a:foo:bar:*:*:*:*:*:*:*:*";
+
         let cve = Cve {
             id: "CVE-2022-23935",
             published: "1900-01-01T00:00:00.000",
@@ -318,7 +247,7 @@ mod tests {
                     negate: false,
                     cpe_match: vec![CpeMatch {
                         vulnerable: true,
-                        criteria: "cpe:2.3:a:exiftool_project:exiftool:*:*:*:*:*:*:*:*".into(),
+                        criteria: cpe.into(),
                         version_start_including: None,
                         version_start_excluding: None,
                         version_end_including: None,
@@ -328,13 +257,20 @@ mod tests {
             }],
         };
 
-        let matches = CpeMatches::from_cve(&cve);
-
-        assert_eq!(matches.matches.len(), 1);
+        assert_eq!(
+            CpeMatches::from_cve(&cve)
+                .matches
+                .into_keys()
+                .collect::<Vec<_>>(),
+            vec![Cpe::from_str(cpe).unwrap()]
+        );
     }
 
     #[test]
-    fn test_with_os_limit() {
+    fn test_with_limit() {
+        let vulnerable_cpe = "cpe:2.3:a:foo:bar:*:*:*:*:*:*:*:*";
+        let limiting_cpe = "cpe:2.3:o:bar:baz:*:*:*:*:*:*:*:*";
+
         let cve = Cve {
             id: "CVE-2026-3102",
             published: "1900-01-01T00:00:00.000",
@@ -347,7 +283,7 @@ mod tests {
                         negate: false,
                         cpe_match: vec![CpeMatch {
                             vulnerable: true,
-                            criteria: "cpe:2.3:a:exiftool_project:exiftool:*:*:*:*:*:*:*:*".into(),
+                            criteria: vulnerable_cpe.into(),
                             version_start_including: None,
                             version_start_excluding: None,
                             version_end_including: None,
@@ -358,8 +294,8 @@ mod tests {
                         operator: "OR",
                         negate: false,
                         cpe_match: vec![CpeMatch {
-                            vulnerable: true,
-                            criteria: "cpe:2.3:o:apple:macos:-:*:*:*:*:*:*:*".into(),
+                            vulnerable: false,
+                            criteria: limiting_cpe.into(),
                             version_start_including: None,
                             version_start_excluding: None,
                             version_end_including: None,
@@ -370,50 +306,12 @@ mod tests {
             }],
         };
 
-        let matches = CpeMatches::from_cve(&cve);
-
-        assert_eq!(matches.matches.len(), 1);
-    }
-
-    #[test]
-    fn test_and_not_supported() {
-        let cve = Cve {
-            id: "CVE-2026-3102",
-            published: "1900-01-01T00:00:00.000",
-            last_modified: "1900-01-01T00:00:00.000",
-            configurations: vec![Configuration {
-                operator: Some("AND"),
-                nodes: vec![
-                    Node {
-                        operator: "OR",
-                        negate: false,
-                        cpe_match: vec![CpeMatch {
-                            vulnerable: true,
-                            criteria: "cpe:2.3:a:exiftool_project:exiftool:*:*:*:*:*:*:*:*".into(),
-                            version_start_including: None,
-                            version_start_excluding: None,
-                            version_end_including: None,
-                            version_end_excluding: None,
-                        }],
-                    },
-                    Node {
-                        operator: "OR",
-                        negate: false,
-                        cpe_match: vec![CpeMatch {
-                            vulnerable: true,
-                            criteria: "cpe:2.3:a:exiftool_project:exiftool:*:*:*:*:*:*:*:*".into(),
-                            version_start_including: None,
-                            version_start_excluding: None,
-                            version_end_including: None,
-                            version_end_excluding: None,
-                        }],
-                    },
-                ],
-            }],
-        };
-
-        let matches = CpeMatches::from_cve(&cve);
-
-        assert_eq!(matches.matches.len(), 0);
+        assert_eq!(
+            CpeMatches::from_cve(&cve)
+                .matches
+                .into_keys()
+                .collect::<Vec<_>>(),
+            vec![Cpe::from_str(vulnerable_cpe).unwrap()]
+        );
     }
 }
