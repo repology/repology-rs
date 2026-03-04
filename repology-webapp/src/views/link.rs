@@ -40,6 +40,7 @@ struct DbLink {
     ipv4_permanent_redirect_target: Option<String>,
     ipv6_status_code: i16,
     ipv6_permanent_redirect_target: Option<String>,
+    failure_streak: Option<i16>,
 }
 
 struct Link {
@@ -52,6 +53,7 @@ struct Link {
     ipv4_permanent_redirect_target: Option<String>,
     ipv6_status: LinkStatus,
     ipv6_permanent_redirect_target: Option<String>,
+    failure_streak: Option<i16>,
 }
 
 impl From<DbLink> for Link {
@@ -82,6 +84,7 @@ impl From<DbLink> for Link {
             ipv4_permanent_redirect_target: link.ipv4_permanent_redirect_target,
             ipv6_status,
             ipv6_permanent_redirect_target: link.ipv6_permanent_redirect_target,
+            failure_streak: link.failure_streak,
         }
     }
 }
@@ -100,7 +103,8 @@ pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -
             coalesce(ipv4_status_code, 0::smallint) AS ipv4_status_code,
             ipv4_permanent_redirect_target,
             coalesce(ipv6_status_code, 0::smallint) AS ipv6_status_code,
-            ipv6_permanent_redirect_target
+            ipv6_permanent_redirect_target,
+            failure_streak
         FROM links
         WHERE url = $1
     "#})

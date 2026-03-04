@@ -10,8 +10,8 @@ INSERT INTO links(url, last_success, last_failure, ipv4_status_code, ipv4_perman
 INSERT INTO links(url, last_success, last_failure, ipv4_status_code, ipv4_permanent_redirect_target)
 	VALUES ('https://example.com/ipv4-redirect', '2024-01-01 00:00:00', NULL, 200, 'https://example.com/ipv4-redirect-target');
 
-INSERT INTO links(url, last_success, last_failure, ipv6_status_code, ipv6_permanent_redirect_target)
-	VALUES ('https://example.com/ipv6-failure', NULL, '2024-01-01 00:00:00', 404, NULL);
+INSERT INTO links(url, last_success, last_failure, ipv6_status_code, ipv6_permanent_redirect_target, failure_streak)
+	VALUES ('https://example.com/ipv6-failure', NULL, '2024-01-01 00:00:00', 404, NULL, 10);
 
 INSERT INTO links(url, last_success, last_failure, ipv6_status_code, ipv6_permanent_redirect_target)
 	VALUES ('https://example.com/ssl-failure', NULL, '2024-01-01 00:00:00', -500, NULL);

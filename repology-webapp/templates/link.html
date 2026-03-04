@@ -33,6 +33,9 @@
 	{%- if let Some(last_failure) = link.last_failure %}
 		<b>{% call time::format_absolute_time_sec(last_failure) %}</b>
 		(<b>{% call time::format_time_interval(Utc::now() - last_failure) %} ago</b>)
+		{%- if let Some(streak) = link.failure_streak %}{% if *streak > 1 -%}
+			, streak of {{ streak }} consecutive failures
+		{%- endif %}{% endif %}
 	{%- else %}
 		<b>never</b>
 	{%- endif %}
