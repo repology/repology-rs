@@ -1,2 +1,6 @@
 [build]
 rustflags = ["--cfg", "tokio_unstable"]
+
+[env]
+# Since most tests use the database, limit concurrency not to cause excess load on it
+RUST_TEST_THREADS = "4"
