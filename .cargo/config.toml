@@ -1,4 +1,5 @@
 [build]
+# Enable unstable tokio features, namely metrics
 rustflags = ["--cfg", "tokio_unstable"]
 
 [env]
