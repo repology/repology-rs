@@ -8,13 +8,6 @@ use repology_common::PackageStatus;
 use crate::font::{FontMeasurer, FontStyle};
 use crate::xmlwriter::{XmlTag, xml};
 
-const HEADER_HEIGHT: usize = 25;
-const HEADER_FONT_SIZE: usize = 15;
-const CELL_HEIGHT: usize = 20;
-const CELL_FONT_SIZE: usize = 11;
-const CELL_HORIZONTAL_PADDING: usize = 5;
-const FONT_FAMILY: &str = "DejaVu Sans,Verdana,Geneva,sans-serif";
-
 // visual length is implied here, as we use it to account for ellipsis in truncated string
 const ELLIPSIS_VISUAL_WIDTH_CHARS: usize = 1;
 
@@ -26,6 +19,53 @@ pub enum CellAlignment {
     Center,
     Right,
 }
+
+#[derive(Default)]
+pub struct Theme {
+    pub background: &'static str,
+    pub cell_font_size: usize,
+    pub cell_height: usize,
+    pub cell_horizontal_padding: usize,
+    pub clip_fill: &'static str,
+    pub color_devel: &'static str,
+    pub color_legacy: &'static str,
+    pub color_newest: &'static str,
+    pub color_nice: &'static str,
+    pub color_other: &'static str,
+    pub color_outdated: &'static str,
+    pub color_special: &'static str,
+    pub color_unique: &'static str,
+    pub font: &'static str,
+    pub gradient_tone: &'static str,
+    pub header_font_size: usize,
+    pub header_height: usize,
+    pub outline_color: &'static str,
+    pub outline_opacity: &'static str,
+    pub text_color: &'static str,
+}
+
+pub static DEFAULT_THEME: Theme = Theme {
+    background: "#555",
+    cell_font_size: 11,
+    cell_height: 20,
+    cell_horizontal_padding: 5,
+    clip_fill: "#000",
+    color_devel: "#4c1",
+    color_legacy: "#e05d44",
+    color_newest: "#4c1",
+    color_nice: "#007ec6",
+    color_other: "#9f9f9f",
+    color_outdated: "#e05d44",
+    color_special: "#e00000",
+    color_unique: "#4c1",
+    font: "DejaVu Sans,Verdana,Geneva,sans-serif",
+    gradient_tone: "#bbb",
+    header_font_size: 15,
+    header_height: 25,
+    outline_color: "#010101",
+    outline_opacity: ".3",
+    text_color: "#fff",
+};
 
 #[derive(Default)]
 pub struct Cell {
@@ -104,6 +144,7 @@ pub fn render_generic_badge(
     header: Option<&str>,
     min_width: usize,
     font_measurer: &FontMeasurer,
+    theme: &Theme,
 ) -> Result<String> {
     let num_rows = cells.len();
     let num_columns = if num_rows > 0 { cells[0].len() } else { 0 };
@@ -116,8 +157,11 @@ pub fn render_generic_badge(
             column.width = column
                 .width
                 .max(
-                    font_measurer.get_text_width(&cell.text, CELL_FONT_SIZE, FontStyle::Regular)?
-                        + CELL_HORIZONTAL_PADDING * 2,
+                    font_measurer.get_text_width(
+                        &cell.text,
+                        theme.cell_font_size,
+                        FontStyle::Regular,
+                    )? + theme.cell_horizontal_padding * 2,
                 )
                 .max(cell.min_width);
             if !cell.text.is_empty() || !cell.collapsible {
@@ -133,21 +177,22 @@ pub fn render_generic_badge(
         .for_each(|column| column.width = 0);
 
     // add header if specified
-    let (min_width, header_height) =
-        if let Some(header) = header.filter(|header| !header.is_empty()) {
-            (
-                min_width.max(
-                    font_measurer.get_text_width(header, HEADER_FONT_SIZE, FontStyle::Bold)?
-                        + CELL_HORIZONTAL_PADDING * 2,
-                ),
-                HEADER_HEIGHT,
-            )
-        } else {
-            (min_width, 0)
-        };
+    let (min_width, header_height) = if let Some(header) =
+        header.filter(|header| !header.is_empty())
+    {
+        (
+            min_width.max(
+                font_measurer.get_text_width(header, theme.header_font_size, FontStyle::Bold)?
+                    + theme.cell_horizontal_padding * 2,
+            ),
+            theme.header_height,
+        )
+    } else {
+        (min_width, 0)
+    };
 
     // calculate total sizes
-    let total_height = header_height + CELL_HEIGHT * num_rows;
+    let total_height = header_height + theme.cell_height * num_rows;
     let mut total_width = columns.iter().map(|column| column.width).sum::<usize>();
 
     // force minimal width by expanding leftmost column
@@ -169,16 +214,14 @@ pub fn render_generic_badge(
     let mut doc = xml!("svg", "xmlns" = "http://www.w3.org/2000/svg", "width" = total_width, "height" = total_height);
 
     // define clip path for rounded corners
-    doc.add_child(
-        xml!("clipPath", "id" = "clip").with_child(
-            xml!("rect", "rx" = 3, "width" = "100%", "height" = "100%", "fill" = "#000"),
-        ),
-    );
+    doc.add_child(xml!("clipPath", "id" = "clip").with_child(
+        xml!("rect", "rx" = 3, "width" = "100%", "height" = "100%", "fill" = theme.clip_fill),
+    ));
 
     // define linear gradient for bevel effect
     doc.add_child(
         xml!("linearGradient", "id" = "grad", "x2" = 0, "y2" = "100%")
-            .with_child(xml!("stop", "offset" = 0, "stop-color" = "#bbb", "stop-opacity" = ".1"))
+            .with_child(xml!("stop", "offset" = 0, "stop-color" = theme.gradient_tone, "stop-opacity" = ".1"))
             .with_child(xml!("stop", "offset" = 1, "stop-opacity" = ".1")),
     );
 
@@ -186,18 +229,18 @@ pub fn render_generic_badge(
     let mut g = xml!("g", "clip-path" = "url(#clip)");
 
     // background
-    g.add_child(xml!("rect", "width" = "100%", "height" = "100%", "fill" = "#555"));
+    g.add_child(xml!("rect", "width" = "100%", "height" = "100%", "fill" = theme.background));
 
     // header
     if let Some(header) = header {
         g.add_child(
-            xml!("g", "fill" = "#fff", "text-anchor" = "middle", "font-family" = FONT_FAMILY, "font-size" = 15, "font-weight" = "bold")
+            xml!("g", "fill" = theme.text_color, "text-anchor" = "middle", "font-family" = theme.font, "font-size" = theme.header_font_size, "font-weight" = "bold")
                 .with_child(
-                    xml!("text", "x" = total_width / 2, "y" = HEADER_HEIGHT / 2 + 1, "dominant-baseline" = "central", "fill" = "#010101", "fill-opacity" = ".3")
+                    xml!("text", "x" = total_width / 2, "y" = theme.header_height / 2 + 1, "dominant-baseline" = "central", "fill" = theme.outline_color, "fill-opacity" = theme.outline_opacity)
                         .with_text(header),
                 )
                 .with_child(
-                    xml!("text", "x" = total_width / 2, "y" = HEADER_HEIGHT / 2, "dominant-baseline" = "central")
+                    xml!("text", "x" = total_width / 2, "y" = theme.header_height / 2, "dominant-baseline" = "central")
                         .with_text(header),
                 )
         );
@@ -205,25 +248,25 @@ pub fn render_generic_badge(
 
     // rows
     for (nrow, row) in cells.iter().enumerate() {
-        let row_y_offset = header_height + nrow * CELL_HEIGHT;
+        let row_y_offset = header_height + nrow * theme.cell_height;
 
         // cell backgrounds
         for (cell, column) in row.iter().zip(columns.iter()) {
             if let Some(color) = &cell.color {
                 g.add_child(
-                    xml!("rect", "x" = column.offset, "y" = row_y_offset, "width" = column.width, "height" = CELL_HEIGHT, "fill" = color)
+                    xml!("rect", "x" = column.offset, "y" = row_y_offset, "width" = column.width, "height" = theme.cell_height, "fill" = color)
                 );
             }
         }
 
         // gradient
         g.add_child(
-            xml!("rect", "y" = row_y_offset, "width" = "100%", "height" = CELL_HEIGHT, "fill" = "url(#grad)")
+            xml!("rect", "y" = row_y_offset, "width" = "100%", "height" = theme.cell_height, "fill" = "url(#grad)")
         );
 
         // cell texts
         let mut cell_text_g =
-            xml!("g", "fill" = "#fff", "font-family" = FONT_FAMILY, "font-size" = CELL_FONT_SIZE);
+            xml!("g", "fill" = "#fff", "font-family" = theme.font, "font-size" = theme.cell_font_size);
 
         for (cell, column) in row.iter().zip(columns.iter()) {
             if cell.text.is_empty() || column.is_collapsed {
@@ -231,17 +274,17 @@ pub fn render_generic_badge(
             }
 
             let (text_x, text_anchor) = match cell.alignment {
-                CellAlignment::Left => (column.offset + CELL_HORIZONTAL_PADDING, "start"),
+                CellAlignment::Left => (column.offset + theme.cell_horizontal_padding, "start"),
                 CellAlignment::Center => (column.offset + column.width / 2, "middle"),
                 CellAlignment::Right => (
-                    column.offset + column.width - CELL_HORIZONTAL_PADDING,
+                    column.offset + column.width - theme.cell_horizontal_padding,
                     "end",
                 ),
             };
 
-            let text_y = row_y_offset + CELL_HEIGHT / 2;
+            let text_y = row_y_offset + theme.cell_height / 2;
             cell_text_g.add_child(
-                xml!("text", "x" = text_x, "y" = text_y + 1, "text-anchor" = text_anchor, "dominant-baseline" = "central", "fill" = "#010101", "fill-opacity" = ".3")
+                xml!("text", "x" = text_x, "y" = text_y + 1, "text-anchor" = text_anchor, "dominant-baseline" = "central", "fill" = theme.outline_color, "fill-opacity" = theme.outline_opacity)
                     .with_text(&cell.text)
             );
 
@@ -267,19 +310,23 @@ pub enum SpecialVersionStatus {
 #[allow(unused)]
 pub fn badge_color_for_package_status(
     package_status: PackageStatus,
+    theme: &Theme,
     special_status: Option<SpecialVersionStatus>,
 ) -> &'static str {
     if let Some(special_status) = special_status {
         use SpecialVersionStatus::*;
         match special_status {
-            LowerThanUserGivenThreshold => "#e00000",
+            LowerThanUserGivenThreshold => theme.color_special,
         }
     } else {
         use PackageStatus::*;
         match package_status {
-            Outdated | Legacy => "#e05d44",
-            Newest | Unique | Devel => "#4c1",
-            _ => "#9f9f9f",
+            Outdated => theme.color_outdated,
+            Legacy => theme.color_legacy,
+            Newest => theme.color_newest,
+            Unique => theme.color_unique,
+            Devel => theme.color_devel,
+            _ => theme.color_other,
         }
     }
 }
