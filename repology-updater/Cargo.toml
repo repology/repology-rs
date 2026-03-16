@@ -35,7 +35,7 @@ tokio = { version = "1.50.0", features = ["macros", "process", "rt-multi-thread"
 tokio-util = { version = "0.7.18", features = ["io"] }
 toml = { version = "1.0.4", default-features = false, features = ["std", "serde", "parse"] }
 tracing = "0.1.44"
-tracing-subscriber = { version = "0.3.22", features = ["chrono", "env-filter"] }
+tracing-subscriber = { version = "0.3.23", features = ["chrono", "env-filter"] }
 url = { version = "2.5.8", features = ["serde"] }
 walkdir = "2.5.0"
 
