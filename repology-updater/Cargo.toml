@@ -40,7 +40,7 @@ url = { version = "2.5.8", features = ["serde"] }
 walkdir = "2.5.0"
 
 [dev-dependencies]
-insta = "1.46.3"
+insta = "1.47.2"
 mockito = "1.7.2"
 paste = "1.0.15"
 tempfile = "3.26.0"
