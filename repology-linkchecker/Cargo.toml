@@ -35,6 +35,4 @@ tracing-subscriber = { version = "0.3.22", features = ["chrono", "env-filter"] }
 url = { version = "2.5.8", features = ["serde"] }
 
 [dev-dependencies]
-# Using dev branch until mainline supports matchit >=0.8.6
-#axum = { version = "0.8.1", features = ["macros"] }
-axum = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6", features = ["macros"] }
+axum = { version = "0.8.8", features = ["macros"] }

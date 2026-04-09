@@ -59,5 +59,6 @@ stable_sort_primitive = "warn"
 unused_async = "warn"
 
 [patch.crates-io]
-# Using dev branch until mainline supports matchit >=0.8.6
-axum-core = { git = "https://github.com/AMDmi3/axum.git", branch = "dm/matchit-8-6" }
+# Using patched version which supports matchit 0.9.2 and prefixed/suffixed placeholders in routes
+# See https://github.com/tokio-rs/axum/pull/3702
+axum = { git = "https://github.com/AMDmi3/axum.git", branch = "bump-matchit-for-axum-0.8.8" }
