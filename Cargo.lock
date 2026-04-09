@@ -330,6 +330,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "axum-myroutes"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ba7062d63ca510b6a8b1e6c90536131a4ee369d1f711a342eed42deaa6ce02f2"
+dependencies = [
+ "axum",
+ "axum-myroutes-macros",
+ "indexmap",
+ "thiserror 2.0.18",
+ "url-escape",
+]
+
+[[package]]
+name = "axum-myroutes-macros"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8d5e22a03958dbf45fd254399b1b78839235ebfcc6ae780a8f9daaf98ffe76b3"
+dependencies = [
+ "itertools 0.14.0",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "base64"
 version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2924,6 +2949,7 @@ dependencies = [
  "anyhow",
  "askama",
  "axum",
+ "axum-myroutes",
  "chrono",
  "cityhasher",
  "clap",

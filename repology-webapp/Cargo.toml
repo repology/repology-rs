@@ -14,6 +14,7 @@ coverage = []  # used to calculate coverage correctly (see https://github.com/ru
 anyhow = "1.0.102"
 askama = "0.15.6"
 axum = { version = "0.8.8", features = ["macros"] }
+axum-myroutes = "0.1.0"
 chrono = { version = "0.4.44", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
 clap = { version = "4.6.0", features = ["derive"] }
