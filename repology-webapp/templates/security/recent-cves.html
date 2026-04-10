@@ -13,7 +13,7 @@
 <div class="container">
 
 <p>This is a list of recently published (in <a href="https://nvd.nist.gov/">NVD</a>) vulnerabilities linked to Repology projects. You may see vulnerabilities for a given project under <b>CVEs</b> tab (only present when there are matching vulnerabilities), and missing bindings may be reported via <b>Report</b> tab.</p>
-<p><span class="bg-success">Highlighted</span> entries indicate matches due to recently (&lt;1 week ago) added <a href="{{ ctx.url_for(crate::endpoints::Endpoint::SecurityRecentCpes, [])? }}">CPE bindings</a>.</p>
+<p><span class="bg-success">Highlighted</span> entries indicate matches due to recently (&lt;1 week ago) added <a href="{{ crate::endpoints::Endpoint::SecurityRecentCpes.url_for().build()? }}">CPE bindings</a>.</p>
 
 {{ autorefresh::autorefresh_toggler() }}
 
@@ -37,7 +37,7 @@
 			<td class="minimal-column">{{ time::format_absolute_time(cve.published) }}</td>
 			<td>
 			{% for project_name in cve.project_names %}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name.as_ref())])? }}">{{ project_name }}</a>
+				<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project_name).build()? }}">{{ project_name }}</a>
 			{% endfor %}
 			</td>
 		</tr>

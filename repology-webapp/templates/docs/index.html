@@ -7,11 +7,11 @@
 <div class="container">
 
 <ul>
-	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::DocsAbout, [])? }}">What is Repology?</a></li>
-	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::DocsRequirements, [])? }}">Requirements for new repositories</a></li>
-	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::DocsNotSupported, [])? }}">Not supported repositories</a></li>
-	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::DocsBots, [])? }}">Repology bots</a></li>
-	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::ApiV1, [])? }}">API documentation</a></li>
+	<li><a href="{{ crate::endpoints::Endpoint::DocsAbout.url_for().build()? }}">What is Repology?</a></li>
+	<li><a href="{{ crate::endpoints::Endpoint::DocsRequirements.url_for().build()? }}">Requirements for new repositories</a></li>
+	<li><a href="{{ crate::endpoints::Endpoint::DocsNotSupported.url_for().build()? }}">Not supported repositories</a></li>
+	<li><a href="{{ crate::endpoints::Endpoint::DocsBots.url_for().build()? }}">Repology bots</a></li>
+	<li><a href="{{ crate::endpoints::Endpoint::ApiV1.url_for().build()? }}">API documentation</a></li>
 </ul>
 
 </div>

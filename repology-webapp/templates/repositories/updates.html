@@ -11,7 +11,7 @@
 
 {% macro update_run_info(run_id, start, errors, warnings) -%}
 {%- if let Some(run_id) = run_id -%}
-	<b><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", run_id.to_string().as_ref())])? }}" rel="nofollow">{{ time::format_time_interval_short(Utc::now() - start.unwrap()) }}</a> ago</b>
+	<b><a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", run_id).build()? }}" rel="nofollow">{{ time::format_time_interval_short(Utc::now() - start.unwrap()) }}</a> ago</b>
 	{%- if let Some(errors) = errors %}{% if ctx.deref(ctx.deref(errors)) > 0 %}, <span class="text-danger">{{ errors }} err</span>{% endif %}{% endif -%}
 	{%- if let Some(warnings) = warnings %}{% if ctx.deref(ctx.deref(warnings)) > 0 %}, <span class="text-warning">{{ warnings }} warn</span>{% endif %}{% endif -%}
 {%- else -%}
@@ -39,7 +39,7 @@
 	<tbody>
 	{% for repository in repositories %}
 		<tr id="{{ repository.name }}">
-			<td class="text-right"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository.name.as_str())])? }}">{{ repository.title }}</a></td>
+			<td class="text-right"><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository.name).build()? }}">{{ repository.title }}</a></td>
 			<td class="text-center
 					{%- if repository.last_fetch_status.as_deref() == Some("failed") %} danger
 					{%- else if repository.last_fetch_status.as_deref() == Some("running") %} info
@@ -72,21 +72,21 @@
 			{%- for histitem in repository.history -%}
 
 			{%- if histitem.status == "running" -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-running">▶</a>
+				<a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", histitem.id).build()? }}" rel="nofollow" class="update-running">▶</a>
 			{%- else if histitem.status == "interrupted" -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-interrupted">◼</a>
+				<a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", histitem.id).build()? }}" rel="nofollow" class="update-interrupted">◼</a>
 			{%- else if histitem.type == "fetch" && histitem.status == "successful" && histitem.no_changes -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-successful">⬂</a>
+				<a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", histitem.id).build()? }}" rel="nofollow" class="update-successful">⬂</a>
 			{%- else if histitem.type == "fetch" && histitem.status == "successful" -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-successful">⬊</a>
+				<a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", histitem.id).build()? }}" rel="nofollow" class="update-successful">⬊</a>
 			{%- else if histitem.type == "fetch" && histitem.status == "failed" -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-failed">⬂</a>
+				<a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", histitem.id).build()? }}" rel="nofollow" class="update-failed">⬂</a>
 			{%- else if histitem.type == "parse" && histitem.status == "successful" -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-successful">⬈</a>
+				<a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", histitem.id).build()? }}" rel="nofollow" class="update-successful">⬈</a>
 			{%- else if histitem.type == "parse" && histitem.status == "failed" -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow" class="update-failed">⬀</a>
+				<a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", histitem.id).build()? }}" rel="nofollow" class="update-failed">⬀</a>
 			{%- else -%}
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Log, [("run_id", histitem.id.to_string().as_ref())])? }}" rel="nofollow">?</a>
+				<a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", histitem.id).build()? }}" rel="nofollow">?</a>
 			{%- endif -%}
 
 			{%- endfor -%}

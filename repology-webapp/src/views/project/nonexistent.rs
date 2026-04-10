@@ -110,7 +110,10 @@ pub async fn nonexisting_project(
                 [(
                     header::LOCATION,
                     HeaderValue::from_maybe_shared(
-                        ctx.url_for(ctx.endpoint, &[("project_name", target_project_name)])?,
+                        ctx.endpoint
+                            .url_for()
+                            .param("project_name", target_project_name)
+                            .build()?,
                     )?,
                 )],
             )

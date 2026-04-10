@@ -237,30 +237,27 @@ pub async fn project_by_perform(
     .fetch_all(&state.pool)
     .await?;
 
-    let params: Vec<_> = gen_query
-        .iter()
-        .map(|(k, v)| (k.as_str(), v.as_str()))
-        .filter(|(k, _)| {
-            !matches!(
-                *k,
-                "repo" | "name_type" | "name" | "noautoresolve" | "target_page"
-            )
-        })
-        .collect();
-
     let target_projects: Vec<_> = project_names
         .into_iter()
         .sorted()
         .map(|project_name| -> Result<(String, String)> {
-            let mut params = params.clone();
-            params.push(("project_name", project_name.as_str()));
+            let mut path = target_page.endpoint.url_for();
+
+            path = path.param("project_name", &project_name);
             if target_page.endpoint.path().contains("{repository_name}") {
-                params.push(("repository_name", repository_data.name.as_str()));
+                path = path.param("repository_name", &repository_data.name);
             }
 
-            let url = ctx.url_for(target_page.endpoint, &params)?;
+            for (key, value) in gen_query.iter() {
+                if !matches!(
+                    key.as_ref(),
+                    "repo" | "name_type" | "name" | "noautoresolve" | "target_page"
+                ) {
+                    path = path.query_param(key, value);
+                }
+            }
 
-            Ok((project_name, url))
+            Ok((project_name, path.build()?))
         })
         .try_collect()?;
 

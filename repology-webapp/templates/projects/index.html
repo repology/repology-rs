@@ -11,15 +11,15 @@
 		{%- let first_item = projects_list.first() %}
 		<li{% if first_item.is_none() %} class="disabled"{% endif %}>
 		{%- if let Some(first_item) = first_item -%}
-			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(("..".to_string() + first_item.project.effname.as_str()).as_str())).as_slice() )? }}" rel="prev">&laquo;</a>
+			<a href="{{ query.add_params(crate::endpoints::Endpoint::ProjectsBounded.url_for()).param("bound", ("..".to_string() + first_item.project.effname.as_str())).build()? }}" rel="prev">&laquo;</a>
 		{%- else -%}
 			<span>&laquo;</span>
 		{%- endif -%}
 		</li>
-		<li{% if first_item.is_some() && "0123456789".contains(first_item.unwrap().project.effname.chars().nth(0).unwrap_or(' ')) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, query.to_params(None).as_slice())? }}">0-9</a></li>
+		<li{% if first_item.is_some() && "0123456789".contains(first_item.unwrap().project.effname.chars().nth(0).unwrap_or(' ')) %} class="active"{% endif %}><a href="{{ query.add_params(crate::endpoints::Endpoint::Projects.url_for()).build()? }}">0-9</a></li>
 		{%- for letter in "abcdefghijklmnopqrstuvwxyz".chars() %}
 		<li{% if first_item.is_some() && first_item.unwrap().project.effname.starts_with(ctx.deref(letter)) %} class="active"{% endif %}>{#- -#}
-			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(letter.to_string()|ref)).as_slice())? }}">
+			<a href="{{ query.add_params(crate::endpoints::Endpoint::ProjectsBounded.url_for()).param("bound", letter).build()? }}">
 				{{- letter.to_ascii_uppercase() -}}
 			</a>{#- -#}
 		</li>
@@ -28,7 +28,7 @@
 		{%- let last_item = projects_list.last() %}
 		<li{% if last_item.is_none() %} class="disabled"{% endif %}>
 		{%- if let Some(last_item) = last_item -%}
-			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectsBounded, query.to_params(Some(last_item.project.effname.as_str())).as_slice())? }}" rel="next">&raquo;</a>
+			<a href="{{ query.add_params(crate::endpoints::Endpoint::ProjectsBounded.url_for()).param("bound", last_item.project.effname).build()? }}" rel="next">&raquo;</a>
 		{%- else -%}
 			<span>&raquo;</span>
 		{%- endif -%}
@@ -41,7 +41,7 @@
 <div class="container">
 
 <nav>
-	<form class="form-horizontal" action="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [])? }}" method="GET">
+	<form class="form-horizontal" action="{{ crate::endpoints::Endpoint::Projects.url_for().build()? }}" method="GET">
 		<div class="form-group" id="advanced-search-toggle-root">
 			<label for="search" class="col-sm-2 control-label">Name search</label>
 			<div class="col-sm-6">
@@ -148,7 +148,7 @@
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
 					<button type="submit" class="btn btn-primary">Search</button>
-					<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [])? }}" class="btn btn-default">Clear</a>
+					<a href="{{ crate::endpoints::Endpoint::Projects.url_for().build()? }}" class="btn btn-default">Clear</a>
 				</div>
 			</div>
 		</div>

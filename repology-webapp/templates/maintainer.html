@@ -51,82 +51,82 @@
 	{% for repository in maintainer_repositories %}
 		<tr>
 			<td class="text-right break-word">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository.name.as_str())])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository.name).build()? }}">
 					{{- repositories_data.repository_title(repository.name) -}}
 				</a>
 			</td>
 			<td class="text-center total-cell">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str())])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).build()? }}">
 					{{- repository.num_packages -}}
 				</a>
 			</td>
 			<td class="text-center total-cell">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str())])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).build()? }}">
 					{{- repository.num_projects -}}
 				</a>
 			</td>
 			{%- if repository.num_projects_newest > 0 -%}
 			<td class="text-center version-cell version-big version-newest">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("newest", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("newest", "1").build()? }}">
 					{{- repository.num_projects_newest -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-newest">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("newest", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("newest", "1").build()? }}">
 					{{- ctx.format_percent(repository.num_projects_newest, repository.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
 			{%- if repository.num_projects_outdated > 0 -%}
 			<td class="text-center version-cell version-big version-outdated">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("outdated", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("outdated", "1").build()? }}">
 					{{- repository.num_projects_outdated -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("outdated", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("outdated", "1").build()? }}">
 					{{- ctx.format_percent(repository.num_projects_outdated, repository.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
 			{%- if repository.num_projects_problematic > 0 -%}
 			<td class="text-center version-cell version-big version-ignored">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("problematic", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("problematic", "1").build()? }}">
 					{{- repository.num_projects_problematic -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-ignored">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("problematic", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("problematic", "1").build()? }}">
 					{{- ctx.format_percent(repository.num_projects_problematic, repository.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
 			{%- if repository.num_projects_vulnerable > 0 -%}
 			<td class="text-center vulnerable-cell">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("vulnerable", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("vulnerable", "1").build()? }}">
 					{{- repository.num_projects_vulnerable -}}
 				</a>
 			</td>
 			<td class="text-center vulnerable-cell">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("vulnerable", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("vulnerable", "1").build()? }}">
 					{{- ctx.format_percent_longer(repository.num_projects_vulnerable, repository.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
 			<td class="text-center">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("outdated", "1"), ("families_newest", "2-")])? }}"
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("outdated", "1").query_param("families_newest", "2-").build()? }}"
 					title="High confidence (newest in 2 or more other repository families) outdated packages">HCO</a>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("newest", "1"), ("families_newest", "1")])? }}"
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("newest", "1").query_param("families_newest", "1").build()? }}"
 					title="Lone (not present in other repository families, so may be either very fresh or incorrect) newest versions">LN</a>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("has_related", "1")])? }}"
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("has_related", "1").build()? }}"
 					title="Packages which have related ones (may require merging)">∗</a>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("inrepo", repository.name.as_str()), ("families", "1")])? }}"
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("families", "1").build()? }}"
 					title="Unique packages (not present in other repository families)">U</a>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainerProblems, [("maintainer_name", maintainer_name), ("repository_name", repository.name.as_str())])? }}">Problems</a>
+				<a href="{{ crate::endpoints::Endpoint::MaintainerProblems.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository.name).build()? }}">Problems</a>
 			</td>
 			<td class="text-center">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainerRepoFeed, [("maintainer_name", maintainer_name), ("repository_name", repository.name.as_str())])? }}">html</a>,
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::MaintainerRepoFeedAtom, [("maintainer_name", maintainer_name), ("repository_name", repository.name.as_str())])? }}">atom<img src="{{ ctx.url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a>
+				<a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeed.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository.name).build()? }}">html</a>,
+				<a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository.name).build()? }}">atom<img src="{{ ctx.url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a>
 			</td>
 		</tr>
 	{% endfor %}
@@ -134,71 +134,71 @@
 		<tr>
 			<td class="text-right break-word total-cell">Total</td>
 			<td class="text-center total-cell">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name)])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).build()? }}">
 					{{- maintainer.num_packages -}}
 				</a>
 			</td>
 			<td class="text-center total-cell">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name)])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).build()? }}">
 					{{- maintainer.num_projects -}}
 				</a>
 			</td>
 			{%- if maintainer.num_projects_newest > 0 -%}
 			<td class="text-center version-cell version-big version-newest">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("newest", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("newest", "1").build()? }}">
 					{{- maintainer.num_projects_newest -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-newest">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("newest", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("newest", "1").build()? }}">
 					{{- ctx.format_percent(maintainer.num_projects_newest, maintainer.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
 			{%- if maintainer.num_projects_outdated > 0 -%}
 			<td class="text-center version-cell version-big version-outdated">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("outdated", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("outdated", "1").build()? }}">
 					{{- maintainer.num_projects_outdated -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("outdated", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("outdated", "1").build()? }}">
 					{{- ctx.format_percent(maintainer.num_projects_outdated, maintainer.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
 			{%- if maintainer.num_projects_problematic > 0 -%}
 			<td class="text-center version-cell version-big version-ignored">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("problematic", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("problematic", "1").build()? }}">
 					{{- maintainer.num_projects_problematic -}}
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-ignored">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("problematic", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("problematic", "1").build()? }}">
 					{{- ctx.format_percent(maintainer.num_projects_problematic, maintainer.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
 			{%- if maintainer.num_projects_vulnerable > 0 -%}
 			<td class="text-center vulnerable-cell">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("vulnerable", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("vulnerable", "1").build()? }}">
 					{{- maintainer.num_projects_vulnerable -}}
 				</a>
 			</td>
 			<td class="text-center vulnerable-cell">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("vulnerable", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("vulnerable", "1").build()? }}">
 					{{- ctx.format_percent_longer(maintainer.num_projects_vulnerable, maintainer.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
 			<td class="text-center">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("outdated", "1"), ("families_newest", "2-")])? }}"
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("outdated", "1").query_param("families_newest", "2-").build()? }}"
 					title="High confidence (newest in 2 or more other repository families) outdated packages">HCO</a>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("newest", "1"), ("families_newest", "1")])? }}"
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("newest", "1").query_param("families_newest", "1").build()? }}"
 					title="Lone (not present in other repository families) newest versions">LN</a>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("has_related", "1")])? }}"
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("has_related", "1").build()? }}"
 					title="Packages which have related ones (may require merging)">∗</a>
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("families", "1")])? }}"
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("families", "1").build()? }}"
 					title="Unique packages (not present in other repository families)">U</a>
 			</td>
 			<td class="text-center"></td>
@@ -214,7 +214,7 @@
 <ul>
 	{% for category in maintainer_categories %}
 	<li>
-		<strong>{{ category.name }}</strong> (<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name), ("category", category.name.as_str())])? }}">{{ category.num_projects }}</a>)
+		<strong>{{ category.name }}</strong> (<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("category", category.name).build()? }}">{{ category.num_projects }}</a>)
 	</li>
 	{% endfor %}
 </ul>
@@ -225,12 +225,12 @@
 <p>
 {%- for project_name in projects -%}
 	{%- if !loop.first %}, {% endif -%}
-	<a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", project_name.as_str())])? }}">
+	<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project_name).build()? }}">
 		{{- project_name -}}
 	</a>
 {%- endfor -%}
 {%- if projects.len() < usize::try_from(ctx.deref(maintainer.num_projects)).expect("number of projects is expected to be non-negative") -%}
-	, <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("maintainer", maintainer_name)])? }}">…</a>
+	, <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).build()? }}">…</a>
 {%- endif -%}
 </p>
 
@@ -252,7 +252,7 @@
 		<tbody>
 		{% for similar_maintainer in column %}
 			<tr>
-				<td class="text-right"><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", similar_maintainer.name.as_str())])? }}">{{ similar_maintainer.name }}</a></td>
+				<td class="text-right"><a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().param("maintainer_name", similar_maintainer.name).build()? }}">{{ similar_maintainer.name }}</a></td>
 				<td class="text-center">{{ similar_maintainer.score|fmt("{:.2}") }}</td>
 				<td class="text-center">{{ similar_maintainer.num_common_projects }}</td>
 			</tr>

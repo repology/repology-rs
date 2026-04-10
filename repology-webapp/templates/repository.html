@@ -21,7 +21,7 @@
 	repository.num_projects > 0 &&
 	repository.source_type == SourceType::Repository
 %}
-<div class="alert alert-danger" role="alert"><p>This repository <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesFields, [])? }}#{{ repository_name}} ">does not provide</a> project <strong>homepage or download links</strong> in a way accessible by Repology. This is critical, because these are used to resolve project name conflicts, e.g. to distinguish similarly named packages of unrelated projects. Because of that, this repository is <strong>subject to removal</strong> in the near future.</p><p>See <a href="{{ ctx.url_for(crate::endpoints::Endpoint::DocsRequirements, [])? }}">documentation</a> for a best way to make package metadata available for Repology.</p></div>
+<div class="alert alert-danger" role="alert"><p>This repository <a href="{{ crate::endpoints::Endpoint::RepositoriesFields.url_for().build()? }}#{{ repository_name}} ">does not provide</a> project <strong>homepage or download links</strong> in a way accessible by Repology. This is critical, because these are used to resolve project name conflicts, e.g. to distinguish similarly named packages of unrelated projects. Because of that, this repository is <strong>subject to removal</strong> in the near future.</p><p>See <a href="{{ crate::endpoints::Endpoint::DocsRequirements.url_for().build()? }}">documentation</a> for a best way to make package metadata available for Repology.</p></div>
 {% endif %}
 
 {% if
@@ -31,7 +31,7 @@
 	repository.num_projects > 0 &&
 	repository.source_type == SourceType::Repository
 %}
-<div class="alert alert-danger" role="alert"><p>This repository <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesFields, [])? }}#{{ repository_name}} ">does not provide</a> links to <strong>package recipes or sources</strong> in a way accessible by Repology. This is critical, because one of the goals of Repology is to make the details of how a project is packaged visible to anyone. It makes Repology maintenance harder as it's not possible to easily check where a specific version comes from; it does not allow upstream to check the recipe and improve their software to simplify packaging, or suggest corrections to the maintainer; it does not allow other maintainers to learn new ideas. It may be as well dangerous to users due to lack of transparency. Because of that, this repository is <strong>subject to removal</strong> in the near future.</p><p>See <a href="{{ ctx.url_for(crate::endpoints::Endpoint::DocsRequirements, [])? }}">documentation</a> for a best way to make package metadata available for Repology.</p></div>
+<div class="alert alert-danger" role="alert"><p>This repository <a href="{{ crate::endpoints::Endpoint::RepositoriesFields.url_for().build()? }}#{{ repository_name}} ">does not provide</a> links to <strong>package recipes or sources</strong> in a way accessible by Repology. This is critical, because one of the goals of Repology is to make the details of how a project is packaged visible to anyone. It makes Repology maintenance harder as it's not possible to easily check where a specific version comes from; it does not allow upstream to check the recipe and improve their software to simplify packaging, or suggest corrections to the maintainer; it does not allow other maintainers to learn new ideas. It may be as well dangerous to users due to lack of transparency. Because of that, this repository is <strong>subject to removal</strong> in the near future.</p><p>See <a href="{{ crate::endpoints::Endpoint::DocsRequirements.url_for().build()? }}">documentation</a> for a best way to make package metadata available for Repology.</p></div>
 {% endif %}
 
 {% if let Some(reason) = repository.pessimized_reason %}
@@ -89,7 +89,7 @@
 		<div class="panel panel-primary">
 			<div class="panel-heading"><h3>Total</h3></div>
 			<div class="panel-body">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name)])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).build()? }}">
 					{{ repository.num_projects }}
 				</a>
 			</div>
@@ -99,7 +99,7 @@
 		<div class="panel panel-success">
 			<div class="panel-heading"><h3>Newest</h3></div>
 			<div class="panel-body">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("newest", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("newest", "1").build()? }}">
 					{{ repository.num_projects_newest }}
 				</a>
 			</div>
@@ -109,7 +109,7 @@
 		<div class="panel panel-danger">
 			<div class="panel-heading"><h3>Outdated</h3></div>
 			<div class="panel-body">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("outdated", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("outdated", "1").build()? }}">
 					{{ repository.num_projects_outdated }}
 				</a>
 			</div>
@@ -119,7 +119,7 @@
 		<div class="panel panel-info">
 			<div class="panel-heading"><h3>Unique</h3></div>
 			<div class="panel-body">
-				<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("families", "1")])? }}">
+				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("families", "1").build()? }}">
 					{{ repository.num_projects_unique }}
 				</a>
 			</div>
@@ -132,24 +132,24 @@
 <p>Package filtering in Repology is very flexible, so you can combine all kinds of conditions. But here are some preset queries to start with:</p>
 
 <ul>
-	<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name)])? }}">All packages</a> present in this repository.</li>
-	<li>Packages which are <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("newest", "1")])? }}">up to date</a> in this repository.</li>
-	<li>Packages which are <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("outdated", "1")])? }}">outdated</a> in this repository.</li>
-	<li>Packages which are <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("outdated", "1"), ("families_newest", "2-")])? }}">outdated</a> in this repository, but newest in 2+ families. Compared to the previous query this has smaller possibility of false positives.</li>
-	<li>Packages which are <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("vulnerable", "1")])? }}">potentially vulnerable</a> in this repository.</li>
+	<li><a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).build()? }}">All packages</a> present in this repository.</li>
+	<li>Packages which are <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("newest", "1").build()? }}">up to date</a> in this repository.</li>
+	<li>Packages which are <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("outdated", "1").build()? }}">outdated</a> in this repository.</li>
+	<li>Packages which are <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("outdated", "1").query_param("families_newest", "2-").build()? }}">outdated</a> in this repository, but newest in 2+ families. Compared to the previous query this has smaller possibility of false positives.</li>
+	<li>Packages which are <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("vulnerable", "1").build()? }}">potentially vulnerable</a> in this repository.</li>
 </ul>
 <ul>
-	<li>Packages which <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("problematic", "1")])? }}">have ignored versions</a> in this repository. There may be incorrect versions which needs fixing among these.</li>
-	<li>Packages which are up to date <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("newest", "1"), ("families_newest", "1")])? }}">only in this repository family</a>. There may be incorrect versions which needs fixing among these.</li>
-	<li>Packages which <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("has_related", "1")])? }}">have related ones</a> (with the same homepage). There may be projects which require merging these.</li>
+	<li>Packages which <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("problematic", "1").build()? }}">have ignored versions</a> in this repository. There may be incorrect versions which needs fixing among these.</li>
+	<li>Packages which are up to date <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("newest", "1").query_param("families_newest", "1").build()? }}">only in this repository family</a>. There may be incorrect versions which needs fixing among these.</li>
+	<li>Packages which <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("has_related", "1").build()? }}">have related ones</a> (with the same homepage). There may be projects which require merging these.</li>
 </ul>
 <ul>
-	<li>Unique projects present <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("families", "1")])? }}">only in this repository family</a>.</li>
-	<li>Unique projects present <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("inrepo", repository_name), ("repos", "1")])? }}">only in this repository</a>.</li>
+	<li>Unique projects present <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("families", "1").build()? }}">only in this repository family</a>.</li>
+	<li>Unique projects present <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository_name).query_param("repos", "1").build()? }}">only in this repository</a>.</li>
 </ul>
 <ul>
-	<li>Project in other repositories <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("notinrepo", repository_name)])? }}">not present in this one</a>.</li>
-	<li>Popular projects <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [("notinrepo", repository_name), ("families", "5-")])? }}">present in 5+ repository families</a>, but absent in this one - likely good candidates for inclusion.</li>
+	<li>Project in other repositories <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("notinrepo", repository_name).build()? }}">not present in this one</a>.</li>
+	<li>Popular projects <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("notinrepo", repository_name).query_param("families", "5-").build()? }}">present in 5+ repository families</a>, but absent in this one - likely good candidates for inclusion.</li>
 </ul>
 
 <h2>Maintainers</h2>
@@ -159,12 +159,12 @@
 {% if repository.num_problems > 0 %}
 <h2>Problems</h2>
 
-<p>There are <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoryProblems, [("repository_name", repository_name)])? }}">{{ repository.num_problems }} known problems</a> for packages in this repository</p>
+<p>There are <a href="{{ crate::endpoints::Endpoint::RepositoryProblems.url_for().param("repository_name", repository_name).build()? }}">{{ repository.num_problems }} known problems</a> for packages in this repository</p>
 {% endif %}
 
 <h2>Badge</h2>
 
-<p><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_name)])? }}"><img src="{{ ctx.url_for(crate::endpoints::Endpoint::BadgeRepositoryBig, [("repository_name", repository_name)])? }}" alt="Repository status"></a></p>
+<p><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }}"><img src="{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().param("repository_name", repository_name).build()? }}" alt="Repository status"></a></p>
 
 <p>Markdown code:</p>
 <pre>
@@ -182,43 +182,43 @@
 
 <h2>Graphs</h2>
 <h3>Total projects</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsTotal, [("repository_name", repository_name)])? }}" alt="Total projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsTotal.url_for().param("repository_name", repository_name).build()? }}" alt="Total projects graph">
 
 <h3>Newest projects</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsNewest, [("repository_name", repository_name)])? }}" alt="Newest projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsNewest.url_for().param("repository_name", repository_name).build()? }}" alt="Newest projects graph">
 
 <h3>Newest projects percentage</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsNewestPercent, [("repository_name", repository_name)])? }}" alt="Newest projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsNewestPercent.url_for().param("repository_name", repository_name).build()? }}" alt="Newest projects percentage graph">
 
 <h3>Outdated projects</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsOutdated, [("repository_name", repository_name)])? }}" alt="Outdated projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsOutdated.url_for().param("repository_name", repository_name).build()? }}" alt="Outdated projects graph">
 
 <h3>Outdated projects percentage</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsOutdatedPercent, [("repository_name", repository_name)])? }}" alt="Outdated projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsOutdatedPercent.url_for().param("repository_name", repository_name).build()? }}" alt="Outdated projects percentage graph">
 
 <h3>Unique projects</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsUnique, [("repository_name", repository_name)])? }}" alt="Unique projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsUnique.url_for().param("repository_name", repository_name).build()? }}" alt="Unique projects graph">
 
 <h3>Unique projects percentage</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsUniquePercent, [("repository_name", repository_name)])? }}" alt="Unique projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsUniquePercent.url_for().param("repository_name", repository_name).build()? }}" alt="Unique projects percentage graph">
 
 <h3>Problematic projects</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsProblematic, [("repository_name", repository_name)])? }}" alt="Problematic projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsProblematic.url_for().param("repository_name", repository_name).build()? }}" alt="Problematic projects graph">
 
 <h3>Problematic projects percentage</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsProblematicPercent, [("repository_name", repository_name)])? }}" alt="Problematic projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsProblematicPercent.url_for().param("repository_name", repository_name).build()? }}" alt="Problematic projects percentage graph">
 
 <h3>Potentially vulnerable projects</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsVulnerable, [("repository_name", repository_name)])? }}" alt="Potentially vulnerable projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsVulnerable.url_for().param("repository_name", repository_name).build()? }}" alt="Potentially vulnerable projects graph">
 
 <h3>Potentially vulnerable projects percentage</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProjectsVulnerablePercent, [("repository_name", repository_name)])? }}" alt="Potentially vulnerable projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsVulnerablePercent.url_for().param("repository_name", repository_name).build()? }}" alt="Potentially vulnerable projects percentage graph">
 
 <h3>Maintainers</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoMaintainers, [("repository_name", repository_name)])? }}" alt="Maintainers graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoMaintainers.url_for().param("repository_name", repository_name).build()? }}" alt="Maintainers graph">
 
 <h3>Problems</h3>
-<img src="{{ ctx.url_for(crate::endpoints::Endpoint::GraphRepoProblems, [("repository_name", repository_name)])? }}" alt="Problems graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProblems.url_for().param("repository_name", repository_name).build()? }}" alt="Problems graph">
 
 </div>
 {% endblock %}

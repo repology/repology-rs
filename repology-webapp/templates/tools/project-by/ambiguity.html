@@ -6,7 +6,7 @@
 {% block content %}
 <div class="container">
 <div class="alert alert-warning" role="alert">
-	<p>Someone has tried to point you to Repology data for <b>{{ query.name.as_ref().unwrap() }}</b> in <a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_data.name.as_str())])? }}">{{ repository_data.title }}</a>, however Repology has multiple entries matching these criteria. Please pick one:</p>
+	<p>Someone has tried to point you to Repology data for <b>{{ query.name.as_ref().unwrap() }}</b> in <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_data.name).build()? }}">{{ repository_data.title }}</a>, however Repology has multiple entries matching these criteria. Please pick one:</p>
 	<ul>
 	{% for (project_name, url) in targets %}
 		<li><a href="{{ url }}">{{ project_name }}</a></li>

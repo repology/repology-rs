@@ -13,8 +13,8 @@
 	<link rel="stylesheet" href="{{ ctx.url_for_static("bootstrap.min.v3.3.7.css")? }}">
 	<link rel="stylesheet" href="{{ ctx.url_for_static("repology.v21.css")? }}">
 	<link rel="icon" href="{{ ctx.url_for_static("repology.v1.ico")? }}" sizes="16x16 32x32 64x64" type="image/x-icon">
-	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ ctx.url_for(crate::endpoints::Endpoint::OpensearchProject, [])? }}">
-	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ ctx.url_for(crate::endpoints::Endpoint::OpensearchMaintainer, [])? }}">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ crate::endpoints::Endpoint::OpensearchProject.url_for().build()? }}">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ crate::endpoints::Endpoint::OpensearchMaintainer.url_for().build()? }}">
 </head>
 <body>
 
@@ -39,22 +39,22 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="{{ ctx.url_for(crate::endpoints::Endpoint::Index, [])? }}">
+			<a class="navbar-brand" href="{{ crate::endpoints::Endpoint::Index.url_for().build()? }}">
 				<img alt="Repology" src="{{ ctx.url_for_static("repology40x40.v1.png")? }}" width="40" height="40">
 			</a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li{% if ctx.is_section(crate::endpoints::Section::Projects) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Projects, [])? }}">Projects</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Maintainers) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainers, [])? }}">Maintainers</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Repositories) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesStatistics, [])? }}">Repositories</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Tools) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Tools, [])? }}">Tools</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Security) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::SecurityRecentCves, [])? }}">Security</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Projects) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Projects.url_for().build()? }}">Projects</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Maintainers) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Maintainers.url_for().build()? }}">Maintainers</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Repositories) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}">Repositories</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Tools) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Tools.url_for().build()? }}">Tools</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Security) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::SecurityRecentCves.url_for().build()? }}">Security</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li{% if ctx.is_section(crate::endpoints::Section::News) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::News, [])? }}">News</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Docs) %} class="active"{% endif %}><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Docs, [])? }}">Docs</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::News) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::News.url_for().build()? }}">News</a></li>
+				<li{% if ctx.is_section(crate::endpoints::Section::Docs) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Docs.url_for().build()? }}">Docs</a></li>
 			</ul>
 		</div>
 	</div>

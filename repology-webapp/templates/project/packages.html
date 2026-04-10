@@ -27,7 +27,7 @@
 		<div class="panel panel-version-{{ package.status.as_ref() }}">
 			<div class="panel-heading">
 				<div class="package-repository">
-				<a class="panel-heading-link" href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", package.repo.as_str())])? }}">{{ repositories_data.repository_title(package.repo) }}</a>
+				<a class="panel-heading-link" href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", package.repo).build()? }}">{{ repositories_data.repository_title(package.repo) }}</a>
 				{%- if let Some(subrepo) = package.subrepo -%}
 					<br><sup>{{ subrepo }}</sup>
 				{%- endif -%}
@@ -46,7 +46,7 @@
 						{%- if is_fixed %} title="Normalized from &quot;{{ package.origversion }}&quot;"{% endif -%}
 					>
 						{{- package.version -}}
-						{%- if is_vulnerable %} <a href="{{ ctx.url_for(crate::endpoints::Endpoint::ProjectCves, [("project_name", project_name), ("version", package.version.as_str())])? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
+						{%- if is_vulnerable %} <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().param("project_name", project_name).param("version", package.version).build()? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
 					</span>
 					{%- if package.rawversion != package.version %} ({{ package.rawversion }}){% endif -%}
 					{%- if is_recalled %} (recalled){% endif -%}
@@ -62,7 +62,7 @@
 				<li class="list-group-item"><b>Maintainer{% if package.maintainers.len() > 1 %}s{% endif %}:</b>
 					<ul class="list-package-details">
 					{%- for maintainer in package.maintainers %}
-						<li><a href="{{ ctx.url_for(crate::endpoints::Endpoint::Maintainer, [("maintainer_name", maintainer.as_str())])? }}">{{ maintainer }}</a></li>
+						<li><a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().param("maintainer_name", maintainer).build()? }}">{{ maintainer }}</a></li>
 					{%- endfor %}
 					</ul>
 				</li>

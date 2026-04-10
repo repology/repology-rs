@@ -35,7 +35,7 @@
 	{% else if reason == FailureReason::BadTargetPage && query.target_page.is_none() %}
 	because target page (<code>target_page</code> parameter) was not specified.
 	{% else if reason == FailureReason::BadTargetPage %}
-	because specified target page <code>{{ query.target_page.as_ref().unwrap() }}</code> is invalid. See {{ ctx.url_for(crate::endpoints::Endpoint::ToolProjectBy, [])? }} for valid target pages.
+	because specified target page <code>{{ query.target_page.as_ref().unwrap() }}</code> is invalid. See {{ crate::endpoints::Endpoint::ToolProjectBy.url_for().build()? }} for valid target pages.
 	{% else if reason == FailureReason::NotFound %}
 	because the specified package name was not found.
 	{% endif %}

@@ -24,7 +24,7 @@
 {% if let Some(versions) = versions_by_repo.get(repository_data.name) %}
 	<tr id="{{ repository_data.name }}">
 		<td class="text-right minimal-column">
-			<a href="{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_data.name.as_str())])? }}">{{ repository_data.title }}</a>
+			<a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_data.name).build()? }}">{{ repository_data.title }}</a>
 		</td>
 		<td>
 		{% for version in versions %}

@@ -118,38 +118,50 @@ impl QueryParams {
             || self.has_related
     }
 
-    fn to_params<'a>(&'a self, bound: Option<&'a str>) -> Vec<(&'a str, &'a str)> {
-        let mut res = vec![
-            ("search", self.search.as_str()),
-            ("maintainer", self.maintainer.as_str()),
-            ("category", self.category.as_str()),
-            ("inrepo", self.inrepo.as_str()),
-            ("notinrepo", self.notinrepo.as_str()),
-            ("repos", self.repos.as_str()),
-            ("families", self.families.as_str()),
-            ("repos_newest", self.repos_newest.as_str()),
-            ("families_newest", self.families_newest.as_str()),
-        ];
+    fn add_params(&self, mut builder: axum_myroutes::PathBuilder) -> axum_myroutes::PathBuilder {
+        if !self.search.is_empty() {
+            builder = builder.query_param("search", &self.search);
+        }
+        if !self.maintainer.is_empty() {
+            builder = builder.query_param("maintainer", &self.maintainer)
+        }
+        if !self.category.is_empty() {
+            builder = builder.query_param("category", &self.category)
+        }
+        if !self.inrepo.is_empty() {
+            builder = builder.query_param("inrepo", &self.inrepo)
+        }
+        if !self.notinrepo.is_empty() {
+            builder = builder.query_param("notinrepo", &self.notinrepo)
+        }
+        if !self.repos.is_empty() {
+            builder = builder.query_param("repos", &self.repos)
+        }
+        if !self.families.is_empty() {
+            builder = builder.query_param("families", &self.families)
+        }
+        if !self.repos_newest.is_empty() {
+            builder = builder.query_param("repos_newest", &self.repos_newest)
+        }
+        if !self.families_newest.is_empty() {
+            builder = builder.query_param("families_newest", &self.families_newest);
+        }
         if self.newest {
-            res.push(("newest", "1"));
+            builder = builder.query_param("newest", 1);
         }
         if self.outdated {
-            res.push(("outdated", "1"));
+            builder = builder.query_param("outdated", 1);
         }
         if self.problematic {
-            res.push(("problematic", "1"));
+            builder = builder.query_param("problematic", 1);
         }
         if self.vulnerable {
-            res.push(("vulnerable", "1"));
+            builder = builder.query_param("vulnerable", 1);
         }
         if self.has_related {
-            res.push(("has_related", "1"));
+            builder = builder.query_param("has_related", 1);
         }
-
-        if let Some(bound) = bound {
-            res.push(("bound", bound));
-        }
-        res
+        builder
     }
 }
 

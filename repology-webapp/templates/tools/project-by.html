@@ -14,7 +14,7 @@ links to Repology pages or badges for each package in specific repository.
 
 <p>
 Note that there are different name types which have different meaning in
-each repository. See <a href="{{ ctx.url_for(crate::endpoints::Endpoint::RepositoriesFields, [])? }}">the
+each repository. See <a href="{{ crate::endpoints::Endpoint::RepositoriesFields.url_for().build()? }}">the
 table</a> no know which name types are available for each repository.
 Generally, "real" repositories use either or both of source and binary
 package names, and module collections or news sites use some generic name.
@@ -25,7 +25,7 @@ Also note that you may add additional parameters to a URL, such as
 <code>&amp;header=...</code> for a badge.
 </p>
 
-<form class="form-horizontal" action="{{ ctx.url_for(crate::endpoints::Endpoint::ToolProjectBy, [])? }}" method="GET">
+<form class="form-horizontal" action="{{ crate::endpoints::Endpoint::ToolProjectBy.url_for().build()? }}" method="GET">
 	<div class="form-group">
 		<label for="repo" class="col-sm-2 control-label">Repository</label>
 		<div class="col-sm-8">
