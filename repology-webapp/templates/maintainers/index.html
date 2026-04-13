@@ -82,7 +82,7 @@
 			</td>
 			<td class="text-center version-cell version-big version-newest">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer.name).query_param("inrepo", maintainer.best_repository_name).query_param("newest", "1").build()? }}">
-					{{- ctx.format_percent(maintainer.best_repository_counters.num_projects_newest, maintainer.best_repository_counters.num_projects) -}}
+					{{- crate::template_funcs::format_percent(maintainer.best_repository_counters.num_projects_newest, maintainer.best_repository_counters.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}
@@ -96,7 +96,7 @@
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer.name).query_param("inrepo", maintainer.best_repository_name).query_param("outdated", "1").build()? }}">
-					{{- ctx.format_percent(maintainer.best_repository_counters.num_projects_outdated, maintainer.best_repository_counters.num_projects) -}}
+					{{- crate::template_funcs::format_percent(maintainer.best_repository_counters.num_projects_outdated, maintainer.best_repository_counters.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}

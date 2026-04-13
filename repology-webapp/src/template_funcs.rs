@@ -40,6 +40,28 @@ pub fn format_number_short(number: &i32) -> Safe<String> {
     })
 }
 
+pub fn format_percent<T>(divident: &T, divisor: &T) -> String
+where
+    T: num_traits::Num + num_traits::cast::AsPrimitive<f32>,
+{
+    if *divisor == T::zero() {
+        "-".into()
+    } else {
+        format!("{:.1}%", 100.0 * divident.as_() / divisor.as_())
+    }
+}
+
+pub fn format_percent_longer<T>(divident: &T, divisor: &T) -> String
+where
+    T: num_traits::Num + num_traits::cast::AsPrimitive<f32>,
+{
+    if *divisor == T::zero() {
+        "-".into()
+    } else {
+        format!("{:.2}%", 100.0 * divident.as_() / divisor.as_())
+    }
+}
+
 #[cfg(test)]
 #[coverage(off)]
 mod tests {
@@ -128,6 +150,24 @@ mod tests {
         assert_eq!(
             super::format_number_short(&9951).0,
             "<span title=\"9951\">10k</span>".to_owned()
+        );
+    }
+
+    #[test]
+    fn test_format_percent() {
+        assert_eq!(
+            super::format_percent(&1_usize, &2_usize),
+            "50.0%".to_owned()
+        );
+        assert_eq!(super::format_percent(&1_i32, &2_i32), "50.0%".to_owned());
+
+        assert_eq!(
+            super::format_percent_longer(&1_usize, &2_usize),
+            "50.00%".to_owned()
+        );
+        assert_eq!(
+            super::format_percent_longer(&1_i32, &2_i32),
+            "50.00%".to_owned()
         );
     }
 }

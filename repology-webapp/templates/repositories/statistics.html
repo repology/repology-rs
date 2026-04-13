@@ -82,7 +82,7 @@
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-newest">
-				{{- ctx.format_percent(repository.num_projects_newest, repository.num_projects_comparable) -}}
+				{{- crate::template_funcs::format_percent(repository.num_projects_newest, repository.num_projects_comparable) -}}
 			</td>
 
 			<td class="text-center version-cell version-big version-outdated">
@@ -91,7 +91,7 @@
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
-				{{- ctx.format_percent(repository.num_projects_outdated, repository.num_projects_comparable) -}}
+				{{- crate::template_funcs::format_percent(repository.num_projects_outdated, repository.num_projects_comparable) -}}
 			</td>
 
 			<td class="text-center version-cell version-big version-unique">
@@ -107,7 +107,7 @@
 			{% if repository.is_shadow %}
 				<span title="This is a shadow repo, e.g. unique packages in it are ignored">n/a</span>
 			{%- else -%}
-				{{ ctx.format_percent(repository.num_projects_unique, repository.num_projects) }}
+				{{ crate::template_funcs::format_percent(repository.num_projects_unique, repository.num_projects) }}
 			{%- endif -%}
 			</td>
 
@@ -117,7 +117,7 @@
 				</a>
 			</td>
 			<td class="text-center version-cell version-big version-ignored">
-				{{- ctx.format_percent(repository.num_projects_problematic, repository.num_projects) -}}
+				{{- crate::template_funcs::format_percent(repository.num_projects_problematic, repository.num_projects) -}}
 			</td>
 
 			<td class="text-center{% if repository.num_projects_vulnerable > 0 %} vulnerable-cell{% endif %}">
@@ -126,7 +126,7 @@
 				</a>
 			</td>
 			<td class="text-center{% if repository.num_projects_vulnerable > 0 %} vulnerable-cell{% endif %}">
-				{{- ctx.format_percent_longer(repository.num_projects_vulnerable, repository.num_projects) -}}
+				{{- crate::template_funcs::format_percent_longer(repository.num_projects_vulnerable, repository.num_projects) -}}
 			</td>
 
 			<td class="text-center">

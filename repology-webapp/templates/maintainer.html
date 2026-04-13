@@ -73,7 +73,7 @@
 			</td>
 			<td class="text-center version-cell version-big version-newest">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("newest", "1").build()? }}">
-					{{- ctx.format_percent(repository.num_projects_newest, repository.num_projects) -}}
+					{{- crate::template_funcs::format_percent(repository.num_projects_newest, repository.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
@@ -85,7 +85,7 @@
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("outdated", "1").build()? }}">
-					{{- ctx.format_percent(repository.num_projects_outdated, repository.num_projects) -}}
+					{{- crate::template_funcs::format_percent(repository.num_projects_outdated, repository.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
@@ -97,7 +97,7 @@
 			</td>
 			<td class="text-center version-cell version-big version-ignored">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("problematic", "1").build()? }}">
-					{{- ctx.format_percent(repository.num_projects_problematic, repository.num_projects) -}}
+					{{- crate::template_funcs::format_percent(repository.num_projects_problematic, repository.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
@@ -109,7 +109,7 @@
 			</td>
 			<td class="text-center vulnerable-cell">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("inrepo", repository.name).query_param("vulnerable", "1").build()? }}">
-					{{- ctx.format_percent_longer(repository.num_projects_vulnerable, repository.num_projects) -}}
+					{{- crate::template_funcs::format_percent_longer(repository.num_projects_vulnerable, repository.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
@@ -151,7 +151,7 @@
 			</td>
 			<td class="text-center version-cell version-big version-newest">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("newest", "1").build()? }}">
-					{{- ctx.format_percent(maintainer.num_projects_newest, maintainer.num_projects) -}}
+					{{- crate::template_funcs::format_percent(maintainer.num_projects_newest, maintainer.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
@@ -163,7 +163,7 @@
 			</td>
 			<td class="text-center version-cell version-big version-outdated">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("outdated", "1").build()? }}">
-					{{- ctx.format_percent(maintainer.num_projects_outdated, maintainer.num_projects) -}}
+					{{- crate::template_funcs::format_percent(maintainer.num_projects_outdated, maintainer.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
@@ -175,7 +175,7 @@
 			</td>
 			<td class="text-center version-cell version-big version-ignored">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("problematic", "1").build()? }}">
-					{{- ctx.format_percent(maintainer.num_projects_problematic, maintainer.num_projects) -}}
+					{{- crate::template_funcs::format_percent(maintainer.num_projects_problematic, maintainer.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
@@ -187,7 +187,7 @@
 			</td>
 			<td class="text-center vulnerable-cell">
 				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("maintainer", maintainer_name).query_param("vulnerable", "1").build()? }}">
-					{{- ctx.format_percent_longer(maintainer.num_projects_vulnerable, maintainer.num_projects) -}}
+					{{- crate::template_funcs::format_percent_longer(maintainer.num_projects_vulnerable, maintainer.num_projects) -}}
 				</a>
 			</td>
 			{%- else -%}<td class="text-center" colspan="2">-</td>{%- endif -%}
