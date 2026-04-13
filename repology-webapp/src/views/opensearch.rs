@@ -9,7 +9,7 @@ use crate::endpoints::Endpoint;
 use crate::result::EndpointResult;
 use crate::template_context::TemplateContext;
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn opensearch_project() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "opensearch/project.xml")]
@@ -29,7 +29,7 @@ pub async fn opensearch_project() -> EndpointResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument())]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn opensearch_maintainer() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "opensearch/maintainer.xml")]

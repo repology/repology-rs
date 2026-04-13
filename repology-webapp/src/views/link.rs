@@ -89,7 +89,7 @@ impl From<DbLink> for Link {
     }
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(url = url)))]
 pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Link);
 

@@ -67,22 +67,22 @@ async fn graph_generic(pool: &PgPool, field_name: &str, stroke: &str) -> Endpoin
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn graph_total_packages(State(state): State<Arc<AppState>>) -> EndpointResult {
     graph_generic(&state.pool, "num_packages", "#000").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn graph_total_projects(State(state): State<Arc<AppState>>) -> EndpointResult {
     graph_generic(&state.pool, "num_projects", "#000").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn graph_total_maintainers(State(state): State<Arc<AppState>>) -> EndpointResult {
     graph_generic(&state.pool, "num_maintainers", "#c000c0").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn graph_total_problems(State(state): State<Arc<AppState>>) -> EndpointResult {
     graph_generic(&state.pool, "num_problems", "#c00000").await
 }

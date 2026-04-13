@@ -67,7 +67,7 @@ impl From<DbRepository> for Repository {
 
 #[cfg_attr(
     not(feature = "coverage"),
-    tracing::instrument(skip(gen_path, gen_query, state))
+    tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn repositories_fields(
     Path(gen_path): Path<Vec<(String, String)>>,

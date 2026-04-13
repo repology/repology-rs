@@ -43,7 +43,7 @@ struct TemplateParams<'a> {
     autorefresh: bool,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name, query = ?query)))]
 pub async fn repository_feed(
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,

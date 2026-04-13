@@ -86,7 +86,7 @@ async fn graph_generic(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_unique_percent(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -94,7 +94,7 @@ pub async fn graph_repository_projects_unique_percent(
     graph_generic(&state, &repository_name, "num_projects_unique", "#5bc0de").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_problematic_percent(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -108,7 +108,7 @@ pub async fn graph_repository_projects_problematic_percent(
     .await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_vulnerable_percent(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,

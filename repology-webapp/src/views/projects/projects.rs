@@ -179,7 +179,7 @@ struct TemplateParams<'a> {
     projects_list: Vec<ProjectListItem>,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(query = ?query)))]
 pub async fn projects(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
@@ -189,7 +189,7 @@ pub async fn projects(
     projects_generic(ctx, None, None, query, &state).await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
 pub async fn projects_bounded(
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
@@ -206,7 +206,6 @@ pub async fn projects_bounded(
     }
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 async fn projects_generic(
     ctx: TemplateContext,
     start_project_name: Option<&str>,

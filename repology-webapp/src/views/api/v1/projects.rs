@@ -56,7 +56,7 @@ struct ApiPackageWithEffname {
     pub package: ApiPackage,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(query = ?query)))]
 pub async fn api_v1_projects(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
@@ -64,7 +64,7 @@ pub async fn api_v1_projects(
     api_v1_projects_generic(None, None, query, &state).await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
 pub async fn api_v1_projects_bounded(
     Path(bound): Path<String>,
     Query(query): Query<QueryParams>,

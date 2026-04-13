@@ -291,7 +291,7 @@ fn render_map(
     doc.to_string()
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(query = ?query)))]
 pub async fn graph_map_repo_size_fresh(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,

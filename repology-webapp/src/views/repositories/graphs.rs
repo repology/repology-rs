@@ -27,7 +27,7 @@ struct TemplateParams {
 
 #[cfg_attr(
     not(feature = "coverage"),
-    tracing::instrument(skip(gen_path, gen_query))
+    tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn repositories_graphs(
     Path(gen_path): Path<Vec<(String, String)>>,

@@ -63,7 +63,7 @@ struct LogLine {
 
 #[cfg_attr(
     not(feature = "coverage"),
-    tracing::instrument(skip(gen_path, gen_query, state))
+    tracing::instrument(skip_all, fields(run_id = run_id, query = ?query))
 )]
 pub async fn log(
     Path(gen_path): Path<Vec<(String, String)>>,

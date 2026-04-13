@@ -132,7 +132,7 @@ pub async fn repositories_statistics_generic(
 
 #[cfg_attr(
     not(feature = "coverage"),
-    tracing::instrument(skip(gen_path, gen_query, state))
+    tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn repositories_statistics_default(
     Path(gen_path): Path<Vec<(String, String)>>,
@@ -147,7 +147,7 @@ pub async fn repositories_statistics_default(
 
 #[cfg_attr(
     not(feature = "coverage"),
-    tracing::instrument(skip(gen_path, gen_query, state))
+    tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn repositories_statistics_sorted(
     Path(gen_path): Path<Vec<(String, String)>>,

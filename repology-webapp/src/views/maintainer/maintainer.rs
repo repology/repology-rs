@@ -118,7 +118,7 @@ struct TemplateParams<'a> {
     repositories_data: &'a RepositoriesDataSnapshot,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name)))]
 pub async fn maintainer(
     Path(maintainer_name): Path<String>,
     State(state): State<Arc<AppState>>,

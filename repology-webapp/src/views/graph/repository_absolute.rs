@@ -80,7 +80,7 @@ async fn graph_generic(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_maintainers(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -88,7 +88,7 @@ pub async fn graph_repository_maintainers(
     graph_generic(&state, &repository_name, "num_maintainers", "#c000c0").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_problems(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -96,7 +96,7 @@ pub async fn graph_repository_problems(
     graph_generic(&state, &repository_name, "num_problems", "#c00000").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_total(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -104,7 +104,7 @@ pub async fn graph_repository_projects_total(
     graph_generic(&state, &repository_name, "num_projects", "#000").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_unique(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -112,7 +112,7 @@ pub async fn graph_repository_projects_unique(
     graph_generic(&state, &repository_name, "num_projects_unique", "#5bc0de").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_newest(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -120,7 +120,7 @@ pub async fn graph_repository_projects_newest(
     graph_generic(&state, &repository_name, "num_projects_newest", "#5cb85c").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_outdated(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -128,7 +128,7 @@ pub async fn graph_repository_projects_outdated(
     graph_generic(&state, &repository_name, "num_projects_outdated", "#d9534f").await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_problematic(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -142,7 +142,7 @@ pub async fn graph_repository_projects_problematic(
     .await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip(state)))]
+#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_vulnerable(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
