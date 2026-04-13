@@ -318,7 +318,7 @@ async fn project_report_generic(
                 StatusCode::FOUND,
                 [(
                     header::LOCATION,
-                    HeaderValue::from_maybe_shared(ctx.url_for_self(&[("_fragment", "")])?)?,
+                    HeaderValue::from_maybe_shared(ctx.url_for_self(&[])?)?,
                 )],
             )
                 .into_response());
