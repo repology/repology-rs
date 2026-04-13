@@ -87,7 +87,7 @@
 <div class="alert alert-warning" role="alert">Repology staff is not available till <time datetime="{{ afk_till.format("%Y-%m-%d") }}">{{ afk_till.format("%Y-%m-%d") }}</time>. Please don't worry, your report will be processed after this date as soon as possible.</div>
 {% endif %}
 
-<form action="{{ ctx.url_for_self([])? }}" method="POST">
+<form action="{{ endpoint.url_for_self().build()? }}" method="POST">
 	<div class="form-group">
 		<label><input type="checkbox" name="need_verignore"{% if form.need_verignore %} checked{% endif %}> Needs version ignore</label>
 		<div class="help-block">

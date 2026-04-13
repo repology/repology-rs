@@ -47,19 +47,6 @@ impl TemplateContext {
             .construct()
     }
 
-    pub fn url_for<'a>(&self, endpoint: Endpoint, fields: &[(&'a str, &'a str)]) -> Result<String> {
-        UrlConstructor::new(endpoint.path())
-            .with_fields(fields.iter().cloned())
-            .construct()
-    }
-
-    pub fn url_for_self<'a>(&self, fields: &[(&'a str, &'a str)]) -> Result<String> {
-        UrlConstructor::new(self.endpoint.path())
-            .with_fields(self.params.iter().map(|(k, v)| (k.as_ref(), v.as_ref())))
-            .with_fields(fields.iter().cloned())
-            .construct()
-    }
-
     pub fn is_section(&self, section: Section) -> bool {
         self.endpoint.is_section(section)
     }

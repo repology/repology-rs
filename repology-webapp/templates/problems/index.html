@@ -3,7 +3,7 @@
 {% import "_macros/links.html" as links %}
 
 {% block extrameta %}
-	<link rel="canonical" href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for_self([("start", ""), ("end", "")])?}}"/>
+	<link rel="canonical" href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ endpoint.url_for().cleared_query_param("start").cleared_query_param("end").build()? }}"/>
 {% endblock %}
 
 {% block title %}Problems{% if let Some(maintainer_name) = maintainer_name %} for {{ maintainer_name }}{% endif %} in {{ repository_data.title }} - Repology{% endblock %}
@@ -15,14 +15,14 @@
 {% if let Some(pagination) = pagination %}
 <nav>
 	<div class="form-group">
-		<form class="form-inline" action="{{ ctx.url_for_self([("start", ""), ("end", "")])? }}" method="GET">
+		<form class="form-inline" action="{{ endpoint.url_for().cleared_query_param("start").cleared_query_param("end").build()? }}" method="GET">
 			<div class="btn-group">
-				<a href="{{ ctx.url_for_self([("start", ""), ("end", "")])? }}" class="btn btn-default {% if pagination.is_first_page() %} disabled{% endif %}">&laquo;&laquo;</a>
+				<a href="{{ endpoint.url_for().cleared_query_param("start").cleared_query_param("end").build()? }}" class="btn btn-default {% if pagination.is_first_page() %} disabled{% endif %}">&laquo;&laquo;</a>
 				{% if let Some(page_range) = pagination.page_range %}
-				<a href="{{ ctx.url_for_self([("start", ""), ("end", page_range.first|ref)])? }}" class="btn btn-default{% if pagination.is_first_page() %} disabled{% endif %}" rel="prev">&laquo;</a>
-				<a href="{{ ctx.url_for_self([("start", page_range.last|ref), ("end", "")])? }}" class="btn btn-default{% if pagination.is_last_page() %} disabled{% endif %}" rel="next">&raquo;</a>
+				<a href="{{ endpoint.url_for().cleared_query_param("start").query_param("end", page_range.first).build()? }}" class="btn btn-default{% if pagination.is_first_page() %} disabled{% endif %}" rel="prev">&laquo;</a>
+				<a href="{{ endpoint.url_for().query_param("start", page_range.last).cleared_query_param("end").build()? }}" class="btn btn-default{% if pagination.is_last_page() %} disabled{% endif %}" rel="next">&raquo;</a>
 				{% endif %}
-				<a href="{{ ctx.url_for_self([("start", ""), ("end", pagination.whole_range.last)])? }}" class="btn btn-default {% if pagination.is_last_page() %} disabled{% endif %}">&raquo;&raquo;</a>
+				<a href="{{ endpoint.url_for().cleared_query_param("start").query_param("end", pagination.whole_range.last).build()? }}" class="btn btn-default {% if pagination.is_last_page() %} disabled{% endif %}">&raquo;&raquo;</a>
 			</div>
 		</form>
 	</div>

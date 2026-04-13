@@ -17,33 +17,29 @@ fn redirect(target: String) -> EndpointResult {
         .into_response())
 }
 
-pub async fn legacy_badge_version_only_for_repo(
-    _endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
-) -> EndpointResult {
+pub async fn legacy_badge_version_only_for_repo(endpoint: MyEndpoint) -> EndpointResult {
     redirect(
-        TemplateContext::new(Endpoint::BadgeVersionForRepo, gen_path, gen_query)
-            .url_for_self(&[])?,
+        Endpoint::BadgeVersionForRepo
+            .url_for()
+            .filled_from(endpoint.url_for_self())
+            .build()?,
     )
 }
 
-pub async fn legacy_metapackage_versions(
-    _endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
-) -> EndpointResult {
+pub async fn legacy_metapackage_versions(endpoint: MyEndpoint) -> EndpointResult {
     redirect(
-        TemplateContext::new(Endpoint::ProjectVersions, gen_path, gen_query).url_for_self(&[])?,
+        Endpoint::ProjectVersions
+            .url_for()
+            .filled_from(endpoint.url_for_self())
+            .build()?,
     )
 }
 
-pub async fn legacy_metapackage_packages(
-    _endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
-) -> EndpointResult {
+pub async fn legacy_metapackage_packages(endpoint: MyEndpoint) -> EndpointResult {
     redirect(
-        TemplateContext::new(Endpoint::ProjectPackages, gen_path, gen_query).url_for_self(&[])?,
+        Endpoint::ProjectPackages
+            .url_for()
+            .filled_from(endpoint.url_for_self())
+            .build()?,
     )
 }

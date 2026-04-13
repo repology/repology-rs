@@ -331,12 +331,9 @@ pub fn project_by_construct(
         (Some(_), Some(_), Some(_)) => Some(format!(
             "{}{}",
             crate::constants::REPOLOGY_HOSTNAME,
-            ctx.url_for_self(
-                &gen_query
-                    .iter()
-                    .map(|(k, v)| (k.as_str(), v.as_str()))
-                    .collect::<Vec<_>>(),
-            )?
+            // XXX: This URL has &name=<NAME> appended in the template. Since
+            // template too has access to url_for_self, just pass a flag here
+            endpoint.url_for_self().build()?
         )),
         _ => None,
     };
