@@ -12,7 +12,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -34,8 +34,9 @@ struct Project {
 
 #[derive(Template)]
 #[template(path = "tools/trending.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     trending_projects: Vec<Project>,
     declining_projects: Vec<Project>,
     autorefresh: bool,
@@ -43,6 +44,7 @@ struct TemplateParams {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn trending(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
@@ -95,6 +97,7 @@ pub async fn trending(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             trending_projects,
             declining_projects,
             autorefresh: query.autorefresh,

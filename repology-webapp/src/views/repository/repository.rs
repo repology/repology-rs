@@ -15,7 +15,7 @@ use sqlx::FromRow;
 
 use repology_common::LinkType;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::SourceType;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -58,8 +58,9 @@ struct Repository {
 
 #[derive(Template)]
 #[template(path = "repository/gone.html")]
-struct TemplateParamsGone {
+struct TemplateParamsGone<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     repository: Repository,
 }
 
@@ -67,6 +68,7 @@ struct TemplateParamsGone {
 #[template(path = "repository.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     repository_name: &'a str,
     repository: Repository,
     used_package_link_types: HashSet<LinkType>,
@@ -75,6 +77,7 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name, query = ?query)))]
 pub async fn repository(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Path(repository_name): Path<String>,
@@ -119,7 +122,12 @@ pub async fn repository(
                     header::CONTENT_TYPE,
                     HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
                 )],
-                TemplateParamsGone { ctx, repository }.render()?,
+                TemplateParamsGone {
+                    ctx,
+                    endpoint: &endpoint,
+                    repository,
+                }
+                .render()?,
             )
                 .into_response());
         }
@@ -140,6 +148,7 @@ pub async fn repository(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             repository_name: &repository_name,
             repository,
             used_package_link_types,

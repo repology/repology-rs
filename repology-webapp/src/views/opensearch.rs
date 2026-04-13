@@ -5,16 +5,17 @@ use askama::Template;
 use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::template_context::TemplateContext;
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn opensearch_project() -> EndpointResult {
+pub async fn opensearch_project(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "opensearch/project.xml")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::OpensearchProject);
@@ -24,17 +25,22 @@ pub async fn opensearch_project() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn opensearch_maintainer() -> EndpointResult {
+pub async fn opensearch_maintainer(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "opensearch/maintainer.xml")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::OpensearchMaintainer);
@@ -44,7 +50,11 @@ pub async fn opensearch_maintainer() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }

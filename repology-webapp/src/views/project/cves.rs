@@ -14,7 +14,7 @@ use serde::Deserialize;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -137,6 +137,7 @@ struct CveVersionRange {
 #[template(path = "project/cves.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     project_name: String,
     project: Project,
     num_cves: usize,
@@ -147,6 +148,7 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_cves(
+    endpoint: MyEndpoint,
     Path(project_name): Path<String>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
@@ -177,7 +179,7 @@ pub async fn project_cves(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&state, &cookies, ctx, project_name, None).await;
+        return nonexisting_project(&endpoint, &state, &cookies, ctx, project_name, None).await;
     };
 
     let mut cves: Vec<Cve> = sqlx::query_as(indoc! {r#"
@@ -257,7 +259,15 @@ pub async fn project_cves(
     .await?;
 
     if project.is_orphaned() && cves.is_empty() {
-        return nonexisting_project(&state, &cookies, ctx, project_name, Some(project)).await;
+        return nonexisting_project(
+            &endpoint,
+            &state,
+            &cookies,
+            ctx,
+            project_name,
+            Some(project),
+        )
+        .await;
     }
 
     // sort by CVE number, then end version
@@ -313,6 +323,7 @@ pub async fn project_cves(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             project_name,
             project,
             num_cves,

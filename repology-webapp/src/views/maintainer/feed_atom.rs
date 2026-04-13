@@ -11,7 +11,7 @@ use chrono::{DateTime, Utc};
 use indoc::indoc;
 use sqlx::FromRow;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::feeds::{EventWithTimestamp, unicalize_feed_timestamps};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
@@ -41,6 +41,7 @@ impl EventWithTimestamp for Event {
 #[template(path = "atom-feeds/maintainer/repo-feed.xml")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     events: Vec<Event>,
     maintainer_name: &'a str,
     repository_name: &'a str,
@@ -49,6 +50,7 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name)))]
 pub async fn maintainer_repo_feed_atom(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Path((maintainer_name, repository_name)): Path<(String, String)>,
@@ -119,6 +121,7 @@ pub async fn maintainer_repo_feed_atom(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             events,
             maintainer_name: &maintainer_name,
             repository_name: &repository_name,

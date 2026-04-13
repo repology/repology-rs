@@ -5,7 +5,7 @@ use axum::extract::{Path, Query};
 use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::template_context::TemplateContext;
 
@@ -18,6 +18,7 @@ fn redirect(target: String) -> EndpointResult {
 }
 
 pub async fn legacy_badge_version_only_for_repo(
+    _endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
 ) -> EndpointResult {
@@ -28,6 +29,7 @@ pub async fn legacy_badge_version_only_for_repo(
 }
 
 pub async fn legacy_metapackage_versions(
+    _endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
 ) -> EndpointResult {
@@ -37,6 +39,7 @@ pub async fn legacy_metapackage_versions(
 }
 
 pub async fn legacy_metapackage_packages(
+    _endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
 ) -> EndpointResult {

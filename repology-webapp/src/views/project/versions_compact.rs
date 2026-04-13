@@ -15,7 +15,7 @@ use tower_cookies::{Cookie, Cookies};
 
 use repology_common::{PackageFlags, PackageStatus};
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::package::summarization::DisplayVersion;
 use crate::package::traits::{PackageWithFlags, PackageWithStatus, PackageWithVersion};
 use crate::repository_data::RepositoriesDataSnapshot;
@@ -56,6 +56,7 @@ impl PackageWithStatus for Package {
 #[template(path = "project/versions-compact.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     project_name: String,
     project: Project,
     num_packages: usize,
@@ -66,6 +67,7 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_versions_compact(
+    endpoint: MyEndpoint,
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
     cookies: Cookies,
@@ -95,11 +97,19 @@ pub async fn project_versions_compact(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&state, &cookies, ctx, project_name, None).await;
+        return nonexisting_project(&endpoint, &state, &cookies, ctx, project_name, None).await;
     };
 
     if project.is_orphaned() {
-        return nonexisting_project(&state, &cookies, ctx, project_name, Some(project)).await;
+        return nonexisting_project(
+            &endpoint,
+            &state,
+            &cookies,
+            ctx,
+            project_name,
+            Some(project),
+        )
+        .await;
     }
 
     // TODO: try fetching project and packages in parallel tasks, see
@@ -143,6 +153,7 @@ pub async fn project_versions_compact(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             project_name,
             project,
             num_packages,

@@ -12,7 +12,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -26,8 +26,9 @@ pub struct QueryParams {
 
 #[derive(Template)]
 #[template(path = "repositories/fields.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     repositories: Vec<Repository>,
     autorefresh: bool,
 }
@@ -70,6 +71,7 @@ impl From<DbRepository> for Repository {
     tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn repositories_fields(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
@@ -98,6 +100,7 @@ pub async fn repositories_fields(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             repositories: repositories.into_iter().map(|r| r.into()).collect(),
             autorefresh: query.autorefresh,
         }

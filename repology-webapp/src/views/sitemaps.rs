@@ -9,17 +9,18 @@ use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_index() -> EndpointResult {
+pub async fn sitemap_index(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/index.xml")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::SitemapIndex);
@@ -29,17 +30,22 @@ pub async fn sitemap_index() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_main() -> EndpointResult {
+pub async fn sitemap_main(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/main.xml")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::SitemapMain);
@@ -49,17 +55,25 @@ pub async fn sitemap_main() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_repositories(State(state): State<Arc<AppState>>) -> EndpointResult {
+pub async fn sitemap_repositories(
+    endpoint: MyEndpoint,
+    State(state): State<Arc<AppState>>,
+) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/repositories.xml")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
         repository_names: Vec<String>,
     }
 
@@ -83,6 +97,7 @@ pub async fn sitemap_repositories(State(state): State<Arc<AppState>>) -> Endpoin
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             repository_names,
         }
         .render()?,
@@ -91,11 +106,15 @@ pub async fn sitemap_repositories(State(state): State<Arc<AppState>>) -> Endpoin
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_maintainers(State(state): State<Arc<AppState>>) -> EndpointResult {
+pub async fn sitemap_maintainers(
+    endpoint: MyEndpoint,
+    State(state): State<Arc<AppState>>,
+) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/maintainers.xml")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
         maintainer_names: Vec<String>,
     }
 
@@ -119,6 +138,7 @@ pub async fn sitemap_maintainers(State(state): State<Arc<AppState>>) -> Endpoint
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             maintainer_names,
         }
         .render()?,
@@ -127,11 +147,15 @@ pub async fn sitemap_maintainers(State(state): State<Arc<AppState>>) -> Endpoint
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_projects(State(state): State<Arc<AppState>>) -> EndpointResult {
+pub async fn sitemap_projects(
+    endpoint: MyEndpoint,
+    State(state): State<Arc<AppState>>,
+) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/projects.xml")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
         project_names: Vec<String>,
     }
 
@@ -156,7 +180,12 @@ pub async fn sitemap_projects(State(state): State<Arc<AppState>>) -> EndpointRes
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams { ctx, project_names }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+            project_names,
+        }
+        .render()?,
     )
         .into_response())
 }

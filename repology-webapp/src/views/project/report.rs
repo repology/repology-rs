@@ -17,7 +17,7 @@ use tower_cookies::{Cookie, Cookies};
 use tracing::{error, info, warn};
 
 use crate::config::AppConfig;
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::extractors::PossibleClientAddresses;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -53,8 +53,9 @@ pub struct ReportForm {
 
 #[derive(Template)]
 #[template(path = "project/report.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     project_name: String,
     project: Project,
     reports: Vec<Report>,
@@ -209,6 +210,7 @@ fn check_new_report(
 }
 
 async fn project_report_generic(
+    endpoint: &MyEndpoint,
     project_name: String,
     state: &AppState,
     cookies: &Cookies,
@@ -243,7 +245,7 @@ async fn project_report_generic(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(state, cookies, ctx, project_name, None).await;
+        return nonexisting_project(endpoint, state, cookies, ctx, project_name, None).await;
     };
 
     let reports: Vec<Report> = sqlx::query_as(indoc! {"
@@ -326,7 +328,8 @@ async fn project_report_generic(
     };
 
     if project.is_orphaned() && reports.is_empty() {
-        return nonexisting_project(state, cookies, ctx, project_name, Some(project)).await;
+        return nonexisting_project(endpoint, state, cookies, ctx, project_name, Some(project))
+            .await;
     }
 
     let current_date = Utc::now().date_naive();
@@ -353,6 +356,7 @@ async fn project_report_generic(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             project_name,
             project,
             reports,
@@ -371,22 +375,31 @@ async fn project_report_generic(
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, form = ?form, addresses = ?addresses)))]
 pub async fn project_report_post(
+    endpoint: MyEndpoint,
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
     cookies: Cookies,
     PossibleClientAddresses(addresses): PossibleClientAddresses,
     Form(form): Form<ReportForm>,
 ) -> EndpointResult {
-    project_report_generic(project_name, &state, &cookies, Some((&addresses, form))).await
+    project_report_generic(
+        &endpoint,
+        project_name,
+        &state,
+        &cookies,
+        Some((&addresses, form)),
+    )
+    .await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_report_get(
+    endpoint: MyEndpoint,
     Path(project_name): Path<String>,
     cookies: Cookies,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    project_report_generic(project_name, &state, &cookies, None).await
+    project_report_generic(&endpoint, project_name, &state, &cookies, None).await
 }
 
 #[cfg(test)]

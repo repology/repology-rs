@@ -13,6 +13,7 @@ use sqlx::FromRow;
 
 use repology_common::LinkStatus;
 
+use crate::endpoints::MyEndpoint;
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -57,6 +58,7 @@ impl Pagination<'_> {
 #[template(path = "problems/index.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     maintainer_name: Option<&'a str>,
     problems: Vec<Problem>,
     repository_data: &'a RepositoryData,
@@ -65,6 +67,7 @@ struct TemplateParams<'a> {
 
 pub async fn problems_generic(
     ctx: TemplateContext,
+    endpoint: &MyEndpoint,
     repository_name: &str,
     maintainer_name: Option<&str>,
     start_project_name: Option<&str>,
@@ -178,6 +181,7 @@ pub async fn problems_generic(
         )],
         TemplateParams {
             ctx,
+            endpoint,
             maintainer_name,
             problems,
             repository_data,

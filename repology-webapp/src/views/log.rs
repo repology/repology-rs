@@ -12,7 +12,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -29,6 +29,7 @@ pub struct QueryParams {
 #[template(path = "log.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     run: Run,
     repository_data: &'a RepositoryData,
     lines: Vec<LogLine>,
@@ -66,6 +67,7 @@ struct LogLine {
     tracing::instrument(skip_all, fields(run_id = run_id, query = ?query))
 )]
 pub async fn log(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Path(run_id): Path<u64>,
@@ -128,6 +130,7 @@ pub async fn log(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             run,
             repository_data,
             lines,

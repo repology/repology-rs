@@ -17,15 +17,16 @@ use tracing::error;
 
 use repology_common::LinkStatus;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
 
 #[derive(Template)]
 #[template(path = "link.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     link: Link,
 }
 
@@ -90,7 +91,11 @@ impl From<DbLink> for Link {
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(url = url)))]
-pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -> EndpointResult {
+pub async fn link(
+    endpoint: MyEndpoint,
+    Path(url): Path<String>,
+    State(state): State<Arc<AppState>>,
+) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Link);
 
     let link: Option<DbLink> = sqlx::query_as(indoc! {r#"
@@ -123,6 +128,7 @@ pub async fn link(Path(url): Path<String>, State(state): State<Arc<AppState>>) -
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             link: link.into(),
         }
         .render()?,

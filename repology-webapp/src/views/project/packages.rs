@@ -15,7 +15,7 @@ use tower_cookies::{Cookie, Cookies};
 
 use repology_common::{LinkType, PackageFlags, PackageStatus};
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::package::ordering::by_name_asc_version_desc;
 use crate::package::traits::{PackageWithDisplayName, PackageWithFlags, PackageWithVersion};
 use crate::repository_data::RepositoriesDataSnapshot;
@@ -73,6 +73,7 @@ struct Link {
 #[template(path = "project/packages.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     project_name: &'a str,
     project: Project,
     packages: Vec<Package>,
@@ -83,6 +84,7 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_packages(
+    endpoint: MyEndpoint,
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
     cookies: Cookies,
@@ -112,11 +114,19 @@ pub async fn project_packages(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&state, &cookies, ctx, project_name, None).await;
+        return nonexisting_project(&endpoint, &state, &cookies, ctx, project_name, None).await;
     };
 
     if project.is_orphaned() {
-        return nonexisting_project(&state, &cookies, ctx, project_name, Some(project)).await;
+        return nonexisting_project(
+            &endpoint,
+            &state,
+            &cookies,
+            ctx,
+            project_name,
+            Some(project),
+        )
+        .await;
     }
 
     let packages: Vec<Package> = sqlx::query_as(indoc! {"
@@ -210,6 +220,7 @@ pub async fn project_packages(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             project_name: &project_name,
             project,
             packages,

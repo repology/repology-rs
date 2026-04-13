@@ -13,7 +13,7 @@ use axum::response::IntoResponse;
 use indoc::indoc;
 use sqlx::{FromRow, PgPool};
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -58,6 +58,7 @@ pub struct ProjectListItem {
 #[template(path = "index.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
 
     top_by_total: Vec<top::Item<&'a str, TopRepository<'a>>>,
     top_by_nonunique: Vec<top::Item<&'a str, TopRepository<'a>>>,
@@ -230,7 +231,7 @@ pub async fn get_important_projects(pool: &PgPool) -> Result<Vec<ProjectListItem
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn index(State(state): State<Arc<AppState>>) -> EndpointResult {
+pub async fn index(endpoint: MyEndpoint, State(state): State<Arc<AppState>>) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Index);
 
     let mut top_by_total = Top::<&str, TopRepository>::new(
@@ -344,6 +345,7 @@ pub async fn index(State(state): State<Arc<AppState>>) -> EndpointResult {
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             top_by_total: top_by_total.get().collect(),
 
             top_by_nonunique: top_by_nonunique.get().collect(),

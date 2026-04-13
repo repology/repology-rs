@@ -10,7 +10,7 @@ use axum::response::IntoResponse;
 use indoc::indoc;
 use serde::Deserialize;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -174,6 +174,7 @@ struct ProjectListItem {
 #[template(path = "projects/index.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     query: QueryParams,
     repositories_data: &'a RepositoriesDataSnapshot,
     projects_list: Vec<ProjectListItem>,
@@ -181,16 +182,18 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(query = ?query)))]
 pub async fn projects(
+    endpoint: MyEndpoint,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Projects);
 
-    projects_generic(ctx, None, None, query, &state).await
+    projects_generic(ctx, &endpoint, None, None, query, &state).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
 pub async fn projects_bounded(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Path(bound): Path<String>,
@@ -200,14 +203,15 @@ pub async fn projects_bounded(
     let ctx = TemplateContext::new(Endpoint::ProjectsBounded, gen_path, gen_query);
 
     if let Some(end) = bound.strip_prefix("..") {
-        projects_generic(ctx, None, Some(end), query, &state).await
+        projects_generic(ctx, &endpoint, None, Some(end), query, &state).await
     } else {
-        projects_generic(ctx, Some(&bound), None, query, &state).await
+        projects_generic(ctx, &endpoint, Some(&bound), None, query, &state).await
     }
 }
 
 async fn projects_generic(
     ctx: TemplateContext,
+    endpoint: &MyEndpoint,
     start_project_name: Option<&str>,
     end_project_name: Option<&str>,
     query: QueryParams,
@@ -267,6 +271,7 @@ async fn projects_generic(
         )],
         TemplateParams {
             ctx,
+            endpoint,
             query,
             repositories_data: &state.repository_data_cache.snapshot(),
             projects_list,

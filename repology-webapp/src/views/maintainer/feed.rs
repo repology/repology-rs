@@ -12,7 +12,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -37,6 +37,7 @@ struct Event {
 #[template(path = "maintainer/repo-feed.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     events: Vec<Event>,
     maintainer_name: &'a str,
     repository_name: &'a str,
@@ -46,6 +47,7 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name, query = ?query)))]
 pub async fn maintainer_repo_feed(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Path((maintainer_name, repository_name)): Path<(String, String)>,
@@ -108,6 +110,7 @@ pub async fn maintainer_repo_feed(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             events,
             maintainer_name: &maintainer_name,
             repository_name: &repository_name,

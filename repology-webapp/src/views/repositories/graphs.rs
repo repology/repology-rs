@@ -7,7 +7,7 @@ use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use serde::Deserialize;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::template_context::TemplateContext;
 
@@ -20,8 +20,9 @@ pub struct QueryParams {
 
 #[derive(Template)]
 #[template(path = "repositories/graphs.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     autorefresh: bool,
 }
 
@@ -30,6 +31,7 @@ struct TemplateParams {
     tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn repositories_graphs(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
@@ -43,6 +45,7 @@ pub async fn repositories_graphs(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             autorefresh: query.autorefresh,
         }
         .render()?,

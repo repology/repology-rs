@@ -11,7 +11,7 @@ use axum::response::IntoResponse;
 use indoc::indoc;
 use tower_cookies::{Cookie, Cookies};
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -24,6 +24,7 @@ use super::nonexistent::nonexisting_project;
 #[template(path = "project/badges.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     project_name: &'a str,
     project: Project,
     containing_repositories_data: Vec<&'a RepositoryData>,
@@ -32,6 +33,7 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_badges(
+    endpoint: MyEndpoint,
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,
     cookies: Cookies,
@@ -61,11 +63,19 @@ pub async fn project_badges(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&state, &cookies, ctx, project_name, None).await;
+        return nonexisting_project(&endpoint, &state, &cookies, ctx, project_name, None).await;
     };
 
     if project.is_orphaned() {
-        return nonexisting_project(&state, &cookies, ctx, project_name, Some(project)).await;
+        return nonexisting_project(
+            &endpoint,
+            &state,
+            &cookies,
+            ctx,
+            project_name,
+            Some(project),
+        )
+        .await;
     }
 
     let containing_repository_names: HashSet<String> = sqlx::query_scalar(indoc! {"
@@ -91,6 +101,7 @@ pub async fn project_badges(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             project_name: &project_name,
             project,
             containing_repositories_data,

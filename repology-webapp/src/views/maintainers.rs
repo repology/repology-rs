@@ -13,7 +13,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -109,6 +109,7 @@ struct Maintainer {
 #[template(path = "maintainers/index.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     query: QueryParams,
     repositories_data: &'a RepositoriesDataSnapshot,
     maintainers: Vec<Maintainer>,
@@ -117,6 +118,7 @@ struct TemplateParams<'a> {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 async fn maintainers_generic(
     ctx: TemplateContext,
+    endpoint: &MyEndpoint,
     start_maintainer_name: Option<&str>,
     end_maintainer_name: Option<&str>,
     query: QueryParams,
@@ -203,6 +205,7 @@ async fn maintainers_generic(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             query,
             repositories_data: &repositories_data,
             maintainers,
@@ -214,16 +217,18 @@ async fn maintainers_generic(
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(query = ?query)))]
 pub async fn maintainers(
+    endpoint: MyEndpoint,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
     let ctx = TemplateContext::new_without_params(Endpoint::Maintainers);
 
-    maintainers_generic(ctx, None, None, query, &state).await
+    maintainers_generic(ctx, &endpoint, None, None, query, &state).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
 pub async fn maintainers_bounded(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Path(bound): Path<String>,
@@ -233,8 +238,8 @@ pub async fn maintainers_bounded(
     let ctx = TemplateContext::new(Endpoint::MaintainersBounded, gen_path, gen_query);
 
     if let Some(end) = bound.strip_prefix("..") {
-        maintainers_generic(ctx, None, Some(end), query, &state).await
+        maintainers_generic(ctx, &endpoint, None, Some(end), query, &state).await
     } else {
-        maintainers_generic(ctx, Some(&bound), None, query, &state).await
+        maintainers_generic(ctx, &endpoint, Some(&bound), None, query, &state).await
     }
 }

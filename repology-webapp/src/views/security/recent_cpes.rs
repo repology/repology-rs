@@ -12,7 +12,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -26,8 +26,9 @@ pub struct QueryParams {
 
 #[derive(Template)]
 #[template(path = "security/recent-cpes.html")]
-struct TemplateParams {
+struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     cpes: Vec<Cpe>,
     autorefresh: bool,
 }
@@ -51,6 +52,7 @@ struct Cpe {
     tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn recent_cpes(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
@@ -85,6 +87,7 @@ pub async fn recent_cpes(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             cpes,
             autorefresh: query.autorefresh,
         }

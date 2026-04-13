@@ -6,7 +6,7 @@ use std::sync::Arc;
 use axum::extract::{Path, Query, State};
 use serde::Deserialize;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -22,6 +22,7 @@ pub struct QueryParams {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name, query = ?query)))]
 pub async fn repository_problems(
+    endpoint: MyEndpoint,
     Path(gen_path): Path<Vec<(String, String)>>,
     Query(gen_query): Query<Vec<(String, String)>>,
     Path(repository_name): Path<String>,
@@ -32,6 +33,7 @@ pub async fn repository_problems(
 
     problems_generic(
         ctx,
+        &endpoint,
         &repository_name,
         None,
         query.start_project_name.as_ref().map(|s| s.as_ref()),

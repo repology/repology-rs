@@ -8,6 +8,7 @@ use indoc::indoc;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
 
+use crate::endpoints::MyEndpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::template_context::TemplateContext;
@@ -21,16 +22,18 @@ use super::common::Project;
 
 #[derive(Template)]
 #[template(path = "project/404.html")]
-struct TemplateParams404 {
+struct TemplateParams404<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     project_name: String,
     redirect_projects_list: Vec<ProjectListItem>,
 }
 
 #[derive(Template)]
 #[template(path = "project/410.html")]
-struct TemplateParams410 {
+struct TemplateParams410<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     project_name: String,
     project: Project,
     redirect_projects_list: Vec<ProjectListItem>,
@@ -54,6 +57,7 @@ pub struct ProjectListItem {
     tracing::instrument(skip_all, fields(project_name = project_name))
 )]
 pub async fn nonexisting_project(
+    endpoint: &MyEndpoint,
     state: &AppState,
     cookies: &Cookies,
     ctx: TemplateContext,
@@ -188,6 +192,7 @@ pub async fn nonexisting_project(
             )],
             TemplateParams410 {
                 ctx,
+                endpoint: &endpoint,
                 project_name,
                 project,
                 redirect_projects_list,
@@ -205,6 +210,7 @@ pub async fn nonexisting_project(
             )],
             TemplateParams404 {
                 ctx,
+                endpoint: &endpoint,
                 project_name,
                 redirect_projects_list,
             }

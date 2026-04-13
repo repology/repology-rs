@@ -15,7 +15,7 @@ use itertools::Itertools;
 use metrics::histogram;
 use sqlx::FromRow;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -92,6 +92,7 @@ struct SimilarMaintainer {
 #[template(path = "maintainer/unknown.html")]
 struct TemplateParamsUnknown<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     maintainer_name: &'a str,
 }
 
@@ -99,6 +100,7 @@ struct TemplateParamsUnknown<'a> {
 #[template(path = "maintainer/gone.html")]
 struct TemplateParamsGone<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     maintainer_name: &'a str,
     maintainer: Maintainer,
 }
@@ -107,6 +109,7 @@ struct TemplateParamsGone<'a> {
 #[template(path = "maintainer.html")]
 struct TemplateParams<'a> {
     ctx: TemplateContext,
+    endpoint: &'a MyEndpoint,
     maintainer_name: &'a str,
     maintainer: Maintainer,
     maintainer_categories: Vec<MaintainerCategory>,
@@ -120,6 +123,7 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name)))]
 pub async fn maintainer(
+    endpoint: MyEndpoint,
     Path(maintainer_name): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
@@ -156,6 +160,7 @@ pub async fn maintainer(
                 )],
                 TemplateParamsGone {
                     ctx,
+                    endpoint: &endpoint,
                     maintainer_name: &maintainer_name,
                     maintainer,
                 }
@@ -172,6 +177,7 @@ pub async fn maintainer(
                 )],
                 TemplateParamsUnknown {
                     ctx,
+                    endpoint: &endpoint,
                     maintainer_name: &maintainer_name,
                 }
                 .render()?,
@@ -307,6 +313,7 @@ pub async fn maintainer(
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             maintainer_name: &maintainer_name,
             maintainer,
             maintainer_categories,

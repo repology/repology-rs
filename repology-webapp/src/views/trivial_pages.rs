@@ -5,16 +5,17 @@ use askama::Template;
 use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 
-use crate::endpoints::Endpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::template_context::TemplateContext;
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn news() -> EndpointResult {
+pub async fn news(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "news.html")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::News);
@@ -24,17 +25,22 @@ pub async fn news() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn docs() -> EndpointResult {
+pub async fn docs(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/index.html")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::Docs);
@@ -44,17 +50,22 @@ pub async fn docs() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn docs_about() -> EndpointResult {
+pub async fn docs_about(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/about.html")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::DocsAbout);
@@ -64,17 +75,22 @@ pub async fn docs_about() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn docs_bots() -> EndpointResult {
+pub async fn docs_bots(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/bots.html")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::DocsBots);
@@ -84,17 +100,22 @@ pub async fn docs_bots() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn docs_not_supported() -> EndpointResult {
+pub async fn docs_not_supported(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/not_supported.html")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::DocsNotSupported);
@@ -104,17 +125,22 @@ pub async fn docs_not_supported() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn docs_requirements() -> EndpointResult {
+pub async fn docs_requirements(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "docs/requirements.html")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::DocsRequirements);
@@ -124,17 +150,22 @@ pub async fn docs_requirements() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn tools() -> EndpointResult {
+pub async fn tools(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "tools/index.html")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
     }
 
     let ctx = TemplateContext::new_without_params(Endpoint::Tools);
@@ -144,17 +175,22 @@ pub async fn tools() -> EndpointResult {
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
-        TemplateParams { ctx }.render()?,
+        TemplateParams {
+            ctx,
+            endpoint: &endpoint,
+        }
+        .render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn api_v1() -> EndpointResult {
+pub async fn api_v1(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "api.html")]
-    struct TemplateParams {
+    struct TemplateParams<'a> {
         ctx: TemplateContext,
+        endpoint: &'a MyEndpoint,
         per_page: usize,
     }
 
@@ -167,6 +203,7 @@ pub async fn api_v1() -> EndpointResult {
         )],
         TemplateParams {
             ctx,
+            endpoint: &endpoint,
             per_page: crate::constants::PROJECTS_PER_PAGE,
         }
         .render()?,
