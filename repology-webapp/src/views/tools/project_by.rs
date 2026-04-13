@@ -328,14 +328,16 @@ pub fn project_by_construct(
         .find(|page| Some(page.alias) == query.target_page.as_deref());
 
     let template_url = match (&query.repo, &query.name_type, target_page) {
-        (Some(_), Some(_), Some(_)) => Some(
-            ctx.external_url_for_self(
+        (Some(_), Some(_), Some(_)) => Some(format!(
+            "{}{}",
+            crate::constants::REPOLOGY_HOSTNAME,
+            ctx.url_for_self(
                 &gen_query
                     .iter()
                     .map(|(k, v)| (k.as_str(), v.as_str()))
                     .collect::<Vec<_>>(),
-            )?,
-        ),
+            )?
+        )),
         _ => None,
     };
 

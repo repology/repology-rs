@@ -4,10 +4,10 @@ tag:repology.org,2018-04-25:maintainer-repo:{{ maintainer_name }}:{{ repository_
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>Repology feed for {{ maintainer_name }}</title>
-	<icon>{{ ctx.external_url_for_unversioned_static("repology40x40.v1.png")? }}</icon>
-	<link href="{{ ctx.external_url_for_self([])? }}" rel="self" type="application/atom+xml" />
-	<link href="{{ ctx.external_url_for(crate::endpoints::Endpoint::MaintainerRepoFeed, [("maintainer_name", maintainer_name), ("repository_name", repository_name)])? }}" rel="alternate" type="text/html" />
-	<author><name>Repology</name><uri>{{ ctx.external_url_for(crate::endpoints::Endpoint::Index, [])? }}</uri></author>
+	<icon>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for_unversioned_static("repology40x40.v1.png")? }}</icon>
+	<link href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for_self([])? }}" rel="self" type="application/atom+xml" />
+	<link href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::MaintainerRepoFeed, [("maintainer_name", maintainer_name), ("repository_name", repository_name)])? }}" rel="alternate" type="text/html" />
+	<author><name>Repology</name><uri>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::Index, [])? }}</uri></author>
 	<id>{{ feed_id() }}</id>
 {%- for event in events %}
 	{%- if loop.first %}
@@ -16,7 +16,7 @@ tag:repology.org,2018-04-25:maintainer-repo:{{ maintainer_name }}:{{ repository_
 	<entry>
 		<id>{{ feed_id() }}:{{ event.id }}</id>
 		<updated>{{ event.timestamp.to_rfc3339_opts(chrono::format::SecondsFormat::Secs, false) }}</updated>
-		<link href="{{ ctx.external_url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", event.project_name.as_str())])? }}#{{ repository_name }}" />
+		<link href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::ProjectVersions, [("project_name", event.project_name.as_str())])? }}#{{ repository_name }}" />
 		{%- if event.event_type == "added" %}
 		<title>{{ event.project_name }} is now tracked</title>
 		<content>Package for {{ event.project_name }} was added to {{ repository_data.title }} and/or assigned to {{ maintainer_name }}</content>
