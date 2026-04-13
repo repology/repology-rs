@@ -18,7 +18,7 @@
 		</li>
 		<li{% if first_item.is_some() && "0123456789".contains(first_item.unwrap().project.effname.chars().nth(0).unwrap_or(' ')) %} class="active"{% endif %}><a href="{{ query.add_params(crate::endpoints::Endpoint::Projects.url_for()).build()? }}">0-9</a></li>
 		{%- for letter in "abcdefghijklmnopqrstuvwxyz".chars() %}
-		<li{% if first_item.is_some() && first_item.unwrap().project.effname.starts_with(ctx.deref(letter)) %} class="active"{% endif %}>{#- -#}
+		<li{% if first_item.is_some() && first_item.unwrap().project.effname.starts_with(*letter) %} class="active"{% endif %}>{#- -#}
 			<a href="{{ query.add_params(crate::endpoints::Endpoint::ProjectsBounded.url_for()).param("bound", letter).build()? }}">
 				{{- letter.to_ascii_uppercase() -}}
 			</a>{#- -#}

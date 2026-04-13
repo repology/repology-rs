@@ -12,8 +12,8 @@
 {% macro update_run_info(run_id, start, errors, warnings) -%}
 {%- if let Some(run_id) = run_id -%}
 	<b><a href="{{ crate::endpoints::Endpoint::Log.url_for().param("run_id", run_id).build()? }}" rel="nofollow">{{ time::format_time_interval_short(Utc::now() - start.unwrap()) }}</a> ago</b>
-	{%- if let Some(errors) = errors %}{% if ctx.deref(ctx.deref(errors)) > 0 %}, <span class="text-danger">{{ errors }} err</span>{% endif %}{% endif -%}
-	{%- if let Some(warnings) = warnings %}{% if ctx.deref(ctx.deref(warnings)) > 0 %}, <span class="text-warning">{{ warnings }} warn</span>{% endif %}{% endif -%}
+	{%- if let Some(errors) = errors %}{% if *errors > 0 %}, <span class="text-danger">{{ errors }} err</span>{% endif %}{% endif -%}
+	{%- if let Some(warnings) = warnings %}{% if *warnings > 0 %}, <span class="text-warning">{{ warnings }} warn</span>{% endif %}{% endif -%}
 {%- else -%}
 	-
 {%- endif -%}

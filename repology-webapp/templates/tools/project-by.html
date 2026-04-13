@@ -50,7 +50,7 @@ Also note that you may add additional parameters to a URL, such as
 		<div class="col-sm-8">
 			<select class="form-control" id="target_page" name="target_page">
 			{% for page in TARGET_PAGES %}
-				<option value="{{ page.alias }}"{% if Some(ctx.deref(page.alias)) == query.target_page.as_deref() %} selected{% endif %}>{{ page.title }}</option>
+				<option value="{{ page.alias }}"{% if Some(*page.alias) == query.target_page.as_deref() %} selected{% endif %}>{{ page.title }}</option>
 			{% endfor %}
 			</select>
 		</div>

@@ -7,7 +7,7 @@
 
 {% macro badge_example(endpoint, alt) %}
 {% let project_url = crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project_name).build()? %}
-{% let badge_url = ctx.deref(endpoint).url_for().param("project_name", project_name).build()? %}
+{% let badge_url = endpoint.url_for().param("project_name", project_name).build()? %}
 
 <p><a href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ project_url }}"><img src="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ badge_url }}" alt="{{ alt }}"></a></p>
 

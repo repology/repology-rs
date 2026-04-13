@@ -59,11 +59,6 @@ impl TemplateContext {
         false
     }
 
-    // TODO: hack before askama 12.2 with built-in deref filter is released
-    pub fn deref<T: Copy>(&self, r: &T) -> T {
-        *r
-    }
-
     // XXX: convert to free functions
     pub fn format_percent<T>(&self, divident: &T, divisor: &T) -> String
     where
