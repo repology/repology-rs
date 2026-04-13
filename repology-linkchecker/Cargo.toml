@@ -26,7 +26,7 @@ rustls = { version = "0.23.37", default-features = false }
 rustls-webpki = { version = "0.103.9", default-features = false }
 serde = { version = "1.0.228", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "postgres", "chrono"] }
-tokio = { version = "1.51.0", features = ["macros", "process", "rt-multi-thread"] }
+tokio = { version = "1.51.1", features = ["macros", "process", "rt-multi-thread"] }
 toml = { version = "1.1.0", default-features = false, features = ["std", "serde", "parse"] }
 tracing = "0.1.44"
 tracing-appender = "0.2.4"
