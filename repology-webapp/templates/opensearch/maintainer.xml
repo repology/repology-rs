@@ -3,5 +3,5 @@
 {% block longname %}Repology maintainer search{% endblock %}
 {% block description %}Search for package maintainers on Repology.org{% endblock %}
 {% block tags %}repology repository package maintainer{% endblock %}
-{% block url %}{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::Maintainers, [("search", "searchTerms")])?.replace("searchTerms", "{searchTerms}") }}{% endblock %}
+{% block url %}{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Maintainers.url_for().query_param("search", "searchTerms").build()?.replace("searchTerms", "{searchTerms}") }}{% endblock %}
 {% block example %}ubuntu-devel-discuss{% endblock %}

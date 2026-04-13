@@ -168,17 +168,17 @@
 
 <p>Markdown code:</p>
 <pre>
-[![Repository status]({{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::BadgeRepositoryBig, [("repository_name", repository_name)])? }})]({{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_name)])? }})
+[![Repository status]({{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().param("repository_name", repository_name).build()? }})]({{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }})
 </pre>
 
 <p>HTML code:</p>
 <pre>
-&lt;a href=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::Repository, [("repository_name", repository_name)])? }}&quot;&gt;
-    &lt;img src=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::BadgeRepositoryBig, [("repository_name", repository_name)])? }}&quot; alt=&quot;Repository status&quot;&gt;
+&lt;a href=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }}&quot;&gt;
+    &lt;img src=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().param("repository_name", repository_name).build()? }}&quot; alt=&quot;Repository status&quot;&gt;
 &lt;/a&gt;
 </pre>
 
-<p>Badge header may be changed or removed by <code>header</code> URL parameter, for example: <code>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for(crate::endpoints::Endpoint::BadgeRepositoryBig, [("repository_name", repository_name), ("header", repository.title.as_str())])? }}</code></p>
+<p>Badge header may be changed or removed by <code>header</code> URL parameter, for example: <code>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().param("repository_name", repository_name).query_param("header", repository.title).build()? }}</code></p>
 
 <h2>Graphs</h2>
 <h3>Total projects</h3>
