@@ -54,8 +54,4 @@ impl TemplateContext {
     pub fn is_endpoint(&self, endpoint: Endpoint) -> bool {
         self.endpoint == endpoint
     }
-
-    pub fn needs_ipv6_notice(&self) -> bool {
-        false
-    }
 }
