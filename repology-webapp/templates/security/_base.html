@@ -2,7 +2,7 @@
 
 {% block preheader %}
 <div class="btn-group pageheader-right">
-	<a href="{{ crate::endpoints::Endpoint::SecurityRecentCves.url_for().build()? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::SecurityRecentCves) %} active{% endif %}">Recent CVEs</a>
-	<a href="{{ crate::endpoints::Endpoint::SecurityRecentCpes.url_for().build()? }}" class="btn btn-default{% if ctx.is_endpoint(crate::endpoints::Endpoint::SecurityRecentCpes) %} active{% endif %}">CPE bindings</a>
+	<a href="{{ crate::endpoints::Endpoint::SecurityRecentCves.url_for().build()? }}" class="btn btn-default{% if endpoint.base() == crate::endpoints::Endpoint::SecurityRecentCves %} active{% endif %}">Recent CVEs</a>
+	<a href="{{ crate::endpoints::Endpoint::SecurityRecentCpes.url_for().build()? }}" class="btn btn-default{% if endpoint.base() == crate::endpoints::Endpoint::SecurityRecentCpes %} active{% endif %}">CPE bindings</a>
 </div>
 {% endblock %}

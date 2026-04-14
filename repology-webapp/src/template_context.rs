@@ -46,8 +46,4 @@ impl TemplateContext {
             .with_field("file_name", file_name)
             .construct()
     }
-
-    pub fn is_endpoint(&self, endpoint: Endpoint) -> bool {
-        self.endpoint == endpoint
-    }
 }
