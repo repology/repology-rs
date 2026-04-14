@@ -15,7 +15,6 @@ use sqlx::FromRow;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -35,7 +34,6 @@ struct Update {
 #[derive(Template)]
 #[template(path = "tools/important-updates.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     updates: Vec<Update>,
     autorefresh: bool,
@@ -52,8 +50,6 @@ pub async fn important_updates(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::ImportantUpdates, gen_path, gen_query);
-
     let updates: Vec<Update> = sqlx::query_as(indoc! {r#"
         WITH ordered_recent_events AS (
             SELECT
@@ -103,7 +99,6 @@ pub async fn important_updates(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             updates,
             autorefresh: query.autorefresh,

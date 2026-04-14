@@ -15,7 +15,6 @@ use sqlx::FromRow;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -27,7 +26,6 @@ pub struct QueryParams {
 #[derive(Template)]
 #[template(path = "repositories/fields.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     repositories: Vec<Repository>,
     autorefresh: bool,
@@ -77,8 +75,6 @@ pub async fn repositories_fields(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::RepositoriesFields, gen_path, gen_query);
-
     let repositories: Vec<DbRepository> = sqlx::query_as(indoc! {r#"
         SELECT
             name,
@@ -99,7 +95,6 @@ pub async fn repositories_fields(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             repositories: repositories.into_iter().map(|r| r.into()).collect(),
             autorefresh: query.autorefresh,

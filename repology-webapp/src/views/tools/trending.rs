@@ -15,7 +15,6 @@ use sqlx::FromRow;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -35,7 +34,6 @@ struct Project {
 #[derive(Template)]
 #[template(path = "tools/trending.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     trending_projects: Vec<Project>,
     declining_projects: Vec<Project>,
@@ -50,8 +48,6 @@ pub async fn trending(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::Trending, gen_path, gen_query);
-
     // XXX: two queries take around 190ms, so this endpoint is a candidate
     // for in-state caching or executing both queries in parallel
     let trending_projects: Vec<Project> = sqlx::query_as(indoc! {r#"
@@ -96,7 +92,6 @@ pub async fn trending(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             trending_projects,
             declining_projects,

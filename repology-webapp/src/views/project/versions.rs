@@ -21,7 +21,6 @@ use crate::package::traits::{PackageWithFlags, PackageWithVersion};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 use super::common::Project;
 use super::nonexistent::nonexisting_project;
@@ -54,7 +53,6 @@ impl PackageWithFlags for Package {
 #[derive(Template)]
 #[template(path = "project/versions.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     project_name: String,
     project: Project,
@@ -71,8 +69,6 @@ pub async fn project_versions(
     State(state): State<Arc<AppState>>,
     cookies: Cookies,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new_without_params(Endpoint::ProjectVersions);
-
     let redirect_from_cookie_name = format!("rdr_{project_name}");
     let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
         let value = cookie.value().to_string();
@@ -96,19 +92,11 @@ pub async fn project_versions(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&endpoint, &state, &cookies, ctx, project_name, None).await;
+        return nonexisting_project(&endpoint, &state, &cookies, project_name, None).await;
     };
 
     if project.is_orphaned() {
-        return nonexisting_project(
-            &endpoint,
-            &state,
-            &cookies,
-            ctx,
-            project_name,
-            Some(project),
-        )
-        .await;
+        return nonexisting_project(&endpoint, &state, &cookies, project_name, Some(project)).await;
     }
 
     // TODO: try fetching project and packages in parallel tasks, see
@@ -179,7 +167,6 @@ pub async fn project_versions(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             project_name,
             project,

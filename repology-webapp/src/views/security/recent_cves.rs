@@ -15,7 +15,6 @@ use sqlx::FromRow;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -27,7 +26,6 @@ pub struct QueryParams {
 #[derive(Template)]
 #[template(path = "security/recent-cves.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     cves: Vec<Cve>,
     autorefresh: bool,
@@ -52,8 +50,6 @@ pub async fn recent_cves(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::SecurityRecentCves, gen_path, gen_query);
-
     // XXX: it would be great to get rid of age limit here: there's no need for it
     // and it complicates testing; however it's needed for more optimal query, as
     // without it we'll have to process all cves
@@ -103,7 +99,6 @@ pub async fn recent_cves(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             cves,
             autorefresh: query.autorefresh,

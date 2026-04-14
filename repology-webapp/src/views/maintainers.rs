@@ -17,7 +17,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -108,7 +107,6 @@ struct Maintainer {
 #[derive(Template)]
 #[template(path = "maintainers/index.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     query: QueryParams,
     repositories_data: &'a RepositoriesDataSnapshot,
@@ -117,7 +115,6 @@ struct TemplateParams<'a> {
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 async fn maintainers_generic(
-    ctx: TemplateContext,
     endpoint: &MyEndpoint,
     start_maintainer_name: Option<&str>,
     end_maintainer_name: Option<&str>,
@@ -204,7 +201,6 @@ async fn maintainers_generic(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             query,
             repositories_data: &repositories_data,
@@ -221,9 +217,7 @@ pub async fn maintainers(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new_without_params(Endpoint::Maintainers);
-
-    maintainers_generic(ctx, &endpoint, None, None, query, &state).await
+    maintainers_generic(&endpoint, None, None, query, &state).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
@@ -235,11 +229,9 @@ pub async fn maintainers_bounded(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::MaintainersBounded, gen_path, gen_query);
-
     if let Some(end) = bound.strip_prefix("..") {
-        maintainers_generic(ctx, &endpoint, None, Some(end), query, &state).await
+        maintainers_generic(&endpoint, None, Some(end), query, &state).await
     } else {
-        maintainers_generic(ctx, &endpoint, Some(&bound), None, query, &state).await
+        maintainers_generic(&endpoint, Some(&bound), None, query, &state).await
     }
 }

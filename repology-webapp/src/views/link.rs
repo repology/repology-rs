@@ -20,12 +20,10 @@ use repology_common::LinkStatus;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Template)]
 #[template(path = "link.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     link: Link,
 }
@@ -96,8 +94,6 @@ pub async fn link(
     Path(url): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new_without_params(Endpoint::Link);
-
     let link: Option<DbLink> = sqlx::query_as(indoc! {r#"
         SELECT
             url,
@@ -127,7 +123,6 @@ pub async fn link(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             link: link.into(),
         }

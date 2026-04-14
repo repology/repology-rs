@@ -19,7 +19,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::SourceType;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -59,7 +58,6 @@ struct Repository {
 #[derive(Template)]
 #[template(path = "repository/gone.html")]
 struct TemplateParamsGone<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     repository: Repository,
 }
@@ -67,7 +65,6 @@ struct TemplateParamsGone<'a> {
 #[derive(Template)]
 #[template(path = "repository.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     repository_name: &'a str,
     repository: Repository,
@@ -84,8 +81,6 @@ pub async fn repository(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::Repository, gen_path, gen_query);
-
     let repository: Option<Repository> = sqlx::query_as(indoc! {r#"
         SELECT
             "desc" AS title,
@@ -123,7 +118,6 @@ pub async fn repository(
                     HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
                 )],
                 TemplateParamsGone {
-                    ctx,
                     endpoint: &endpoint,
                     repository,
                 }
@@ -147,7 +141,6 @@ pub async fn repository(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             repository_name: &repository_name,
             repository,

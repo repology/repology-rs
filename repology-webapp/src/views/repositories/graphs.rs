@@ -9,7 +9,6 @@ use serde::Deserialize;
 
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -21,7 +20,6 @@ pub struct QueryParams {
 #[derive(Template)]
 #[template(path = "repositories/graphs.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     autorefresh: bool,
 }
@@ -36,15 +34,12 @@ pub async fn repositories_graphs(
     Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::RepositoriesGraphs, gen_path, gen_query);
-
     Ok((
         [(
             header::CONTENT_TYPE,
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             autorefresh: query.autorefresh,
         }

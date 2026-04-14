@@ -17,7 +17,6 @@ use crate::endpoints::MyEndpoint;
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Debug, FromRow)]
 struct Problem {
@@ -57,7 +56,6 @@ impl Pagination<'_> {
 #[derive(Template)]
 #[template(path = "problems/index.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     maintainer_name: Option<&'a str>,
     problems: Vec<Problem>,
@@ -66,7 +64,6 @@ struct TemplateParams<'a> {
 }
 
 pub async fn problems_generic(
-    ctx: TemplateContext,
     endpoint: &MyEndpoint,
     repository_name: &str,
     maintainer_name: Option<&str>,
@@ -180,7 +177,6 @@ pub async fn problems_generic(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint,
             maintainer_name,
             problems,

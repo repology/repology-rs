@@ -25,9 +25,7 @@ mod repository_data;
 mod result;
 mod state;
 mod static_files;
-mod template_context;
 mod template_funcs;
-mod url_for;
 mod views;
 mod xmlwriter;
 

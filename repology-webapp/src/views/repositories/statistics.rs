@@ -14,7 +14,6 @@ use sqlx::FromRow;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -26,7 +25,6 @@ pub struct QueryParams {
 #[derive(Template)]
 #[template(path = "repositories/statistics.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     sorting: &'a str,
     total_projects: i32,
@@ -55,7 +53,6 @@ struct Repository {
 }
 
 pub async fn repositories_statistics_generic(
-    ctx: TemplateContext,
     endpoint: &MyEndpoint,
     sorting: &str,
     query: QueryParams,
@@ -120,7 +117,6 @@ pub async fn repositories_statistics_generic(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint,
             sorting,
             total_projects,
@@ -144,9 +140,7 @@ pub async fn repositories_statistics_default(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::RepositoriesStatistics, gen_path, gen_query);
-
-    repositories_statistics_generic(ctx, &endpoint, "name", query, &state).await
+    repositories_statistics_generic(&endpoint, "name", query, &state).await
 }
 
 #[cfg_attr(
@@ -161,7 +155,5 @@ pub async fn repositories_statistics_sorted(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::RepositoriesStatisticsSorted, gen_path, gen_query);
-
-    repositories_statistics_generic(ctx, &endpoint, &sorting, query, &state).await
+    repositories_statistics_generic(&endpoint, &sorting, query, &state).await
 }

@@ -21,7 +21,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::extractors::PossibleClientAddresses;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 use super::common::Project;
 use super::nonexistent::nonexisting_project;
@@ -54,7 +53,6 @@ pub struct ReportForm {
 #[derive(Template)]
 #[template(path = "project/report.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     project_name: String,
     project: Project,
@@ -216,12 +214,6 @@ async fn project_report_generic(
     cookies: &Cookies,
     input: Option<(&[std::net::IpAddr], ReportForm)>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(
-        Endpoint::ProjectReport,
-        vec![("project_name".to_string(), project_name.clone())],
-        vec![],
-    );
-
     let redirect_from_cookie_name = format!("rdr_{project_name}");
     let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
         let value = cookie.value().to_string();
@@ -245,7 +237,7 @@ async fn project_report_generic(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(endpoint, state, cookies, ctx, project_name, None).await;
+        return nonexisting_project(&endpoint, state, cookies, project_name, None).await;
     };
 
     let reports: Vec<Report> = sqlx::query_as(indoc! {"
@@ -328,8 +320,7 @@ async fn project_report_generic(
     };
 
     if project.is_orphaned() && reports.is_empty() {
-        return nonexisting_project(endpoint, state, cookies, ctx, project_name, Some(project))
-            .await;
+        return nonexisting_project(&endpoint, state, cookies, project_name, Some(project)).await;
     }
 
     let current_date = Utc::now().date_naive();
@@ -355,7 +346,6 @@ async fn project_report_generic(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             project_name,
             project,

@@ -16,7 +16,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::{RepositoriesDataSnapshot, RepositoryData};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -129,7 +128,6 @@ const TARGET_PAGES: &[TargetPage] = &[
 #[derive(Template)]
 #[template(path = "tools/project-by.html")]
 struct ConstructTemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     query: &'a QueryParams,
     template_url: Option<String>,
@@ -148,7 +146,6 @@ enum FailureReason {
 #[derive(Template)]
 #[template(path = "tools/project-by/failed.html")]
 struct FailureTemplateParams<'a> {
-    ctx: &'a TemplateContext,
     endpoint: &'a MyEndpoint,
     query: &'a QueryParams,
     reason: FailureReason,
@@ -157,7 +154,6 @@ struct FailureTemplateParams<'a> {
 #[derive(Template)]
 #[template(path = "tools/project-by/ambiguity.html")]
 struct AmbiguityTemplateParams<'a> {
-    ctx: &'a TemplateContext,
     endpoint: &'a MyEndpoint,
     query: &'a QueryParams,
     targets: &'a [(String, String)],
@@ -165,7 +161,6 @@ struct AmbiguityTemplateParams<'a> {
 }
 
 fn project_by_error(
-    ctx: TemplateContext,
     endpoint: &MyEndpoint,
     query: QueryParams,
     reason: FailureReason,
@@ -180,7 +175,6 @@ fn project_by_error(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         FailureTemplateParams {
-            ctx: &ctx,
             endpoint: &endpoint,
             query: &query,
             reason,
@@ -197,32 +191,30 @@ pub async fn project_by_perform(
     state: &AppState,
     name: &str,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::ToolProjectBy, vec![], gen_query.clone());
-
     let Some(name_type) = query
         .name_type
         .as_ref()
         .filter(|name_type| *name_type == "binname" || *name_type == "srcname")
     else {
         // or else sql will fail; TODO: check this when parsing query
-        return project_by_error(ctx, endpoint, query, FailureReason::BadNameType);
+        return project_by_error(endpoint, query, FailureReason::BadNameType);
     };
 
     let Some(repository_name) = &query.repo else {
-        return project_by_error(ctx, endpoint, query, FailureReason::RepositoryNotSpecified);
+        return project_by_error(endpoint, query, FailureReason::RepositoryNotSpecified);
     };
 
     let repositories_data = state.repository_data_cache.snapshot();
 
     let Some(repository_data) = repositories_data.active_repository(repository_name) else {
-        return project_by_error(ctx, endpoint, query, FailureReason::RepositoryNotFound);
+        return project_by_error(endpoint, query, FailureReason::RepositoryNotFound);
     };
 
     let Some(target_page) = TARGET_PAGES
         .iter()
         .find(|page| Some(page.alias) == query.target_page.as_deref())
     else {
-        return project_by_error(ctx, endpoint, query, FailureReason::BadTargetPage);
+        return project_by_error(endpoint, query, FailureReason::BadTargetPage);
     };
 
     // Note: we don't need to check for project.num_packages > 0 because if a
@@ -269,7 +261,7 @@ pub async fn project_by_perform(
 
     Ok(match (target_projects.len(), query.noautoresolve) {
         (0, _) => {
-            return project_by_error(ctx, endpoint, query, FailureReason::NotFound);
+            return project_by_error(endpoint, query, FailureReason::NotFound);
         }
         (1, _) | (_, false) => (
             StatusCode::FOUND,
@@ -284,7 +276,6 @@ pub async fn project_by_perform(
                 TargetType::Html => (
                     mime::TEXT_HTML.as_ref(),
                     AmbiguityTemplateParams {
-                        ctx: &ctx,
                         endpoint: &endpoint,
                         query: &query,
                         targets: &target_projects,
@@ -321,8 +312,6 @@ pub fn project_by_construct(
     gen_query: Vec<(String, String)>,
     state: &AppState,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::ToolProjectBy, vec![], gen_query.clone());
-
     let target_page = TARGET_PAGES
         .iter()
         .find(|page| Some(page.alias) == query.target_page.as_deref());
@@ -344,7 +333,6 @@ pub fn project_by_construct(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         ConstructTemplateParams {
-            ctx,
             endpoint,
             query: &query,
             template_url,

@@ -9,7 +9,6 @@ use serde::Deserialize;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 use crate::views::problems::common::problems_generic;
 
 #[derive(Deserialize, Debug)]
@@ -29,10 +28,7 @@ pub async fn maintainer_problems(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::MaintainerProblems, gen_path, gen_query);
-
     problems_generic(
-        ctx,
         &endpoint,
         &repository_name,
         Some(&maintainer_name),

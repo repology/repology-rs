@@ -21,7 +21,6 @@ use crate::package::traits::{PackageWithDisplayName, PackageWithFlags, PackageWi
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 use super::common::Project;
 use super::nonexistent::nonexisting_project;
@@ -72,7 +71,6 @@ struct Link {
 #[derive(Template)]
 #[template(path = "project/packages.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     project_name: &'a str,
     project: Project,
@@ -89,8 +87,6 @@ pub async fn project_packages(
     State(state): State<Arc<AppState>>,
     cookies: Cookies,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new_without_params(Endpoint::ProjectPackages);
-
     let redirect_from_cookie_name = format!("rdr_{project_name}");
     let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
         let value = cookie.value().to_string();
@@ -114,19 +110,11 @@ pub async fn project_packages(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&endpoint, &state, &cookies, ctx, project_name, None).await;
+        return nonexisting_project(&endpoint, &state, &cookies, project_name, None).await;
     };
 
     if project.is_orphaned() {
-        return nonexisting_project(
-            &endpoint,
-            &state,
-            &cookies,
-            ctx,
-            project_name,
-            Some(project),
-        )
-        .await;
+        return nonexisting_project(&endpoint, &state, &cookies, project_name, Some(project)).await;
     }
 
     let packages: Vec<Package> = sqlx::query_as(indoc! {"
@@ -219,7 +207,6 @@ pub async fn project_packages(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             project_name: &project_name,
             project,

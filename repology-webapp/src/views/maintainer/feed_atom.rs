@@ -16,7 +16,6 @@ use crate::feeds::{EventWithTimestamp, unicalize_feed_timestamps};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(FromRow)]
 struct Event {
@@ -40,7 +39,6 @@ impl EventWithTimestamp for Event {
 #[derive(Template)]
 #[template(path = "atom-feeds/maintainer/repo-feed.xml")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     events: Vec<Event>,
     maintainer_name: &'a str,
@@ -56,8 +54,6 @@ pub async fn maintainer_repo_feed_atom(
     Path((maintainer_name, repository_name)): Path<(String, String)>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::MaintainerRepoFeedAtom, gen_path, gen_query);
-
     let repositories_data = state.repository_data_cache.snapshot();
 
     let Some(repository_data) = repositories_data.active_repository(&repository_name) else {
@@ -120,7 +116,6 @@ pub async fn maintainer_repo_feed_atom(
             HeaderValue::from_static("application/atom+xml"),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             events,
             maintainer_name: &maintainer_name,

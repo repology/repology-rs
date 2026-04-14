@@ -16,7 +16,6 @@ use sqlx::{FromRow, PgPool};
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 use crate::views::projects::common::CategorizedDisplayVersions;
 use crate::views::projects::common::PackageForListing;
 use crate::views::projects::common::packages_to_categorized_display_versions_per_project;
@@ -57,7 +56,6 @@ pub struct ProjectListItem {
 #[derive(Template)]
 #[template(path = "index.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
 
     top_by_total: Vec<top::Item<&'a str, TopRepository<'a>>>,
@@ -232,8 +230,6 @@ pub async fn get_important_projects(pool: &PgPool) -> Result<Vec<ProjectListItem
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn index(endpoint: MyEndpoint, State(state): State<Arc<AppState>>) -> EndpointResult {
-    let ctx = TemplateContext::new_without_params(Endpoint::Index);
-
     let mut top_by_total = Top::<&str, TopRepository>::new(
         crate::constants::REPOSITORY_TOP_SIZE,
         top::Precedence::Greatest,
@@ -344,7 +340,6 @@ pub async fn index(endpoint: MyEndpoint, State(state): State<Arc<AppState>>) -> 
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             top_by_total: top_by_total.get().collect(),
 

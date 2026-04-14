@@ -15,7 +15,6 @@ use sqlx::FromRow;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -27,7 +26,6 @@ pub struct QueryParams {
 #[derive(Template)]
 #[template(path = "security/recent-cpes.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     cpes: Vec<Cpe>,
     autorefresh: bool,
@@ -58,8 +56,6 @@ pub async fn recent_cpes(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::SecurityRecentCpes, gen_path, gen_query);
-
     let cpes: Vec<Cpe> = sqlx::query_as(indoc! {r#"
         SELECT
             effname AS project_name,
@@ -86,7 +82,6 @@ pub async fn recent_cpes(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             cpes,
             autorefresh: query.autorefresh,

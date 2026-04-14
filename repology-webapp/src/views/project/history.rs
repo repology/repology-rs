@@ -19,7 +19,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 use super::common::Project;
 use super::nonexistent::nonexisting_project;
@@ -208,7 +207,6 @@ fn translate_raw_event(
 #[derive(Template)]
 #[template(path = "project/history.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     project_name: String,
     project: Project,
@@ -228,8 +226,6 @@ pub async fn project_history(
     State(state): State<Arc<AppState>>,
     cookies: Cookies,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::ProjectHistory, gen_path, gen_query);
-
     let redirect_from_cookie_name = format!("rdr_{project_name}");
     let redirect_from = if let Some(cookie) = cookies.get(&redirect_from_cookie_name) {
         let value = cookie.value().to_string();
@@ -253,7 +249,7 @@ pub async fn project_history(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&endpoint, &state, &cookies, ctx, project_name, None).await;
+        return nonexisting_project(&endpoint, &state, &cookies, project_name, None).await;
     };
 
     let events: Vec<RawEvent> = sqlx::query_as(indoc! {"
@@ -271,15 +267,7 @@ pub async fn project_history(
     .await?;
 
     if project.is_orphaned() && events.is_empty() {
-        return nonexisting_project(
-            &endpoint,
-            &state,
-            &cookies,
-            ctx,
-            project_name,
-            Some(project),
-        )
-        .await;
+        return nonexisting_project(&endpoint, &state, &cookies, project_name, Some(project)).await;
     }
 
     let repositories_data = state.repository_data_cache.snapshot();
@@ -290,7 +278,6 @@ pub async fn project_history(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             project_name,
             project,

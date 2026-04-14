@@ -8,10 +8,9 @@ use indoc::indoc;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
 
-use crate::endpoints::MyEndpoint;
+use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 use crate::views::projects::common::{
     CategorizedDisplayVersions, PackageForListing, ProjectForListing,
@@ -23,7 +22,6 @@ use super::common::Project;
 #[derive(Template)]
 #[template(path = "project/404.html")]
 struct TemplateParams404<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     project_name: String,
     redirect_projects_list: Vec<ProjectListItem>,
@@ -32,7 +30,6 @@ struct TemplateParams404<'a> {
 #[derive(Template)]
 #[template(path = "project/410.html")]
 struct TemplateParams410<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     project_name: String,
     project: Project,
@@ -60,7 +57,6 @@ pub async fn nonexisting_project(
     endpoint: &MyEndpoint,
     state: &AppState,
     cookies: &Cookies,
-    ctx: TemplateContext,
     project_name: String,
     project: Option<Project>,
 ) -> EndpointResult {
@@ -114,7 +110,7 @@ pub async fn nonexisting_project(
                 [(
                     header::LOCATION,
                     HeaderValue::from_maybe_shared(
-                        ctx.endpoint
+                        endpoint
                             .url_for()
                             .param("project_name", target_project_name)
                             .build()?,
@@ -191,8 +187,7 @@ pub async fn nonexisting_project(
                 HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
             )],
             TemplateParams410 {
-                ctx,
-                endpoint: &endpoint,
+                endpoint,
                 project_name,
                 project,
                 redirect_projects_list,
@@ -209,8 +204,7 @@ pub async fn nonexisting_project(
                 HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
             )],
             TemplateParams404 {
-                ctx,
-                endpoint: &endpoint,
+                endpoint,
                 project_name,
                 redirect_projects_list,
             }

@@ -14,7 +14,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 use super::common::{
     CategorizedDisplayVersions, PackageForListing, ProjectForListing,
@@ -173,7 +172,6 @@ struct ProjectListItem {
 #[derive(Template)]
 #[template(path = "projects/index.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     query: QueryParams,
     repositories_data: &'a RepositoriesDataSnapshot,
@@ -186,9 +184,7 @@ pub async fn projects(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new_without_params(Endpoint::Projects);
-
-    projects_generic(ctx, &endpoint, None, None, query, &state).await
+    projects_generic(&endpoint, None, None, query, &state).await
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
@@ -200,17 +196,14 @@ pub async fn projects_bounded(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::ProjectsBounded, gen_path, gen_query);
-
     if let Some(end) = bound.strip_prefix("..") {
-        projects_generic(ctx, &endpoint, None, Some(end), query, &state).await
+        projects_generic(&endpoint, None, Some(end), query, &state).await
     } else {
-        projects_generic(ctx, &endpoint, Some(&bound), None, query, &state).await
+        projects_generic(&endpoint, Some(&bound), None, query, &state).await
     }
 }
 
 async fn projects_generic(
-    ctx: TemplateContext,
     endpoint: &MyEndpoint,
     start_project_name: Option<&str>,
     end_project_name: Option<&str>,
@@ -270,7 +263,6 @@ async fn projects_generic(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint,
             query,
             repositories_data: &state.repository_data_cache.snapshot(),

@@ -16,7 +16,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -28,7 +27,6 @@ pub struct QueryParams {
 #[derive(Template)]
 #[template(path = "log.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     run: Run,
     repository_data: &'a RepositoryData,
@@ -74,8 +72,6 @@ pub async fn log(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::Log, gen_path, gen_query);
-
     // num_lines, num_warnings, num_errors is nullable and NULL for ongoing runs
     // to avoid using Option and extra if let in the template, we use coalesce
     // here to make these always defined; makes sense to refactor this
@@ -129,7 +125,6 @@ pub async fn log(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             run,
             repository_data,

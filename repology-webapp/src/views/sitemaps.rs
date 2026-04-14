@@ -12,18 +12,14 @@ use indoc::indoc;
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn sitemap_index(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/index.xml")]
     struct TemplateParams<'a> {
-        ctx: TemplateContext,
         endpoint: &'a MyEndpoint,
     }
-
-    let ctx = TemplateContext::new_without_params(Endpoint::SitemapIndex);
 
     Ok((
         [(
@@ -31,7 +27,6 @@ pub async fn sitemap_index(endpoint: MyEndpoint) -> EndpointResult {
             HeaderValue::from_static("application/xml"),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
         }
         .render()?,
@@ -44,11 +39,8 @@ pub async fn sitemap_main(endpoint: MyEndpoint) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/main.xml")]
     struct TemplateParams<'a> {
-        ctx: TemplateContext,
         endpoint: &'a MyEndpoint,
     }
-
-    let ctx = TemplateContext::new_without_params(Endpoint::SitemapMain);
 
     Ok((
         [(
@@ -56,7 +48,6 @@ pub async fn sitemap_main(endpoint: MyEndpoint) -> EndpointResult {
             HeaderValue::from_static("application/xml"),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
         }
         .render()?,
@@ -72,12 +63,9 @@ pub async fn sitemap_repositories(
     #[derive(Template)]
     #[template(path = "sitemaps/repositories.xml")]
     struct TemplateParams<'a> {
-        ctx: TemplateContext,
         endpoint: &'a MyEndpoint,
         repository_names: Vec<String>,
     }
-
-    let ctx = TemplateContext::new_without_params(Endpoint::SitemapRepositories);
 
     let repository_names = sqlx::query_scalar(indoc! {"
         SELECT name
@@ -96,7 +84,6 @@ pub async fn sitemap_repositories(
             HeaderValue::from_static("application/xml"),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             repository_names,
         }
@@ -113,12 +100,9 @@ pub async fn sitemap_maintainers(
     #[derive(Template)]
     #[template(path = "sitemaps/maintainers.xml")]
     struct TemplateParams<'a> {
-        ctx: TemplateContext,
         endpoint: &'a MyEndpoint,
         maintainer_names: Vec<String>,
     }
-
-    let ctx = TemplateContext::new_without_params(Endpoint::SitemapMaintainers);
 
     // XXX: query takes 580ms, candidate for in-state caching
     let maintainer_names = sqlx::query_scalar(indoc! {"
@@ -137,7 +121,6 @@ pub async fn sitemap_maintainers(
             HeaderValue::from_static("application/xml"),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             maintainer_names,
         }
@@ -154,12 +137,9 @@ pub async fn sitemap_projects(
     #[derive(Template)]
     #[template(path = "sitemaps/projects.xml")]
     struct TemplateParams<'a> {
-        ctx: TemplateContext,
         endpoint: &'a MyEndpoint,
         project_names: Vec<String>,
     }
-
-    let ctx = TemplateContext::new_without_params(Endpoint::SitemapProjects);
 
     // XXX: query takes 620ms, candidate for in-state caching
     let project_names = sqlx::query_scalar(indoc! {"
@@ -181,7 +161,6 @@ pub async fn sitemap_projects(
             HeaderValue::from_static("application/xml"),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             project_names,
         }

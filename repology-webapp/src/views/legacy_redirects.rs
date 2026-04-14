@@ -7,7 +7,6 @@ use axum::response::IntoResponse;
 
 use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
-use crate::template_context::TemplateContext;
 
 fn redirect(target: String) -> EndpointResult {
     Ok((

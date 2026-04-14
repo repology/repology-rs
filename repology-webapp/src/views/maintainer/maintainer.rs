@@ -19,7 +19,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(FromRow)]
 struct Maintainer {
@@ -91,7 +90,6 @@ struct SimilarMaintainer {
 #[derive(Template)]
 #[template(path = "maintainer/unknown.html")]
 struct TemplateParamsUnknown<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     maintainer_name: &'a str,
 }
@@ -99,7 +97,6 @@ struct TemplateParamsUnknown<'a> {
 #[derive(Template)]
 #[template(path = "maintainer/gone.html")]
 struct TemplateParamsGone<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     maintainer_name: &'a str,
     maintainer: Maintainer,
@@ -108,7 +105,6 @@ struct TemplateParamsGone<'a> {
 #[derive(Template)]
 #[template(path = "maintainer.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     maintainer_name: &'a str,
     maintainer: Maintainer,
@@ -127,8 +123,6 @@ pub async fn maintainer(
     Path(maintainer_name): Path<String>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new_without_params(Endpoint::Maintainer);
-
     let maintainer_name = maintainer_name.to_lowercase();
 
     let maintainer: Option<Maintainer> = sqlx::query_as(indoc! {"
@@ -159,7 +153,6 @@ pub async fn maintainer(
                     HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
                 )],
                 TemplateParamsGone {
-                    ctx,
                     endpoint: &endpoint,
                     maintainer_name: &maintainer_name,
                     maintainer,
@@ -176,7 +169,6 @@ pub async fn maintainer(
                     HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
                 )],
                 TemplateParamsUnknown {
-                    ctx,
                     endpoint: &endpoint,
                     maintainer_name: &maintainer_name,
                 }
@@ -312,7 +304,6 @@ pub async fn maintainer(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             maintainer_name: &maintainer_name,
             maintainer,

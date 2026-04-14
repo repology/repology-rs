@@ -16,7 +16,6 @@ use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
-use crate::template_context::TemplateContext;
 
 #[derive(Deserialize, Debug)]
 pub struct QueryParams {
@@ -36,7 +35,6 @@ struct Event {
 #[derive(Template)]
 #[template(path = "maintainer/repo-feed.html")]
 struct TemplateParams<'a> {
-    ctx: TemplateContext,
     endpoint: &'a MyEndpoint,
     events: Vec<Event>,
     maintainer_name: &'a str,
@@ -54,8 +52,6 @@ pub async fn maintainer_repo_feed(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
-    let ctx = TemplateContext::new(Endpoint::MaintainerRepoFeed, gen_path, gen_query);
-
     let repositories_data = state.repository_data_cache.snapshot();
 
     let Some(repository_data) = repositories_data.active_repository(&repository_name) else {
@@ -109,7 +105,6 @@ pub async fn maintainer_repo_feed(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            ctx,
             endpoint: &endpoint,
             events,
             maintainer_name: &maintainer_name,
