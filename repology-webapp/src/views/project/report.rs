@@ -310,7 +310,9 @@ async fn project_report_generic(
                 StatusCode::FOUND,
                 [(
                     header::LOCATION,
-                    HeaderValue::from_maybe_shared(endpoint.url_for_self().build()?)?,
+                    HeaderValue::from_maybe_shared(
+                        endpoint.url_for().retained_path_params().build()?,
+                    )?,
                 )],
             )
                 .into_response());
