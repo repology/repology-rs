@@ -131,7 +131,7 @@
 		<div class="help-block">
 			<p>
 			{% if project.has_cves %}
-			Check if there are known older CVEs (vulnerabilities) which are not listed in <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().param("project_name", project_name).build()? }}">CVEs</a> section for this project.
+			Check if there are known older CVEs (vulnerabilities) which are not listed in <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().path_param("project_name", project_name)?.build()? }}">CVEs</a> section for this project.
 			{% else %}
 			Check if there are known older CVEs (vulnerabilities) for this project.
 			{% endif %}

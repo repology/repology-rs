@@ -119,13 +119,13 @@ pub fn url_for_static(file_name: &str) -> anyhow::Result<String> {
 
     Ok(crate::endpoints::Endpoint::StaticFile
         .url_for()
-        .param("file_name", &file.hashed_name)
+        .path_param("file_name", &file.hashed_name)?
         .build()?)
 }
 
 pub fn url_for_unversioned_static(file_name: &str) -> anyhow::Result<String> {
     Ok(crate::endpoints::Endpoint::StaticFile
         .url_for()
-        .param("file_name", file_name)
+        .path_param("file_name", file_name)?
         .build()?)
 }

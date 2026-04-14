@@ -15,13 +15,13 @@
 			{% if query.search.is_empty() %}
 				<a href="{{ crate::endpoints::Endpoint::Maintainers.url_for().build()? }}" class="btn btn-default">&laquo;&laquo;</a>
 				{% if let (Some(first_maintainer), Some(last_maintainer)) = (maintainers.first(), maintainers.last()) %}
-				<a href="{{ crate::endpoints::Endpoint::MaintainersBounded.url_for().param("bound", "..".to_string() + first_maintainer.name.as_str()).build()? }}" class="btn btn-default" rel="prev">&laquo;</a>
-				<a href="{{ crate::endpoints::Endpoint::MaintainersBounded.url_for().param("bound", last_maintainer.name).build()? }}" class="btn btn-default" rel="next">&raquo;</a>
+				<a href="{{ crate::endpoints::Endpoint::MaintainersBounded.url_for().path_param("bound", "..".to_string() + first_maintainer.name.as_str())?.build()? }}" class="btn btn-default" rel="prev">&laquo;</a>
+				<a href="{{ crate::endpoints::Endpoint::MaintainersBounded.url_for().path_param("bound", last_maintainer.name)?.build()? }}" class="btn btn-default" rel="next">&raquo;</a>
 				{% endif %}
-				<a href="{{ crate::endpoints::Endpoint::MaintainersBounded.url_for().param("bound", "..\u{10FFFF}").build()? }}" class="btn btn-default">&raquo;&raquo;</a>
+				<a href="{{ crate::endpoints::Endpoint::MaintainersBounded.url_for().path_param("bound", "..\u{10FFFF}")?.build()? }}" class="btn btn-default">&raquo;&raquo;</a>
 			{% else %}
 				{% if let Some(first_maintainer) = maintainers.first() %}
-				<a href="{{ crate::endpoints::Endpoint::MaintainersBounded.url_for().param("bound", first_maintainer.name).build()? }}" class="btn btn-default">Clear</a>
+				<a href="{{ crate::endpoints::Endpoint::MaintainersBounded.url_for().path_param("bound", first_maintainer.name)?.build()? }}" class="btn btn-default">Clear</a>
 				{% else %}
 				<a href="{{ crate::endpoints::Endpoint::Maintainers.url_for().build()? }}" class="btn btn-default">Clear</a>
 				{% endif %}
@@ -57,12 +57,12 @@
 	{% for maintainer in maintainers %}
 		<tr>
 			<td class="text-right break-word">
-				<a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().param("maintainer_name", maintainer.name).build()? }}">
+				<a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().path_param("maintainer_name", maintainer.name)?.build()? }}">
 					{{- maintainer.name -}}
 				</a>
 			</td>
 			<td class="text-center">
-				<a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", maintainer.best_repository_name).build()? }}">
+				<a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", maintainer.best_repository_name)?.build()? }}">
 					{{- repositories_data.repository_title(maintainer.best_repository_name) -}}
 				</a>
 				{%- if maintainer.num_repositories > 1 -%}
@@ -130,7 +130,7 @@
 		<li>The maintainer you are looking for no longer maintains any packages.</li>
 		<li>The maintainer you are looking for obfuscates his email in package metadata, so repology cannot parse it.</li>
 		<li>Repology does not support or no longer supports any repositories the maintainer you are looking for is active in. Check <a href="{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}">the list</a> of supported repositories.</li>
-		<li>The maintainer identifier (email) is misspelled, or have changed.{% if let Some((user, domain)) = query.search.split_once("@") %} It is quite common for only domain part to change, so try <a href="{{ endpoint.url_for().param("search", user).build()? }}">searching</a> without domain name.{% endif %}</li>
+		<li>The maintainer identifier (email) is misspelled, or have changed.{% if let Some((user, domain)) = query.search.split_once("@") %} It is quite common for only domain part to change, so try <a href="{{ endpoint.url_for().path_param("search", user)?.build()? }}">searching</a> without domain name.{% endif %}</li>
 		<li>Repology is unable or no longer able to parse maintainer information for repositories this maintainer is active in. Check <a href="{{ crate::endpoints::Endpoint::RepositoriesFields.url_for().build()? }}">repository support table</a>. This can be fixed if repositories in question setup a more complete dump of information on their packages.</li>
 	</ul>
 </div>

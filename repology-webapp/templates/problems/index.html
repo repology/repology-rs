@@ -46,7 +46,7 @@
 	<tbody>
 	{% for problem in problems %}
 		<tr>
-			<td class="text-center"><a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", problem.effname).build()? }}">{{ problem.effname }}</a></td>
+			<td class="text-center"><a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", problem.effname)?.build()? }}">{{ problem.effname }}</a></td>
 			<td class="text-center">
 				{%- if let Some(url) = problem.url %}
 				<a href="{{ url }}">{{ problem.visiblename }}</a>
@@ -57,7 +57,7 @@
 			{%- if maintainer_name.is_none() -%}
 			<td class="text-center">
 			{%- if let Some(problem_maintainer_name) = problem.maintainer -%}
-				<a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().param("maintainer_name", problem_maintainer_name).build()? }}">{{ problem_maintainer_name }}</a>
+				<a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().path_param("maintainer_name", problem_maintainer_name)?.build()? }}">{{ problem_maintainer_name }}</a>
 			{%- else -%}
 				-
 			{%- endif -%}
@@ -67,7 +67,7 @@
 			{% if problem.kind == "homepage_dead" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				{%- let status = LinkStatus::try_from(*(problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? as i16)).unwrap_or(LinkStatus::UnknownError) %}
-				Homepage link <code>{{ url }}</code> is <a href="{{ crate::endpoints::Endpoint::Link.url_for().param("url", url).build()? }}">dead</a> (<b class="link-error">{{ links::format_link_status(status) }}</b>)
+				Homepage link <code>{{ url }}</code> is <a href="{{ crate::endpoints::Endpoint::Link.url_for().path_param("url", url)?.build()? }}">dead</a> (<b class="link-error">{{ links::format_link_status(status) }}</b>)
 				for more than a month and should be replaced by alive link (see other packages for hints, or link to <a href="https://archive.org/">archive.org</a> as a last resort).
 			{% else if problem.kind == "homepage_permanent_https_redirect" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
@@ -96,7 +96,7 @@
 				CPE information defined for the package:<div>{{ cpes::cpe_components(cpe, true) }}</div>was not found neither among known CVEs nor in NVD CPE dictionary, so it may be invalid.
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
 				{% if let Some(suggestions) = suggestions.as_array() %}
-				Suggested CPEs (as per known <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().param("project_name", problem.effname).build()? }}">CVEs</a>):
+				Suggested CPEs (as per known <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().path_param("project_name", problem.effname)?.build()? }}">CVEs</a>):
 				<ul class="list-unstyled">
 				{% for suggestion in suggestions %}
 					<li>{{ cpes::cpe_components(suggestion, true) }}</li>
@@ -108,7 +108,7 @@
 				CPE information is missing for this package, while repository defines it for other packages.
 				{% if let Some(suggestions) = problem.data.get("suggestions") %}
 				{% if let Some(suggestions) = suggestions.as_array() %}
-				Suggested CPEs (as per known <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().param("project_name", problem.effname).build()? }}">CVEs</a>):
+				Suggested CPEs (as per known <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().path_param("project_name", problem.effname)?.build()? }}">CVEs</a>):
 				<ul class="list-unstyled">
 				{% for suggestion in suggestions %}
 					<li>{{ cpes::cpe_components(suggestion, true) }}</li>
@@ -119,7 +119,7 @@
 			{% else if problem.kind == "download_dead" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}
 				{%- let status = LinkStatus::try_from(*(problem.data.get("code").ok_or("code is missing")?.as_i64().ok_or("code is not an integer")? as i16)).unwrap_or(LinkStatus::UnknownError) %}
-				Download link <code>{{ url }}</code> is <a href="{{ crate::endpoints::Endpoint::Link.url_for().param("url", url).build()? }}">dead</a> (<b class="link-error">{{ links::format_link_status(status) }}</b>)
+				Download link <code>{{ url }}</code> is <a href="{{ crate::endpoints::Endpoint::Link.url_for().path_param("url", url)?.build()? }}">dead</a> (<b class="link-error">{{ links::format_link_status(status) }}</b>)
 				for more than a month and should be replaced by alive link (see other packages for hints).
 			{% else if problem.kind == "download_permanent_https_redirect" %}
 				{%- let url = problem.data.get("url").ok_or("url is missing")?.as_str().ok_or("url is not a string")? %}

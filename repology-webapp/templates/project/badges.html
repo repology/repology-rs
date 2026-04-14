@@ -6,8 +6,8 @@
 {% block keywords %}{{ super() }}, badge{% endblock %}
 
 {% macro badge_example(endpoint, alt) %}
-{% let project_url = crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project_name).build()? %}
-{% let badge_url = endpoint.url_for().param("project_name", project_name).build()? %}
+{% let project_url = crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", project_name)?.build()? %}
+{% let badge_url = endpoint.url_for().path_param("project_name", project_name)?.build()? %}
 
 <p><a href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ project_url }}"><img src="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ badge_url }}" alt="{{ alt }}"></a></p>
 
@@ -45,8 +45,8 @@
 
 <p>HTML code for right-aligned badge (most useful for README.md as it allows other content to flow around it not leading to space waste):</p>
 <pre>
-&lt;a href=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project_name).build()? }}&quot;&gt;
-    &lt;img src=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeVerticalAllRepos.url_for().param("project_name", project_name).build()? }}&quot; alt=&quot;Packaging status&quot; <strong>align=&quot;right&quot;</strong>&gt;
+&lt;a href=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", project_name)?.build()? }}&quot;&gt;
+    &lt;img src=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeVerticalAllRepos.url_for().path_param("project_name", project_name)?.build()? }}&quot; alt=&quot;Packaging status&quot; <strong>align=&quot;right&quot;</strong>&gt;
 &lt;/a&gt;
 </pre>
 
@@ -90,8 +90,8 @@
 <table class="table">
 	<tr><th>Sample</th><th>Markdown code</th><th>HTML code</th></tr>
 	{% for repository_data in containing_repositories_data %}
-	{% let project_url = crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project_name).build()? %}
-	{% let badge_url = crate::endpoints::Endpoint::BadgeVersionForRepo.url_for().param("project_name", project_name).param("repository_name", repository_data.name).build()? %}
+	{% let project_url = crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", project_name)?.build()? %}
+	{% let badge_url = crate::endpoints::Endpoint::BadgeVersionForRepo.url_for().path_param("project_name", project_name)?.path_param("repository_name", repository_data.name)?.build()? %}
 	<tr>
 		<td>
 			<a href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ project_url }}">
@@ -111,7 +111,7 @@
 
 <h2>Additional parameters</h2>
 
-{% let url = crate::endpoints::Endpoint::BadgeVersionForRepo.url_for().param("project_name", project_name).param("repository_name", containing_repositories_data[0].name).build()? %}
+{% let url = crate::endpoints::Endpoint::BadgeVersionForRepo.url_for().path_param("project_name", project_name)?.path_param("repository_name", containing_repositories_data[0].name)?.build()? %}
 
 <p>Most badges may be tweaked by specifying additional parameters in the URL.</p>
 

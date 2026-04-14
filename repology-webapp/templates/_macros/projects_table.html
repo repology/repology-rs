@@ -33,9 +33,9 @@
 	{%- endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ target_project_endpoint.url_for().param("project_name", item.project.effname).build()? }}">{{ item.project.effname }}</a>
+				<a href="{{ target_project_endpoint.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().param("project_name", item.project.effname).build()? }}">∗</a>
+				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
 				{%- endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
@@ -74,9 +74,9 @@
 	{%- endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ target_project_endpoint.url_for().param("project_name", item.project.effname).build()? }}">{{ item.project.effname }}</a>
+				<a href="{{ target_project_endpoint.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().param("project_name", item.project.effname).build()? }}">∗</a>
+				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
 				{%- endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
@@ -121,9 +121,9 @@
 	{%- endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ target_project_endpoint.url_for().param("project_name", item.project.effname).build()? }}">{{ item.project.effname }}</a>
+				<a href="{{ target_project_endpoint.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().param("project_name", item.project.effname).build()? }}">∗</a>
+				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
 				{%- endif %}
 			</td>
 			{%- if !repo.is_empty() || !maintainer.is_empty() %}

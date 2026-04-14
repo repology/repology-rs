@@ -159,66 +159,66 @@
 {% if repository.num_problems > 0 %}
 <h2>Problems</h2>
 
-<p>There are <a href="{{ crate::endpoints::Endpoint::RepositoryProblems.url_for().param("repository_name", repository_name).build()? }}">{{ repository.num_problems }} known problems</a> for packages in this repository</p>
+<p>There are <a href="{{ crate::endpoints::Endpoint::RepositoryProblems.url_for().path_param("repository_name", repository_name)?.build()? }}">{{ repository.num_problems }} known problems</a> for packages in this repository</p>
 {% endif %}
 
 <h2>Badge</h2>
 
-<p><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }}"><img src="{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().param("repository_name", repository_name).build()? }}" alt="Repository status"></a></p>
+<p><a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository_name)?.build()? }}"><img src="{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Repository status"></a></p>
 
 <p>Markdown code:</p>
 <pre>
-[![Repository status]({{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().param("repository_name", repository_name).build()? }})]({{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }})
+[![Repository status]({{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().path_param("repository_name", repository_name)?.build()? }})]({{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository_name)?.build()? }})
 </pre>
 
 <p>HTML code:</p>
 <pre>
-&lt;a href=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }}&quot;&gt;
-    &lt;img src=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().param("repository_name", repository_name).build()? }}&quot; alt=&quot;Repository status&quot;&gt;
+&lt;a href=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository_name)?.build()? }}&quot;&gt;
+    &lt;img src=&quot;{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().path_param("repository_name", repository_name)?.build()? }}&quot; alt=&quot;Repository status&quot;&gt;
 &lt;/a&gt;
 </pre>
 
-<p>Badge header may be changed or removed by <code>header</code> URL parameter, for example: <code>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().param("repository_name", repository_name).query_param("header", repository.title).build()? }}</code></p>
+<p>Badge header may be changed or removed by <code>header</code> URL parameter, for example: <code>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::BadgeRepositoryBig.url_for().path_param("repository_name", repository_name)?.query_param("header", repository.title).build()? }}</code></p>
 
 <h2>Graphs</h2>
 <h3>Total projects</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsTotal.url_for().param("repository_name", repository_name).build()? }}" alt="Total projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsTotal.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Total projects graph">
 
 <h3>Newest projects</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsNewest.url_for().param("repository_name", repository_name).build()? }}" alt="Newest projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsNewest.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Newest projects graph">
 
 <h3>Newest projects percentage</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsNewestPercent.url_for().param("repository_name", repository_name).build()? }}" alt="Newest projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsNewestPercent.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Newest projects percentage graph">
 
 <h3>Outdated projects</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsOutdated.url_for().param("repository_name", repository_name).build()? }}" alt="Outdated projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsOutdated.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Outdated projects graph">
 
 <h3>Outdated projects percentage</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsOutdatedPercent.url_for().param("repository_name", repository_name).build()? }}" alt="Outdated projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsOutdatedPercent.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Outdated projects percentage graph">
 
 <h3>Unique projects</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsUnique.url_for().param("repository_name", repository_name).build()? }}" alt="Unique projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsUnique.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Unique projects graph">
 
 <h3>Unique projects percentage</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsUniquePercent.url_for().param("repository_name", repository_name).build()? }}" alt="Unique projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsUniquePercent.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Unique projects percentage graph">
 
 <h3>Problematic projects</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsProblematic.url_for().param("repository_name", repository_name).build()? }}" alt="Problematic projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsProblematic.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Problematic projects graph">
 
 <h3>Problematic projects percentage</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsProblematicPercent.url_for().param("repository_name", repository_name).build()? }}" alt="Problematic projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsProblematicPercent.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Problematic projects percentage graph">
 
 <h3>Potentially vulnerable projects</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsVulnerable.url_for().param("repository_name", repository_name).build()? }}" alt="Potentially vulnerable projects graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsVulnerable.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Potentially vulnerable projects graph">
 
 <h3>Potentially vulnerable projects percentage</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsVulnerablePercent.url_for().param("repository_name", repository_name).build()? }}" alt="Potentially vulnerable projects percentage graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProjectsVulnerablePercent.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Potentially vulnerable projects percentage graph">
 
 <h3>Maintainers</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoMaintainers.url_for().param("repository_name", repository_name).build()? }}" alt="Maintainers graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoMaintainers.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Maintainers graph">
 
 <h3>Problems</h3>
-<img src="{{ crate::endpoints::Endpoint::GraphRepoProblems.url_for().param("repository_name", repository_name).build()? }}" alt="Problems graph">
+<img src="{{ crate::endpoints::Endpoint::GraphRepoProblems.url_for().path_param("repository_name", repository_name)?.build()? }}" alt="Problems graph">
 
 </div>
 {% endblock %}

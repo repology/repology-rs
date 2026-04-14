@@ -29,9 +29,9 @@
 					{%- endif -%}
 					</td>
 					<td>{#--#}
-						<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project.project_name).build()? }}">{{ project.project_name }}</a>
+						<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", project.project_name)?.build()? }}">{{ project.project_name }}</a>
 					{%- if project.has_related -%}
-						<a href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().param("project_name", project.project_name).build()? }}">∗</a>
+						<a href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().path_param("project_name", project.project_name)?.build()? }}">∗</a>
 					{%- endif -%}
 					</td>
 					<td>

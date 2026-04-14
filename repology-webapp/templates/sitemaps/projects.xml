@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {%- for project_name in project_names %}
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project_name).build()? }}</loc><changefreq>daily</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", project_name)?.build()? }}</loc><changefreq>daily</changefreq></url>
 {%- endfor %}
 </urlset>

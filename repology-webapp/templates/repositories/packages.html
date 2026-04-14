@@ -47,7 +47,7 @@
 	{% for repository in repositories %}
 		<tr id="{{ repository.name }}">
 			<th class="text-right">
-				<a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository.name).build()? }}">{{ repository.title }}</a>
+				<a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository.name)?.build()? }}">{{ repository.title }}</a>
 			</th>
 
 			<td class="text-center">{{ crate::template_funcs::format_number_short(repository.num_packages) }}</td>

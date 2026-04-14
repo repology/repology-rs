@@ -4,19 +4,19 @@
 
 {% block extrameta %}
 {{ autorefresh::enable_autorefresh(3600) }}
-	<link rel="alternate" href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository_name).build()? }}" type="application/atom+xml" />
+	<link rel="alternate" href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().path_param("maintainer_name", maintainer_name)?.path_param("repository_name", repository_name)?.build()? }}" type="application/atom+xml" />
 {% endblock %}
 
 {% block title %}Feed for {{ maintainer_name }} in {{ repository_data.title }} - Repology{% endblock %}
-{% block header %}Feed for <strong><a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().param("maintainer_name", maintainer_name).build()? }}">{{ maintainer_name }}</a></strong>
-in <strong><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }}">{{ repository_data.title }}</a></strong>
+{% block header %}Feed for <strong><a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().path_param("maintainer_name", maintainer_name)?.build()? }}">{{ maintainer_name }}</a></strong>
+in <strong><a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository_name)?.build()? }}">{{ repository_data.title }}</a></strong>
 {% endblock %}
 {% block description %}Feed for maintainer {{ maintainer_name }} in repository {{ repository_data.title }}{% endblock %}
 
 {% block content %}
 <div class="container">
 
-<p>This feed is also available in <a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository_name).build()? }}">atom<img src="{{ crate::static_files::url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a> format</p>
+<p>This feed is also available in <a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().path_param("maintainer_name", maintainer_name)?.path_param("repository_name", repository_name)?.build()? }}">atom<img src="{{ crate::static_files::url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a> format</p>
 
 {{ autorefresh::autorefresh_toggler() }}
 
@@ -30,13 +30,13 @@ in <strong><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("r
 	<tr>
 		<td class="minimal-column">{{ time::format_absolute_time(event.timestamp) }}</td>
 		<td>
-			<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", event.project_name).build()? }}">{{ event.project_name }}</a>
+			<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", event.project_name)?.build()? }}">{{ event.project_name }}</a>
 			{% if event.event_type == "added" %}
-			was added to <strong><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }}">{{ repository_data.title }}</a></strong>
-			and/or assigned to <strong><a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().param("maintainer_name", maintainer_name).build()? }}">{{ maintainer_name }}</a></strong>
+			was added to <strong><a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository_name)?.build()? }}">{{ repository_data.title }}</a></strong>
+			and/or assigned to <strong><a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().path_param("maintainer_name", maintainer_name)?.build()? }}">{{ maintainer_name }}</a></strong>
 			{% else if event.event_type == "removed" %}
-			is no longer maintained by <strong><a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().param("maintainer_name", maintainer_name).build()? }}">{{ maintainer_name }}</a></strong>
-			and/or was removed from <strong><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }}">{{ repository_data.title }}</a></strong>
+			is no longer maintained by <strong><a href="{{ crate::endpoints::Endpoint::Maintainer.url_for().path_param("maintainer_name", maintainer_name)?.build()? }}">{{ maintainer_name }}</a></strong>
+			and/or was removed from <strong><a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository_name)?.build()? }}">{{ repository_data.title }}</a></strong>
 			{% else if event.event_type == "uptodate" %}
 			<span class="version version-newest">{{ event.data.get("version").ok_or("version is missing")?.as_str().ok_or("version is not a string")? }}</span> is now up to date
 			{% else if event.event_type == "outdated" %}

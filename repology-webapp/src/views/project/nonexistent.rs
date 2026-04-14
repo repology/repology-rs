@@ -112,7 +112,7 @@ pub async fn nonexisting_project(
                     HeaderValue::from_maybe_shared(
                         endpoint
                             .url_for()
-                            .param("project_name", target_project_name)
+                            .path_param("project_name", target_project_name)?
                             .build()?,
                     )?,
                 )],

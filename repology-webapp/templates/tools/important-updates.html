@@ -30,7 +30,7 @@
 	{% for update in updates %}
 		<tr>
 			<td class="text-nowrap minimal-column">
-				<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", update.project_name).build()? }}">{{ update.project_name }}</a>
+				<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", update.project_name)?.build()? }}">{{ update.project_name }}</a>
 			</td>
 			<td class="text-center text-nowrap minimal-column"><b>{{ update.spread }}</b></td>
 			<td>

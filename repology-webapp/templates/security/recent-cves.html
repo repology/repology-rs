@@ -37,7 +37,7 @@
 			<td class="minimal-column">{{ time::format_absolute_time(cve.published) }}</td>
 			<td>
 			{% for project_name in cve.project_names %}
-				<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().param("project_name", project_name).build()? }}">{{ project_name }}</a>
+				<a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", project_name)?.build()? }}">{{ project_name }}</a>
 			{% endfor %}
 			</td>
 		</tr>

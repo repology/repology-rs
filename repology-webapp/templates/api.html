@@ -64,7 +64,7 @@ Mandatory fields are <b>repo</b> and <b>version</b>, all other fields are option
 
 <p>Get list of <em>packages</em> for specific <em>project</em> (here, firefox):</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1Project.url_for().param("project_name", "firefox").build()? }}
+{{ crate::endpoints::Endpoint::ApiV1Project.url_for().path_param("project_name", "firefox")?.build()? }}
 </pre>
 
 <h3>Multiple projects</h3>
@@ -82,20 +82,20 @@ range to request.</p>
 
 <p>Get first {{ per_page }} projects starting with <b>firefox</b> (inclusive):</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().param("bound", "firefox").build()? }}
+{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().path_param("bound", "firefox")?.build()? }}
 </pre>
 
 <p>Get last {{ per_page }} projects up to <b>firefox</b> (inclusive):</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().param("bound", "..firefox").build()? }}
+{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().path_param("bound", "..firefox")?.build()? }}
 </pre>
 
 <p>You may iterate through all projects by using the last project name in the next
 request</p>
 <pre>
 {{ crate::endpoints::Endpoint::ApiV1Projects.url_for().build()? }}  # returns '010editor' ... 'aaut'
-{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().param("bound", "aaut").build()? }}  # returns 'aaut' ... 'acf-snort'
-{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().param("bound", "acf-snort").build()? }}  # returns 'acf-snort' ... 'adinatha-fonts'
+{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().path_param("bound", "aaut")?.build()? }}  # returns 'aaut' ... 'acf-snort'
+{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().path_param("bound", "acf-snort")?.build()? }}  # returns 'acf-snort' ... 'adinatha-fonts'
 # ...
 </pre>
 
@@ -131,8 +131,8 @@ and then replace <code>{{ crate::endpoints::Endpoint::Projects.url_for().build()
 
 <p>Get problems for specific repository or maintainer:</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1RepositoryProblems.url_for().param("repository_name", "freebsd").build()? }}
-{{ crate::endpoints::Endpoint::ApiV1MaintainerProblems.url_for().param("maintainer_name", "ports@freebsd.org").param("repository_name", "freebsd").build()? }}
+{{ crate::endpoints::Endpoint::ApiV1RepositoryProblems.url_for().path_param("repository_name", "freebsd")?.build()? }}
+{{ crate::endpoints::Endpoint::ApiV1MaintainerProblems.url_for().path_param("maintainer_name", "ports@freebsd.org")?.path_param("repository_name", "freebsd")?.build()? }}
 </pre>
 
 <p>Output is an array of entries of the following format:</p>

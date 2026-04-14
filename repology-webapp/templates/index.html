@@ -5,9 +5,9 @@
 <ol>
 {% for topitem in topitems %}
 	{% if topitem.group == topitem.payload.title %}
-	<li><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", topitem.payload.name).build()? }}">{{ topitem.payload.title }}</a> - {{ format!("{:.*}{}", precision, topitem.value, suffix) }}</li>
+	<li><a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", topitem.payload.name)?.build()? }}">{{ topitem.payload.title }}</a> - {{ format!("{:.*}{}", precision, topitem.value, suffix) }}</li>
 	{% else %}
-	<li>{{ topitem.group }} (<a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", topitem.payload.name).build()? }}">{{ topitem.payload.title }}</a>) - {{ format!("{:.*}{}", precision, topitem.value, suffix) }}</li>
+	<li>{{ topitem.group }} (<a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", topitem.payload.name)?.build()? }}">{{ topitem.payload.title }}</a>) - {{ format!("{:.*}{}", precision, topitem.value, suffix) }}</li>
 	{% endif %}
 {% endfor %}
 </ol>
@@ -86,31 +86,31 @@
 			<div class="col-md-4">
 				<ul class="list-unstyled">
 					<li><time class="news-summary-time" datetime="2025-06-10">2025-06-10</time>
-						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", "tincan").build()? }}">Tin Can Linux</a> repository</li>
+						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "tincan")?.build()? }}">Tin Can Linux</a> repository</li>
 					<li><time class="news-summary-time" datetime="2025-05-22">2025-05-22</time>
 						started <a href="https://github.com/repology/repology-updater/issues/1499">removing</a> very old repositories</li>
 					<li><time class="news-summary-time" datetime="2025-04-25">2025-04-25</time>
-						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", "ptxdist").build()? }}">PTXdist</a> repository</li>
+						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "ptxdist")?.build()? }}">PTXdist</a> repository</li>
 				</ul>
 			</div>
 			<div class="col-md-4">
 				<ul class="list-unstyled">
 					<li><time class="news-summary-time" datetime="2025-04-14">2025-04-14</time>
-						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", "stalix").build()? }}">stal/IX</a> repository</li>
+						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "stalix")?.build()? }}">stal/IX</a> repository</li>
 					<li><time class="news-summary-time" datetime="2024-09-23">2024-09-23</time>
-						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", "openvsx").build()? }}">Open VSX</a> registry</li>
+						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "openvsx")?.build()? }}">Open VSX</a> registry</li>
 					<li><time class="news-summary-time" datetime="2024-09-17">2024-09-17</time>
-						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", "tur").build()? }}">Termux User Repository</a></li>
+						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "tur")?.build()? }}">Termux User Repository</a></li>
 				</ul>
 			</div>
 			<div class="col-md-4">
 				<ul class="list-unstyled">
 					<li><time class="news-summary-time" datetime="2024-07-23">2024-07-23</time>
-						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", "opam").build()? }}">opam</a> repository</li>
+						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "opam")?.build()? }}">opam</a> repository</li>
 					<li><time class="news-summary-time" datetime="2024-07-18">2024-07-18</time>
-						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", "serpentos").build()? }}">Serpent OS</a> repository</li>
+						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "serpentos")?.build()? }}">Serpent OS</a> repository</li>
 					<li><time class="news-summary-time" datetime="2024-07-08">2024-07-08</time>
-						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", "chromebrew").build()? }}">Chromebrew</a> repository</li>
+						added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "chromebrew")?.build()? }}">Chromebrew</a> repository</li>
 				</ul>
 			</div>
 		</div>

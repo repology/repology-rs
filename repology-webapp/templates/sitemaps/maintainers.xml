@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {%- for maintainer_name in maintainer_names %}
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Maintainer.url_for().param("maintainer_name", maintainer_name).build()? }}</loc><changefreq>daily</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Maintainer.url_for().path_param("maintainer_name", maintainer_name)?.build()? }}</loc><changefreq>daily</changefreq></url>
 {%- endfor %}
 </urlset>

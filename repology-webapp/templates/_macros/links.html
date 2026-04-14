@@ -96,7 +96,7 @@
 
 {%- macro repository_link(repository_name) -%}
 	{%- if repositories_data.is_repository_active(repository_name) -%}
-		<a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("repository_name", repository_name).build()? }}">{{ repositories_data.repository_title(repository_name) }}</a>
+		<a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository_name)?.build()? }}">{{ repositories_data.repository_title(repository_name) }}</a>
 	{%- else -%}
 		<span class="legacy-repository">{{ repositories_data.repository_title(repository_name) }}</span>
 	{%- endif -%}

@@ -241,9 +241,9 @@ pub async fn project_by_perform(
         .map(|project_name| -> Result<(String, String)> {
             let mut path = target_page.endpoint.url_for();
 
-            path = path.param("project_name", &project_name);
+            path = path.path_param("project_name", &project_name)?;
             if target_page.endpoint.path().contains("{repository_name}") {
-                path = path.param("repository_name", &repository_data.name);
+                path = path.path_param("repository_name", &repository_data.name)?;
             }
 
             for (key, value) in gen_query.iter() {
