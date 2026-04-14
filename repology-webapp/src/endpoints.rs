@@ -25,10 +25,9 @@ pub enum Section {
 }
 
 #[derive(Default, Clone, Copy)]
-#[expect(dead_code)]
 pub struct RouteProps {
-    section: Section,
-    allow_embedding: bool,
+    pub section: Section,
+    pub allow_embedding: bool,
 }
 
 // endpoint ordering:

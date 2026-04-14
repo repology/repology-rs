@@ -34,15 +34,15 @@
 
 		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li{% if ctx.is_section(crate::endpoints::Section::Projects) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Projects.url_for().build()? }}">Projects</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Maintainers) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Maintainers.url_for().build()? }}">Maintainers</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Repositories) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}">Repositories</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Tools) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Tools.url_for().build()? }}">Tools</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Security) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::SecurityRecentCves.url_for().build()? }}">Security</a></li>
+				<li{% if endpoint.props().section == crate::endpoints::Section::Projects %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Projects.url_for().build()? }}">Projects</a></li>
+				<li{% if endpoint.props().section == crate::endpoints::Section::Maintainers %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Maintainers.url_for().build()? }}">Maintainers</a></li>
+				<li{% if endpoint.props().section == crate::endpoints::Section::Repositories %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}">Repositories</a></li>
+				<li{% if endpoint.props().section == crate::endpoints::Section::Tools %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Tools.url_for().build()? }}">Tools</a></li>
+				<li{% if endpoint.props().section == crate::endpoints::Section::Security %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::SecurityRecentCves.url_for().build()? }}">Security</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li{% if ctx.is_section(crate::endpoints::Section::News) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::News.url_for().build()? }}">News</a></li>
-				<li{% if ctx.is_section(crate::endpoints::Section::Docs) %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Docs.url_for().build()? }}">Docs</a></li>
+				<li{% if endpoint.props().section == crate::endpoints::Section::News %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::News.url_for().build()? }}">News</a></li>
+				<li{% if endpoint.props().section == crate::endpoints::Section::Docs %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Docs.url_for().build()? }}">Docs</a></li>
 			</ul>
 		</div>
 	</div>

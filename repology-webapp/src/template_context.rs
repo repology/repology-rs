@@ -47,10 +47,6 @@ impl TemplateContext {
             .construct()
     }
 
-    pub fn is_section(&self, section: Section) -> bool {
-        self.endpoint.is_section(section)
-    }
-
     pub fn is_endpoint(&self, endpoint: Endpoint) -> bool {
         self.endpoint == endpoint
     }
