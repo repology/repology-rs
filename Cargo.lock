@@ -331,9 +331,9 @@ dependencies = [
 
 [[package]]
 name = "axum-myroutes"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "133d9496ea32476208737455e1284cf29aef686c0ae9c1fcab50eae0dd8af097"
+checksum = "f37c7343059caacc7d5b30e9fa74a2ed02040db5209c8d4c05ef0a716369f6fe"
 dependencies = [
  "axum",
  "axum-myroutes-macros",
@@ -344,9 +344,9 @@ dependencies = [
 
 [[package]]
 name = "axum-myroutes-macros"
-version = "0.1.1"
+version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e07cd2c59483595088a87e8b66d0ec98a3d9c508769679bf98501a3aca4458d9"
+checksum = "08afaf0d4543b436c746b28fc42b36b4aad0a10c597fe353cec3fb6fbafdaabf"
 dependencies = [
  "itertools 0.14.0",
  "proc-macro2",
