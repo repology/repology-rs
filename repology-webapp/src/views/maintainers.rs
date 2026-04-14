@@ -201,7 +201,7 @@ async fn maintainers_generic(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            endpoint: endpoint,
+            endpoint,
             query,
             repositories_data: &repositories_data,
             maintainers,

@@ -175,7 +175,7 @@ fn project_by_error(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         FailureTemplateParams {
-            endpoint: endpoint,
+            endpoint,
             query: &query,
             reason,
         }
@@ -276,7 +276,7 @@ pub async fn project_by_perform(
                 TargetType::Html => (
                     mime::TEXT_HTML.as_ref(),
                     AmbiguityTemplateParams {
-                        endpoint: endpoint,
+                        endpoint,
                         query: &query,
                         targets: &target_projects,
                         repository_data,
