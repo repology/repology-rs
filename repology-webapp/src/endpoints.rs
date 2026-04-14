@@ -25,6 +25,7 @@ pub enum Section {
 #[derive(Default, Clone, Copy)]
 pub struct RouteProps {
     pub section: Section,
+    #[allow(unused)] // will be used in heades middleware
     pub allow_embedding: bool,
 }
 
