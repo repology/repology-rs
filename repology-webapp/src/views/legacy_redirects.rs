@@ -19,7 +19,7 @@ pub async fn legacy_badge_version_only_for_repo(endpoint: MyEndpoint) -> Endpoin
     redirect(
         Endpoint::BadgeVersionForRepo
             .url_for()
-            .filled_from(endpoint.url_for_self())
+            .filled_from(endpoint.url_for_self())?
             .build()?,
     )
 }
@@ -28,7 +28,7 @@ pub async fn legacy_metapackage_versions(endpoint: MyEndpoint) -> EndpointResult
     redirect(
         Endpoint::ProjectVersions
             .url_for()
-            .filled_from(endpoint.url_for_self())
+            .filled_from(endpoint.url_for_self())?
             .build()?,
     )
 }
@@ -37,7 +37,7 @@ pub async fn legacy_metapackage_packages(endpoint: MyEndpoint) -> EndpointResult
     redirect(
         Endpoint::ProjectPackages
             .url_for()
-            .filled_from(endpoint.url_for_self())
+            .filled_from(endpoint.url_for_self())?
             .build()?,
     )
 }
