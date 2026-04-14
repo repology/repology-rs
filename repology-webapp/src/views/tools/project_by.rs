@@ -175,7 +175,7 @@ fn project_by_error(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         FailureTemplateParams {
-            endpoint: &endpoint,
+            endpoint: endpoint,
             query: &query,
             reason,
         }
@@ -276,7 +276,7 @@ pub async fn project_by_perform(
                 TargetType::Html => (
                     mime::TEXT_HTML.as_ref(),
                     AmbiguityTemplateParams {
-                        endpoint: &endpoint,
+                        endpoint: endpoint,
                         query: &query,
                         targets: &target_projects,
                         repository_data,
@@ -309,7 +309,6 @@ pub async fn project_by_perform(
 pub fn project_by_construct(
     endpoint: &MyEndpoint,
     query: QueryParams,
-    gen_query: Vec<(String, String)>,
     state: &AppState,
 ) -> EndpointResult {
     let target_page = TARGET_PAGES
@@ -353,6 +352,6 @@ pub async fn project_by(
     if let Some(name) = &query.name.clone() {
         project_by_perform(&endpoint, query, gen_query, &state, name).await
     } else {
-        project_by_construct(&endpoint, query, gen_query, &state)
+        project_by_construct(&endpoint, query, &state)
     }
 }

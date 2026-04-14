@@ -12,7 +12,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -66,8 +66,6 @@ struct LogLine {
 )]
 pub async fn log(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Path(run_id): Path<u64>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,

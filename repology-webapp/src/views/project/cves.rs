@@ -14,7 +14,7 @@ use serde::Deserialize;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 

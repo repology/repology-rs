@@ -17,7 +17,7 @@ use tracing::error;
 
 use repology_common::LinkStatus;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 

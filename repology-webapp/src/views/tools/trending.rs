@@ -4,7 +4,7 @@
 use std::sync::Arc;
 
 use askama::Template;
-use axum::extract::{Path, Query, State};
+use axum::extract::{Query, State};
 use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use chrono::{DateTime, Utc};
@@ -12,7 +12,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
@@ -43,8 +43,6 @@ struct TemplateParams<'a> {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
 pub async fn trending(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {

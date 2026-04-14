@@ -15,7 +15,7 @@ use sqlx::FromRow;
 
 use repology_common::LinkType;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::repository_data::SourceType;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -75,8 +75,6 @@ struct TemplateParams<'a> {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name, query = ?query)))]
 pub async fn repository(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,

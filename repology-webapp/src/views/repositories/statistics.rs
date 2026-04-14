@@ -11,7 +11,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
@@ -135,8 +135,6 @@ pub async fn repositories_statistics_generic(
 )]
 pub async fn repositories_statistics_default(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {
@@ -149,9 +147,7 @@ pub async fn repositories_statistics_default(
 )]
 pub async fn repositories_statistics_sorted(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
     Path(sorting): Path<String>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {

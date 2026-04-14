@@ -17,7 +17,7 @@ use tower_cookies::{Cookie, Cookies};
 use tracing::{error, info, warn};
 
 use crate::config::AppConfig;
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::extractors::PossibleClientAddresses;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -237,7 +237,7 @@ async fn project_report_generic(
     .await?;
 
     let Some(project) = project else {
-        return nonexisting_project(&endpoint, state, cookies, project_name, None).await;
+        return nonexisting_project(endpoint, state, cookies, project_name, None).await;
     };
 
     let reports: Vec<Report> = sqlx::query_as(indoc! {"
@@ -320,7 +320,7 @@ async fn project_report_generic(
     };
 
     if project.is_orphaned() && reports.is_empty() {
-        return nonexisting_project(&endpoint, state, cookies, project_name, Some(project)).await;
+        return nonexisting_project(endpoint, state, cookies, project_name, Some(project)).await;
     }
 
     let current_date = Utc::now().date_naive();
@@ -346,7 +346,7 @@ async fn project_report_generic(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            endpoint: &endpoint,
+            endpoint: endpoint,
             project_name,
             project,
             reports,

@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use askama::Template;
-use axum::extract::{Path, Query};
+use axum::extract::Query;
 use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use serde::Deserialize;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::result::EndpointResult;
 
 #[derive(Deserialize, Debug)]
@@ -30,8 +30,6 @@ struct TemplateParams<'a> {
 )]
 pub async fn repositories_graphs(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Query(query): Query<QueryParams>,
 ) -> EndpointResult {
     Ok((

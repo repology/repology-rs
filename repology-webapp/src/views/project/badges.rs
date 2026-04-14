@@ -11,7 +11,7 @@ use axum::response::IntoResponse;
 use indoc::indoc;
 use tower_cookies::{Cookie, Cookies};
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
 use crate::state::AppState;

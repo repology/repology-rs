@@ -13,7 +13,7 @@ use indoc::indoc;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -201,7 +201,7 @@ async fn maintainers_generic(
             HeaderValue::from_static(mime::TEXT_HTML.as_ref()),
         )],
         TemplateParams {
-            endpoint: &endpoint,
+            endpoint: endpoint,
             query,
             repositories_data: &repositories_data,
             maintainers,
@@ -223,8 +223,6 @@ pub async fn maintainers(
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
 pub async fn maintainers_bounded(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Path(bound): Path<String>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,

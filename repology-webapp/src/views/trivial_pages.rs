@@ -5,7 +5,7 @@ use askama::Template;
 use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::result::EndpointResult;
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]

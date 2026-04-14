@@ -9,61 +9,46 @@ use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
 use crate::result::EndpointResult;
 use crate::state::AppState;
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_index(endpoint: MyEndpoint) -> EndpointResult {
+pub async fn sitemap_index() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/index.xml")]
-    struct TemplateParams<'a> {
-        endpoint: &'a MyEndpoint,
-    }
+    struct TemplateParams;
 
     Ok((
         [(
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams {
-            endpoint: &endpoint,
-        }
-        .render()?,
+        TemplateParams.render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_main(endpoint: MyEndpoint) -> EndpointResult {
+pub async fn sitemap_main() -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/main.xml")]
-    struct TemplateParams<'a> {
-        endpoint: &'a MyEndpoint,
-    }
+    struct TemplateParams;
 
     Ok((
         [(
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams {
-            endpoint: &endpoint,
-        }
-        .render()?,
+        TemplateParams.render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_repositories(
-    endpoint: MyEndpoint,
-    State(state): State<Arc<AppState>>,
-) -> EndpointResult {
+pub async fn sitemap_repositories(State(state): State<Arc<AppState>>) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/repositories.xml")]
-    struct TemplateParams<'a> {
-        endpoint: &'a MyEndpoint,
+    struct TemplateParams {
         repository_names: Vec<String>,
     }
 
@@ -83,24 +68,16 @@ pub async fn sitemap_repositories(
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams {
-            endpoint: &endpoint,
-            repository_names,
-        }
-        .render()?,
+        TemplateParams { repository_names }.render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_maintainers(
-    endpoint: MyEndpoint,
-    State(state): State<Arc<AppState>>,
-) -> EndpointResult {
+pub async fn sitemap_maintainers(State(state): State<Arc<AppState>>) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/maintainers.xml")]
-    struct TemplateParams<'a> {
-        endpoint: &'a MyEndpoint,
+    struct TemplateParams {
         maintainer_names: Vec<String>,
     }
 
@@ -120,24 +97,16 @@ pub async fn sitemap_maintainers(
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams {
-            endpoint: &endpoint,
-            maintainer_names,
-        }
-        .render()?,
+        TemplateParams { maintainer_names }.render()?,
     )
         .into_response())
 }
 
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
-pub async fn sitemap_projects(
-    endpoint: MyEndpoint,
-    State(state): State<Arc<AppState>>,
-) -> EndpointResult {
+pub async fn sitemap_projects(State(state): State<Arc<AppState>>) -> EndpointResult {
     #[derive(Template)]
     #[template(path = "sitemaps/projects.xml")]
-    struct TemplateParams<'a> {
-        endpoint: &'a MyEndpoint,
+    struct TemplateParams {
         project_names: Vec<String>,
     }
 
@@ -160,11 +129,7 @@ pub async fn sitemap_projects(
             header::CONTENT_TYPE,
             HeaderValue::from_static("application/xml"),
         )],
-        TemplateParams {
-            endpoint: &endpoint,
-            project_names,
-        }
-        .render()?,
+        TemplateParams { project_names }.render()?,
     )
         .into_response())
 }

@@ -13,7 +13,7 @@ use axum::response::IntoResponse;
 use indoc::indoc;
 use sqlx::{FromRow, PgPool};
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::result::EndpointResult;
 use crate::state::AppState;
 use crate::views::projects::common::CategorizedDisplayVersions;

@@ -15,7 +15,7 @@ use itertools::Itertools;
 use metrics::histogram;
 use sqlx::FromRow;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;

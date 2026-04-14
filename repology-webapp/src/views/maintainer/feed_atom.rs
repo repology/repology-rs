@@ -4,14 +4,14 @@
 use std::sync::Arc;
 
 use askama::Template;
-use axum::extract::{Path, Query, State};
+use axum::extract::{Path, State};
 use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use chrono::{DateTime, Utc};
 use indoc::indoc;
 use sqlx::FromRow;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::feeds::{EventWithTimestamp, unicalize_feed_timestamps};
 use crate::repository_data::RepositoryData;
 use crate::result::EndpointResult;
@@ -49,8 +49,6 @@ struct TemplateParams<'a> {
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name)))]
 pub async fn maintainer_repo_feed_atom(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Path((maintainer_name, repository_name)): Path<(String, String)>,
     State(state): State<Arc<AppState>>,
 ) -> EndpointResult {

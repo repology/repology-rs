@@ -15,7 +15,7 @@ use tower_cookies::{Cookie, Cookies};
 
 use repology_common::{PackageFlags, PackageStatus};
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::package::ordering::by_version_descending;
 use crate::package::traits::{PackageWithFlags, PackageWithVersion};
 use crate::repository_data::RepositoriesDataSnapshot;

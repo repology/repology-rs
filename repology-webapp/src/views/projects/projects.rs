@@ -10,7 +10,7 @@ use axum::response::IntoResponse;
 use indoc::indoc;
 use serde::Deserialize;
 
-use crate::endpoints::{Endpoint, MyEndpoint};
+use crate::endpoints::MyEndpoint;
 use crate::repository_data::RepositoriesDataSnapshot;
 use crate::result::EndpointResult;
 use crate::state::AppState;
@@ -190,8 +190,6 @@ pub async fn projects(
 #[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
 pub async fn projects_bounded(
     endpoint: MyEndpoint,
-    Path(gen_path): Path<Vec<(String, String)>>,
-    Query(gen_query): Query<Vec<(String, String)>>,
     Path(bound): Path<String>,
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,
