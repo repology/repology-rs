@@ -17,6 +17,7 @@ jobs:
           toolchain: nightly-2026-02-15
           components: rustfmt,llvm-tools-preview,clippy
       - uses: taiki-e/install-action@cargo-hack
+      - uses: Swatinem/rust-cache@v2
       - name: Install dependencies
         run: |
           curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
@@ -28,23 +29,6 @@ jobs:
         run: |
           sudo sh -c "echo 'host all all samehost trust' > /etc/postgresql/$POSTGRESQL/main/pg_hba.conf"
           sudo pg_ctlcluster $POSTGRESQL main restart
-      - name: Save rust version for proper cache setup
-        run: rustc -V > .rustc.version
-      - uses: actions/cache@v5
-        with:
-          path: |
-            ~/.cargo/bin/
-            ~/.cargo/registry/index/
-            ~/.cargo/registry/cache/
-            ~/.cargo/git/db/
-          key: cargo-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: cargo-
-      - uses: actions/cache@v5
-        with:
-          path: |
-            target/
-          key: ${{ runner.os }}-target-${{ hashFiles('.rustc.version') }}-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-target-${{ hashFiles('.rustc.version') }}-
       - name: Format check
         run: cargo fmt --check
       - name: Clippy check
