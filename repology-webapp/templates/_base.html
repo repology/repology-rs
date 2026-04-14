@@ -10,9 +10,9 @@
 {% block extrameta %}
 {% endblock %}
 	<title>{% block title %}Repology{% endblock %}</title>
-	<link rel="stylesheet" href="{{ ctx.url_for_static("bootstrap.min.v3.3.7.css")? }}">
-	<link rel="stylesheet" href="{{ ctx.url_for_static("repology.v21.css")? }}">
-	<link rel="icon" href="{{ ctx.url_for_static("repology.v1.ico")? }}" sizes="16x16 32x32 64x64" type="image/x-icon">
+	<link rel="stylesheet" href="{{ crate::static_files::url_for_static("bootstrap.min.v3.3.7.css")? }}">
+	<link rel="stylesheet" href="{{ crate::static_files::url_for_static("repology.v21.css")? }}">
+	<link rel="icon" href="{{ crate::static_files::url_for_static("repology.v1.ico")? }}" sizes="16x16 32x32 64x64" type="image/x-icon">
 	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ crate::endpoints::Endpoint::OpensearchProject.url_for().build()? }}">
 	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ crate::endpoints::Endpoint::OpensearchMaintainer.url_for().build()? }}">
 </head>
@@ -28,7 +28,7 @@
 				<span class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" href="{{ crate::endpoints::Endpoint::Index.url_for().build()? }}">
-				<img alt="Repology" src="{{ ctx.url_for_static("repology40x40.v1.png")? }}" width="40" height="40">
+				<img alt="Repology" src="{{ crate::static_files::url_for_static("repology40x40.v1.png")? }}" width="40" height="40">
 			</a>
 		</div>
 
@@ -74,10 +74,10 @@
 	</div>
 </footer>
 
-<script src="{{ ctx.url_for_static("jquery-3.7.1.min.js")? }}"></script>
-<script src="{{ ctx.url_for_static("bootstrap.min.v3.3.7.js")? }}"></script>
-<script src="{{ ctx.url_for_static("moment.min.v2.29.2.js")? }}"></script>
-<script src="{{ ctx.url_for_static("repology.v2.js")? }}"></script>
+<script src="{{ crate::static_files::url_for_static("jquery-3.7.1.min.js")? }}"></script>
+<script src="{{ crate::static_files::url_for_static("bootstrap.min.v3.3.7.js")? }}"></script>
+<script src="{{ crate::static_files::url_for_static("moment.min.v2.29.2.js")? }}"></script>
+<script src="{{ crate::static_files::url_for_static("repology.v2.js")? }}"></script>
 
 </body>
 </html>

@@ -16,7 +16,7 @@ in <strong><a href="{{ crate::endpoints::Endpoint::Repository.url_for().param("r
 {% block content %}
 <div class="container">
 
-<p>This feed is also available in <a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository_name).build()? }}">atom<img src="{{ ctx.url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a> format</p>
+<p>This feed is also available in <a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository_name).build()? }}">atom<img src="{{ crate::static_files::url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a> format</p>
 
 {{ autorefresh::autorefresh_toggler() }}
 

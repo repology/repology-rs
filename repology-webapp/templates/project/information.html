@@ -27,7 +27,7 @@
 						{%- if version.recalled %}; version is recalled{% endif -%}
 					">
 						{{- version.version -}}
-						{%- if version.vulnerable %} <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().param("project_name", project_name).param("version", version.version).build()? }}"><img src="{{ ctx.url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
+						{%- if version.vulnerable %} <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().param("project_name", project_name).param("version", version.version).build()? }}"><img src="{{ crate::static_files::url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
 					</span>
 					{%- if version.spread > 1 %} <b>({{ version.spread }})</b>{% endif -%}
 				</li>

@@ -4,7 +4,7 @@ tag:repology.org,2020-02-27:repository:{{ repository_name }}
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 	<title>Repology feed for {{ repository_data.title }}</title>
-	<icon>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ ctx.url_for_unversioned_static("repology40x40.v1.png")? }}</icon>
+	<icon>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::static_files::url_for_unversioned_static("repology40x40.v1.png")? }}</icon>
 	<link href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ endpoint.url_for_self().build()? }}" rel="self" type="application/atom+xml" />
 	<link href="{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::RepositoryFeed.url_for().param("repository_name", repository_name).build()? }}" rel="alternate" type="text/html" />
 	<author><name>Repology</name><uri>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Index.url_for().build()? }}</uri></author>

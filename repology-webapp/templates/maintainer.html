@@ -126,7 +126,7 @@
 			</td>
 			<td class="text-center">
 				<a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeed.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository.name).build()? }}">html</a>,
-				<a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository.name).build()? }}">atom<img src="{{ ctx.url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a>
+				<a href="{{ crate::endpoints::Endpoint::MaintainerRepoFeedAtom.url_for().param("maintainer_name", maintainer_name).param("repository_name", repository.name).build()? }}">atom<img src="{{ crate::static_files::url_for_static("feed.v1.svg")? }}" width="16" height="16" alt="Atom feed"></a>
 			</td>
 		</tr>
 	{% endfor %}

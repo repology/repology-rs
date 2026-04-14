@@ -30,20 +30,4 @@ impl TemplateContext {
             params: Default::default(),
         }
     }
-
-    pub fn url_for_static(&self, file_name: &str) -> Result<String> {
-        let file = STATIC_FILES
-            .by_orig_name(file_name)
-            .ok_or_else(|| anyhow!("unknown static file \"{}\"", file_name))?;
-
-        UrlConstructor::new(Endpoint::StaticFile.path())
-            .with_field("file_name", &file.hashed_name)
-            .construct()
-    }
-
-    pub fn url_for_unversioned_static(&self, file_name: &str) -> Result<String> {
-        UrlConstructor::new(Endpoint::StaticFile.path())
-            .with_field("file_name", file_name)
-            .construct()
-    }
 }

@@ -4,6 +4,7 @@
 use std::collections::HashMap;
 use std::sync::LazyLock;
 
+use anyhow::anyhow;
 use flate2::{Compression, write::GzEncoder};
 use include_dir::{Dir, DirEntry, include_dir};
 use tracing::info;
@@ -109,4 +110,22 @@ impl StaticFiles {
     pub fn by_orig_name(&self, orig_name: &str) -> Option<&StaticFile> {
         self.by_orig_name.get(orig_name).map(|i| &self.files[*i])
     }
+}
+
+pub fn url_for_static(file_name: &str) -> anyhow::Result<String> {
+    let file = STATIC_FILES
+        .by_orig_name(file_name)
+        .ok_or_else(|| anyhow!("unknown static file \"{}\"", file_name))?;
+
+    Ok(crate::endpoints::Endpoint::StaticFile
+        .url_for()
+        .param("file_name", &file.hashed_name)
+        .build()?)
+}
+
+pub fn url_for_unversioned_static(file_name: &str) -> anyhow::Result<String> {
+    Ok(crate::endpoints::Endpoint::StaticFile
+        .url_for()
+        .param("file_name", &file_name)
+        .build()?)
 }
