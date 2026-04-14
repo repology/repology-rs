@@ -56,7 +56,7 @@
 				{%- else -%}
 				{{ package.version }}
 				{%- endif -%}
-				{%- if is_vulnerable %} <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().path_param("project_name", project_name)?.path_param("version", package.version)?.build()? }}"><img src="{{ crate::static_files::url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
+				{%- if is_vulnerable %} <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().path_param("project_name", project_name)?.query_param("version", package.version).build()? }}"><img src="{{ crate::static_files::url_for_static("vulnerable.v1.svg")? }}" alt="Potentially vulnerable"></a>{% endif -%}
 			</span>{#- -#}
 		</td>
 		<td class="text-center">
