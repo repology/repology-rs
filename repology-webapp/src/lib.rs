@@ -19,6 +19,7 @@ mod feeds;
 mod font;
 mod graphs;
 mod handlers;
+mod middleware;
 mod package;
 mod query;
 mod repository_data;
@@ -30,64 +31,19 @@ mod template_funcs;
 mod xmlwriter;
 
 use std::sync::Arc;
-use std::time::Instant;
 
 use anyhow::{Context, Result};
-use axum::{
-    Router,
-    body::HttpBody,
-    extract::{MatchedPath, Request},
-    middleware::{self, Next},
-    response::IntoResponse,
-};
-use metrics::{counter, histogram};
+use axum::Router;
 use sqlx::PgPool;
 use tracing::info;
 
 use crate::background_tasks::*;
 use crate::config::AppConfig;
 use crate::font::FontMeasurer;
+use crate::middleware::metrics_middleware;
 use crate::repository_data::RepositoriesDataCache;
 use crate::state::AppState;
 use crate::static_files::STATIC_FILES;
-
-async fn track_metrics(matched_path: MatchedPath, req: Request, next: Next) -> impl IntoResponse {
-    let start = Instant::now();
-
-    let path_for_metrics = {
-        // normalize some paths which lead to the same endpoints; XXX this will hopefully be gone
-        // someday when endpoints are redesigned (e.g. /projects/{bound}/ → /projects/?start=)
-        let mut path = matched_path
-            .as_str()
-            .trim_end_matches("{bound}/")
-            .trim_end_matches("/{sorting}");
-        if path.starts_with("/graph/total/") {
-            path = "/graph/total/..."
-        }
-        if path.starts_with("/graph/repo/") {
-            path = "/graph/repo/..."
-        }
-
-        path.to_owned()
-    };
-
-    let response = next.run(req).await;
-
-    let latency = start.elapsed().as_secs_f64();
-    let status = response.status().as_u16().to_string();
-
-    counter!("repology_webapp_http_requests_total", "path" => path_for_metrics.clone(), "status" => status)
-        .increment(1);
-    histogram!("repology_webapp_http_requests_duration_seconds", "path" => path_for_metrics.clone())
-        .record(latency);
-
-    if let Some(body_size) = response.body().size_hint().exact() {
-        histogram!("repology_webapp_http_response_size_bytes", "path" => path_for_metrics)
-            .record(body_size as f64);
-    }
-
-    response
-}
 
 #[cfg_attr(
     not(feature = "coverage"),
@@ -123,8 +79,9 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
     start_important_projects_cache_task(Arc::clone(&state), pool);
 
     info!("initializing routes");
-    Ok(crate::routes::Route::to_router()
-        .route_layer(middleware::from_fn(track_metrics))
-        .route_layer(tower_cookies::CookieManagerLayer::new())
-        .with_state(state))
+    Ok(crate::routes::Route::to_router_with(|router| {
+        router.layer(axum::middleware::from_fn(metrics_middleware))
+    })
+    .route_layer(tower_cookies::CookieManagerLayer::new())
+    .with_state(state))
 }
