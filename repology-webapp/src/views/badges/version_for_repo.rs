@@ -13,7 +13,7 @@ use sqlx::FromRow;
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::badges::{
-    Cell, SpecialVersionStatus, badge_color_for_package_status, render_generic_badge,
+    Cell, DEFAULT_THEME, SpecialVersionStatus, badge_color_for_package_status, render_generic_badge,
 };
 use crate::package::processing::pick_representative_package;
 use crate::package::traits::{PackageWithFlags, PackageWithStatus, PackageWithVersion};
@@ -83,6 +83,8 @@ pub async fn badge_version_for_repo(
     .fetch_all(&state.pool)
     .await?;
 
+    let theme = &DEFAULT_THEME;
+
     let caption_cell =
         Cell::new(query.caption.as_ref().map_or(singular, String::as_str)).collapsible(true);
     let version_cell =
@@ -92,7 +94,7 @@ pub async fn badge_version_for_repo(
                 .as_ref()
                 .is_some_and(|min_version| package_version(package) < min_version)
                 .then_some(SpecialVersionStatus::LowerThanUserGivenThreshold);
-            let color = badge_color_for_package_status(package.status, extra_status);
+            let color = badge_color_for_package_status(package.status, theme, extra_status);
 
             Cell::new(&package.version).color(color).truncate(20)
         } else {
@@ -104,6 +106,7 @@ pub async fn badge_version_for_repo(
         None,
         0,
         &state.font_measurer,
+        theme,
     )?;
 
     Ok((
