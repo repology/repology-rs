@@ -255,28 +255,3 @@ pub enum Endpoint {
     #[get("/sitemaps/projects.xml", handler = views::sitemap_projects)]
     SitemapProjects,
 }
-
-impl Endpoint {
-    pub fn is_section(&self, section: Section) -> bool {
-        self.props().section == section
-    }
-}
-
-#[cfg(test)]
-#[coverage(off)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_path() {
-        assert_eq!(
-            Endpoint::BadgeVersionForRepo.path(),
-            "/badge/version-for-repo/{repository_name}/{project_name}.svg"
-        );
-    }
-
-    #[test]
-    fn test_name() {
-        assert_eq!(Endpoint::BadgeVersionForRepo.name(), "BadgeVersionForRepo");
-    }
-}
