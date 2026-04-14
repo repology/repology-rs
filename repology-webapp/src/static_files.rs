@@ -119,13 +119,15 @@ pub fn url_for_static(file_name: &str) -> anyhow::Result<String> {
 
     Ok(crate::endpoints::Endpoint::StaticFile
         .url_for()
-        .path_param("file_name", &file.hashed_name)?
+        .path_param("file_name", &file.hashed_name)
+        .expect("file_name parameter should exist for StaticFile route")
         .build()?)
 }
 
 pub fn url_for_unversioned_static(file_name: &str) -> anyhow::Result<String> {
     Ok(crate::endpoints::Endpoint::StaticFile
         .url_for()
-        .path_param("file_name", file_name)?
+        .path_param("file_name", file_name)
+        .expect("file_name parameter should exist for StaticFile route")
         .build()?)
 }
