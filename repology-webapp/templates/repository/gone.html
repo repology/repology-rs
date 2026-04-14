@@ -16,7 +16,7 @@
 	<p>Last time Repology has processed this repository was {{ time::format_absolute_time(repository.last_seen.ok_or("last seen time missing")?) }}{{ time::timezone_abbr() }} ({{ time::format_time_interval(chrono::Utc::now() - repository.last_seen.ok_or("last seen time missing")?) }} ago).</p>
 	<p>Some of the reasons which may have caused this:</p>
 	<ul>
-		<li>The repository has reached it's end of life, is no longer updated or supported, should no longer be used, and has probably disappeared from the mirrors. There may be a newer version of this repository available though, check <a href="{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}">the list</a>.</li>
+		<li>The repository has reached it's end of life, is no longer updated or supported, should no longer be used, and has probably disappeared from the mirrors. There may be a newer version of this repository available though, check <a href="{{ crate::routes::Route::RepositoriesStatistics.url_for().build()? }}">the list</a>.</li>
 		<li>Repository has stopped publishing information about it's packages in format usable to Repology, so it's can't be processed any more. You may try contacting repository owners and ask them to fix this.</li>
 	</ul>
 </div>

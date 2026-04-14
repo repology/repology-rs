@@ -7,9 +7,9 @@
 <div class="container">
 
 <ul>
-	<li><a href="{{ crate::endpoints::Endpoint::ToolProjectBy.url_for().build()? }}">Project by package name</a> - generate link to Repology project pages and badges by given package name in specific repository</li>
-	<li><a href="{{ crate::endpoints::Endpoint::Trending.url_for().build()? }}">Trending and declining projects</a> - list of projects added to or removed from a lot of repositories recently</li>
-	<li><a href="{{ crate::endpoints::Endpoint::ImportantUpdates.url_for().build()? }}">Important updates</a> - new releases of most widely spread projects</li>
+	<li><a href="{{ crate::routes::Route::ToolProjectBy.url_for().build()? }}">Project by package name</a> - generate link to Repology project pages and badges by given package name in specific repository</li>
+	<li><a href="{{ crate::routes::Route::Trending.url_for().build()? }}">Trending and declining projects</a> - list of projects added to or removed from a lot of repositories recently</li>
+	<li><a href="{{ crate::routes::Route::ImportantUpdates.url_for().build()? }}">Important updates</a> - new releases of most widely spread projects</li>
 </ul>
 
 </div>

@@ -13,8 +13,8 @@
 	<link rel="stylesheet" href="{{ crate::static_files::url_for_static("bootstrap.min.v3.3.7.css")? }}">
 	<link rel="stylesheet" href="{{ crate::static_files::url_for_static("repology.v21.css")? }}">
 	<link rel="icon" href="{{ crate::static_files::url_for_static("repology.v1.ico")? }}" sizes="16x16 32x32 64x64" type="image/x-icon">
-	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ crate::endpoints::Endpoint::OpensearchProject.url_for().build()? }}">
-	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ crate::endpoints::Endpoint::OpensearchMaintainer.url_for().build()? }}">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="{{ crate::routes::Route::OpensearchProject.url_for().build()? }}">
+	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="{{ crate::routes::Route::OpensearchMaintainer.url_for().build()? }}">
 </head>
 <body>
 
@@ -27,22 +27,22 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="{{ crate::endpoints::Endpoint::Index.url_for().build()? }}">
+			<a class="navbar-brand" href="{{ crate::routes::Route::Index.url_for().build()? }}">
 				<img alt="Repology" src="{{ crate::static_files::url_for_static("repology40x40.v1.png")? }}" width="40" height="40">
 			</a>
 		</div>
 
 		<div class="collapse navbar-collapse" id="repology-navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li{% if endpoint.props().section == crate::endpoints::Section::Projects %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Projects.url_for().build()? }}">Projects</a></li>
-				<li{% if endpoint.props().section == crate::endpoints::Section::Maintainers %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Maintainers.url_for().build()? }}">Maintainers</a></li>
-				<li{% if endpoint.props().section == crate::endpoints::Section::Repositories %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}">Repositories</a></li>
-				<li{% if endpoint.props().section == crate::endpoints::Section::Tools %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Tools.url_for().build()? }}">Tools</a></li>
-				<li{% if endpoint.props().section == crate::endpoints::Section::Security %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::SecurityRecentCves.url_for().build()? }}">Security</a></li>
+				<li{% if my_route.props().section == crate::routes::Section::Projects %} class="active"{% endif %}><a href="{{ crate::routes::Route::Projects.url_for().build()? }}">Projects</a></li>
+				<li{% if my_route.props().section == crate::routes::Section::Maintainers %} class="active"{% endif %}><a href="{{ crate::routes::Route::Maintainers.url_for().build()? }}">Maintainers</a></li>
+				<li{% if my_route.props().section == crate::routes::Section::Repositories %} class="active"{% endif %}><a href="{{ crate::routes::Route::RepositoriesStatistics.url_for().build()? }}">Repositories</a></li>
+				<li{% if my_route.props().section == crate::routes::Section::Tools %} class="active"{% endif %}><a href="{{ crate::routes::Route::Tools.url_for().build()? }}">Tools</a></li>
+				<li{% if my_route.props().section == crate::routes::Section::Security %} class="active"{% endif %}><a href="{{ crate::routes::Route::SecurityRecentCves.url_for().build()? }}">Security</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li{% if endpoint.props().section == crate::endpoints::Section::News %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::News.url_for().build()? }}">News</a></li>
-				<li{% if endpoint.props().section == crate::endpoints::Section::Docs %} class="active"{% endif %}><a href="{{ crate::endpoints::Endpoint::Docs.url_for().build()? }}">Docs</a></li>
+				<li{% if my_route.props().section == crate::routes::Section::News %} class="active"{% endif %}><a href="{{ crate::routes::Route::News.url_for().build()? }}">News</a></li>
+				<li{% if my_route.props().section == crate::routes::Section::Docs %} class="active"{% endif %}><a href="{{ crate::routes::Route::Docs.url_for().build()? }}">Docs</a></li>
 			</ul>
 		</div>
 	</div>

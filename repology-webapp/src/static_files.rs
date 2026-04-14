@@ -117,7 +117,7 @@ pub fn url_for_static(file_name: &str) -> anyhow::Result<String> {
         .by_orig_name(file_name)
         .ok_or_else(|| anyhow!("unknown static file \"{}\"", file_name))?;
 
-    Ok(crate::endpoints::Endpoint::StaticFile
+    Ok(crate::routes::Route::StaticFile
         .url_for()
         .path_param("file_name", &file.hashed_name)
         .expect("file_name parameter should exist for StaticFile route")
@@ -125,7 +125,7 @@ pub fn url_for_static(file_name: &str) -> anyhow::Result<String> {
 }
 
 pub fn url_for_unversioned_static(file_name: &str) -> anyhow::Result<String> {
-    Ok(crate::endpoints::Endpoint::StaticFile
+    Ok(crate::routes::Route::StaticFile
         .url_for()
         .path_param("file_name", file_name)
         .expect("file_name parameter should exist for StaticFile route")

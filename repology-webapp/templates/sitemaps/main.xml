@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Docs.url_for().build()? }}</loc><changefreq>weekly</changefreq></url>
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::DocsAbout.url_for().build()? }}</loc><changefreq>weekly</changefreq></url>
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::DocsRequirements.url_for().build()? }}</loc><changefreq>weekly</changefreq></url>
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::ApiV1.url_for().build()? }}</loc><changefreq>weekly</changefreq></url>
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Index.url_for().build()? }}</loc><changefreq>hourly</changefreq></url>
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::News.url_for().build()? }}</loc><changefreq>daily</changefreq></url>
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}</loc><changefreq>hourly</changefreq></url>
-<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Trending.url_for().build()? }}</loc><changefreq>hourly</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::Docs.url_for().build()? }}</loc><changefreq>weekly</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::DocsAbout.url_for().build()? }}</loc><changefreq>weekly</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::DocsRequirements.url_for().build()? }}</loc><changefreq>weekly</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::ApiV1.url_for().build()? }}</loc><changefreq>weekly</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::Index.url_for().build()? }}</loc><changefreq>hourly</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::News.url_for().build()? }}</loc><changefreq>daily</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::RepositoriesStatistics.url_for().build()? }}</loc><changefreq>hourly</changefreq></url>
+<url><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::Trending.url_for().build()? }}</loc><changefreq>hourly</changefreq></url>
 </urlset>

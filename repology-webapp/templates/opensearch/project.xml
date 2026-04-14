@@ -3,5 +3,5 @@
 {% block longname %}Repology project search{% endblock %}
 {% block description %}Search for software projects on Repology.org{% endblock %}
 {% block tags %}repology repository package{% endblock %}
-{% block url %}{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::Projects.url_for().query_param("search", "searchTerms").build()?.replace("searchTerms", "{searchTerms}") }}{% endblock %}
+{% block url %}{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::Projects.url_for().query_param("search", "searchTerms").build()?.replace("searchTerms", "{searchTerms}") }}{% endblock %}
 {% block example %}firefox{% endblock %}

@@ -14,19 +14,19 @@ mod background_tasks;
 mod badges;
 pub mod config;
 mod constants;
-mod endpoints;
 mod extractors;
 mod feeds;
 mod font;
 mod graphs;
+mod handlers;
 mod package;
 mod query;
 mod repository_data;
 mod result;
+mod routes;
 mod state;
 mod static_files;
 mod template_funcs;
-mod views;
 mod xmlwriter;
 
 use std::sync::Arc;
@@ -103,7 +103,7 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
         .context("initial repository data cache fill failed")?;
 
     info!("initializing important projects cache");
-    let important_projects_cache = crate::views::get_important_projects(&pool)
+    let important_projects_cache = crate::handlers::get_important_projects(&pool)
         .await
         .context("initial important projects cache fill failed")?;
 
@@ -123,7 +123,7 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
     start_important_projects_cache_task(Arc::clone(&state), pool);
 
     info!("initializing routes");
-    Ok(crate::endpoints::Endpoint::to_router()
+    Ok(crate::routes::Route::to_router()
         .route_layer(middleware::from_fn(track_metrics))
         .route_layer(tower_cookies::CookieManagerLayer::new())
         .with_state(state))

@@ -38,7 +38,7 @@
 	{% endif %}
 		<tr id="{{ repository.name }}">
 			<th class="text-right">
-				<a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository.name)?.build()? }}">{{ repository.title }}</a>
+				<a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", repository.name)?.build()? }}">{{ repository.title }}</a>
 			</th>
 
 			<td class="text-center">{% if repository.fields.contains("comment") %}✔{% endif %}</td>

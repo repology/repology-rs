@@ -5,9 +5,9 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use tracing::error;
 
-pub struct EndpointError(anyhow::Error);
+pub struct HandlerError(anyhow::Error);
 
-impl IntoResponse for EndpointError {
+impl IntoResponse for HandlerError {
     fn into_response(self) -> Response {
         (
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -21,7 +21,7 @@ impl IntoResponse for EndpointError {
     }
 }
 
-impl<E> From<E> for EndpointError
+impl<E> From<E> for HandlerError
 where
     E: Into<anyhow::Error>,
 {
@@ -32,4 +32,4 @@ where
     }
 }
 
-pub type EndpointResult = Result<Response, EndpointError>;
+pub type HandlerResult = Result<Response, HandlerError>;

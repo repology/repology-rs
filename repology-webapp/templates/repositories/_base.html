@@ -2,10 +2,10 @@
 
 {% block preheader %}
 <div class="btn-group pageheader-right">
-	<a href="{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}" class="btn btn-default{% if endpoint.base() == crate::endpoints::Endpoint::RepositoriesStatistics %} active{% endif %}">Statistics</a>
-	<a href="{{ crate::endpoints::Endpoint::RepositoriesPackages.url_for().build()? }}" class="btn btn-default{% if endpoint.base() == crate::endpoints::Endpoint::RepositoriesPackages %} active{% endif %}">Packages</a>
-	<a href="{{ crate::endpoints::Endpoint::RepositoriesGraphs.url_for().build()? }}" class="btn btn-default{% if endpoint.base() == crate::endpoints::Endpoint::RepositoriesGraphs %} active{% endif %}">Graphs</a>
-	<a href="{{ crate::endpoints::Endpoint::RepositoriesUpdates.url_for().build()? }}" class="btn btn-default{% if endpoint.base() == crate::endpoints::Endpoint::RepositoriesUpdates %} active{% endif %}">Updates</a>
-	<a href="{{ crate::endpoints::Endpoint::RepositoriesFields.url_for().build()? }}" class="btn btn-default{% if endpoint.base() == crate::endpoints::Endpoint::RepositoriesFields %} active{% endif %}">Fields</a>
+	<a href="{{ crate::routes::Route::RepositoriesStatistics.url_for().build()? }}" class="btn btn-default{% if my_route.base() == crate::routes::Route::RepositoriesStatistics %} active{% endif %}">Statistics</a>
+	<a href="{{ crate::routes::Route::RepositoriesPackages.url_for().build()? }}" class="btn btn-default{% if my_route.base() == crate::routes::Route::RepositoriesPackages %} active{% endif %}">Packages</a>
+	<a href="{{ crate::routes::Route::RepositoriesGraphs.url_for().build()? }}" class="btn btn-default{% if my_route.base() == crate::routes::Route::RepositoriesGraphs %} active{% endif %}">Graphs</a>
+	<a href="{{ crate::routes::Route::RepositoriesUpdates.url_for().build()? }}" class="btn btn-default{% if my_route.base() == crate::routes::Route::RepositoriesUpdates %} active{% endif %}">Updates</a>
+	<a href="{{ crate::routes::Route::RepositoriesFields.url_for().build()? }}" class="btn btn-default{% if my_route.base() == crate::routes::Route::RepositoriesFields %} active{% endif %}">Fields</a>
 </div>
 {% endblock %}

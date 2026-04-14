@@ -14,7 +14,7 @@ pub struct AppState {
     pub font_measurer: FontMeasurer,
     pub repository_data_cache: RepositoriesDataCache,
     pub config: AppConfig,
-    pub important_projects_cache: Mutex<Arc<Vec<crate::views::ProjectListItem>>>,
+    pub important_projects_cache: Mutex<Arc<Vec<crate::handlers::ProjectListItem>>>,
 }
 
 impl AppState {
@@ -23,7 +23,7 @@ impl AppState {
         font_measurer: FontMeasurer,
         repository_data_cache: RepositoriesDataCache,
         config: AppConfig,
-        important_projects_cache: Vec<crate::views::ProjectListItem>,
+        important_projects_cache: Vec<crate::handlers::ProjectListItem>,
     ) -> Self {
         Self {
             pool,

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-<sitemap><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::SitemapMain.url_for().build()? }}</loc></sitemap>
-<sitemap><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::SitemapRepositories.url_for().build()? }}</loc></sitemap>
-<sitemap><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::SitemapMaintainers.url_for().build()? }}</loc></sitemap>
-<sitemap><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::endpoints::Endpoint::SitemapProjects.url_for().build()? }}</loc></sitemap>
+<sitemap><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::SitemapMain.url_for().build()? }}</loc></sitemap>
+<sitemap><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::SitemapRepositories.url_for().build()? }}</loc></sitemap>
+<sitemap><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::SitemapMaintainers.url_for().build()? }}</loc></sitemap>
+<sitemap><loc>{{ crate::constants::REPOLOGY_HOSTNAME }}{{ crate::routes::Route::SitemapProjects.url_for().build()? }}</loc></sitemap>
 </sitemapindex>

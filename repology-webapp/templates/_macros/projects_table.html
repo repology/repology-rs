@@ -11,7 +11,7 @@
 {%- endfor -%}
 {%- endmacro -%}
 
-{%- macro projects_table(list, target_project_endpoint) -%}
+{%- macro projects_table(list, target_project_route) -%}
 {%- if !list.is_empty() %}
 <p><b>{{ list.len() }}</b> project(s) on this page</p>
 <table class="table table-striped table-condensed">
@@ -33,9 +33,9 @@
 	{%- endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ target_project_endpoint.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
+				<a href="{{ target_project_route.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
+				<a class="non-selectable" href="{{ crate::routes::Route::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
 				{%- endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
@@ -51,7 +51,7 @@
 {%- endif %}
 {%- endmacro -%}
 
-{%- macro projects_table_with_rank(list, target_project_endpoint) -%}
+{%- macro projects_table_with_rank(list, target_project_route) -%}
 {%- if !list.is_empty() %}
 <p><b>{{ list.len() }}</b> project(s) on this page</p>
 <table class="table table-striped table-condensed">
@@ -74,9 +74,9 @@
 	{%- endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ target_project_endpoint.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
+				<a href="{{ target_project_route.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
+				<a class="non-selectable" href="{{ crate::routes::Route::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
 				{%- endif %}
 			</td>
 			<td class="text-center"><b>{{ item.project.num_families }}</b></td>
@@ -93,7 +93,7 @@
 {%- endif %}
 {%- endmacro -%}
 
-{%- macro projects_table_with_focus(list, repo, maintainer, target_project_endpoint) -%}
+{%- macro projects_table_with_focus(list, repo, maintainer, target_project_route) -%}
 {%- if !list.is_empty() %}
 <p><b>{{ list.len() }}</b> project(s) on this page</p>
 <table class="table table-striped table-condensed">
@@ -121,9 +121,9 @@
 	{%- endif %}
 		<tr>
 			<td class="text-nowrap">
-				<a href="{{ target_project_endpoint.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
+				<a href="{{ target_project_route.url_for().path_param("project_name", item.project.effname)?.build()? }}">{{ item.project.effname }}</a>
 				{%- if item.project.has_related -%}
-				<a class="non-selectable" href="{{ crate::endpoints::Endpoint::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
+				<a class="non-selectable" href="{{ crate::routes::Route::ProjectRelated.url_for().path_param("project_name", item.project.effname)?.build()? }}">∗</a>
 				{%- endif %}
 			</td>
 			{%- if !repo.is_empty() || !maintainer.is_empty() %}

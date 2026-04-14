@@ -22,15 +22,15 @@
 	{% endif %}
 	{% if leftovers_summary.has_history || leftovers_summary.has_reports || leftovers_summary.has_cves %}
 	<p>Also, some historical data is still available for the gone project, which may be of interest:
-		{%- if leftovers_summary.has_history %} <a href="{{ crate::endpoints::Endpoint::ProjectHistory.url_for().path_param("project_name", project_name)?.build()? }}">history</a>{% endif -%}
-		{%- if leftovers_summary.has_reports %}{% if leftovers_summary.has_history %},{% endif %} <a href="{{ crate::endpoints::Endpoint::ProjectReport.url_for().path_param("project_name", project_name)?.build()?  }}">reports</a>{% endif -%}
-		{%- if leftovers_summary.has_cves %}{% if leftovers_summary.has_history || leftovers_summary.has_reports %},{% endif %} <a href="{{ crate::endpoints::Endpoint::ProjectCves.url_for().path_param("project_name", project_name)?.build()? }}">CVEs</a>{% endif -%}
+		{%- if leftovers_summary.has_history %} <a href="{{ crate::routes::Route::ProjectHistory.url_for().path_param("project_name", project_name)?.build()? }}">history</a>{% endif -%}
+		{%- if leftovers_summary.has_reports %}{% if leftovers_summary.has_history %},{% endif %} <a href="{{ crate::routes::Route::ProjectReport.url_for().path_param("project_name", project_name)?.build()?  }}">reports</a>{% endif -%}
+		{%- if leftovers_summary.has_cves %}{% if leftovers_summary.has_history || leftovers_summary.has_reports %},{% endif %} <a href="{{ crate::routes::Route::ProjectCves.url_for().path_param("project_name", project_name)?.build()? }}">CVEs</a>{% endif -%}
 	.</p>
 	{% endif %}
 </div>
 
 {% if !redirect_projects_list.is_empty() %}
-{{ projects_table::projects_table(redirect_projects_list, target_project_endpoint=endpoint.base()) }}
+{{ projects_table::projects_table(redirect_projects_list, target_project_route=my_route.base()) }}
 {% endif %}
 
 </div>

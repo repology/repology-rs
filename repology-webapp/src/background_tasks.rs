@@ -35,13 +35,14 @@ pub fn start_important_projects_cache_task(state: Arc<AppState>, pool: PgPool) {
 
             let Some(state) = state.upgrade() else { break };
 
-            let important_projects_cache = match crate::views::get_important_projects(&pool).await {
-                Ok(important_projects_cache) => Arc::new(important_projects_cache),
-                Err(e) => {
-                    error!("important projects cache update failed: {:?}", e);
-                    continue;
-                }
-            };
+            let important_projects_cache =
+                match crate::handlers::get_important_projects(&pool).await {
+                    Ok(important_projects_cache) => Arc::new(important_projects_cache),
+                    Err(e) => {
+                        error!("important projects cache update failed: {:?}", e);
+                        continue;
+                    }
+                };
             let num_entries = important_projects_cache.len();
             if let Err(e) = state.important_projects_cache.set(important_projects_cache) {
                 error!("important projects cache update failed: {:?}", e);

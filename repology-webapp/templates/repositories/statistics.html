@@ -18,15 +18,15 @@
 			<span class="caret"></span>
 		</button>
 		<ul class="dropdown-menu dropdown-menu-right" aria-labelledby="statisticsSortMenu">
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatistics.url_for().build()? }}"{% if sorting == "name" %} class="active"{% endif %}>Name</a></li>
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatisticsSorted.url_for().path_param("sorting", "newest")?.build()? }}"{% if sorting == "newest" %} class="active"{% endif %}>Projects up to date</a></li>
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatisticsSorted.url_for().path_param("sorting", "pnewest")?.build()? }}"{% if sorting == "pnewest" %} class="active"{% endif %}>Percent projects up to date</a></li>
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatisticsSorted.url_for().path_param("sorting", "outdated")?.build()? }}"{% if sorting == "outdated" %} class="active"{% endif %}>Projects outdated</a></li>
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatisticsSorted.url_for().path_param("sorting", "poutdated")?.build()? }}"{% if sorting == "poutdated" %} class="active"{% endif %}>Percent projects outdated</a></li>
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatisticsSorted.url_for().path_param("sorting", "total")?.build()? }}"{% if sorting == "total" %} class="active"{% endif %}>Total projects</a></li>
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatisticsSorted.url_for().path_param("sorting", "nonunique")?.build()? }}"{% if sorting == "nonunique" %} class="active"{% endif %}>Non-unique projects</a></li>
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatisticsSorted.url_for().path_param("sorting", "vulnerable")?.build()? }}"{% if sorting == "vulnerable" %} class="active"{% endif %}>Potentially vulnerable projects</a></li>
-			<li><a href="{{ crate::endpoints::Endpoint::RepositoriesStatisticsSorted.url_for().path_param("sorting", "pvulnerable")?.build()? }}"{% if sorting == "pvulnerable" %} class="active"{% endif %}>Percent potentially vulnerable projects</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatistics.url_for().build()? }}"{% if sorting == "name" %} class="active"{% endif %}>Name</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatisticsSorted.url_for().path_param("sorting", "newest")?.build()? }}"{% if sorting == "newest" %} class="active"{% endif %}>Projects up to date</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatisticsSorted.url_for().path_param("sorting", "pnewest")?.build()? }}"{% if sorting == "pnewest" %} class="active"{% endif %}>Percent projects up to date</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatisticsSorted.url_for().path_param("sorting", "outdated")?.build()? }}"{% if sorting == "outdated" %} class="active"{% endif %}>Projects outdated</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatisticsSorted.url_for().path_param("sorting", "poutdated")?.build()? }}"{% if sorting == "poutdated" %} class="active"{% endif %}>Percent projects outdated</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatisticsSorted.url_for().path_param("sorting", "total")?.build()? }}"{% if sorting == "total" %} class="active"{% endif %}>Total projects</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatisticsSorted.url_for().path_param("sorting", "nonunique")?.build()? }}"{% if sorting == "nonunique" %} class="active"{% endif %}>Non-unique projects</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatisticsSorted.url_for().path_param("sorting", "vulnerable")?.build()? }}"{% if sorting == "vulnerable" %} class="active"{% endif %}>Potentially vulnerable projects</a></li>
+			<li><a href="{{ crate::routes::Route::RepositoriesStatisticsSorted.url_for().path_param("sorting", "pvulnerable")?.build()? }}"{% if sorting == "pvulnerable" %} class="active"{% endif %}>Percent potentially vulnerable projects</a></li>
 		</ul>
 	</div>
 
@@ -60,24 +60,24 @@
 	{% for repository in repositories %}
 		<tr id="{{ repository.name }}">
 			<th class="text-right">
-				<a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", repository.name)?.build()? }}">{{ repository.title }}</a>
+				<a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", repository.name)?.build()? }}">{{ repository.title }}</a>
 			</th>
 
 			<td class="text-center total-cell">
-				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository.name).build()? }}">
+				<a href="{{ crate::routes::Route::Projects.url_for().query_param("inrepo", repository.name).build()? }}">
 					{{- crate::template_funcs::format_number_short(repository.num_projects) -}}
 				</a>
 			</td>
 
 			<td class="text-center total-cell">
 				{%- let non_unique = repository.num_projects - repository.num_projects_unique %}
-				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository.name).query_param("families", "2-").build()? }}">
+				<a href="{{ crate::routes::Route::Projects.url_for().query_param("inrepo", repository.name).query_param("families", "2-").build()? }}">
 					{{- crate::template_funcs::format_number_short(non_unique) -}}
 				</a>
 			</td>
 
 			<td class="text-center version-cell version-big version-newest">
-				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository.name).query_param("newest", "1").build()? }}">
+				<a href="{{ crate::routes::Route::Projects.url_for().query_param("inrepo", repository.name).query_param("newest", "1").build()? }}">
 					{{- crate::template_funcs::format_number_short(repository.num_projects_newest) -}}
 				</a>
 			</td>
@@ -86,7 +86,7 @@
 			</td>
 
 			<td class="text-center version-cell version-big version-outdated">
-				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository.name).query_param("outdated", "1").build()? }}">
+				<a href="{{ crate::routes::Route::Projects.url_for().query_param("inrepo", repository.name).query_param("outdated", "1").build()? }}">
 					{{- crate::template_funcs::format_number_short(repository.num_projects_outdated) -}}
 				</a>
 			</td>
@@ -98,7 +98,7 @@
 			{% if repository.is_shadow %}
 				<span title="This is a shadow repo, e.g. unique packages in it are ignored">n/a</span>
 			{% else %}
-				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository.name).query_param("families", "1").build()? }}">
+				<a href="{{ crate::routes::Route::Projects.url_for().query_param("inrepo", repository.name).query_param("families", "1").build()? }}">
 					{{- crate::template_funcs::format_number_short(repository.num_projects_unique) -}}
 				</a>
 			{% endif %}
@@ -112,7 +112,7 @@
 			</td>
 
 			<td class="text-center version-cell version-big version-ignored">
-				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository.name).query_param("problematic", "1").build()? }}">
+				<a href="{{ crate::routes::Route::Projects.url_for().query_param("inrepo", repository.name).query_param("problematic", "1").build()? }}">
 					{{- crate::template_funcs::format_number_short(repository.num_projects_problematic) -}}
 				</a>
 			</td>
@@ -121,7 +121,7 @@
 			</td>
 
 			<td class="text-center{% if repository.num_projects_vulnerable > 0 %} vulnerable-cell{% endif %}">
-				<a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("inrepo", repository.name).query_param("vulnerable", "1").build()? }}">
+				<a href="{{ crate::routes::Route::Projects.url_for().query_param("inrepo", repository.name).query_param("vulnerable", "1").build()? }}">
 					{{- crate::template_funcs::format_number_short(repository.num_projects_vulnerable) -}}
 				</a>
 			</td>
@@ -139,7 +139,7 @@
 
 			<td class="text-center">
 			{%- if repository.num_problems > 0 -%}
-				<a href="{{ crate::endpoints::Endpoint::RepositoryProblems.url_for().path_param("repository_name", repository.name)?.build()? }}">
+				<a href="{{ crate::routes::Route::RepositoryProblems.url_for().path_param("repository_name", repository.name)?.build()? }}">
 					{{- crate::template_funcs::format_number_short(repository.num_problems) -}}
 				</a>
 			{%- else -%}

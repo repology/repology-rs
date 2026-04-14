@@ -64,7 +64,7 @@ Mandatory fields are <b>repo</b> and <b>version</b>, all other fields are option
 
 <p>Get list of <em>packages</em> for specific <em>project</em> (here, firefox):</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1Project.url_for().path_param("project_name", "firefox")?.build()? }}
+{{ crate::routes::Route::ApiV1Project.url_for().path_param("project_name", "firefox")?.build()? }}
 </pre>
 
 <h3>Multiple projects</h3>
@@ -77,34 +77,34 @@ range to request.</p>
 
 <p>Get first {{ per_page }} projects:</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1Projects.url_for().build()? }}
+{{ crate::routes::Route::ApiV1Projects.url_for().build()? }}
 </pre>
 
 <p>Get first {{ per_page }} projects starting with <b>firefox</b> (inclusive):</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().path_param("bound", "firefox")?.build()? }}
+{{ crate::routes::Route::ApiV1ProjectsBounded.url_for().path_param("bound", "firefox")?.build()? }}
 </pre>
 
 <p>Get last {{ per_page }} projects up to <b>firefox</b> (inclusive):</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().path_param("bound", "..firefox")?.build()? }}
+{{ crate::routes::Route::ApiV1ProjectsBounded.url_for().path_param("bound", "..firefox")?.build()? }}
 </pre>
 
 <p>You may iterate through all projects by using the last project name in the next
 request</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1Projects.url_for().build()? }}  # returns '010editor' ... 'aaut'
-{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().path_param("bound", "aaut")?.build()? }}  # returns 'aaut' ... 'acf-snort'
-{{ crate::endpoints::Endpoint::ApiV1ProjectsBounded.url_for().path_param("bound", "acf-snort")?.build()? }}  # returns 'acf-snort' ... 'adinatha-fonts'
+{{ crate::routes::Route::ApiV1Projects.url_for().build()? }}  # returns '010editor' ... 'aaut'
+{{ crate::routes::Route::ApiV1ProjectsBounded.url_for().path_param("bound", "aaut")?.build()? }}  # returns 'aaut' ... 'acf-snort'
+{{ crate::routes::Route::ApiV1ProjectsBounded.url_for().path_param("bound", "acf-snort")?.build()? }}  # returns 'acf-snort' ... 'adinatha-fonts'
 # ...
 </pre>
 
 <h3>Filtered projects</h3>
 
 <p>API supports all the filters available on the website, so you can just
-play with filters in the <a href="{{ crate::endpoints::Endpoint::Projects.url_for().build()? }}">website</a>
-and then replace <code>{{ crate::endpoints::Endpoint::Projects.url_for().build()? }}</code> URL prefix with
-<code>{{ crate::endpoints::Endpoint::ApiV1Projects.url_for().build()? }}</code> to get API output.</p>
+play with filters in the <a href="{{ crate::routes::Route::Projects.url_for().build()? }}">website</a>
+and then replace <code>{{ crate::routes::Route::Projects.url_for().build()? }}</code> URL prefix with
+<code>{{ crate::routes::Route::ApiV1Projects.url_for().build()? }}</code> to get API output.</p>
 
 <p>Supported filters are:</p>
 <dl class="dl-horizontal">
@@ -124,15 +124,15 @@ and then replace <code>{{ crate::endpoints::Endpoint::Projects.url_for().build()
 
 <p>Example: get unique outdated projects not present in FreeBSD maintainer by foo@bar.com</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1Projects.url_for().query_param("notinrepo", "freebsd").query_param("maintainer", "foo@bar.com").query_param("families", "1").query_param("outdated", "1").build()? }}
+{{ crate::routes::Route::ApiV1Projects.url_for().query_param("notinrepo", "freebsd").query_param("maintainer", "foo@bar.com").query_param("families", "1").query_param("outdated", "1").build()? }}
 </pre>
 
 <h3>Problems</h3>
 
 <p>Get problems for specific repository or maintainer:</p>
 <pre>
-{{ crate::endpoints::Endpoint::ApiV1RepositoryProblems.url_for().path_param("repository_name", "freebsd")?.build()? }}
-{{ crate::endpoints::Endpoint::ApiV1MaintainerProblems.url_for().path_param("maintainer_name", "ports@freebsd.org")?.path_param("repository_name", "freebsd")?.build()? }}
+{{ crate::routes::Route::ApiV1RepositoryProblems.url_for().path_param("repository_name", "freebsd")?.build()? }}
+{{ crate::routes::Route::ApiV1MaintainerProblems.url_for().path_param("maintainer_name", "ports@freebsd.org")?.path_param("repository_name", "freebsd")?.build()? }}
 </pre>
 
 <p>Output is an array of entries of the following format:</p>

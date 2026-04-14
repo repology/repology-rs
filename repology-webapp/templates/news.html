@@ -9,7 +9,7 @@
 <article>
 	<h3 id="2025-06-10">2025-06-10</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "tincan")?.build()? }}">Tin Can Linux</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "tincan")?.build()? }}">Tin Can Linux</a> repository.</li>
 	</ul>
 </article>
 
@@ -23,22 +23,22 @@
 <article>
 	<h3 id="2025-04-25">2025-04-25</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "ptxdist")?.build()? }}">PTXdist</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "ptxdist")?.build()? }}">PTXdist</a> repository.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2025-04-14">2025-04-14</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "stalix")?.build()? }}">stal/IX</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "stalix")?.build()? }}">stal/IX</a> repository.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2024-09-23">2024-09-23</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "openvsx")?.build()? }}">Open VSX</a> VS Code extension registry.
-			Unfortunately it currently only <a href="{{ crate::endpoints::Endpoint::Projects.url_for().query_param("search", "vscode:").query_param("families", "2-").build()? }}">intersects</a>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "openvsx")?.build()? }}">Open VSX</a> VS Code extension registry.
+			Unfortunately it currently only <a href="{{ crate::routes::Route::Projects.url_for().query_param("search", "vscode:").query_param("families", "2-").build()? }}">intersects</a>
 			with Nix repository, so we encourage all repositories to use compatible and unambiguous naming scheme for vscode extensions, which
 			contains dot-separated namespace and extension name, for instance <code>vscode-ms-python.flake8</code>.
 		</li>
@@ -48,56 +48,56 @@
 <article>
 	<h3 id="2024-09-17">2024-09-17</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "tur")?.build()? }}">Termux User Repository</a>.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "tur")?.build()? }}">Termux User Repository</a>.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2024-07-23">2024-07-23</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "opam")?.build()? }}">opam</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "opam")?.build()? }}">opam</a> repository.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2024-07-18">2024-07-18</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "serpentos")?.build()? }}">Serpent OS</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "serpentos")?.build()? }}">Serpent OS</a> repository.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2024-07-08">2024-07-08</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "chromebrew")?.build()? }}">Chromebrew</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "chromebrew")?.build()? }}">Chromebrew</a> repository.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2024-04-09">2024-04-09</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "chimera")?.build()? }}">Chimera Linux</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "chimera")?.build()? }}">Chimera Linux</a> repository.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2023-08-28">2023-08-28</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "buildroot_master")?.build()? }}">Buildroot</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "buildroot_master")?.build()? }}">Buildroot</a> repository.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2023-06-01">2023-06-01</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "bioarch")?.build()? }}">BioArch</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "bioarch")?.build()? }}">BioArch</a> repository.</li>
 	</ul>
 </article>
 
 <article>
 	<h3 id="2023-03-28">2023-03-28</h3>
 	<ul>
-		<li>Added <a href="{{ crate::endpoints::Endpoint::Repository.url_for().path_param("repository_name", "wakemeops")?.build()? }}">WakeMeOps</a> repository.</li>
+		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "wakemeops")?.build()? }}">WakeMeOps</a> repository.</li>
 	</ul>
 </article>
 

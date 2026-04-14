@@ -34,7 +34,7 @@
 	{% for cpe in cpes %}
 		<tr>
 			<td class="minimal-column">{{ time::format_absolute_time(cpe.added_ts) }}</td>
-			<td class="minimal-column"><a href="{{ crate::endpoints::Endpoint::ProjectVersions.url_for().path_param("project_name", cpe.project_name)?.build()? }}">{{ cpe.project_name }}</a></td>
+			<td class="minimal-column"><a href="{{ crate::routes::Route::ProjectVersions.url_for().path_param("project_name", cpe.project_name)?.build()? }}">{{ cpe.project_name }}</a></td>
 			<td>{{ cpes::cpe_components_struct(cpe, true) }}</td>
 		</tr>
 	{% endfor %}

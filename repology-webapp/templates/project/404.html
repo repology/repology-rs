@@ -16,7 +16,7 @@
 </div>
 
 {% if !redirect_projects_list.is_empty() %}
-{{ projects_table::projects_table(redirect_projects_list, target_project_endpoint=endpoint.base()) }}
+{{ projects_table::projects_table(redirect_projects_list, target_project_route=my_route.base()) }}
 {% endif %}
 
 </div>
