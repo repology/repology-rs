@@ -1,9 +1,13 @@
 ---
 source: repology-webapp/tests/snapshot_tests/api_v1_projects.rs
-expression: response.as_snapshot().unwrap()
+expression: response.as_text_snapshot().unwrap()
 ---
 Status: 200
 Header: content-type: application/json
+Header: x-content-type-options: nosniff
+Header: content-security-policy: default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'
+Header: x-frame-options: DENY
+Header: referrer-policy: unsafe-url
 Header: content-length: 105
 ---
 {"pkg_foofoo_":[{"repo":"ubuntu_12","visiblename":"","version":"","origversion":null,"status":"newest"}]}

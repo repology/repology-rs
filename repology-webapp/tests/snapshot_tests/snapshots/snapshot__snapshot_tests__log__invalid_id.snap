@@ -1,9 +1,13 @@
 ---
 source: repology-webapp/tests/snapshot_tests/log.rs
-expression: response.as_snapshot().unwrap()
+expression: response.as_text_snapshot().unwrap()
 ---
 Status: 400
 Header: content-type: text/plain; charset=utf-8
+Header: x-content-type-options: nosniff
+Header: content-security-policy: default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'
+Header: x-frame-options: DENY
+Header: referrer-policy: unsafe-url
 Header: content-length: 42
 ---
 Invalid URL: Cannot parse `foo` to a `u64`

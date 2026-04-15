@@ -4,6 +4,10 @@ expression: response.as_text_snapshot().unwrap()
 ---
 Status: 200
 Header: content-type: text/html
+Header: x-content-type-options: nosniff
+Header: content-security-policy: default-src 'none'; style-src 'self'; script-src 'self'; img-src 'self'; font-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'
+Header: x-frame-options: DENY
+Header: referrer-policy: unsafe-url
 Header: content-length: 4336
 ---
 <!DOCTYPE html>

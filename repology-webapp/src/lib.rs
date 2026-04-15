@@ -40,7 +40,7 @@ use tracing::info;
 use crate::background_tasks::*;
 use crate::config::AppConfig;
 use crate::font::FontMeasurer;
-use crate::middleware::metrics_middleware;
+use crate::middleware::{headers_middleware, metrics_middleware};
 use crate::repository_data::RepositoriesDataCache;
 use crate::state::AppState;
 use crate::static_files::STATIC_FILES;
@@ -80,7 +80,9 @@ pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
 
     info!("initializing routes");
     Ok(crate::routes::Route::to_router_with(|router| {
-        router.layer(axum::middleware::from_fn(metrics_middleware))
+        router
+            .layer(axum::middleware::from_fn(metrics_middleware))
+            .layer(axum::middleware::from_fn(headers_middleware))
     })
     .route_layer(tower_cookies::CookieManagerLayer::new())
     .with_state(state))
