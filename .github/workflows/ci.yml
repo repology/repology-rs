@@ -32,10 +32,10 @@ jobs:
         run: cargo fmt --check
       - name: Clippy check
         run: cargo clippy --all-targets
-      - name: Build
-        run: |
-          cargo build
-          cargo hack --workspace build
+      - name: Build as workspace
+        run: cargo build
+      - name: Build as individual crates
+        run: cargo hack --workspace build
       - name: Test
         run: cargo test
         env:
