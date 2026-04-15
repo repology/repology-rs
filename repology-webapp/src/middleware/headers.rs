@@ -48,5 +48,13 @@ pub async fn headers_middleware(
         HeaderValue::from_static("unsafe-url"),
     );
 
+    // TODO: Make max-age configurable?
+    // TODO: Add "private" for project/ endpoints as these may add flash messages regarding
+    //       redirect?
+    response
+        .headers_mut()
+        .entry(header::CACHE_CONTROL)
+        .or_insert_with(|| HeaderValue::from_static("max-age=3600"));
+
     response
 }
