@@ -307,7 +307,7 @@ async fn project_report_generic(
             );
 
             return Ok((
-                StatusCode::FOUND,
+                StatusCode::SEE_OTHER,
                 [(
                     header::LOCATION,
                     HeaderValue::from_maybe_shared(

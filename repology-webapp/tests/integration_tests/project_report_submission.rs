@@ -31,7 +31,7 @@ async fn test_submit_report_success(pool: PgPool) {
         ..Default::default()
     };
     let response = Request::new(pool.clone(), "/project/zsh/report").with_form(form).perform().await;
-    assert_eq!(response.status(), http::StatusCode::FOUND);
+    assert_eq!(response.status(), http::StatusCode::SEE_OTHER);
     assert_eq!(response.header_value_str("location").unwrap(), Some("/project/zsh/report"));
 
     let response = Request::new(pool, "/project/zsh/report").perform().await;
@@ -50,7 +50,7 @@ async fn test_submit_report_success_vunl(pool: PgPool) {
         ..Default::default()
     };
     let response = Request::new(pool.clone(), "/project/zsh/report").with_form(form).perform().await;
-    assert_eq!(response.status(), http::StatusCode::FOUND);
+    assert_eq!(response.status(), http::StatusCode::SEE_OTHER);
     assert_eq!(response.header_value_str("location").unwrap(), Some("/project/zsh/report"));
 
     let response = Request::new(pool, "/project/zsh/report").perform().await;
