@@ -18,6 +18,9 @@ jobs:
           components: rustfmt,clippy
       - uses: taiki-e/install-action@cargo-hack
       - uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/master' }}
+          cache-bin: "false"
       - name: Install dependencies
         run: |
           curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
