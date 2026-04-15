@@ -50,7 +50,7 @@ pub struct ProjectListItem {
 }
 
 #[cfg_attr(
-    not(feature = "coverage"),
+    not(coverage),
     tracing::instrument(skip_all, fields(project_name = project_name))
 )]
 pub async fn nonexisting_project(

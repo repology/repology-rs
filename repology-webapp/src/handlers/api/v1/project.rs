@@ -48,7 +48,7 @@ pub struct ApiPackage {
     pub vulnerable: Option<bool>,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn api_v1_project(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,

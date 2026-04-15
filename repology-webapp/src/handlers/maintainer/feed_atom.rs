@@ -46,7 +46,7 @@ struct TemplateParams<'a> {
     repository_data: &'a RepositoryData,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name)))]
 pub async fn maintainer_repo_feed_atom(
     my_route: MyRoute,
     Path((maintainer_name, repository_name)): Path<(String, String)>,

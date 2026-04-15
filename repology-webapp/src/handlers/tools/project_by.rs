@@ -342,7 +342,7 @@ pub fn project_by_construct(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(query = ?query)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(query = ?query)))]
 pub async fn project_by(
     my_route: MyRoute,
     Query(query): Query<QueryParams>,

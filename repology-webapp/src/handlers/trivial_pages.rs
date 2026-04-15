@@ -8,7 +8,7 @@ use axum::response::IntoResponse;
 use crate::result::HandlerResult;
 use crate::routes::MyRoute;
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn news(my_route: MyRoute) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "news.html")]
@@ -29,7 +29,7 @@ pub async fn news(my_route: MyRoute) -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn docs(my_route: MyRoute) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "docs/index.html")]
@@ -50,7 +50,7 @@ pub async fn docs(my_route: MyRoute) -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn docs_about(my_route: MyRoute) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "docs/about.html")]
@@ -71,7 +71,7 @@ pub async fn docs_about(my_route: MyRoute) -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn docs_bots(my_route: MyRoute) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "docs/bots.html")]
@@ -92,7 +92,7 @@ pub async fn docs_bots(my_route: MyRoute) -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn docs_not_supported(my_route: MyRoute) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "docs/not_supported.html")]
@@ -113,7 +113,7 @@ pub async fn docs_not_supported(my_route: MyRoute) -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn docs_requirements(my_route: MyRoute) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "docs/requirements.html")]
@@ -134,7 +134,7 @@ pub async fn docs_requirements(my_route: MyRoute) -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn tools(my_route: MyRoute) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "tools/index.html")]
@@ -155,7 +155,7 @@ pub async fn tools(my_route: MyRoute) -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn api_v1(my_route: MyRoute) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "api.html")]

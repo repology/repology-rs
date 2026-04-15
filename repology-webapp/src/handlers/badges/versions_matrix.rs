@@ -140,7 +140,7 @@ fn split_inequality(text: &str) -> Option<(&str, &str, &str)> {
     }
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(query = ?query)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(query = ?query)))]
 pub async fn badge_versions_matrix(
     Query(query): Query<QueryParams>,
     State(state): State<Arc<AppState>>,

@@ -7,13 +7,13 @@ snapshots-review:
 	cargo insta review
 
 coverage:
-	cargo llvm-cov --features=coverage --open
+	cargo llvm-cov --open
 
 coverage-unit:
-	cargo llvm-cov --features=coverage --open -- --skip integration_tests --skip snapshot_tests
+	cargo llvm-cov --open -- --skip integration_tests --skip snapshot_tests
 
 coverage-integration:
-	cargo llvm-cov --features=coverage --open -- integration_tests
+	cargo llvm-cov --open -- integration_tests
 
 coverage-snapshot:
-	cargo llvm-cov --features=coverage --open -- snapshot_tests
+	cargo llvm-cov --open -- snapshot_tests

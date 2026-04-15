@@ -7,7 +7,7 @@ use axum::response::IntoResponse;
 
 use crate::result::HandlerResult;
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn opensearch_project() -> HandlerResult {
     #[derive(Template)]
     #[template(path = "opensearch/project.xml")]
@@ -23,7 +23,7 @@ pub async fn opensearch_project() -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn opensearch_maintainer() -> HandlerResult {
     #[derive(Template)]
     #[template(path = "opensearch/maintainer.xml")]

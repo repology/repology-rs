@@ -130,7 +130,7 @@ pub async fn repositories_statistics_generic(
 }
 
 #[cfg_attr(
-    not(feature = "coverage"),
+    not(coverage),
     tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn repositories_statistics_default(
@@ -142,7 +142,7 @@ pub async fn repositories_statistics_default(
 }
 
 #[cfg_attr(
-    not(feature = "coverage"),
+    not(coverage),
     tracing::instrument(skip_all, fields(query = ?query))
 )]
 pub async fn repositories_statistics_sorted(

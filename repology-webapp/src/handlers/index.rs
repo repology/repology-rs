@@ -228,7 +228,7 @@ pub async fn get_important_projects(pool: &PgPool) -> Result<Vec<ProjectListItem
         .collect())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn index(my_route: MyRoute, State(state): State<Arc<AppState>>) -> HandlerResult {
     let mut top_by_total = Top::<&str, TopRepository>::new(
         crate::constants::REPOSITORY_TOP_SIZE,

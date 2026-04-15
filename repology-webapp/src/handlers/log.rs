@@ -61,7 +61,7 @@ struct LogLine {
 }
 
 #[cfg_attr(
-    not(feature = "coverage"),
+    not(coverage),
     tracing::instrument(skip_all, fields(run_id = run_id, query = ?query))
 )]
 pub async fn log(

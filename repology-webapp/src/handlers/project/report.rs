@@ -365,7 +365,7 @@ async fn project_report_generic(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, form = ?form, addresses = ?addresses)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(project_name = project_name, form = ?form, addresses = ?addresses)))]
 pub async fn project_report_post(
     my_route: MyRoute,
     Path(project_name): Path<String>,
@@ -384,7 +384,7 @@ pub async fn project_report_post(
     .await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_report_get(
     my_route: MyRoute,
     Path(project_name): Path<String>,

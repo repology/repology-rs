@@ -88,7 +88,7 @@ impl From<DbLink> for Link {
     }
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(url = url)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(url = url)))]
 pub async fn link(
     my_route: MyRoute,
     Path(url): Path<String>,

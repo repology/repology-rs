@@ -40,7 +40,7 @@ struct TemplateParams<'a> {
     autorefresh: bool,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn trending(
     my_route: MyRoute,
     Query(query): Query<QueryParams>,

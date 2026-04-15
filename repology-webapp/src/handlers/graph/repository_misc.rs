@@ -90,7 +90,7 @@ async fn graph_generic(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_problems_per_1000_projects(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,
@@ -106,7 +106,7 @@ pub async fn graph_repository_problems_per_1000_projects(
     .await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn graph_repository_projects_per_maintainer(
     Path(repository_name): Path<String>,
     State(state): State<Arc<AppState>>,

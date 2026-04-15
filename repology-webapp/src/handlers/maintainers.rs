@@ -113,7 +113,7 @@ struct TemplateParams<'a> {
     maintainers: Vec<Maintainer>,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 async fn maintainers_generic(
     my_route: &MyRoute,
     start_maintainer_name: Option<&str>,
@@ -211,7 +211,7 @@ async fn maintainers_generic(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(query = ?query)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(query = ?query)))]
 pub async fn maintainers(
     my_route: MyRoute,
     Query(query): Query<QueryParams>,
@@ -220,7 +220,7 @@ pub async fn maintainers(
     maintainers_generic(&my_route, None, None, query, &state).await
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(bound = bound, query = ?query)))]
 pub async fn maintainers_bounded(
     my_route: MyRoute,
     Path(bound): Path<String>,

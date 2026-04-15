@@ -35,7 +35,7 @@ struct ApiV1Problem {
     rawversion: String,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(repository_name = repository_name)))]
 pub async fn api_v1_repository_problems(
     Path(repository_name): Path<String>,
     Query(query): Query<QueryParams>,
@@ -87,7 +87,7 @@ pub async fn api_v1_repository_problems(
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name)))]
 pub async fn api_v1_maintainer_problems(
     Path((maintainer_name, repository_name)): Path<(String, String)>,
     Query(query): Query<QueryParams>,

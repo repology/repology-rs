@@ -63,7 +63,7 @@ struct TemplateParams<'a> {
     redirect_from: Option<String>,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(project_name = project_name)))]
 pub async fn project_versions_compact(
     my_route: MyRoute,
     Path(project_name): Path<String>,

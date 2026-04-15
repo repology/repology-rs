@@ -45,7 +45,7 @@ impl PackageWithFlags for Package {
     }
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, query = ?query)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(project_name = project_name, query = ?query)))]
 pub async fn badge_latest_versions(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,

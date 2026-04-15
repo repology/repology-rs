@@ -43,7 +43,7 @@ struct TemplateParams<'a> {
     autorefresh: bool,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name, query = ?query)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(maintainer_name = maintainer_name, repository_name = repository_name, query = ?query)))]
 pub async fn maintainer_repo_feed(
     my_route: MyRoute,
     Path((maintainer_name, repository_name)): Path<(String, String)>,

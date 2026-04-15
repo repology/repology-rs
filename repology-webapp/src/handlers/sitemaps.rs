@@ -12,7 +12,7 @@ use indoc::indoc;
 use crate::result::HandlerResult;
 use crate::state::AppState;
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn sitemap_index() -> HandlerResult {
     #[derive(Template)]
     #[template(path = "sitemaps/index.xml")]
@@ -28,7 +28,7 @@ pub async fn sitemap_index() -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn sitemap_main() -> HandlerResult {
     #[derive(Template)]
     #[template(path = "sitemaps/main.xml")]
@@ -44,7 +44,7 @@ pub async fn sitemap_main() -> HandlerResult {
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn sitemap_repositories(State(state): State<Arc<AppState>>) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "sitemaps/repositories.xml")]
@@ -73,7 +73,7 @@ pub async fn sitemap_repositories(State(state): State<Arc<AppState>>) -> Handler
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn sitemap_maintainers(State(state): State<Arc<AppState>>) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "sitemaps/maintainers.xml")]
@@ -102,7 +102,7 @@ pub async fn sitemap_maintainers(State(state): State<Arc<AppState>>) -> HandlerR
         .into_response())
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn sitemap_projects(State(state): State<Arc<AppState>>) -> HandlerResult {
     #[derive(Template)]
     #[template(path = "sitemaps/projects.xml")]

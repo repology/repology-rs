@@ -95,7 +95,7 @@ fn is_repository_filtered(repository_data: &RepositoryData, query: &QueryParams)
     false
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(project_name = project_name, query = ?query)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(project_name = project_name, query = ?query)))]
 pub async fn badge_vertical_allrepos(
     Path(project_name): Path<String>,
     State(state): State<Arc<AppState>>,

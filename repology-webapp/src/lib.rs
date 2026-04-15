@@ -45,10 +45,7 @@ use crate::repository_data::RepositoriesDataCache;
 use crate::state::AppState;
 use crate::static_files::STATIC_FILES;
 
-#[cfg_attr(
-    not(feature = "coverage"),
-    tracing::instrument(name = "app init", skip_all)
-)]
+#[cfg_attr(not(coverage), tracing::instrument(name = "app init", skip_all))]
 pub async fn create_app(pool: PgPool, config: AppConfig) -> Result<Router> {
     info!("initializing font measurer");
     let font_measurer = FontMeasurer::new();

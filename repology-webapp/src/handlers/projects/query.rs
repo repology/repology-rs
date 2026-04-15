@@ -58,7 +58,7 @@ impl QueryAndJoiner {
     }
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all))]
 pub async fn query_listing_projects(
     pool: &sqlx::PgPool,
     filter: &ProjectsFilter<'_>,

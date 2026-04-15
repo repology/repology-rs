@@ -58,6 +58,9 @@ stable_sort_primitive = "warn"
 #str_to_string = "warn" # (?)
 unused_async = "warn"
 
+[workspace.lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(coverage)'] }
+
 [patch.crates-io]
 # Using patched version which supports matchit 0.9.2 and prefixed/suffixed placeholders in routes
 # See https://github.com/tokio-rs/axum/pull/3702

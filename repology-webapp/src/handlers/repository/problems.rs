@@ -19,7 +19,7 @@ pub struct QueryParams {
     pub end_project_name: Option<String>,
 }
 
-#[cfg_attr(not(feature = "coverage"), tracing::instrument(skip_all, fields(repository_name = repository_name, query = ?query)))]
+#[cfg_attr(not(coverage), tracing::instrument(skip_all, fields(repository_name = repository_name, query = ?query)))]
 pub async fn repository_problems(
     my_route: MyRoute,
     Path(repository_name): Path<String>,
