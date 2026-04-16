@@ -35,3 +35,9 @@ async fn test_search_nomatch(pool: PgPool) {
     let response = Request::new(pool, "/maintainers/?search=nonononono").perform().await;
     assert_snapshot!(response.as_text_snapshot().unwrap());
 }
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
+async fn test_search_nomatch_at(pool: PgPool) {
+    let response = Request::new(pool, "/maintainers/?search=nonononono@example.com").perform().await;
+    assert_snapshot!(response.as_text_snapshot().unwrap());
+}
