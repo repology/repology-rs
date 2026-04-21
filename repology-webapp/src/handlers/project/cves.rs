@@ -9,7 +9,7 @@ use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indexmap::IndexMap;
 use indoc::indoc;
-use libversion::version_compare;
+use libversion::version_compare2;
 use serde::Deserialize;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
@@ -23,7 +23,7 @@ use super::nonexistent::nonexisting_project;
 
 fn version_compare_nulls_last(a: &Option<&str>, b: &Option<&str>) -> std::cmp::Ordering {
     match (a, b) {
-        (Some(a), Some(b)) => version_compare(a, b),
+        (Some(a), Some(b)) => version_compare2(a, b),
         (Some(_), None) => std::cmp::Ordering::Less,
         (None, Some(_)) => std::cmp::Ordering::Greater,
         (None, None) => std::cmp::Ordering::Equal,
@@ -32,7 +32,7 @@ fn version_compare_nulls_last(a: &Option<&str>, b: &Option<&str>) -> std::cmp::O
 
 fn version_compare_nulls_first(a: &Option<&str>, b: &Option<&str>) -> std::cmp::Ordering {
     match (a, b) {
-        (Some(a), Some(b)) => version_compare(a, b),
+        (Some(a), Some(b)) => version_compare2(a, b),
         (Some(_), None) => std::cmp::Ordering::Greater,
         (None, Some(_)) => std::cmp::Ordering::Less,
         (None, None) => std::cmp::Ordering::Equal,
@@ -91,10 +91,10 @@ impl Cve {
 
     fn is_version_in_range(&self, version: &str) -> bool {
         self.start_version.as_deref().is_none_or(|start| {
-            let cmp = version_compare(start, version);
+            let cmp = version_compare2(start, version);
             cmp.is_lt() || !self.start_version_excluded && cmp.is_le()
         }) && self.end_version.as_deref().is_none_or(|end| {
-            let cmp = version_compare(version, end);
+            let cmp = version_compare2(version, end);
             cmp.is_lt() || !self.end_version_excluded && cmp.is_le()
         })
     }

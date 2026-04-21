@@ -10,7 +10,7 @@ use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use chrono::{DateTime, TimeDelta, Utc};
 use indoc::indoc;
-use libversion::version_compare;
+use libversion::version_compare2;
 use serde::Deserialize;
 use sqlx::FromRow;
 use tower_cookies::{Cookie, Cookies};
@@ -117,7 +117,7 @@ fn sort_versions(versions: &mut [String]) {
     // XXX: here we do not have extra information (such as flags) required for
     // proper version sorting. This should be fixed by using correct order when
     // generating history events
-    versions.sort_by(|a, b| version_compare(a, b).reverse());
+    versions.sort_by(|a, b| version_compare2(a, b).reverse());
 }
 
 fn translate_raw_event(

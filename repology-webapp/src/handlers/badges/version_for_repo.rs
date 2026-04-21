@@ -7,6 +7,7 @@ use axum::extract::{Path, Query, State};
 use axum::http::{HeaderValue, StatusCode, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
+use libversion::Version;
 use serde::Deserialize;
 use sqlx::FromRow;
 
@@ -90,6 +91,7 @@ pub async fn badge_version_for_repo(
             let extra_status = query
                 .min_version
                 .as_ref()
+                .map(Version::new)
                 .is_some_and(|min_version| package_version(package) < min_version)
                 .then_some(SpecialVersionStatus::LowerThanUserGivenThreshold);
             let color = badge_color_for_package_status(package.status, extra_status);

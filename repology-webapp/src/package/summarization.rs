@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use libversion::{VersionFlags, version_compare4};
+
 use repology_common::{PackageFlags, PackageStatus};
 
 use crate::package::ordering::package_metaorder;
@@ -13,7 +15,7 @@ pub struct DisplayVersion {
     pub version: String,
     pub status: PackageStatus,
     pub metaorder: i32,
-    pub versionflags: libversion::Flags,
+    pub versionflags: VersionFlags,
     pub vulnerable: bool,
     pub recalled: bool,
     pub spread: u32,
@@ -43,9 +45,11 @@ impl DisplayVersion {
 
 impl PartialEq<Self> for DisplayVersion {
     fn eq(&self, other: &Self) -> bool {
-        libversion::version_compare(
-            (&self.version, self.versionflags),
-            (&other.version, other.versionflags),
+        version_compare4(
+            &self.version,
+            &other.version,
+            self.versionflags,
+            other.versionflags,
         ) == std::cmp::Ordering::Equal
             && self.status == other.status
             && self.metaorder == other.metaorder
@@ -66,9 +70,11 @@ impl Ord for DisplayVersion {
         self.metaorder
             .cmp(&other.metaorder)
             .then_with(|| {
-                libversion::version_compare(
-                    (&self.version, self.versionflags),
-                    (&other.version, other.versionflags),
+                libversion::version_compare4(
+                    &self.version,
+                    &other.version,
+                    self.versionflags,
+                    other.versionflags,
                 )
             })
             .then_with(|| self.status.cmp(&other.status))

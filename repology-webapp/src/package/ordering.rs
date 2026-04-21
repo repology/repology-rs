@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright 2024 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use libversion::version_compare;
+use libversion::version_compare4;
 
 use repology_common::PackageFlags;
 
@@ -31,9 +31,11 @@ pub mod by_version_descending {
         package_metaorder(a)
             .cmp(&package_metaorder(b))
             .then_with(|| {
-                version_compare(
-                    (a.version(), package_version_flags(a)),
-                    (b.version(), package_version_flags(b)),
+                version_compare4(
+                    a.version(),
+                    b.version(),
+                    package_version_flags(a),
+                    package_version_flags(b),
                 )
             })
             .reverse()
@@ -58,9 +60,11 @@ pub mod by_name_asc_version_desc {
             .cmp(b.display_name())
             .then_with(|| package_metaorder(a).cmp(&package_metaorder(b)).reverse())
             .then_with(|| {
-                version_compare(
-                    (a.version(), package_version_flags(a)),
-                    (b.version(), package_version_flags(b)),
+                version_compare4(
+                    a.version(),
+                    b.version(),
+                    package_version_flags(a),
+                    package_version_flags(b),
                 )
                 .reverse()
             })

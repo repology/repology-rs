@@ -12,8 +12,6 @@ use itertools::Itertools;
 use serde::Deserialize;
 use sqlx::FromRow;
 
-use libversion::AsVersionWithFlags;
-
 use repology_common::PackageFlags;
 
 use crate::badges::{Cell, render_generic_badge};
@@ -68,19 +66,19 @@ pub async fn badge_latest_versions(
         .sorted_by(|a, b| {
             // version desc → version string length desc → version string lexographical
             a.cmp(b)
-                .then_with(|| a.version().len().cmp(&b.version().len()))
+                .then_with(|| a.version.len().cmp(&b.version.len()))
                 .reverse()
-                .then_with(|| a.version().cmp(b.version()))
+                .then_with(|| a.version.cmp(b.version))
         })
-        .dedup_by(|a, b| a.version() == b.version())
+        .dedup_by(|a, b| a.version == b.version)
         .collect::<Vec<_>>();
 
     let (default_caption, text) = match versions.len() {
         0 => ("latest packaged version", Cow::from("-")),
-        1 => ("latest packaged version", Cow::from(versions[0].version())),
+        1 => ("latest packaged version", Cow::from(versions[0].version)),
         _ => (
             "latest packaged versions",
-            Cow::from(versions.iter().map(|version| version.version()).join(", ")),
+            Cow::from(versions.iter().map(|version| version.version).join(", ")),
         ),
     };
 

@@ -9,10 +9,9 @@ use axum::extract::{Query, State};
 use axum::http::{HeaderValue, header};
 use axum::response::IntoResponse;
 use indoc::indoc;
+use libversion::Version;
 use serde::Deserialize;
 use sqlx::FromRow;
-
-use libversion::VersionStr;
 
 use repology_common::{PackageFlags, PackageStatus};
 
@@ -107,12 +106,12 @@ enum VersionRestriction<'a> {
 }
 
 impl VersionRestriction<'_> {
-    pub fn is_passing(&self, version: &VersionStr) -> bool {
+    pub fn is_passing(&self, version: &Version<&str>) -> bool {
         match self {
-            VersionRestriction::Greater(boundary) => version > boundary,
-            VersionRestriction::GreaterOrEqual(boundary) => version >= boundary,
-            VersionRestriction::Lesser(boundary) => version < boundary,
-            VersionRestriction::LesserOrEqual(boundary) => version <= boundary,
+            VersionRestriction::Greater(boundary) => *version > Version::new(boundary),
+            VersionRestriction::GreaterOrEqual(boundary) => *version >= Version::new(boundary),
+            VersionRestriction::Lesser(boundary) => *version < Version::new(boundary),
+            VersionRestriction::LesserOrEqual(boundary) => *version <= Version::new(boundary),
             VersionRestriction::None => true,
         }
     }
