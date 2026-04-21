@@ -112,7 +112,7 @@ fn extract_status_generic(
         .downcast_ref::<h2::Error>()
         .inspect(|error| error.extract_status(chooser, url));
     error
-        .downcast_ref::<hickory_resolver::ResolveError>()
+        .downcast_ref::<hickory_resolver::net::NetError>()
         .inspect(|error| error.extract_status(chooser, url));
     error
         .downcast_ref::<hyper::Error>()
@@ -148,48 +148,41 @@ impl ExtractStatus for h2::Error {
     }
 }
 
-impl ExtractStatus for hickory_resolver::ResolveError {
+impl ExtractStatus for hickory_resolver::net::NetError {
     fn extract_status(&self, chooser: &mut StatusChooser, url: &str) {
-        use hickory_resolver::ResolveErrorKind;
-        use hickory_resolver::proto::ProtoErrorKind;
-        use hickory_resolver::proto::op::response_code::ResponseCode;
-
         chooser.push(LinkStatus::DnsError);
 
-        let ResolveErrorKind::Proto(proto_error) = self.kind() else {
-            error!(error = ?self, url, "unhandled hickory_resolver::ResolveErrorKind variant");
-            return;
-        };
+        use hickory_resolver::net::{DnsError, NetError, NoRecords};
+        use hickory_resolver::proto::op::ResponseCode;
 
-        match proto_error.kind() {
-            ProtoErrorKind::NoRecordsFound { response_code, .. }
-                if *response_code == ResponseCode::ServFail =>
-            {
-                chooser.push(LinkStatus::DnsError);
+        match self {
+            NetError::Dns(DnsError::NoRecordsFound(NoRecords { response_code, .. })) => {
+                match response_code {
+                    ResponseCode::ServFail => {
+                        chooser.push(LinkStatus::DnsError);
+                    }
+                    ResponseCode::NXDomain => {
+                        chooser.push(LinkStatus::DnsDomainNotFound);
+                    }
+                    ResponseCode::NoError => {
+                        chooser.push(LinkStatus::DnsNoAddressRecord);
+                    }
+                    _ => {
+                        error!(error = ?self, url, "unhandled hickory_resolver::proto::op::ResponseCode variant");
+                    }
+                }
             }
-            ProtoErrorKind::NoRecordsFound { response_code, .. }
-                if *response_code == ResponseCode::NXDomain =>
-            {
-                chooser.push(LinkStatus::DnsDomainNotFound);
-            }
-            ProtoErrorKind::NoRecordsFound { response_code, .. }
-                if *response_code == ResponseCode::NoError =>
-            {
-                chooser.push(LinkStatus::DnsNoAddressRecord);
-            }
-            ProtoErrorKind::Timeout => {
+            NetError::Timeout => {
                 chooser.push(LinkStatus::DnsTimeout);
             }
-            ProtoErrorKind::Msg(message)
-                if message.starts_with("Label contains invalid characters") =>
-            {
+            NetError::Msg(message) if message.starts_with("Label contains invalid characters") => {
                 chooser.push(LinkStatus::InvalidCharactersInHostname);
             }
-            ProtoErrorKind::Msg(message) if message.starts_with("Malformed label") => {
+            NetError::Msg(message) if message.starts_with("Malformed label") => {
                 chooser.push(LinkStatus::InvalidHostname);
             }
             _ => {
-                error!(error = ?self, url, "unhandled hickory_resolver::proto::ProtoErrorKind variant");
+                error!(error = ?self, url, "unhandled hickory_resolver::net::NetError variant");
             }
         }
     }
