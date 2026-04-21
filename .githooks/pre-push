@@ -1,0 +1,6 @@
+set -e
+export RUSTFLAGS="-Dwarnings -Aunused-features"
+cargo fmt --check
+cargo clippy --all-targets
+cargo build
+cargo test
