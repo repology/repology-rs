@@ -6,9 +6,10 @@ use std::net::IpAddr;
 use std::sync::Arc;
 use std::time::Instant;
 
+use hickory_resolver::TokioResolver;
 use hickory_resolver::config::ResolverConfig;
-use hickory_resolver::name_server::TokioConnectionProvider;
-use hickory_resolver::{ResolveError, TokioResolver};
+use hickory_resolver::net::{NetError, runtime::TokioRuntimeProvider};
+use hickory_resolver::proto::rr::rdata::{a::A, aaaa::AAAA};
 use metrics::counter;
 
 /// Run cache cleanup only if it exceeds the given size
@@ -31,18 +32,18 @@ impl Resolver {
     pub fn new() -> Self {
         let (sysconfig, options) = hickory_resolver::system_conf::read_system_conf().unwrap();
 
-        let mut config = ResolverConfig::new();
+        let mut config = ResolverConfig::default();
         sysconfig
             .name_servers()
             .iter()
             .for_each(|name_server| config.add_name_server(name_server.clone()));
 
         let mut builder =
-            TokioResolver::builder_with_config(config, TokioConnectionProvider::default());
+            TokioResolver::builder_with_config(config, TokioRuntimeProvider::default());
         *builder.options_mut() = options; // do we really need system opts, or resolver's default, or custom?
 
         Self {
-            resolver: Arc::new(builder.build()),
+            resolver: Arc::new(builder.build().unwrap()),
         }
     }
 
@@ -70,7 +71,7 @@ pub struct ResolverCache {
 }
 
 impl ResolverCache {
-    pub async fn lookup(&mut self, domain: &str) -> std::result::Result<IpAddr, ResolveError> {
+    pub async fn lookup(&mut self, domain: &str) -> std::result::Result<IpAddr, NetError> {
         let now = Instant::now();
         self.num_requests += 1;
 
@@ -94,16 +95,26 @@ impl ResolverCache {
         // These arms look the same, but in fact work with different types
         // lookup: hickory_resolver::lookup::{Ipv4Lookup, Ipv6Lookup}
         // record: hickory_proto::rr::rdata::{a::A, aaaa::AAAA}
-        let result: Result<(Vec<IpAddr>, Instant), ResolveError> = match self.ip_version {
+        let result: Result<(Vec<IpAddr>, Instant), NetError> = match self.ip_version {
             IpVersion::Ipv4 => self.resolver.ipv4_lookup(domain).await.map(|lookup| {
                 (
-                    lookup.iter().map(|record| record.0.into()).collect(),
+                    lookup
+                        .answers()
+                        .iter()
+                        .filter_map(|record| record.try_borrow::<A>())
+                        .map(|record| record.data().0.into())
+                        .collect(),
                     lookup.valid_until(),
                 )
             }),
             IpVersion::Ipv6 => self.resolver.ipv6_lookup(domain).await.map(|lookup| {
                 (
-                    lookup.iter().map(|record| record.0.into()).collect(),
+                    lookup
+                        .answers()
+                        .iter()
+                        .filter_map(|record| record.try_borrow::<AAAA>())
+                        .map(|record| record.data().0.into())
+                        .collect(),
                     lookup.valid_until(),
                 )
             }),
