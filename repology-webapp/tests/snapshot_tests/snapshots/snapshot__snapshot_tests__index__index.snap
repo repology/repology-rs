@@ -9,7 +9,7 @@ Header: content-security-policy: default-src 'none'; style-src 'self'; script-sr
 Header: x-frame-options: DENY
 Header: referrer-policy: unsafe-url
 Header: cache-control: max-age=3600
-Header: content-length: 15249
+Header: content-length: 15243
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -132,32 +132,32 @@ Header: content-length: 15249
 		<div class="row">
 			<div class="col-md-4">
 				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2026-04-23">2026-04-23</time>
+						API terms of service <a href="/news#2026-04-23">update</a></li>
 					<li><time class="news-summary-time" datetime="2025-06-10">2025-06-10</time>
 						added <a href="/repository/tincan">Tin Can Linux</a> repository</li>
 					<li><time class="news-summary-time" datetime="2025-05-22">2025-05-22</time>
 						started <a href="https://github.com/repology/repology-updater/issues/1499">removing</a> very old repositories</li>
-					<li><time class="news-summary-time" datetime="2025-04-25">2025-04-25</time>
-						added <a href="/repository/ptxdist">PTXdist</a> repository</li>
 				</ul>
 			</div>
 			<div class="col-md-4">
 				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2025-04-25">2025-04-25</time>
+						added <a href="/repository/ptxdist">PTXdist</a> repository</li>
 					<li><time class="news-summary-time" datetime="2025-04-14">2025-04-14</time>
 						added <a href="/repository/stalix">stal/IX</a> repository</li>
 					<li><time class="news-summary-time" datetime="2024-09-23">2024-09-23</time>
 						added <a href="/repository/openvsx">Open VSX</a> registry</li>
-					<li><time class="news-summary-time" datetime="2024-09-17">2024-09-17</time>
-						added <a href="/repository/tur">Termux User Repository</a></li>
 				</ul>
 			</div>
 			<div class="col-md-4">
 				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2024-09-17">2024-09-17</time>
+						added <a href="/repository/tur">Termux User Repository</a></li>
 					<li><time class="news-summary-time" datetime="2024-07-23">2024-07-23</time>
 						added <a href="/repository/opam">opam</a> repository</li>
 					<li><time class="news-summary-time" datetime="2024-07-18">2024-07-18</time>
 						added <a href="/repository/serpentos">Serpent OS</a> repository</li>
-					<li><time class="news-summary-time" datetime="2024-07-08">2024-07-08</time>
-						added <a href="/repository/chromebrew">Chromebrew</a> repository</li>
 				</ul>
 			</div>
 		</div>

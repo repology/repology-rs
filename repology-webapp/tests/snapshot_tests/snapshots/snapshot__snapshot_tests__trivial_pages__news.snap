@@ -9,7 +9,7 @@ Header: content-security-policy: default-src 'none'; style-src 'self'; script-sr
 Header: x-frame-options: DENY
 Header: referrer-policy: unsafe-url
 Header: cache-control: max-age=3600
-Header: content-length: 5671
+Header: content-length: 6752
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -70,6 +70,15 @@ Header: content-length: 5671
 
 
 <div class="container">
+
+<article>
+	<h3 id="2026-04-23">2026-04-23</h3>
+	<ul>
+		<li>Due to increased traffic from misbehaving API clients, the <a href="/api/v1">terms of service</a> have been updated: bulk clients are now required to provide a link to their source code repository with an accessible issue tracker.</li>
+		<li>Since there are a lot of clients which query nonexistent project names which look more like package names, we would like to remind you that there is a <a href="/api/v1">tool</a> which redirects package name requests to the corresponding project pages, including the API <code>project/</code> endpoint. Clients trying to query the API by local package names should use it, and the redirects do not count towards the API RPS limit.</li>
+		<li>Due to rising IPv4 address prices and the shortage thereof, and with the majority of Repology traffic being IPv6, we are planning the sunset of IPv4 services in the forthcoming years. A detailed sunset plan will be announced later; in the meantime, all site and API clients are advised to ensure IPv6 connectivity.</li>
+	</ul>
+</article>
 
 <article>
 	<h3 id="2025-06-10">2025-06-10</h3>

@@ -7,6 +7,15 @@
 <div class="container">
 
 <article>
+	<h3 id="2026-04-23">2026-04-23</h3>
+	<ul>
+		<li>Due to increased traffic from misbehaving API clients, the <a href="{{ crate::routes::Route::ApiV1.url_for().build()? }}">terms of service</a> have been updated: bulk clients are now required to provide a link to their source code repository with an accessible issue tracker.</li>
+		<li>Since there are a lot of clients which query nonexistent project names which look more like package names, we would like to remind you that there is a <a href="{{ crate::routes::Route::ApiV1.url_for().build()? }}">tool</a> which redirects package name requests to the corresponding project pages, including the API <code>project/</code> endpoint. Clients trying to query the API by local package names should use it, and the redirects do not count towards the API RPS limit.</li>
+		<li>Due to rising IPv4 address prices and the shortage thereof, and with the majority of Repology traffic being IPv6, we are planning the sunset of IPv4 services in the forthcoming years. A detailed sunset plan will be announced later; in the meantime, all site and API clients are advised to ensure IPv6 connectivity.</li>
+	</ul>
+</article>
+
+<article>
 	<h3 id="2025-06-10">2025-06-10</h3>
 	<ul>
 		<li>Added <a href="{{ crate::routes::Route::Repository.url_for().path_param("repository_name", "tincan")?.build()? }}">Tin Can Linux</a> repository.</li>

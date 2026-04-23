@@ -10,7 +10,7 @@
 
 <h3>Terms of use</h3>
 
-<p>Bulk requests to this API are discouraged, consider using a <a href="https://dumps.repology.org/README.txt">database dump</a>. Bulk clients must identify themselves with a custom <code>user-agent</code>, referring to a description of the client and a way to report misbehavior (such as GitHub repository with an issue tracker). Bulk clients must not do more than one request per second. Miscomplying clients will be blocked.</p>
+<p>Allowed request rate to the API is no more than 1 request per second. Bulk (more than 1000 requests per day) requests to the API are discouraged, consider using a <a href="https://dumps.repology.org/README.txt">database dump</a>. Bulk clients <strong>MUST</strong> identify themselves with a custom <code>User-Agent</code> header containing a link to their source code repository with an accessible issue tracker. Miscomplying clients will be blocked.</p>
 
 <h3>Introduction</h3>
 
@@ -66,6 +66,7 @@ Mandatory fields are <b>repo</b> and <b>version</b>, all other fields are option
 <pre>
 {{ crate::routes::Route::ApiV1Project.url_for().path_param("project_name", "firefox")?.build()? }}
 </pre>
+<p>Note that the key here is <em>repology project name</em>, NOT a repository <em>package name</em>. If you want to query projects by <em>package name</em>, consider using a <a href="{{ crate::routes::Route::ToolProjectBy.url_for().build()? }}">tool</a> which generates redirects to <em>project</em> pages given a repository <em>package name</em>. Note that these redirects do not count towards API RPS limit.</p>
 
 <h3>Multiple projects</h3>
 
