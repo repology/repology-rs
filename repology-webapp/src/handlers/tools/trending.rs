@@ -48,6 +48,7 @@ pub async fn trending(
 ) -> HandlerResult {
     // XXX: two queries take around 190ms, so this endpoint is a candidate
     // for in-state caching or executing both queries in parallel
+    // Or instead, merge these into single query
     let trending_projects: Vec<Project> = sqlx::query_as(indoc! {r#"
         SELECT
             effname AS project_name,
