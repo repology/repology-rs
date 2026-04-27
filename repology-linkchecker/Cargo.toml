@@ -22,7 +22,7 @@ metrics-process = { version = "2.4.3", features = ["use-gauge-on-cpu-seconds-tot
 rand = "0.10.0"
 repology-common = { path = "../repology-common" }
 reqwest = { version = "0.13.2" }
-rustls = { version = "0.23.37", default-features = false }
+rustls = { version = "0.23.39", default-features = false }
 rustls-webpki = { version = "0.103.12", default-features = false }
 serde = { version = "1.0.228", features = ["derive"] }
 sqlx = { version = "0.8.6", features = ["runtime-tokio", "postgres", "chrono"] }
