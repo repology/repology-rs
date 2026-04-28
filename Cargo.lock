@@ -2862,7 +2862,7 @@ dependencies = [
  "metrics-process",
  "rand 0.10.0",
  "repology-common",
- "reqwest 0.13.2",
+ "reqwest 0.13.3",
  "rustls",
  "rustls-webpki",
  "serde",
@@ -2895,7 +2895,7 @@ dependencies = [
  "rayon",
  "regex",
  "repology-common",
- "reqwest 0.13.2",
+ "reqwest 0.13.3",
  "serde",
  "serde-saphyr",
  "serde-xml-rs",
@@ -2925,7 +2925,7 @@ dependencies = [
  "metrics",
  "metrics-exporter-prometheus",
  "metrics-process",
- "reqwest 0.13.2",
+ "reqwest 0.13.3",
  "serde",
  "serde_json",
  "sqlx",
@@ -3044,9 +3044,9 @@ dependencies = [
 
 [[package]]
 name = "reqwest"
-version = "0.13.2"
+version = "0.13.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab3f43e3283ab1488b624b44b0e988d0acea0b3214e694730a055cb6b2efa801"
+checksum = "62e0021ea2c22aed41653bc7e1419abb2c97e038ff2c33d0e1309e49a97deec0"
 dependencies = [
  "base64",
  "bytes",
