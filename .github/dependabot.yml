@@ -10,8 +10,7 @@ updates:
     commit-message:
       prefix: cargo
     cooldown:
-      default-days: 14
-      semver-patch-days: 0
+      default-days: 7
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
