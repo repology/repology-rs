@@ -38,7 +38,7 @@ tokio = { version = "1.50.0", features = ["macros", "rt-multi-thread"] }
 toml = { version = "1.1.2", default-features = false, features = ["std", "serde", "parse"] }
 tower-cookies = "0.11.0"
 tracing = "0.1.44"
-tracing-appender = "0.2.4"
+tracing-appender = "0.2.5"
 tracing-loki = { version = "0.2.6", default-features = false, features = ["compat-0-2-1"] }
 tracing-subscriber = { version = "0.3.22", features = ["chrono", "env-filter"] }
 ttf-parser = "0.25.1"
