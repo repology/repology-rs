@@ -14,7 +14,7 @@ axum = { version = "0.8.8", features = ["macros"] }
 axum-myroutes = { version = "0.2.2", default-features = false }
 chrono = { version = "0.4.44", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
-clap = { version = "4.6.0", features = ["derive"] }
+clap = { version = "4.6.1", features = ["derive"] }
 flate2 = "1.1.9"
 include_dir = { version = "0.7.4", features = ["glob"] }
 indexmap = "2.13.0"
