@@ -12,7 +12,7 @@ anyhow = "1.0.102"
 axum = { version = "0.8.8", features = ["macros"] }
 axum-htmx = "0.8.1"
 chrono = { version = "0.4.44", features = ["std", "now", "serde"], default-features = false }
-clap = { version = "4.6.0", features = ["derive"] }
+clap = { version = "4.6.1", features = ["derive"] }
 indoc = "2.0.7"
 maud = { version = "0.27.0", features = ["axum"] }
 metrics = "0.24.3"
