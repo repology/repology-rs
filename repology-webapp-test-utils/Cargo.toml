@@ -27,4 +27,4 @@ tower-service = "0.3.3"
 
 [dev-dependencies]
 insta = "1.46.3"
-tokio = "1.50.0"
+tokio = "1.52.1"
