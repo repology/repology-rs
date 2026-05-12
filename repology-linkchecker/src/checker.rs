@@ -372,6 +372,8 @@ impl<'a> Checker<'a> {
 
                 if self.disable_ipv4 {
                     ipv4_status = LinkStatus::ProtocolDisabled.into();
+                } else if host_settings.disable_ipv4 {
+                    ipv4_status = LinkStatus::ProtocolDisabledForHost.into();
                 } else if skip_ipv4 {
                     ipv4_status = LinkStatus::SatisfiedWithIpv6Success.into();
                 } else {

@@ -171,6 +171,7 @@ struct HostSettingsPatch {
     aggregate: Option<bool>,
     blacklist: Option<bool>,
     hijacked: Option<bool>,
+    disable_ipv4: Option<bool>,
     disable_ipv6: Option<bool>,
     disable_head: Option<bool>,
     monitor: Option<bool>,
@@ -192,6 +193,7 @@ impl HostSettingsPatch {
                     && self.aggregate.is_none()
                     && self.blacklist.is_none()
                     && self.hijacked.is_none()
+                    && self.disable_ipv4.is_none()
                     && self.disable_ipv6.is_none()
                     && self.disable_head.is_none()
                     && self.monitor.is_none()
@@ -228,6 +230,7 @@ impl HostSettings {
         self.aggregate = patch.aggregate.unwrap_or(self.aggregate);
         self.blacklist = patch.blacklist.unwrap_or(self.blacklist);
         self.hijacked = patch.hijacked.unwrap_or(self.hijacked);
+        self.disable_ipv4 = patch.disable_ipv4.unwrap_or(self.disable_ipv4);
         self.disable_ipv6 = patch.disable_ipv6.unwrap_or(self.disable_ipv6);
         self.disable_head = patch.disable_head.unwrap_or(self.disable_head);
         self.monitor = patch.monitor.unwrap_or(self.monitor);
