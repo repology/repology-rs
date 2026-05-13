@@ -13,7 +13,7 @@ async-trait = "0.1.89"
 chrono = { version = "0.4.44", default-features = false, features = ["now"] }
 clap = { version = "4.6.1", features = ["derive"] }
 indoc = "2.0.7"
-metrics = "0.24.3"
+metrics = "0.24.5"
 metrics-exporter-prometheus = { version = "0.18.1", default-features = false, features = ["http-listener"] }
 metrics-process = { version = "2.4.3", features = ["use-gauge-on-cpu-seconds-total"] }
 reqwest = { version = "0.13.2", features = ["stream"] }
