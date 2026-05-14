@@ -6,6 +6,7 @@
 "artixlinux.org".aggregate = true
 "artixlinux.org".delay = 60
 "artixlinux.org".generated_sampling_percentage = 10
+"artixlinux.org".timeout = 5                # broken, 60+ sec checks
 "aur.archlinux.org".disable_head = true
 "aur.archlinux.org".generated_sampling_percentage = 10
 "aur.archlinux.org".monitor = true
