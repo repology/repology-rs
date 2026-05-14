@@ -20,7 +20,7 @@ reqwest = { version = "0.13.2", features = ["stream"] }
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
 sqlx = { version = "0.8.6", features = ["postgres", "chrono", "runtime-tokio"] }
-tokio = { version = "1.52.1", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.52.2", features = ["macros", "rt-multi-thread"] }
 tracing = "0.1.44"
 tracing-appender = "0.2.5"
 tracing-loki = { version = "0.2.6", default-features = false, features = ["compat-0-2-1"] }
