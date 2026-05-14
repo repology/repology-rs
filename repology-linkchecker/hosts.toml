@@ -32,6 +32,8 @@
 "files.pythonhosted.org".monitor = true
 "files.pythonhosted.org".recheck_generated = 30
 "files.pythonhosted.org".recheck_manual = 30
+"freshports.org".aggregate = true
+"freshports.org".generated_sampling_percentage = 10
 "git.alpinelinux.org".generated_sampling_percentage = 10
 "git.pld-linux.org".generated_sampling_percentage = 10
 "git.pld-linux.org".timeout = 5             # constant timeouts
@@ -47,8 +49,11 @@
 "githubusercontent.com".is = "github.com"
 "gitlab.com".delay = 1
 "gitlab.com".monitor = true
+"gitweb.gentoo.org".generated_sampling_percentage = 10
 "hydra.nixos.org".generated_sampling_percentage = 1
 "kojipkgs.fedoraproject.org".generated_sampling_percentage = 10
+"launchpad.net".aggregate = true
+"launchpad.net".generated_sampling_percentage = 10
 "lib.rs".disable_head = true                # https://gitlab.com/lib.rs/main/-/issues/209
 "madoguchi.fyralabs.com".delay = 5          # 429s @ 3 sec
 "madoguchi.fyralabs.com".monitor = true
@@ -61,6 +66,7 @@
 "npmjs.org".delay = 10
 "packages.altlinux.org".generated_sampling_percentage = 10
 "packages.debian.org".generated_sampling_percentage = 10
+"packages.guix.gnu.org".generated_sampling_percentage = 10
 "packages.guix.gnu.org".timeout = 5         # constant timeouts
 "packages.msys2.org".disable_head = true
 "packages.ubuntu.com".generated_sampling_percentage = 10
