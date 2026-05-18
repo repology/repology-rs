@@ -87,6 +87,7 @@
 "sources.debian.org".generated_sampling_percentage = 10
 "src.fedoraproject.org".generated_sampling_percentage = 1
 "static.crates.io".skip = false             # exclude this host from crates.io skip rule above
+"svn.savannah.gnu.org".delay = 60           # 429s (or 503 in fact)
 
 # Special blacklisted cases
 "accounts.google.com".blacklist = true      # 302 redirect from dead sites.google.com
