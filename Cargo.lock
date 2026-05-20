@@ -1949,9 +1949,9 @@ dependencies = [
 
 [[package]]
 name = "libversion"
-version = "0.3.1"
+version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8407ff73cf44200c0bd56feda8766d7d1c01a98ff17af170a28565428d2142e0"
+checksum = "405c304b0e2dc36a3b1d5e110d1417a73ca6f63d87ba08ef850c7f6b54d61a55"
 dependencies = [
  "bitflags",
 ]
