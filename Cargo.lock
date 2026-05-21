@@ -4364,9 +4364,9 @@ dependencies = [
 
 [[package]]
 name = "tracing-loki"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba3beec919fbdf99d719de8eda6adae3281f8a5b71ae40431f44dc7423053d34"
+checksum = "a8d1ad78bf74c1790b0825ddc35ad1bb9498736c51c8437796b81cadf4916cd8"
 dependencies = [
  "loki-api",
  "reqwest 0.12.28",
@@ -4374,7 +4374,6 @@ dependencies = [
  "serde_json",
  "snap",
  "tokio",
- "tokio-stream",
  "tracing",
  "tracing-core",
  "tracing-log",
