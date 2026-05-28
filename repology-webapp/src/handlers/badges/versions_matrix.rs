@@ -226,8 +226,8 @@ pub async fn badge_versions_matrix(
                 .get(project_name)
                 .and_then(|per_repository| per_repository.get(&repository_data.name))
             {
-                let extra_status = Some(SpecialVersionStatus::LowerThanUserGivenThreshold)
-                    .filter(|_| !version_restriction.is_passing(&package_version(package)));
+                let extra_status = (!version_restriction.is_passing(&package_version(package)))
+                    .then_some(SpecialVersionStatus::LowerThanUserGivenThreshold);
                 let color = badge_color_for_package_status(package.status, extra_status);
 
                 row.push(
