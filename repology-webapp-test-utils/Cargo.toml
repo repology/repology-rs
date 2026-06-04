@@ -12,7 +12,7 @@ axum = { version = "0.8.8" }
 bitflags = "2.11.0"
 bytes = "1.11.1"
 cityhasher = "0.1.0"
-http = "1.4.0"
+http = "1.4.1"
 ip_network = "0.4.1"
 repology-webapp = { path = "../repology-webapp" }
 serde = "1.0.228"
