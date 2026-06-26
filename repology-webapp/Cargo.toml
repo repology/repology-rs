@@ -12,7 +12,7 @@ anyhow = "1.0.102"
 askama = "0.16.0"
 axum = { version = "0.8.8", features = ["macros"] }
 axum-myroutes = { version = "0.2.2", default-features = false }
-chrono = { version = "0.4.44", default-features = false, features = ["std", "now"] }
+chrono = { version = "0.4.45", default-features = false, features = ["std", "now"] }
 cityhasher = "0.1.0"
 clap = { version = "4.6.1", features = ["derive"] }
 flate2 = "1.1.9"
@@ -40,16 +40,16 @@ tower-cookies = "0.11.0"
 tracing = "0.1.44"
 tracing-appender = "0.2.5"
 tracing-loki = { version = "0.2.7", default-features = false, features = ["compat-0-2-1"] }
-tracing-subscriber = { version = "0.3.22", features = ["chrono", "env-filter"] }
+tracing-subscriber = { version = "0.3.23", features = ["chrono", "env-filter"] }
 ttf-parser = "0.25.1"
 url = { version = "2.5.8", features = ["serde"] }
 url-escape = "0.1.1"
 
 [dev-dependencies]
 float-cmp = "0.10.0"
-http = "1.4.1"
-insta = { version = "1.46.3", features = ["json"] }
+http = "1.4.2"
+insta = { version = "1.48.0", features = ["json"] }
 pretty_assertions = "1.4.1"
-regex = "1.12.3"
+regex = "1.12.4"
 repology-webapp-test-utils = { path = "../repology-webapp-test-utils" }
 tower-service = "0.3.3"
