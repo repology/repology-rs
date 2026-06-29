@@ -4,17 +4,17 @@ on:
   pull_request:
   schedule:
     - cron: "0 0 * * 1"
+env:
+  POSTGRESQL: 16
+  RUST: nightly-2026-05-27
 jobs:
   test:
-    env:
-      POSTGRESQL: 16
     runs-on: ubuntu-latest
-    name: ${{ matrix.name }}
     steps:
       - uses: actions/checkout@v7
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly-2026-05-27
+          toolchain: ${{ env.RUST }}
           components: rustfmt,clippy
       - uses: taiki-e/install-action@cargo-hack
       - uses: Swatinem/rust-cache@v2
@@ -31,15 +31,50 @@ jobs:
         run: |
           sudo sh -c "echo 'host all all samehost trust' > /etc/postgresql/$POSTGRESQL/main/pg_hba.conf"
           sudo pg_ctlcluster $POSTGRESQL main restart
-      - name: Format check
-        run: cargo fmt --check
-      - name: Clippy check
-        run: cargo clippy --all-targets
-      - name: Build as workspace
-        run: cargo build
-      - name: Build as individual crates
-        run: cargo hack --workspace build
       - name: Test
         run: cargo test
         env:
           DATABASE_URL: postgres://postgres@localhost:5432/
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST }}
+          components: rustfmt,clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/master' }}
+          cache-bin: "false"
+      - name: Format check
+        run: cargo fmt --check
+      - name: Clippy check
+        run: cargo clippy --all-targets
+  build-workspace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/master' }}
+          cache-bin: "false"
+      - name: Build as workspace
+        run: cargo build
+  build-crates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ env.RUST }}
+      - uses: taiki-e/install-action@cargo-hack
+      - uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/master' }}
+          cache-bin: "false"
+      - name: Build as individual crates
+        run: cargo hack --workspace build
