@@ -9,7 +9,7 @@ Header: content-security-policy: default-src 'none'; style-src 'self'; script-sr
 Header: x-frame-options: DENY
 Header: referrer-policy: unsafe-url
 Header: cache-control: max-age=3600
-Header: content-length: 6752
+Header: content-length: 7116
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -70,6 +70,13 @@ Header: content-length: 6752
 
 
 <div class="container">
+
+<article>
+	<h3 id="2026-07-20">2026-07-20</h3>
+	<ul>
+		<li>Introducing <a href="https://wiyci.org/">wiyci</a> (The World Is Your CI), a sister project dedicated to package build log parsing. It extracts compiler warnings, failed tests and other useful artifacts, and presents them in a form similar to that of Continuous Integration tools.</li>
+	</ul>
+</article>
 
 <article>
 	<h3 id="2026-04-23">2026-04-23</h3>
