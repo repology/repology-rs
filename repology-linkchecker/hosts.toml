@@ -55,6 +55,7 @@
 "launchpad.net".aggregate = true
 "launchpad.net".generated_sampling_percentage = 10
 "lib.rs".disable_head = true                # https://gitlab.com/lib.rs/main/-/issues/209
+"madb.mageialinux-online.org".generated_sampling_percentage = 10 # https://github.com/repology/repology-updater/pull/1613
 "madoguchi.fyralabs.com".delay = 5          # 429s @ 3 sec
 "madoguchi.fyralabs.com".monitor = true
 "marketplace.visualstudio.com".disable_head = true
