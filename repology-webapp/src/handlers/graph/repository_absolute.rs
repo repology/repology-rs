@@ -29,7 +29,7 @@ async fn graph_generic(
         return Ok((StatusCode::NOT_FOUND, "repository not found".to_owned()).into_response());
     }
 
-    let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(&format!(
+    let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(sqlx::AssertSqlSafe(format!(
         indoc! {r#"
             SELECT * FROM (
                 (
@@ -53,7 +53,7 @@ async fn graph_generic(
             ) WHERE value IS NOT NULL
         "#},
         field_name
-    ))
+    )))
     .bind(repository_name)
     .bind(GRAPH_PERIOD)
     .fetch_all(&state.pool)

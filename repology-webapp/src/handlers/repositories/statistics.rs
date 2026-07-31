@@ -82,7 +82,7 @@ pub async fn repositories_statistics_generic(
         _ => ("sortname", "name"),
     };
 
-    let repositories: Vec<Repository> = sqlx::query_as(&format!(
+    let repositories: Vec<Repository> = sqlx::query_as(sqlx::AssertSqlSafe(format!(
         indoc! {r#"
             SELECT
                 name,
@@ -102,7 +102,7 @@ pub async fn repositories_statistics_generic(
             ORDER BY {}
         "#},
         order
-    ))
+    )))
     .fetch_all(&state.pool)
     .await?;
 

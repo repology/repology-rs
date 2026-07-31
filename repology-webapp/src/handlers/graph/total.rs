@@ -17,7 +17,7 @@ use crate::state::AppState;
 use super::common::GRAPH_PERIOD;
 
 async fn graph_generic(pool: &PgPool, field_name: &str, stroke: &str) -> HandlerResult {
-    let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(&format!(
+    let points: Vec<(DateTime<Utc>, f32)> = sqlx::query_as(sqlx::AssertSqlSafe(format!(
         indoc! {r#"
             SELECT * FROM (
                 (
@@ -41,7 +41,7 @@ async fn graph_generic(pool: &PgPool, field_name: &str, stroke: &str) -> Handler
             ) WHERE value IS NOT NULL
         "#},
         field_name
-    ))
+    )))
     .bind(GRAPH_PERIOD)
     .fetch_all(pool)
     .await?;

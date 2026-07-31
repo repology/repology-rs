@@ -193,7 +193,7 @@ pub async fn query_listing_projects(
         }
     }
 
-    Ok(sqlx::query_as(&formatdoc! {"
+    Ok(sqlx::query_as(sqlx::AssertSqlSafe(formatdoc! {"
         SELECT * FROM (
             SELECT
                 effname,
@@ -208,7 +208,7 @@ pub async fn query_listing_projects(
             LIMIT $21
         ) AS tmp
         ORDER BY effname
-    ", query_conditions.finish()})
+    ", query_conditions.finish()}))
     .bind(filter.start_project_name) // $1
     .bind(filter.end_project_name) // $2
     .bind(filter.project_name_substring) // $3
