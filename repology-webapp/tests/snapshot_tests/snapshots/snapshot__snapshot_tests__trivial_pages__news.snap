@@ -9,7 +9,7 @@ Header: content-security-policy: default-src 'none'; style-src 'self'; script-sr
 Header: x-frame-options: DENY
 Header: referrer-policy: unsafe-url
 Header: cache-control: max-age=3600
-Header: content-length: 7116
+Header: content-length: 7125
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -74,7 +74,7 @@ Header: content-length: 7116
 <article>
 	<h3 id="2026-07-20">2026-07-20</h3>
 	<ul>
-		<li>Introducing <a href="https://wiyci.org/">wiyci</a> (The World Is Your CI), a sister project dedicated to package build log parsing. It extracts compiler warnings, failed tests and other useful artifacts, and presents them in a form similar to that of Continuous Integration tools.</li>
+		<li>Introducing <a href="https://wiyci.repology.org/">wiyci</a> (The World Is Your CI), a sister project dedicated to package build log parsing. It extracts compiler warnings, failed tests and other useful artifacts, and presents them in a form similar to that of Continuous Integration tools.</li>
 	</ul>
 </article>
 
