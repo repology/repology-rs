@@ -54,6 +54,18 @@ async fn test_search(pool: PgPool) {
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
+async fn test_search_case_insensitive(pool: PgPool) {
+    let response = Request::new(pool, "/maintainers/?search=CTIV").perform().await;
+    assert_eq!(response.status(), http::StatusCode::OK);
+    assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
+    assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
+    assert!(response.text().unwrap().contains("active@example.com"));
+    assert!(!response.text().unwrap().contains("fallback-mnt-foo@repology"));
+    assert!(!response.text().unwrap().contains("no-vuln-column@example.com"));
+    assert!(response.text().unwrap().contains("FreeBSD"));
+}
+
+#[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_search_nomatch(pool: PgPool) {
     let response = Request::new(pool, "/maintainers/?search=nonononono").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
