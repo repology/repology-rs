@@ -6,7 +6,7 @@ on:
     - cron: "0 0 * * 1"
 env:
   POSTGRESQL: 16
-  RUST: nightly-2026-07-30
+  RUST: nightly-2026-08-12
 jobs:
   test:
     runs-on: ubuntu-latest
