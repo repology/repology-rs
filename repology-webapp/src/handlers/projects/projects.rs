@@ -75,8 +75,8 @@ impl QueryParams {
         let families_newest_range = Self::parse_range(&self.families_newest);
 
         ProjectsFilter {
-            project_name_substring: Some(self.search.as_str()).filter(|s| !s.is_empty()),
-            maintainer: Some(self.maintainer.as_str()).filter(|s| !s.is_empty()),
+            project_name_substring: Some(self.search.trim()).filter(|s| !s.is_empty()),
+            maintainer: Some(self.maintainer.trim()).filter(|s| !s.is_empty()),
             in_repo: Some(self.inrepo.as_str()).filter(|s| !s.is_empty()),
             not_in_repo: Some(self.notinrepo.as_str()).filter(|s| !s.is_empty()),
             min_repositories: repositories_range.0,
@@ -87,7 +87,7 @@ impl QueryParams {
             max_repositories_newest: repositories_newest_range.1,
             min_families_newest: families_newest_range.0,
             max_families_newest: families_newest_range.1,
-            category: Some(self.category.as_str()).filter(|s| !s.is_empty()),
+            category: Some(self.category.as_str().trim()).filter(|s| !s.is_empty()),
             require_newest: self.newest,
             require_outdated: self.outdated,
             require_problematic: self.problematic,

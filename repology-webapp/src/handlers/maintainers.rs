@@ -146,7 +146,7 @@ async fn maintainers_generic(
     "})
     .bind(start_maintainer_name)
     .bind(end_maintainer_name)
-    .bind(Some(&query.search.to_lowercase()).filter(|search| !search.is_empty()))
+    .bind(Some(query.search.to_lowercase().trim()).filter(|search| !search.is_empty()))
     .bind(crate::constants::MAINTAINERS_PER_PAGE as i32)
     .fetch_all(&state.pool)
     .await?;

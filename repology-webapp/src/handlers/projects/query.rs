@@ -212,7 +212,7 @@ pub async fn query_listing_projects(
     .bind(filter.start_project_name) // $1
     .bind(filter.end_project_name) // $2
     .bind(filter.project_name_substring) // $3
-    .bind(filter.maintainer) // $4
+    .bind(filter.maintainer.map(str::to_lowercase)) // $4
     .bind(filter.in_repo) // $5
     .bind(filter.not_in_repo) // $6
     .bind(filter.min_repositories) // $7
