@@ -121,7 +121,7 @@ async fn test_search_b(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "projects_data"))]
 async fn test_search_query_normalization(pool: PgPool) {
-    let response = Request::new(pool.clone(), "/projects/?search=%20bar%20").perform().await;
+    let response = Request::new(pool.clone(), "/projects/?search=+bar+").perform().await;
     assert!(response.text().unwrap().contains("pkg_barbar_"));
 }
 

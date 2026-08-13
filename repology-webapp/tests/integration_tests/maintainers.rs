@@ -55,7 +55,7 @@ async fn test_search(pool: PgPool) {
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "maintainer_data"))]
 async fn test_search_query_normalization(pool: PgPool) {
-    let response = Request::new(pool, "/maintainers/?search=%20CTIV%20").perform().await;
+    let response = Request::new(pool, "/maintainers/?search=+CTIV+").perform().await;
     assert_eq!(response.status(), http::StatusCode::OK);
     assert_eq!(response.header_value_str("content-type").unwrap(), Some("text/html"));
     assert!(response.is_html_valid(HtmlValidationFlags::ALLOW_EMPTY_TAGS | HtmlValidationFlags::WARNINGS_ARE_FATAL));
