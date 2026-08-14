@@ -9,7 +9,7 @@ Header: content-security-policy: default-src 'none'; style-src 'self'; script-sr
 Header: x-frame-options: DENY
 Header: referrer-policy: unsafe-url
 Header: cache-control: max-age=3600
-Header: content-length: 15258
+Header: content-length: 15273
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -132,32 +132,32 @@ Header: content-length: 15258
 		<div class="row">
 			<div class="col-md-4">
 				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2026-08-14">2026-08-14</time>
+						added <a href="/repository/aerynos">aerynOS</a> repository</li>
 					<li><time class="news-summary-time" datetime="2026-07-20">2026-07-20</time>
 						sister <a href="https://wiyci.repology.org/">project</a> related to build logs</li>
 					<li><time class="news-summary-time" datetime="2026-04-23">2026-04-23</time>
 						API terms of service <a href="/news#2026-04-23">update</a></li>
-					<li><time class="news-summary-time" datetime="2025-06-10">2025-06-10</time>
-						added <a href="/repository/tincan">Tin Can Linux</a> repository</li>
 				</ul>
 			</div>
 			<div class="col-md-4">
 				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2025-06-10">2025-06-10</time>
+						added <a href="/repository/tincan">Tin Can Linux</a> repository</li>
 					<li><time class="news-summary-time" datetime="2025-05-22">2025-05-22</time>
 						started <a href="https://github.com/repology/repology-updater/issues/1499">removing</a> very old repositories</li>
 					<li><time class="news-summary-time" datetime="2025-04-25">2025-04-25</time>
 						added <a href="/repository/ptxdist">PTXdist</a> repository</li>
-					<li><time class="news-summary-time" datetime="2025-04-14">2025-04-14</time>
-						added <a href="/repository/stalix">stal/IX</a> repository</li>
 				</ul>
 			</div>
 			<div class="col-md-4">
 				<ul class="list-unstyled">
+					<li><time class="news-summary-time" datetime="2025-04-14">2025-04-14</time>
+						added <a href="/repository/stalix">stal/IX</a> repository</li>
 					<li><time class="news-summary-time" datetime="2024-09-23">2024-09-23</time>
 						added <a href="/repository/openvsx">Open VSX</a> registry</li>
 					<li><time class="news-summary-time" datetime="2024-09-17">2024-09-17</time>
 						added <a href="/repository/tur">Termux User Repository</a></li>
-					<li><time class="news-summary-time" datetime="2024-07-23">2024-07-23</time>
-						added <a href="/repository/opam">opam</a> repository</li>
 				</ul>
 			</div>
 		</div>
@@ -348,7 +348,7 @@ Header: content-length: 15258
 		</p>
 
 		<ul>
-	<li><b>Linux repositories:</b> Adélie, AlmaLinux, Alpine, ALT, Antergos, Amazon Linux, antiX, AOSC, Apertis, Arch and AUR, Artix, Ataraxia, BlackArch, Calculate, Carbs, CentOS, Chakra, Chimera, CRUX, Debian, Deepin, Devuan, Distri, ELRepo, Endless OS, Entware-ng, EPEL, Exherbo, Fedora, Funtoo, Gentoo, glaucus, Guix, GoboLinux, Hyperbola, KaOS, KISS, Kwort, LEDE, LiGurOS, Linuxbrew, Maemo, Mageia, Manjaro, Mer Project, Mint, MX Linux, Nix, NOIR, openEuler, openmamba, OpenMandriva, openSUSE, OpenWrt, Parabola, Pardus, Parrot, PCLinuxOS, Pisi, PLD Linux, PTXdist, PureOS, Raspbian, RebornOS, Rocky Linux, Rosa, Sabayon, Salix, Serpent OS, Siduction, SlackBuilds, Slackware, SliTaz, Software Collections, Solus, SparkyLinux, stal/IX, T2 SDE, Tails, Tin Can Linux, Trisquel, UBI, Ubuntu, Void, Whonix, yiffOS</li>
+	<li><b>Linux repositories:</b> Adélie, aerynOS, AlmaLinux, Alpine, ALT, Antergos, Amazon Linux, antiX, AOSC, Apertis, Arch and AUR, Artix, Ataraxia, BlackArch, Calculate, Carbs, CentOS, Chakra, Chimera, CRUX, Debian, Deepin, Devuan, Distri, ELRepo, Endless OS, Entware-ng, EPEL, Exherbo, Fedora, Funtoo, Gentoo, glaucus, Guix, GoboLinux, Hyperbola, KaOS, KISS, Kwort, LEDE, LiGurOS, Linuxbrew, Maemo, Mageia, Manjaro, Mer Project, Mint, MX Linux, Nix, NOIR, openEuler, openmamba, OpenMandriva, openSUSE, OpenWrt, Parabola, Pardus, Parrot, PCLinuxOS, Pisi, PLD Linux, PTXdist, PureOS, Raspbian, RebornOS, Rocky Linux, Rosa, Sabayon, Salix, Serpent OS, Siduction, SlackBuilds, Slackware, SliTaz, Software Collections, Solus, SparkyLinux, stal/IX, T2 SDE, Tails, Tin Can Linux, Trisquel, UBI, Ubuntu, Void, Whonix, yiffOS</li>
 	<li><b>*BSD repositories:</b> DragonFly DPorts, FreeBSD ports, MidnightBSD Mports, OpenBSD packages, pkgsrc, Ravenports</li>
 	<li><b>Third party repositories:</b> BioArch, Buildroot, Chromebrew, Deb Multimedia, Debian Janitor, Gentoo overlays, GetDeb/Playdeb, KDE neon, MPR, OpenPKG, openSUSE additional repositories, PackMan, pacstall, RPM Fusion, RPM Sphere, SageMath, Spack, Terra, UnitedRPMs, WakeMeOps</li>
 	<li><b>Other *nix repositories:</b> AIX Open Source Packages, AIX Toolbox, HaikuPorts, Homebrew, HP-UX, IBM i, OpenIndiana, MacPorts, postmarketOS, Rudix</li>
