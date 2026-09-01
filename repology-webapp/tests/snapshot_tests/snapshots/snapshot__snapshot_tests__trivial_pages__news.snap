@@ -9,7 +9,7 @@ Header: content-security-policy: default-src 'none'; style-src 'self'; script-sr
 Header: x-frame-options: DENY
 Header: referrer-policy: unsafe-url
 Header: cache-control: max-age=3600
-Header: content-length: 7407
+Header: content-length: 7408
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -74,7 +74,7 @@ Header: content-length: 7407
 <article>
 	<h3 id="2026-08-31">2026-08-31</h3>
 	<ul>
-		<li>Added <a href="/repository/serenityos">SernityOS</a> repository.</li>
+		<li>Added <a href="/repository/serenityos">SerenityOS</a> repository.</li>
 	</ul>
 </article>
 
