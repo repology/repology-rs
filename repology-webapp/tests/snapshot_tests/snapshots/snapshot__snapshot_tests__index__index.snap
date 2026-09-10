@@ -133,7 +133,7 @@ Header: content-length: 15323
 			<div class="col-md-4">
 				<ul class="list-unstyled">
 					<li><time class="news-summary-time" datetime="2026-09-10">2026-09-10</time>
-						added <a href="/repository/vylen">Vulen Linux</a> repository</li>
+						added <a href="/repository/vylen">Vylen Linux</a> repository</li>
 					<li><time class="news-summary-time" datetime="2026-09-05">2026-09-05</time>
 						added <a href="/repository/xrepo">xrepo</a> repository</li>
 					<li><time class="news-summary-time" datetime="2026-09-02">2026-09-02</time>
