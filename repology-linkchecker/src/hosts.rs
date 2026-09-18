@@ -8,47 +8,24 @@ use serde::Deserialize;
 
 use crate::checker::CheckPriority;
 
-#[derive(Deserialize, Debug, Clone)]
+#[derive(Deserialize, Debug, Default, Clone)]
 pub struct HostSettings {
-    pub delay: Duration,
-    pub timeout: Duration,
-    pub recheck_manual: Duration,
-    pub recheck_generated: Duration,
-    pub recheck_unsampled: Duration,
-    pub recheck_splay: f32,
-    pub skip: bool,
-    pub aggregate: bool,
-    pub blacklist: bool,
-    pub hijacked: bool,
-    pub disable_ipv4: bool,
-    pub disable_ipv6: bool,
-    pub disable_head: bool,
-    pub monitor: bool,
-    pub generated_sampling_percentage: u8,
-    pub is: Option<String>,
-}
-
-impl Default for HostSettings {
-    fn default() -> Self {
-        Self {
-            delay: Duration::from_secs(3),
-            timeout: Duration::from_secs(10),
-            recheck_manual: Duration::from_days(7),
-            recheck_generated: Duration::from_days(14),
-            recheck_unsampled: Duration::from_days(60),
-            recheck_splay: 1.0,
-            skip: false,
-            aggregate: false,
-            blacklist: false,
-            hijacked: false,
-            disable_ipv4: false,
-            disable_ipv6: false,
-            disable_head: false,
-            monitor: false,
-            generated_sampling_percentage: 100,
-            is: None,
-        }
-    }
+    pub delay: Duration = Duration::from_secs(3),
+    pub timeout: Duration = Duration::from_secs(10),
+    pub recheck_manual: Duration = Duration::from_days(7),
+    pub recheck_generated: Duration = Duration::from_days(14),
+    pub recheck_unsampled: Duration = Duration::from_days(60),
+    pub recheck_splay: f32 = 1.0,
+    pub skip: bool = false,
+    pub aggregate: bool = false,
+    pub blacklist: bool = false,
+    pub hijacked: bool = false,
+    pub disable_ipv4: bool = false,
+    pub disable_ipv6: bool = false,
+    pub disable_head: bool = false,
+    pub monitor: bool = false,
+    pub generated_sampling_percentage: u8 = 100,
+    pub is: Option<String> = None,
 }
 
 #[derive(Clone, Copy, PartialEq, Eq)]

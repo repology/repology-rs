@@ -1,10 +1,11 @@
 // SPDX-FileCopyrightText: Copyright 2025 Dmitry Marakasov <amdmi3@amdmi3.ru>
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#![feature(duration_constructors)]
 #![feature(coverage_attribute)]
-#![feature(option_reduce)]
+#![feature(default_field_values)]
+#![feature(duration_constructors)]
 #![feature(ip)]
+#![feature(option_reduce)]
 
 mod checker;
 mod config;
