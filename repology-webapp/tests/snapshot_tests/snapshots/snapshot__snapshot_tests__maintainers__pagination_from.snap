@@ -9,7 +9,7 @@ Header: content-security-policy: default-src 'none'; style-src 'self'; script-sr
 Header: x-frame-options: DENY
 Header: referrer-policy: unsafe-url
 Header: cache-control: max-age=3600
-Header: content-length: 4446
+Header: content-length: 4756
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -30,6 +30,14 @@ Header: content-length: 4446
 	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
 </head>
 <body>
+
+
+<div class="site-alert-outer">
+	<div class="container site-alert-inner">
+		<p>Due to problems with domain registrar, Repology is temporary available at <a href="https://repology.amdmi3.ru/">repology.amdmi3.ru</a>. This location will be discontinued as soon as original domain is restored.<p>
+	</div>
+</div>
+
 
 <nav class="navbar navbar-default navbar-static-top">
 	<div class="container">
