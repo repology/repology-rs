@@ -24,26 +24,14 @@ use crate::utils::transact_dir;
 const STATE_FILE_NAME: &str = "state";
 const METADATA_FILE_NAME: &str = "metadata.json";
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Default)]
 #[serde(default)]
 pub struct FileFetcherOptions {
-    pub url: String,
-    pub compression: Option<Compression>,
-    pub timeout: Duration,
-    pub allow_zero_size: bool,
-    pub cache_buster: Option<String>,
-}
-
-impl Default for FileFetcherOptions {
-    fn default() -> Self {
-        Self {
-            url: String::new(),
-            compression: None,
-            timeout: Duration::from_mins(1),
-            allow_zero_size: true,
-            cache_buster: None,
-        }
-    }
+    pub url: String = String::new(),
+    pub compression: Option<Compression> = None,
+    pub timeout: Duration = Duration::from_mins(1),
+    pub allow_zero_size: bool = true,
+    pub cache_buster: Option<String> = None,
 }
 
 pub struct FileFetcher {

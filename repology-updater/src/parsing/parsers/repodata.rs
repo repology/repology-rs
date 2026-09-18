@@ -102,24 +102,13 @@ mod data {
     }
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Debug, Default)]
 #[serde(default)]
 pub struct RepodataParserOptions {
-    pub allow_src: bool,
-    pub allow_bin: bool,
-    pub disttags: Vec<String>,
-    pub binnames_from_provides: bool,
-}
-
-impl Default for RepodataParserOptions {
-    fn default() -> Self {
-        Self {
-            allow_src: true,
-            allow_bin: true,
-            disttags: vec![],
-            binnames_from_provides: true,
-        }
-    }
+    pub allow_src: bool = true,
+    pub allow_bin: bool = true,
+    pub disttags: Vec<String> = vec![],
+    pub binnames_from_provides: bool = true,
 }
 
 #[derive(Default)]
