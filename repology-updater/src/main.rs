@@ -10,7 +10,6 @@
 #![feature(iter_intersperse)]
 #![feature(test)]
 #![feature(trait_alias)]
-#![feature(trim_prefix_suffix)]
 
 mod config;
 mod fetching;
