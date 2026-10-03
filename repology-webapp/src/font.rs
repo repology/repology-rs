@@ -23,6 +23,7 @@ struct Font {
 const FONT_DIRS: &[&str] = &[
     "/usr/share/fonts/truetype/dejavu", // Ubuntu
     "/usr/local/share/fonts/dejavu",    // FreeBSD
+    "/usr/share/fonts/X11/dejavu",      // Exherbo
 ];
 
 impl Font {
