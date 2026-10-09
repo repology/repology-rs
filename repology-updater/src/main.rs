@@ -4,7 +4,6 @@
 #![feature(const_trait_impl)]
 #![feature(coverage_attribute)]
 #![feature(cow_is_borrowed)]
-#![feature(debug_closure_helpers)]
 #![feature(default_field_values)]
 #![feature(file_buffered)]
 #![feature(iter_collect_into)]
