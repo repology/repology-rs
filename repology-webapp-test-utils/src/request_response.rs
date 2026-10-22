@@ -221,10 +221,24 @@ impl Response {
     }
 
     pub fn header_value_str(&self, key: &str) -> Result<Option<&str>, ResponseError> {
+        let values: Vec<_> = self.headers.get_all(key).into_iter().collect();
+
+        match values.len() {
+            0 => Ok(None),
+            1 => values[0]
+                .to_str()
+                .map_err(|_| ResponseError::HeaderError)
+                .map(Some),
+            _ => Err(ResponseError::HeaderError),
+        }
+    }
+
+    pub fn header_values_str(&self, key: &str) -> Result<Vec<&str>, ResponseError> {
         self.headers
-            .get(key)
+            .get_all(key)
+            .into_iter()
             .map(|h| h.to_str().map_err(|_| ResponseError::HeaderError))
-            .transpose()
+            .collect()
     }
 
     pub fn body_cityhash64(&self) -> u64 {

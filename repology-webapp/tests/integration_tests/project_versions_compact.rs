@@ -48,6 +48,6 @@ async fn test_redirect(pool: PgPool) {
     let response = Request::new(pool, "/project/zsh-old/versions-compact").perform().await;
     assert_eq!(response.status(), http::StatusCode::MOVED_PERMANENTLY);
     assert_eq!(response.header_value_str("location").unwrap(), Some("/project/zsh/versions-compact"));
-    assert!(response.header_value_str("set-cookie").unwrap().unwrap().contains("rdr_zsh=zsh-old"));
+    assert!(response.header_values_str("set-cookie").unwrap().into_iter().any(|h| h.contains("rdr_zsh=zsh-old")));
     // TODO: implement support for passing cookies between requests and check redirect notification handling
 }
