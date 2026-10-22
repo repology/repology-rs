@@ -18,7 +18,7 @@ async fn test_construct_empty(pool: PgPool) {
     assert!(!response.text().unwrap().contains(r#"<option value="project_versions" selected>"#));
     assert!(!response.text().unwrap().contains(r#"<input type="checkbox" name="noautoresolve" checked>"#));
 
-    assert!(!response.text().unwrap().contains(r#"/tools/project-by?"#));
+    assert!(!response.text().unwrap().contains(r#"Template url for redirect"#));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories"))]
@@ -32,6 +32,8 @@ async fn test_construct_filled(pool: PgPool) {
     assert!(response.text().unwrap().contains(r#"<option value="srcname" selected>"#));
     assert!(response.text().unwrap().contains(r#"<option value="project_versions" selected>"#));
     assert!(response.text().unwrap().contains(r#"<input type="checkbox" name="noautoresolve" checked>"#));
+
+    assert!(response.text().unwrap().contains("Template url for redirect"));
 
     assert!(
         response
@@ -53,7 +55,7 @@ async fn test_construct_ignores_invalid_params(pool: PgPool) {
     assert!(!response.text().unwrap().contains(r#"<option value="project_versions" selected>"#));
     assert!(!response.text().unwrap().contains(r#"<input type="checkbox" name="noautoresolve" checked>"#));
 
-    assert!(!response.text().unwrap().contains("/tools/project-by?"));
+    assert!(!response.text().unwrap().contains(r#"Template url for redirect"#));
 }
 
 #[sqlx::test(migrator = "repology_common::MIGRATOR", fixtures("common_repositories", "project_by_data"))]
