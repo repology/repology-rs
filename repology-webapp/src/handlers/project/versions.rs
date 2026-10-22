@@ -34,6 +34,7 @@ struct Package {
     maintainers: Vec<String>,
     category: Option<String>,
     url: Option<String>,
+    fragment: Option<String>,
     version: String,
     status: PackageStatus,
     flags: i32,
@@ -103,44 +104,37 @@ pub async fn project_versions(
     // if this affects latency
     let packages: Vec<Package> = sqlx::query_as(indoc! {"
         SELECT
-            repo,
-            subrepo,
-            visiblename,
-            origversion,
-            coalesce(maintainers, '{}'::text[]) AS maintainers,
-            category,
-            version,
-            versionclass AS status,
-            flags,
-            (
-                SELECT url
-                FROM links
-                WHERE id = (
-                    WITH expanded_links AS (
-                        SELECT
-                            (tuple->>0)::integer AS link_type,
-                            (tuple->>1)::integer AS link_id,
-                            ordinality
-                        FROM json_array_elements(links) WITH ORDINALITY AS t(tuple, ordinality)
-                    )
-                    SELECT
-                        link_id
-                    FROM expanded_links
-                    WHERE
-                        link_type IN (
-                            4,  -- PROJECT_HOMEPAGE
-                            5,  -- PACKAGE_HOMEPAGE
-                            7,  -- PACKAGE_REPOSITORY
-                            9,  -- PACKAGE_RECIPE
-                            10  -- PACKAGE_RECIPE_RAW
-                        )
-                    ORDER BY ordinality -- or link_type, ordinality
-                    LIMIT 1
-                ) --AND coalesce(ipv4_success, true)  -- XXX: better display link status
-            ) AS url
+            packages.repo,
+            packages.subrepo,
+            packages.visiblename,
+            packages.origversion,
+            coalesce(packages.maintainers, '{}'::text[]) AS maintainers,
+            packages.category,
+            packages.version,
+            packages.versionclass AS status,
+            packages.flags,
+            links.url, --AND coalesce(ipv4_success, true)  -- XXX: better display link status
+            best_link.fragment
         FROM packages
-        WHERE effname = $1
-        ORDER BY subrepo, visiblename, origversion, versionclass
+        LEFT JOIN LATERAL (
+            SELECT
+                (tuple->>1)::integer AS link_id,
+                tuple->>2 AS fragment
+            FROM json_array_elements(packages.links) WITH ORDINALITY AS t(tuple, ordinality)
+            WHERE
+                (tuple->>0)::integer IN (
+                    4,  -- PROJECT_HOMEPAGE
+                    5,  -- PACKAGE_HOMEPAGE
+                    7,  -- PACKAGE_REPOSITORY
+                    9,  -- PACKAGE_RECIPE
+                    10  -- PACKAGE_RECIPE_RAW
+                )
+            ORDER BY ordinality -- or link_type, ordinality
+            LIMIT 1
+        ) AS best_link ON true
+        LEFT JOIN links ON links.id = best_link.link_id
+        WHERE packages.effname = $1
+        ORDER BY packages.subrepo, packages.visiblename, packages.origversion, packages.versionclass
     "})
     .bind(&project_name)
     .fetch_all(&state.pool)
