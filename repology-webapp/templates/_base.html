@@ -78,6 +78,7 @@
 			Copyright (C) 2016-2026 Dmitry Marakasov<br>
 			Code licensed under GPLv3+.
 			{% if let Some(build_info) = crate::constants::BUILD_INFO %}<!-- Build info: {{ build_info }} -->{% endif %}
+			<a class="honeypot" href="/honeypot{{ my_route.url_for().build()? }}" rel="nofollow noindex">click me to get banned</a>
 		</p>
 	</div>
 </footer>

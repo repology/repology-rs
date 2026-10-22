@@ -2,7 +2,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 pub mod headers;
+pub mod honeypot;
 pub mod metrics;
 
 pub use headers::*;
+pub use honeypot::*;
 pub use metrics::*;

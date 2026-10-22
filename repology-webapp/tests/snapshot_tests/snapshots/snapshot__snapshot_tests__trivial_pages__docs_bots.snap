@@ -9,7 +9,8 @@ Header: content-security-policy: default-src 'none'; style-src 'self'; script-sr
 Header: x-frame-options: DENY
 Header: referrer-policy: unsafe-url
 Header: cache-control: max-age=3600
-Header: content-length: 7612
+Header: set-cookie: a=1
+Header: content-length: 7712
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -24,7 +25,7 @@ Header: content-length: 7612
 
 	<title>Bots information - Repology</title>
 	<link rel="stylesheet" href="/static/bootstrap.min.v3.3.7.8dc6d358477be27a.css">
-	<link rel="stylesheet" href="/static/repology.v21.bb7b05a7b3bfbdb9.css">
+	<link rel="stylesheet" href="/static/repology.v21.641a5be692b7ca9a.css">
 	<link rel="icon" href="/static/repology.v1.6108dff405ea1a42.ico" sizes="16x16 32x32 64x64" type="image/x-icon">
 	<link rel="search" type="application/opensearchdescription+xml" title="Repology packages" href="/opensearch/project.xml">
 	<link rel="search" type="application/opensearchdescription+xml" title="Repology maintainers" href="/opensearch/maintainer.xml">
@@ -171,6 +172,7 @@ information and link availability checking), so neither of repology robots respe
 			Copyright (C) 2016-2026 Dmitry Marakasov<br>
 			Code licensed under GPLv3+.
 			
+			<a class="honeypot" href="/honeypot/docs/bots" rel="nofollow noindex">click me to get banned</a>
 		</p>
 	</div>
 </footer>

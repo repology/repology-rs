@@ -587,3 +587,7 @@
 .panel-version-rolling > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: #ddd;
 }
+
+.honeypot {
+    display: none;
+}
