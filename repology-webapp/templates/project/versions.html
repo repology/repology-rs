@@ -35,7 +35,7 @@
 		</td>
 		<td class="text-center">
 			{%- if let Some(url) = package.url -%}
-			<a href="{{ url }}">{{ package.visiblename }}</a>
+			<a href="{{ url }}{% if let Some(fragment) = package.fragment %}#{{ fragment }}{% endif %}">{{ package.visiblename }}</a>
 			{%- else -%}
 			{{ package.visiblename }}
 			{%- endif -%}
@@ -52,7 +52,7 @@
 				{%- if is_recalled %}; version is recalled{% endif -%}
 			">
 				{%- if let Some(url) = package.url -%}
-				<a href="{{ url }}">{{ package.version }}</a>
+				<a href="{{ url }}{% if let Some(fragment) = package.fragment %}#{{ fragment }}{% endif %}">{{ package.version }}</a>
 				{%- else -%}
 				{{ package.version }}
 				{%- endif -%}
