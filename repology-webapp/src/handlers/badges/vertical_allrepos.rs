@@ -148,22 +148,12 @@ pub async fn badge_vertical_allrepos(
 
     histogram!("repology_webapp_badge_vertical_allrepos_size").record(cells.len() as f64);
 
-    let caption = query.caption.as_ref().map_or_else(
-        || {
-            if cells.is_empty() {
-                Some("No known packages")
-            } else {
-                Some("Packaging status")
-            }
-        },
-        |caption| {
-            if caption.is_empty() {
-                None
-            } else {
-                Some(caption)
-            }
-        },
-    );
+    let caption = match &query.caption {
+        None if cells.is_empty() => Some("No known packages"),
+        None => Some("Packaging status"),
+        Some(caption) if caption.is_empty() => None,
+        Some(caption) => Some(caption.as_str()),
+    };
 
     let num_columns = query.columns_count.min(cells.len());
 
