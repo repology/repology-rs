@@ -21,15 +21,17 @@ jobs:
         with:
           save-if: ${{ github.ref == 'refs/heads/master' }}
           cache-bin: "false"
-      - name: Install dependencies
+      - name: Set up PostgreSQL
         run: |
+          sudo pg_dropcluster $POSTGRESQL main --stop || true
           sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh -y
-          sudo apt-get update
-          sudo apt-get install postgresql-$POSTGRESQL postgresql-server-dev-$POSTGRESQL
-      - name: Prepare postgresql
-        run: |
-          sudo sh -c "echo 'host all all samehost trust' > /etc/postgresql/$POSTGRESQL/main/pg_hba.conf"
-          sudo pg_ctlcluster $POSTGRESQL main restart
+          sudo apt update
+          sudo apt install postgresql-$POSTGRESQL postgresql-server-dev-$POSTGRESQL
+          sudo pg_createcluster $POSTGRESQL main
+          sudo sed -i -e 's|5433|5432|' /etc/postgresql/$POSTGRESQL/main/postgresql.conf
+          sudo sh -c "echo 'local all all trust' > /etc/postgresql/$POSTGRESQL/main/pg_hba.conf"
+          sudo sh -c "echo 'host all all samehost trust' >> /etc/postgresql/$POSTGRESQL/main/pg_hba.conf"
+          sudo pg_ctlcluster $POSTGRESQL main start
       - name: Test
         run: cargo test
         env:
