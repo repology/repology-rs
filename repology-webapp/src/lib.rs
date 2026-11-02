@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #![feature(iterator_try_collect)]
-#![feature(coverage_attribute)]
+#![cfg_attr(test, feature(coverage_attribute))]
 #![feature(stmt_expr_attributes)]
 #![feature(duration_constructors)]
 #![feature(lock_value_accessors)]
