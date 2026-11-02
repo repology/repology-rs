@@ -5,7 +5,7 @@ on:
   schedule:
     - cron: "0 0 * * 1"
 env:
-  POSTGRESQL: 16
+  POSTGRESQL: 17
   RUST: nightly-2026-10-09
 jobs:
   test:
