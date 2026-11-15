@@ -47,7 +47,8 @@
 "github.com".recheck_manual = 30
 "github.io".is = "github.com"
 "githubusercontent.com".is = "github.com"
-"gitlab.com".delay = 1
+"gitlab.com".delay = 10                     # 90% 429s at 1 rps
+"gitlab.com".generated_sampling_percentage = 10
 "gitlab.com".monitor = true
 "gitweb.gentoo.org".generated_sampling_percentage = 10
 "hydra.nixos.org".generated_sampling_percentage = 1
